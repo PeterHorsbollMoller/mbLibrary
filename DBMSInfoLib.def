@@ -1,0 +1,88 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    D B M S I N F O L I B
+'********************************************************************************************************
+'	Created 01-12-2011
+'	- A lot of the content has been copied from the module SQLUtil in Samples\MapBasic\Database
+'	- The functions and procedures have been "modernised" and error handling has been added
+'********************************************************************************************************
+
+'Database Types
+DEFINE  DATA_SOURCE_UNKNOWN		-1
+Define  DATA_SOURCE_ORACLE		1
+DEFINE  DATA_SOURCE_SYBASE		2
+DEFINE  DATA_SOURCE_SQLSERVER		3
+DEFINE  DATA_SOURCE_SQLBASE		4
+DEFINE  DATA_SOURCE_INFORMIX		5
+DEFINE  DATA_SOURCE_INGRES		6
+DEFINE  DATA_SOURCE_DB2			7
+DEFINE  DATA_SOURCE_MSACCESS		8
+DEFINE  DATA_SOURCE_DBASE		9
+DEFINE  DATA_SOURCE_TEXT			10
+DEFINE  DATA_SOURCE_EXCEL4		11
+DEFINE  DATA_SOURCE_EXCEL5		12
+DEFINE  DATA_SOURCE_SQS			13
+DEFINE  DATA_SOURCE_SPATIALWARE	14
+DEFINE  DATA_SOURCE_IUS			15
+Define  DATA_SOURCE_SQLSERVER_SW	16
+
+'Defines for the SQLGetInfo32 function
+Define SQL_MAXIMUM_DRIVER_CONNECTIONS		0
+Define SQL_MAXIMUM_CONCURRENT_ACTIVITIES	1
+Define SQL_DATA_SOURCE_NAME				2	'CHAR(128) The return is the name of a data source (in client/server terms: a server name). This is the name that was passed in the SQLConnect call.
+Define SQL_FETCH_DIRECTION				8
+Define SQL_SERVER_NAME					13	'CHAR(128) The return is a character string: the implementation-defined character string which is the "actual name" of a server.
+										'This often will be the same as the string returned for SQL_DATA_SOURCE_NAME, but some implementations make a distinction between "data source" and "server".
+Define SQL_DBMS_NAME					17
+Define SQL_DBMS_VERSION					18	'CHAR(254) The return is the version number of the DBMS, in a rigid format: nn.nn.nnnn[optional description], where n is any decimal digit.
+										'Examples: "00.00.0000", "01.02.03 Vendor X's Version #1 Release #2 Patch #3". In ODBC, the name is SQL_DBMS_VER
+Define SQL_CURSOR_COMMIT_BEHAVIOR			23
+Define SQL_DATA_SOURCE_READ_ONLY			25
+Define SQL_DEFAULT_TRANSACTION_ISOLATION	26
+define SQL_IDENTIFIER_CASE				28
+define SQL_MAXIMUM_COLUMN_NAME_LENGTH		30
+define SQL_MAXIMUM_CURSOR_NAME_LENGTH		31
+define SQL_MAXIMUM_SCHEMA_NAME_LENGTH		32
+define SQL_MAXIMUM_CATALOG_NAME_LENGTH 		34
+define SQL_MAXIMUM_TABLE_NAME_LENGTH		35
+define SQL_SCROLL_CONCURRENCY				43
+define SQL_TRANSACTION_CAPABLE			46
+define SQL_USER_NAME					47
+define SQL_TRANSACTION_ISOLATION_OPTION   	72
+define SQL_INTEGRITY					73
+define SQL_GETDATA_EXTENSIONS				81
+define SQL_NULL_COLLATION				85
+define SQL_ALTER_TABLE					86
+define SQL_ORDER_BY_COLUMNS_IN_SELECT		90
+define SQL_SPECIAL_CHARACTERS				94
+define SQL_MAXIMUM_COLUMNS_IN_GROUP_BY		97
+define SQL_MAXIMUM_COLUMNS_IN_ORDER_BY		99
+define SQL_MAXIMUM_COLUMNS_IN_SELECT		100
+define SQL_MAXIMUM_COLUMNS_IN_TABLE		101
+define SQL_MAXIMUM_STATEMENT_LENGTH		105
+define SQL_MAXIMUM_TABLES_IN_SELECT		106
+define SQL_MAXIMUM_USER_NAME_LENGTH		107
+define SQL_OUTER_JOIN_CAPABILITIES			115
+define SQL_CURSOR_SENSITIVITY				10001
+define SQL_DESCRIBE_PARAMETER				10002
+define SQL_CATALOG_NAME					10003
+define SQL_COLLATING_SEQUENCE				10004
+define SQL_MAXIMUM_IDENTIFIER_LENGTH		10005
+
+
+Declare Sub DBIRunSQLFile(ByVal nConnection As Integer, ByVal sFile As String)
+
+Declare Function DBIGetSQLDatabaseType(ByVal nConnection As Integer) As Integer
+Declare Function DBIGetSQLUserid(ByVal nConnection As Integer) As String
+Declare Function DBIGetServerName(ByVal nConnection As Integer) As String
+Declare Function DBIGetDBName(ByVal nConnection As Integer) As String
+Declare Function DBIGetDSNName(ByVal nConnection As Integer) As String
+Declare Function DBIGetQuoteChar(ByVal nConnection As Integer) As String
+Declare Function DBITableExists(ByVal nConnection As Integer, ByVal sSRVTableName As String) As Logical
+Declare Function DBIDBMSIsInstalled(ByVal bShowMsg As Logical) as Logical
+
+Declare Function SQLGetInfo32 LIB "ODBC32.DLL" Alias  "SQLGetInfo"
+									( ByVal odbchdbc As Integer
+									, ByVal snInfoflag As SmallInt
+									, sDatabase As String
+									, ByVal snLen As SmallInt
+									, snOutlen As SmallInt) As SmallInt

@@ -1,0 +1,93 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\MapBasic.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\ERRORLib.def"
+
+Include "T_ERROR.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	terrFrom	: Error type to copy values from
+'	terrTo	: Error type to copy values to
+'**********************************************************************************************''
+Sub terrCopy(	  terrFrom As T_ERROR		'Error type to copy values from
+			, terrTo As T_ERROR		'Error type to copy values to
+			)
+
+OnError GoTo ErrorOccured
+
+	terrTo.nNo			= terrFrom.nNo
+	terrTo.sText		= terrFrom.sText
+	terrTo.sDescription	= terrFrom.sDescription
+	terrTo.dDate		= terrFrom.dDate
+	terrTo.sTime		= terrFrom.sTime
+	terrTo.sUser		= terrFrom.sUser
+	terrTo.sComputer		= terrFrom.sComputer
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "terrCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tError	: Error to reset
+'**********************************************************************************************''
+Sub terrReset(	  tError As T_ERROR		'Error to reset
+			)
+
+OnError GoTo ErrorOccured
+
+	tError.nNo			= 0
+	tError.sText		= ""
+	tError.sDescription	= ""
+	tError.dDate		= CurDate()
+	tError.sTime		= ""
+	tError.sUser		= ""
+	tError.sComputer		= ""
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "terrReset")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tError	: Error to get string representation of
+'**********************************************************************************************''
+Function terrToString(	  tError As T_ERROR		'Error to convert to a string
+			) As String
+
+OnError GoTo ErrorOccured
+
+'	dDate			As Date
+'	sTime			As String
+'	sUser			As String
+'	sComputer		As String
+	terrToString	= tError.sDescription & " - " & tError.sText & " (#" & tError.nNo & ")"
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "terrToString")
+	Call ERRShow()
+
+End Function
+
+

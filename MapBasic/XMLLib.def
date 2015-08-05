@@ -1,0 +1,107 @@
+Define MIXML_LIB_NAME "MapInfo.XmlUtil.dll"
+
+Declare Function MIXmlDocumentCreate Lib MIXML_LIB_NAME Alias "MIXmlDocumentCreate" () As MIXmlDocument
+Declare Sub MIXmlDocumentDestroy Lib MIXML_LIB_NAME Alias "MIXmlDocumentDestroy" (
+	ByVal hXMLDocument As MIXmlDocument)
+Declare Function MIXmlDocumentLoad Lib MIXML_LIB_NAME Alias "MIXmlDocumentLoad" (
+	ByVal hXMLDocument As MIXmlDocument,
+	ByVal strPath As String,
+	pbParsingError As SmallInt,
+	ByVal bValidate As SmallInt,
+	ByVal bResolveExternals As SmallInt)
+	As SmallInt
+Declare Function MIXmlDocumentLoadXML Lib MIXML_LIB_NAME Alias "MIXmlDocumentLoadXML" (
+	ByVal hXMLDocument As MIXmlDocument,
+	ByVal hContent As String,
+	pbParsingError As SmallInt,
+	ByVal bValidate As SmallInt,
+	ByVal bResolveExternals As SmallInt)
+	As SmallInt
+Declare Function MIXmlDocumentLoadXMLString Lib MIXML_LIB_NAME Alias "MIXmlDocumentLoadXMLString" (
+	ByVal hXMLDocument As MIXmlDocument,
+	ByVal strXML As String,
+	pbParsingError As SmallInt,
+	ByVal bValidate As SmallInt,
+	ByVal bResolveExternals As SmallInt)
+	As SmallInt
+Declare Function MIXmlDocumentGetRootNode Lib MIXML_LIB_NAME Alias "MIXmlDocumentGetRootNode" (
+	ByVal hXMLDocument As MIXmlDocument)
+	As MIXmlNode
+Declare Function MIXmlDocumentSetProperty Lib MIXML_LIB_NAME Alias "MIXmlDocumentSetProperty" (
+	ByVal hXMLDocument As MIXmlDocument,
+	ByVal strPropertyName As String,
+	ByVal strPropertyValue As String)
+	As SmallInt
+Declare Function MIXmlDocumentGetNamespaces Lib MIXML_LIB_NAME Alias "MIXmlDocumentGetNamespaces" (
+	ByVal hXMLDocument As MIXmlDocument)
+	As MIXMLSchemaCollection
+Declare Sub MIXmlNodeDestroy Lib MIXML_LIB_NAME Alias "MIXmlNodeDestroy" (
+	ByVal hXMLNode As MIXmlNode)
+Declare Function MIXmlNodeGetName Lib MIXML_LIB_NAME Alias "MIXmlNodeGetName" (
+	ByVal hXMLNode As MIXmlNode,
+	pName As String,
+	ByVal nLen As Integer)
+	As SmallInt
+Declare Function MIXmlNodeGetValue Lib MIXML_LIB_NAME Alias "MIXmlNodeGetValue" (
+	ByVal hXMLNode As MIXmlNode,
+	pValue As String,
+	ByVal nLen As Integer)
+	As SmallInt
+Declare Function MIXmlNodeGetText Lib MIXML_LIB_NAME Alias "MIXmlNodeGetText" (
+	ByVal hXMLNode As MIXmlNode,
+	pText As String,
+	ByVal nLen As Integer)
+	As SmallInt
+Declare Function MIXmlNodeGetParent Lib MIXML_LIB_NAME Alias "MIXmlNodeGetParent" (
+	ByVal hXMLNode As MIXmlNode)
+	As MIXmlNode
+Declare Function MIXmlNodeGetFirstChild Lib MIXML_LIB_NAME Alias "MIXmlNodeGetFirstChild" (
+	ByVal hXMLNode As MIXmlNode)
+	As MIXmlNode
+Declare Function MIXmlNodeGetAttributeValue Lib MIXML_LIB_NAME Alias "MIXmlNodeGetAttributeValue" (
+	ByVal hXMLNode As MIXmlNode,
+	ByVal strAttributeName As String,
+	pValue As String,
+	ByVal nLen As Integer)
+	As SmallInt
+Declare Function MIXmlGetChildList Lib MIXML_LIB_NAME Alias "MIXmlGetChildList" (
+	ByVal hXMLNode As MIXmlNode)
+	As MIXmlNodeList
+Declare Function MIXmlSelectSingleNode Lib MIXML_LIB_NAME Alias "MIXmlSelectSingleNode" (
+	ByVal hXMLNode As MIXmlNode,
+	ByVal strPattern As String)
+	As MIXmlNode
+Declare Function MIXmlSelectNodes Lib MIXML_LIB_NAME Alias "MIXmlSelectNodes" (
+	ByVal hXMLNode As MIXmlNode,
+	ByVal strPattern As String)
+	As MIXmlNodeList
+Declare Sub MIXmlNodeListDestroy Lib MIXML_LIB_NAME Alias "MIXmlNodeListDestroy" (
+	ByVal hXMLNodeList As MIXmlNodeList)
+Declare Function MIXmlGetNextNode Lib MIXML_LIB_NAME Alias "MIXmlGetNextNode" (
+	ByVal hXMLNodeList As MIXmlNodeList)
+	As MIXmlNode
+Declare Function MIXmlGetAttributeList Lib MIXML_LIB_NAME Alias "MIXmlGetAttributeList" (
+	ByVal hXMLNode As MIXmlNode)
+	As MIXmlNamedNodeMap
+Declare Sub MIXmlAttributeListDestroy Lib MIXML_LIB_NAME Alias "MIXmlAttributeListDestroy" (
+	ByVal hXMLAttributeList As MIXmlNamedNodeMap)
+Declare Function MIXmlGetNextAttribute Lib MIXML_LIB_NAME Alias "MIXmlGetNextAttribute" (
+	ByVal hXMLAttributeList As MIXmlNamedNodeMap)
+	As MIXmlNode
+Declare Sub MIXmlSCDestroy Lib MIXML_LIB_NAME Alias "MIXmlSCDestroy" (
+	ByVal hXMLSchemaCollection As MIXMLSchemaCollection)
+Declare Function MIXmlSCGetLength Lib MIXML_LIB_NAME Alias "MIXmlSCGetLength" (
+	ByVal hXMLSchemaCollection As MIXMLSchemaCollection)
+	As Integer
+Declare Function MIXmlSCGetNamespace Lib MIXML_LIB_NAME Alias "MIXmlSCGetNamespace" (
+	ByVal hXMLSchemaCollection As MIXMLSchemaCollection,
+	ByVal index As Integer,
+	pNamespace As String,
+	ByVal nLen As Integer)
+	As SmallInt
+Declare Function EPSGToCoordSysString Lib MIXML_LIB_NAME Alias "EPSGToCoordSysString" (
+	ByVal strEPSG As String,
+	ByVal bUseBounds As SmallInt,
+	pCSys As String,
+	ByVal nLen As Integer)
+	As SmallInt

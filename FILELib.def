@@ -1,0 +1,125 @@
+'*****************************************************************************************************************
+'History of this module
+'*****************************************************************************************************************
+'21-11-2011 08:59:06	Peter Møller added these functions:
+'						- Function FILEGetAbsolutePath(ByVal sAbsolutePath As String, ByVal sRelativePath As String) As String
+'						- Function FILEGetRelativePath(ByVal sAbsolutePath As String, ByVal sPath As String) As String
+'02-12-2011 12:52:02	Peter Møller Added these functions:
+'						- Function FILEIsFolder(...) As Logical
+'						- Function FILEIsReadOnly(...) As Logical
+'						- Function FILEFindFiles(...) As Integer
+'						- Function FILEFindFilesRecursive(...) As Integer
+'						- Function FILEFindFolders(...) As Integer
+'						- Function FILEFindFoldersRecursive(...) As Integer
+'25-04-2012 10:33:17	Peter Møller added:
+'						- Function FILEGetExtension(...) As String
+'01-10-2012 11:11:11	Emil Zegers added:
+'						- Method FILEDeleteFolder(...)
+'						- Method FILECopyFile(...)
+'*****************************************************************************************************************
+
+
+'**Requires MapInfo Pro 9.5
+
+Declare Method FILEBrowseForFolder
+	Class "FILELib.MIController"  Lib "FILELib.dll" Alias "BrowseForFolder"
+	(	  ByVal sDescription As String	'Text to display in the dialog
+		, ByVal sFolder As String		'Start folder to use in the dialog
+		) As String					'Return the folder selected, or "" if the dialog was cancelled
+
+Declare Method FILEOpenFilesDlg
+	Class "FILELib.MIController"  Lib "FILELib.dll"	Alias "OpenFilesDlg"
+	(	  ByVal sTitle As String		'Title of FileOpen dialog
+		, ByVal sStartFolder As String	'Folder the dialog show on startup
+		, ByVal sFileTypes As String		'List of filetypes that are available in the FileType dropdown list
+								'Should be in this form:
+								'	description | filter [; filter ...] [| description | filter  [; filter ...]]
+								'Single filter:				"Text Files (*.txt)|*.txt"
+								'Multiple filters:	 		"Tables (*.tab)|*.tab|Workspaces (*.wor)|*.wor"
+								'Multiple filetypes at a time:	"MapInfo files (*.tab,*.wor)|*.tab;*.wor"
+	) As Integer					'Returns the number of files selected by the user
+								'	use GetOpenFilesDlgFileName to get each file item
+Declare Method FILEGetOpenFilesDlgFileName
+	Class "FILELib.MIController"  Lib "FILELib.dll"	Alias "GetOpenFilesDlgFileName"
+	(	  ByVal nFileItem As Integer		'File number to get the name full path of
+	) As String						'Returns full path for the file number, 1 is the first file in the list
+
+Declare Method FILEGetOpenFilesDlgFileNames
+	Class "FILELib.MIController"  Lib "FILELib.dll"	Alias "GetOpenFilesDlgFileNames"
+	(	  arrFileNames() As String		'Array to hold all the filenames selected
+	) As Integer					'Returns full the number of files returned
+
+Declare Method FILEDelete
+	Class "FILELib.MIController"  Lib "FILELib.dll" Alias "DeleteFile"
+	(	  ByVal sFile As String			'Full path of file to delete
+	)
+
+Declare Method FILECopyFile
+	Class "FILELib.MIController"  Lib "FILELib.dll" Alias "CopyFile"
+	(	  ByVal sSrcFile As String			'Full path of file to copy
+		, ByVal sDstFile As String			'Full path of file to delete
+	)
+
+Declare Method FILECreateFolder
+	Class "FILELib.MIController"  Lib "FILELib.dll" Alias "CreateFolder"
+	(	ByVal sFolderPath As String		'Folder path to create, all folders in the path will be created
+	)
+
+Declare Method FILEDeleteFolder
+	Class "FILELib.MIController"  Lib "FILELib.dll" Alias "DeleteFolder"
+	(	ByVal sFolderPath As String		'Folder path to delete, only deepest folder in the path will be deleted 
+										'including all file and folder contents
+	)
+
+Declare Sub FILELaunch(ByVal sFile As String)	'Show the file/url in the users preferred program
+Declare Function FILEFindExecutable(	  ByVal sDocument As String	'File name to find executable for
+							) As String				'Full path the executable found, or "" if not found
+Declare Function FILEAddBackSlash(ByVal sPath As String) As String
+Declare Function FILERemoveBackSlash(ByVal sPath As String) As String
+Declare Function FILEGetExtension(ByVal sFile As String) As String
+
+Declare Function FILEWindowsTempFolder() As String
+
+Declare Function FILEGetAbsolutePath(	  ByVal sAbsolutePath As String	'A absolute path to add to the potential relative path and file name
+								, ByVal sRelativePath As String	'A potential relative path and file name to be changed to a absolute path and file name
+								) As String					'Absolute path and filename to the relative path and file name entered
+Declare Function FILEGetRelativePath(	  ByVal sAbsolutePath As String	'A absolute path to remove from the path (and file name) given
+								, ByVal sPath As String			'A path (and file name) to be changed to a relative path (and file name)
+								) As String					'Relative path (and file name) to the path (and file name) entered
+
+Declare Function FILEIsFolder(	ByVal sPath As String	'File Path to check if it is folder/directory
+						) As Logical				'Returns TRUE, if the path is a folder/directory
+Declare Function FILEIsReadOnly(	ByVal sPath As String	'File Path to check if it is readonly
+						) As Logical				'Returns TRUE, if the path is readonly
+
+Declare Function FILEFindFiles(	  ByVal sPath As String				'A path to search for files
+							, ByVal sCondition As String			'A condition the files should meet, for instance, ".tab"
+															'If not consition is given, the function will use "*"
+							, ByVal bReturnFullPath As Logical		'If FALSE the file names will be relative to the sPath
+							, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+							, arrFiles() As String				'The resulting list of files found - you must reset the array to 0 as this will add the existing array
+							) As Integer						'The number of files found
+Declare Function FILEFindFilesRecursive( 	  ByVal sPath As String		'The initial path
+									, ByVal sSubPath As String			'The current subfolder path, use "" when you call it
+									, ByVal sCondition As String			'A condition the files should meet, for instance, ".tab"
+																	'If not consition is given, the function will use "*"
+									, ByVal bReturnFullPath As Logical		'If FALSE the file names will be relative to the sPath
+									, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+									, arrFiles() As String				'The resulting list of files found - you must reset the array to 0 as this will add the existing array
+									) As Integer						'The number of files found
+Declare Function FILEFindFolders(	  ByVal sPath As String				'A path to search for folders
+							, ByVal sCondition As String			'A condition the files should meet, for instance, "data"
+															'If not consition is given, the function will use "*"
+							, ByVal bReturnFullPath As Logical		'If FALSE the folder names will be relative to the sPath
+							, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+							, arrFolders() As String				'The resulting list of folders found, not include "." and ".." - you must reset the array to 0 as this will add the existing array
+							) As Integer						'The number of folders found
+Declare Function FILEFindFoldersRecursive(     ByVal sPath As String				'The initial path
+									, ByVal sSubPath As String			'The current subfolder path, use "" when you call it
+									, ByVal sCondition As String			'A condition the files should meet, for instance, ".tab"
+									, ByVal bReturnFullPath As Logical		'If FALSE the folder names will be relative to the sPath
+									, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+									, arrFolders() As String				'The resulting list of folders found, not include "." and ".." - you must reset the array to 0 as this will add the existing array
+									) As Integer						'The number of folders found
+
+Declare Function FILEFileExists(ByVal sPath As String) As Logical

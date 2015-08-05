@@ -1,0 +1,40 @@
+'**Requires MapInfo Pro 4.0
+
+Define CRITERIA_ONLY_INDEXED		1
+Define CRITERIA_USE_CHAR		2
+Define CRITERIA_USE_FLOAT		4
+Define CRITERIA_USE_INTEGER		8
+Define CRITERIA_USE_SMALLINT		16
+Define CRITERIA_USE_DECIMAL		32
+Define CRITERIA_USE_DATE		64
+Define CRITERIA_USE_DATETIME		128
+Define CRITERIA_USE_TIME		256
+Define CRITERIA_USE_LOGICAL		512
+Define CRITERIA_USE_GRAPHICAL		1024
+Define CRITERIA_USE_ALL			1022	'all column types but the graphical
+Define CRITERIA_USE_NUMERICAL		CRITERIA_USE_FLOAT + CRITERIA_USE_INTEGER + CRITERIA_USE_SMALLINT + CRITERIA_USE_DECIMAL	'all numerical column types
+
+Declare Function COLExists(	  ByVal sTab As String	'Table to query
+					, ByVal sCol As String	'Column to check existence of
+					) As Logical		'Return true if the table is open and the column exists
+
+Declare Function COLPosition( ByVal sTab As String	'Table to query
+					, ByVal sColName As String	'Column name to check position for
+					) As Integer			'Position of the column with the given nane. 0 is returned when the column isn't found.
+
+Declare Function COLGetListOfNames(	  ByVal sTab As String		'Table to get teh columns from
+						, ByVal nCriterias As String	'Column criteria to meet, see constants above
+						, arrNames() As String		'Array that will hold the names of the columns
+						) As Integer			'Number of columns that met the criteria
+Declare Function COLIsBitOn(	  ByVal nBit As Integer		'Criteria to check for
+					, ByVal nBitSum As Integer	'Criteria Sum to check the existence within
+					) As Logical			'Returns true if the nBit was found set/found in nBitSum
+
+Declare Function COLTypeAsString (ByVal sTab As String	'Table to query
+					, ByVal sCol As String	'Column to check type of
+					) As String		'String containing the column type (e.g. "Logical"), including
+									'the column width (e.g. "Char (49)") - applies to Character or Decimal columns only -
+									'and the number of decimal places (e.g. "Decimal (12, 3)") - applies to Decimal columns only
+
+Declare Function COLGetValidName( ByVal sText As String	'String to be validated
+					) As String	'String containing valid column name format

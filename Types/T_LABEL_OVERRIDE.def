@@ -1,0 +1,81 @@
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    T _ L A B E L _  S E T T I N G S
+'**********************************************************************************************************************
+'	18-01-2012 	- Created first version of this module for Hack day January 2012
+'	25-01-2012	- Added
+'					- Sub tloWriteToMetadata(...)
+'					- Sub tloWriteSingleToMetadata(...)
+'					- Sub tloReadFromMetadata(...)
+'					- Sub tloReadSingleFromMetadata(...)
+'					- Sub tloRemoveSingleFromMetadata(...)
+'	14-02-2012 	- Please note that the T_DISPLAY_OVERRIDE and T_LABEL_OVERRIDE types are not working correctly
+'					MapBasic does not expose a way to figure out whether an override is active or not
+'**********************************************************************************************************************
+
+Type T_LABEL_OVERRIDE
+	fMinZoom			As Float
+	fMaxZoom			As Float
+	sZoomUnits		As String
+	sExpression		As String
+	nLineType			As Integer
+	fntLabel			As Font
+	nPosition			As Integer
+	bAllowOverlap		As Logical
+	bAllowDuplicates	As Logical
+	nOffset			As Integer
+	nMaxNumber		As Integer
+	bPartialSegments	As Logical
+	nOrientation		As Integer
+	nAlpha			As Integer
+	bAutoRetry		As Logical
+	penLabelLine		As Pen
+	nPercentOver		As Integer
+End Type
+
+Declare Sub tloCopy(  tloFrom As T_LABEL_OVERRIDE	'Source T_LABEL_OVERRIDE
+				, tloTo As T_LABEL_OVERRIDE)	'Target T_LABEL_OVERRIDE
+
+Declare Sub tloReset(		tlo As T_LABEL_OVERRIDE	'T_LABEL_OVERRIDE to reset
+					)
+Declare Function tloToString(	tlo As T_LABEL_OVERRIDE	'Convert a T_LABEL_OVERRIDE to a string
+							) As String			'Returns a string describing the layer
+Declare Function tloFromString(	  tlo As T_LABEL_OVERRIDE	'tlo to be set with values from the string
+							, ByVal sLabelInfo As String	'a string version of the tlo
+							) As Logical				'returns true if the tils was set using the string
+
+Declare Function tloGetDescription(  tlo As T_LABEL_OVERRIDE	'The T_LABEL_OVERRIDE to get a description for
+							) As String					'Returns a short string representing the T_LABEL_OVERRIDE
+
+Declare Sub tloGetInfo(	  ByVal nMID As Integer		'The Map Window with the layer
+					, ByVal nLyrID As Integer	'The layer to query
+					, tlo() As T_LABEL_OVERRIDE	'The T_LABEL_OVERRIDE to store information about the layer
+					)
+
+Declare Function tloGetSetMapStatement(  ByVal nMID As Integer			'Mapper Window where the layer exists
+								, ByVal nLyrID As Integer		'LayerID to apply the settings to
+								, tlo() As T_LABEL_OVERRIDE		'The T_LABEL_OVERRIDE to store information about the layer
+								) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+
+Declare Sub tloWriteToMetadata(		  ByVal sTab As String			'Name of table to write the tlo's to
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tlo's to
+								, tlo() As T_LABEL_OVERRIDE		'The tlo's to write to the metadata
+								)
+Declare Sub tloWriteSingleToMetadata(	  ByVal sTab As String			'Name of table to write the tlo to
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tlo to
+								, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to write the tlo to
+								, tlo As T_LABEL_OVERRIDE		'The tlo to write to the metadata
+								)
+Declare Sub tloReadFromMetadata(		  ByVal sTab As String			'Name of table to read the tlo's from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tlo's from
+								, tlo() As T_LABEL_OVERRIDE		'The tlo's to read the metadata into
+								)
+Declare Sub tloReadSingleFromMetadata(	  ByVal sTab As String			'Name of table to read the tlo from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tlo from
+								, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to read the tlo from
+								, tlo As T_LABEL_OVERRIDE		'The tlo to read the metadata into
+								)
+Declare Sub tloRemoveSingleFromMetadata(  ByVal sTab As String			'Name of table to remove the tlo from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to remove the tlo from
+								, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to remove
+								)

@@ -1,0 +1,12 @@
+'Requires MapInfo Pro 9.5
+
+Declare Function TOOLBARExists(	  ByVal sToolbarName As String	'Check if a toolbar with this name exists
+						) As Logical				'Returns true if a toolbar with this name was found
+
+'These two can be used to get adn set the settings for a certain toolbar.
+'The settings are "compiled" into a string that can be written to a config file
+Declare Sub TOOLBARSetSettings(	  ByVal sToolbarName As String	'Name of toolbar to apply setting to
+						, ByVal sToolbarSettings As String	'string containing settings to apply
+						)
+Declare Function TOOLBARGetSettings(  ByVal sToolbarName As String	'Name of toolbar to get settings from
+						) As String					'Returns a string containing the settings for this toolbar

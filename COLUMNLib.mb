@@ -1,0 +1,316 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:	COLUMNLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "COLUMNLib.def"
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+Include "STRINGLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function COLExists(ByVal sTab As String, ByVal sCol As String) As Logical
+
+Dim	nType As Integer
+
+OnError GoTo ErrorOccured
+
+COLExists = FALSE
+
+	If not TABIsOpen(sTab) Then
+		Exit Function
+	End If
+
+	OnError GoTo ErrorNoSuchColumn
+	nType = ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+
+	OnError GoTo ErrorOccured
+
+	COLExists = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "COLExists: " & sTab & " - " & sCol)
+	Call ERRShow()
+	Exit Function
+
+'-------------------------
+ErrorNoSuchColumn:
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Frank Salet, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function COLPosition( ByVal sTab As String, ByVal sColName As String	) As Integer	
+
+Dim	i, nCol As Integer, sColNames() As String
+
+OnError GoTo ErrorOccured
+
+COLPosition = 0
+
+	If not TABIsOpen(sTab) Then
+		Exit Function
+	End If
+	
+	nCol = COLGetListOfNames(sTab, CRITERIA_USE_ALL, sColNames())
+
+	For i = 1 To nCol
+		If ColumnInfo(sTab, "COL"+i, COL_INFO_NAME) = sColName Then
+			COLPosition = i
+			Exit For
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "COLExists: " & sTab & " - " & sColName)
+	Call ERRShow()
+	Exit Function
+
+'-------------------------
+
+End Function					
+					
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function COLGetListOfNames(ByVal sTab As String, ByVal nCriterias As String, arrNames() As String) As Integer
+
+Dim	nCol, nCols, nCount As Integer,
+	bAdd As Logical
+
+OnError GoTo ErrorOccured
+
+COLGetListOfNames = 0
+
+	nCols	= TableInfo(sTab, TAB_INFO_NCOLS)
+	Redim arrNames(nCols + 1)
+
+	For nCol = 1 To nCols
+		bAdd = FALSE
+
+		Do Case ColumnInfo(sTab, "COL" + nCol, COL_INFO_TYPE)
+			Case COL_TYPE_CHAR
+				If COLIsBitOn(CRITERIA_USE_CHAR, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_DECIMAL
+				If COLIsBitOn(CRITERIA_USE_DECIMAL, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_INTEGER
+				If COLIsBitOn(CRITERIA_USE_INTEGER, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_SMALLINT
+				If COLIsBitOn(CRITERIA_USE_SMALLINT, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_DATE
+				If COLIsBitOn(CRITERIA_USE_DATE, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_LOGICAL
+				If COLIsBitOn(CRITERIA_USE_LOGICAL, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_FLOAT
+				If COLIsBitOn(CRITERIA_USE_FLOAT, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_TIME
+				If COLIsBitOn(CRITERIA_USE_TIME, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case COL_TYPE_DATETIME
+				If COLIsBitOn(CRITERIA_USE_DATETIME, nCriterias) Then
+					bAdd = TRUE
+				End If
+		End Case
+
+		If COLIsBitOn(CRITERIA_ONLY_INDEXED, nCriterias) Then
+			If NOT ColumnInfo(sTab, "COL" + nCol, COL_INFO_INDEXED) Then
+				bAdd = FALSE
+			End If
+		End If
+
+		If bAdd Then
+			nCount = nCount + 1
+			arrNames(nCount) 	= ColumnInfo(sTab, "COL" + nCol, COL_INFO_NAME)
+		End If
+	Next
+
+	If TableInfo(sTab, TAB_INFO_MAPPABLE) Then
+		If COLIsBitOn(CRITERIA_USE_GRAPHICAL, nCriterias) Then
+			nCount = nCount + 1
+			arrNames(nCount) 	= "Obj"
+		End If
+	End If
+
+	Redim arrNames(nCount)
+
+COLGetListOfNames = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "COLGetListOfNames: Table: " & sTab & ", Criterias: " & nCriterias)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	nBit 		: The bit to check for
+'	nBitSum	: The sum of bits to see if nBit is On
+'Return value:
+'	TRUE		: The bit nBit is set
+'	FALSE		: The bit nBit is not set
+'**********************************************************************************************''
+Function COLIsBitOn(ByVal nBit As Integer, ByVal nBitSum As Integer) As Logical
+
+Dim	nCurBit As Integer
+
+OnError GoTo ErrorOccured
+
+COLIsBitOn = FALSE
+
+	nCurBit	= 64
+	'**Finding the maximum bit that can be set in the nBitSum
+	Do While (nCurBit < nBitSum)
+		nCurBit = nCurBit * 2
+	Loop
+
+	Do While (nCurBit >= nBit)
+		If (nBitSum >= nCurBit) Then
+			If nCurBit = nBit Then
+				COLIsBitOn = TRUE
+				Exit Function
+			End If
+
+			nBitSum = nBitSum - nCurBit
+		End If
+		'**One has been tested once, so we are done
+		If nCurBit = 1 Then
+			Exit Function
+		End If
+
+		nCurBit = (nCurBit / 2)
+	Loop
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "COLIsBitOn")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Egge-Jan Pollé, Pitney Bowes Business Insight - 7 December 2011
+'Parameters:
+'	sTab	: Name of the table
+'	sCol	: Name of the column
+'Return value:
+'	COLTypeAsString		: String containing the column type (e.g. "Logical"), including
+'						  the column width (e.g. "Char (49)") - applies to Character or Decimal columns only -
+'						  and the number of decimal places (e.g. "Decimal (12, 3)") - applies to Decimal columns only
+'**********************************************************************************************''
+Function COLTypeAsString (ByVal sTab As String, ByVal sCol As String) As String
+
+Dim iCOL_INFO_TYPE, iCOL_INFO_WIDTH, iCOL_INFO_DECPLACES As Integer
+
+OnError GoTo ErrorOccured
+
+	iCOL_INFO_TYPE = ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+	
+	Do Case iCOL_INFO_TYPE
+		Case 1 'Character
+			iCOL_INFO_WIDTH = ColumnInfo(sTab, sCol, COL_INFO_WIDTH)
+			COLTypeAsString = "Char (" + iCOL_INFO_WIDTH + ")"
+		Case 2 'Fixed-point decimal
+			iCOL_INFO_WIDTH = ColumnInfo(sTab, sCol, COL_INFO_WIDTH)
+			iCOL_INFO_DECPLACES = ColumnInfo(sTab, sCol, COL_INFO_DECPLACES)
+			COLTypeAsString = "Decimal (" + iCOL_INFO_WIDTH + ", " + iCOL_INFO_DECPLACES + ")"
+		Case 3 'Integer (4-byte)
+			COLTypeAsString = "Integer"
+		Case 4 'Small integer (2-byte)
+			COLTypeAsString = "Smallint"
+		Case 5 'Date
+			COLTypeAsString = "Date"
+		Case 6 'Logical (TRUE or FALSE)
+			COLTypeAsString = "Logical"
+		'Case 7 --> special column type Obj; this represents the graphical objects attached to the table.
+		Case 8 'Floating-point decimal
+			COLTypeAsString = "Float"
+		Case 37 'Time
+			COLTypeAsString = "Time"
+		Case 38 'DateTime
+			COLTypeAsString = "DateTime"
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "COLTypeAsString")
+	Call ERRShow()
+
+End Function
+
+'*********************************************************************************************
+
+'**********************************************************************************************''
+'Created by Frank Salet, Pitney Bowes MapInfo
+'Parameters:
+'
+
+'**********************************************************************************************''
+Function COLGetValidName(ByVal sText As String) As String
+
+Dim	sNewText As String
+
+OnError GoTo ErrorOccured
+
+	sNewText = STRINGReplace(sText, "/", "_")
+	sNewText = STRINGReplace(sNewText, "\", "_")
+	COLGetValidName = PathToTableName$(sNewText)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "COLGetValidName: using string: " & sText)
+	Call ERRShow()
+
+End Function
+
+'*********************************************************************************************

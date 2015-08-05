@@ -1,0 +1,68 @@
+'**********************************************************************************************************************************************
+'**	H I S T O R Y     O F     T H I S     M O D U L E
+'**********************************************************************************************************************************************
+'	25-04-2012 	Added:
+'					- Function EXCELOpenFile(...) As Logical
+'					- Function EXCELDDEOpenChannel(...) As Integer
+'					- Sub EXCELDDECloseChannel(...)
+'					- Sub EXCELDDEInsertValue(...)
+'	08-05-2012 	Added:
+'					- Function EXCELIsFileOpen(...) As Logical
+'					- Function EXCELDDEOpenChannelNoWait(...) As Integer
+'	01-06-2012 	Added:
+'					- Sub EXCELDDECommitWork(...)
+'					- Sub EXCELDDEExecuteMacro(...)
+'	22-06-2012 	Added:
+'					- Function EXCELIsRunning() As Logical
+'					- Extra information added to the error handlers
+'					- Function EXCELIsChannelToSheetValid() As Logical
+'	07-06-2013	Added:
+'					- Function EXCELDDEReadValue(...) As String
+'	10-01-2014 	Changed:
+'					- EXCELDDECloseChannel: If it fails because the channel isn't open, the error is ignored
+'	22-09-2014	Added:
+'					- EXCELOpenNoTitles(...) As String
+'**********************************************************************************************************************************************
+
+'**Requires MapInfo Pro 9.5
+
+Declare Function EXCELOpen(	  ByVal sExcelFile As String		'Path and name of the Excel file
+						, ByVal sTabFile As String		'Path and name of the final Tab file
+						) As String					'If succesfully registered the Tab file name will be returned
+Declare Function EXCELOpenNoTitles(  ByVal sExcelFile As String		'Path and name of the Excel file
+							, ByVal sTabFile As String		'Path and name of the final Tab file
+							) As String					'If succesfully registered the Tab file name will be returned
+
+Declare Function EXCELOpenInclSheetName(  ByVal sExcelFile As String		'Path and name of the Excel file
+								, ByVal sTabFile As String		'Path and name of the final Tab file
+								, ByVal sSheetName As String		'Name of the spreadsheet
+								) As String					'If succesfully registered the Tab file name will be returned
+
+Declare Function EXCELOpenFile(	ByVal sFile As String	'The file to open
+							) As Logical			'Return true if the file was opened in Excel
+Declare Function EXCELIsRunning() As Logical				'Returns true if Excel currently is running
+Declare Function EXCELIsFileOpen(	ByVal sFile As String	'The file to test
+							) As Logical			'Returns true if the file is open in Excel
+Declare Function EXCELIsChannelToSheetValid(	  ByVal nChannel As Integer	'The Channel Number to test
+									) As Logical				'Returns true if the Channel to Excel still is usable
+
+Declare Function EXCELDDEOpenChannel(	ByVal sTopic As String	'Can be an Excel file or a worksheet
+								) As Integer			'Return the Channel No
+Declare Function EXCELDDEOpenChannelNoWait(	ByVal sTopic As String	'Can be an Excel file or a worksheet
+									) As Integer			'Return the Channel No
+Declare Sub EXCELDDECloseChannel(	ByVal nChannel As Integer	'The Channel to close
+							)
+Declare Sub EXCELDDEInsertValue(	  ByVal nChannel As Integer	'The Channel to use
+							, ByVal sRow As String		'The Row to insert the value into
+							, ByVal sColumn As String	'The Column to insert the value into
+							, ByVal sValue As String		'The value to insert into the cell
+							)
+Declare Function EXCELDDEReadValue(  ByVal nChannel As Integer	'The Channel to use
+							, ByVal sRow As String		'The Row to read the value from
+							, ByVal sColumn As String	'The Column to read the value from
+							) As String				'returns the value read from the cell
+Declare Sub EXCELDDECommitWork(	  ByVal sFile As String		'The file to commit changes in
+							)
+Declare Sub EXCELDDEExecuteMacro(	  ByVal sFile As String		'The file to run the macro within
+							, ByVal sMacro As String		'The name of the macro to run
+							)

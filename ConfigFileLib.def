@@ -1,0 +1,29 @@
+'[sectionname]
+'keyname=value
+
+Declare Function CONFIGReadKey
+	(	  ByVal sFile As String		'File to read the value from
+		, ByVal sSection As String	'Section (without []) to read the value from
+		, ByVal sKey As String		'Key to read value from
+		) As String				'Returns the value read from the key specified, or "" if key wasn't found
+Declare Function CONFIGReadKeyInt
+	(	  ByVal sFile As String		'File to read configuration from
+		, ByVal sSection As String	'Section (without []) to read configuration from
+		, ByVal sKey As String		'Key to read value from
+		) As Integer			'Returns the value read from the key specified, or 0 if key wasn't found
+
+Declare Sub CONFIGWriteKey
+	(	  ByVal sFile As String		'File to write configuration to
+		, ByVal sSection As String	'Section (without []) to write the value to
+		, ByVal sKey As String		'Key to write the value to
+		, ByVal sValue As String	'value to write to the key above
+		)
+Declare Sub CONFIGDeleteKey
+	(	  ByVal sFile As String		'File to delete the key from
+		, ByVal sSection As String	'Section (without []) to delete the key from
+		, ByVal sKey As String		'Key to delete
+		)
+Declare Sub CONFIGDeleteSection
+	(	  ByVal sFile As String		'File to delete the section from
+		, ByVal sSection As String	'Section (without []) to delete
+		)

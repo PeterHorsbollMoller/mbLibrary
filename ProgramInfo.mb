@@ -1,0 +1,805 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:	ProgramInfo.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "ARRAYLib.def"
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "FILELib.def"
+Include "ProgramInfo.def"
+Include "RESSTRNGLib.def"
+
+Define	URL_PBBI_WEBSITE			"www.mapinfo.com"
+Define	CTRL_BTN_OPEN_HELP_FILE		100
+Define	CTRL_TXT_LANGUAGES			200
+Define	CTRL_LST_LANGUAGES			210
+
+
+Declare Sub PRGIAbout_OnLoad
+Declare Sub PRGIGoToPBBIWebpage
+
+Dim	msName, msVersion, msCopyrightYear, msCopyrightCompany, msHelpFile, msDevelopedBy, msDevelopedFor, msWebPageName, msWebPageURL As String,
+	msDescription, msApplicationImageUri As String,
+	marrLanguages(), msLanguage As String,
+	mnLanguage, mnNewLanguage As Integer
+'**********************************************************************************************''
+' Property	Application Name
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sName: Name of the Application
+'**********************************************************************************************''
+Sub PRGISetApplicationName(ByVal sName As String)
+
+OnError GoTo ErrorOccured
+
+	msName = sName
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationName")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationName() As String
+
+OnError GoTo ErrorOccured
+
+	If msName = "" Then
+		msName = "Unknown"
+		If SystemInfo(SYS_INFO_MIVERSION) >= 1000 Then
+			msName = ApplicationName$()
+		End If
+	End If
+	PRGIGetApplicationName = msName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationName")
+
+End Function
+
+'**********************************************************************************************''
+' Property Application Version
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sVersion: Version of the Application
+'**********************************************************************************************''
+Sub PRGISetApplicationVersion(ByVal sVersion As String)
+
+OnError GoTo ErrorOccured
+
+	msVersion = sVersion
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationVersion")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationVersion() As String
+
+OnError GoTo ErrorOccured
+
+	PRGIGetApplicationVersion = msVersion
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationVersion")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetApplicationCopyrightYear(ByVal sYear As String)
+
+OnError GoTo ErrorOccured
+
+	If sYear = "" Then
+		sYear = Str$(Year(CurDate()))
+	End If
+	msCopyrightYear = sYear
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationCopyrightYear")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationCopyrightYear() As String
+
+OnError GoTo ErrorOccured
+
+	PRGIGetApplicationCopyrightYear = msCopyrightYear
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationCopyrightYear")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetCopyrightCompany(ByVal sName As String)
+
+OnError GoTo ErrorOccured
+
+	msCopyrightCompany = sName
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetCopyrightCompany")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetCopyrightCompany() As String
+
+OnError GoTo ErrorOccured
+
+	If msCopyrightCompany = "" Then
+		msCopyrightCompany = "Pitney Bowes Software"
+	End If
+	PRGIGetCopyrightCompany = msCopyrightCompany
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetCopyrightCompany")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetDescription(ByVal sDescription As String)
+
+OnError GoTo ErrorOccured
+
+	msDescription = sDescription
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetDescription")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetDescription() As String
+
+OnError GoTo ErrorOccured
+
+	If msDescription = "" Then
+		PRGIGetDescription = PRGIGetApplicationName() & " " & PRGIGetApplicationVersion & " Developed by " & PRGIGetApplicationDevelopedBy()
+	Else
+		PRGIGetDescription = msDescription
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetDescription")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetApplicationDevelopedBy(ByVal sName As String)
+
+OnError GoTo ErrorOccured
+
+	msDevelopedBy = sName
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationDevelopedBy")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationDevelopedBy() As String
+
+OnError GoTo ErrorOccured
+
+	If msDevelopedBy = "" Then
+		msDevelopedBy = "Pitney Bowes Software"
+	End If
+	PRGIGetApplicationDevelopedBy = msDevelopedBy
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationDevelopedBy")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetApplicationDevelopedFor(ByVal sName As String)
+
+OnError GoTo ErrorOccured
+
+	msDevelopedFor = sName
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationDevelopedFor")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationDevelopedFor() As String
+
+OnError GoTo ErrorOccured
+
+	PRGIGetApplicationDevelopedFor = msDevelopedFor
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationDevelopedFor")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetWebPageName(ByVal sName As String)
+
+OnError GoTo ErrorOccured
+
+	msWebPageName = sName
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetWebPageName")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetWebPageName() As String
+
+OnError GoTo ErrorOccured
+
+	If msWebPageName = "" Then
+		msWebPageName = "mapinfo.com"
+	End If
+	PRGIGetWebPageName = msWebPageName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetWebPageName")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sURL: web page URL
+'**********************************************************************************************''
+Sub PRGISetWebPageURL(ByVal sURL As String)
+
+OnError GoTo ErrorOccured
+
+	msWebPageURL = sURL
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetWebPageURL")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetWebPageURL() As String
+
+OnError GoTo ErrorOccured
+
+	If msWebPageURL = "" Then
+		msWebPageURL = URL_PBBI_WEBSITE
+	End If
+	PRGIGetWebPageURL = msWebPageURL
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetWebPageURL")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sURL: web page URL
+'**********************************************************************************************''
+Sub PRGISetApplicationImageUri(ByVal sImageUri As String)
+
+OnError GoTo ErrorOccured
+
+	msApplicationImageUri = sImageUri
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationImageUri")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationImageUri() As String
+
+OnError GoTo ErrorOccured
+
+	PRGIGetApplicationImageUri = msApplicationImageUri
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationImageUri")
+
+End Function
+
+'**********************************************************************************************''
+' Property Application Version
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sVersion: Version of the Application
+'**********************************************************************************************''
+Sub PRGISetApplicationHelpFile(ByVal sHelpFile As String)
+
+OnError GoTo ErrorOccured
+
+	msHelpFile = sHelpFile
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationHelpFile")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationHelpFile() As String
+
+OnError GoTo ErrorOccured
+
+	PRGIGetApplicationHelpFile = msHelpFile
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationHelpFile")
+
+End Function
+
+'**********************************************************************************************''
+' Property	Application Languages
+'**********************************************************************************************''
+'Created by Frank Salet, Pitney Bowes MapInfo
+'Parameters:
+'	sName: Languages of the Application
+'**********************************************************************************************''
+Sub PRGISetApplicationLanguages(sLanguages() As String)
+
+Dim i As Integer
+
+OnError GoTo ErrorOccured
+
+	Redim marrLanguages (0)
+	Redim marrLanguages (UBound(sLanguages))
+	For i = 1 To UBound(sLanguages)
+'		Call DEBUGPrint(sLanguages(i))
+		marrLanguages(i) = sLanguages(i)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationLanguages")
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Frank Salet, Pitney Bowes MapInfo
+'Parameters:
+'	iLanguage: Number of current language in sLanguages() array
+'**********************************************************************************************''
+Sub PRGISetApplicationLanguage(iLanguage As Integer)
+
+Dim i As Integer
+
+OnError GoTo ErrorOccured
+
+	mnLanguage = iLanguage
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetApplicationLanguage")
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetApplicationLanguage() As Integer
+
+OnError GoTo ErrorOccured
+
+	PRGIGetApplicationLanguage = RESSTRNGGetStringFileItemByLanguage(msLanguage)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationLanguage")
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function PRGIGetApplicationLanguageName() As String
+
+OnError GoTo ErrorOccured
+
+PRGIGetApplicationLanguageName = ""
+
+	PRGIGetApplicationLanguageName	= msLanguage
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationLanguageName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub PRGILoadLanguageStrings(ByVal sLanguage As String)
+
+OnError GoTo ErrorOccured
+
+	msLanguage	= sLanguage
+	If NOT RESSTRNGLoadStringsByLanguage(sLanguage) Then
+		Note "PRGILoadLanguageStrings: No String Files returned"
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGILoadLanguageStrings: Default Language: " & sLanguage)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Sub PRGIAboutbox
+
+Dim	sTitle As String,
+	nNumSpace, nBtnWidth As Integer,
+	bDebugMode As Logical
+
+OnError GoTo ErrorOccured
+
+	sTitle	= PRGIGetApplicationName() + " Version " + PRGIGetApplicationVersion()
+	nNumSpace	= Abs((70 - Len(sTitle)) / 2)
+	sTitle	= Space$(nNumSpace) + sTitle
+
+	If PRGIGetApplicationHelpFile() = "" Then
+		nBtnWidth = 55
+	Else
+		nBtnWidth = 45
+	End If
+
+	Dialog	Width 205
+		Title "About " & PRGIGetApplicationName()
+		Calling PRGIAbout_OnLoad
+
+		Control GroupBox	Position 10,10	Width 185	Height 30
+		Control StaticText	Position 12,22	Width 165
+			Title sTitle
+
+		Control StaticText	Position 20,45	Width 165
+			Title "Copyright" & " " & Chr$(169) & " " & PRGIGetApplicationCopyrightYear()
+
+		Control StaticText	Position 20,60	Width 165
+			Title PRGIGetCopyrightCompany()	'"Pitney Bowes Software"
+		Control StaticText	Position 20,70	Width 165
+			Title "All rights reserved"
+
+		Control StaticText	Position 20,85	Width 165
+			Title "Made by " & PRGIGetApplicationDevelopedBy()
+		Control StaticText	Position 30,95	Width 165
+			Title PRGIGetApplicationDevelopedFor()
+
+		Control GroupBox	Position 10,105	Width 185	Height 30			ID CTRL_TXT_LANGUAGES
+			Title "Application language:"
+		Control PopUpMenu Position 20,117 		Width 160					ID CTRL_LST_LANGUAGES
+			Into mnLanguage
+
+		Control Button		Position 10,150	Width 70
+			Title PRGIGetWebPageName()	'"pbinsight.com"
+			Calling PRGIGoToPBBIWebpage
+
+		Control OKButton		Position 85,150				Width nBtnWidth
+		Control CancelButton	Position (85 + nBtnWidth),150		Width nBtnWidth
+
+		Control Button		Position 180,150				Width 15		ID CTRL_BTN_OPEN_HELP_FILE
+			Title "?"
+			Calling PRGILaunchHelpFile
+
+		Control Checkbox		Position 20,170
+			Title "Debug mode"
+			Value DEBUGIsEnabled()
+			Into bDebugMode
+
+	If not CommandInfo(CMD_INFO_DLG_OK) Then
+		Exit Sub
+	End If
+
+	If Ubound(marrLanguages) > 0 Then
+		msLanguage = marrLanguages(mnLanguage)
+	End If
+
+	Call DEBUGEnable(bDebugMode)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIAboutbox")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub PRGIAbout_OnLoad
+
+OnError GoTo ErrorOccured
+
+	If PRGIGetApplicationHelpFile() = "" Then
+		Alter Control CTRL_BTN_OPEN_HELP_FILE Hide
+	End If
+
+	If UBound(marrLanguages()) = 0 Then
+		If RESSTRNGGetLanguages(marrLanguages()) = 0 Then
+			Alter Control CTRL_TXT_LANGUAGES Hide
+			Alter Control CTRL_LST_LANGUAGES Hide
+		Else
+			Alter Control CTRL_LST_LANGUAGES Title From Variable marrLanguages
+			Alter Control CTRL_LST_LANGUAGES Value Maximum(1, PRGIGetApplicationLanguage())
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIAbout_OnLoad")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub PRGIGoToPBBIWebpage
+
+OnError GoTo ErrorOccured
+
+	Call FILELaunch(PRGIGetWebPageURL())
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGoToPBBIWebpage")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub PRGILaunchHelpFile
+
+OnError GoTo ErrorOccured
+
+	If PRGIGetApplicationHelpFile() = "" Then
+		Call PRGIAboutbox
+	Else
+		If NOT FileExists(PRGIGetApplicationHelpFile()) Then
+			Note "Help file does not exist: " & PRGIGetApplicationHelpFile()
+			Exit Sub
+		End If
+	End If
+
+	Call FILELaunch(PRGIGetApplicationHelpFile())
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGILaunchHelpFile")
+	Call ERRShow()
+
+End Sub
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub AddIn_About
+
+OnError GoTo ErrorOccured
+
+	Call PRGIAboutbox
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "AddIn_About")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub AddIn_Help
+
+OnError GoTo ErrorOccured
+
+	Call PRGILaunchHelpFile
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "AddIn_Help")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function AddIn_Name() As String
+
+OnError GoTo ErrorOccured
+
+	AddIn_Name = PRGIGetApplicationName()
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "AddIn_Name")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function AddIn_Description() As String
+
+OnError GoTo ErrorOccured
+
+	AddIn_Description = PRGIGetDescription()
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "AddIn_Description")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function AddIn_Version() As String
+
+OnError GoTo ErrorOccured
+
+	AddIn_Version = PRGIGetApplicationVersion()
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "AddIn_Version")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function AddIn_ImageUri() As String
+
+OnError GoTo ErrorOccured
+
+	AddIn_ImageUri = PRGIGetApplicationImageUri()
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "AddIn_ImageUri")
+	Call ERRShow()
+
+End Function
+

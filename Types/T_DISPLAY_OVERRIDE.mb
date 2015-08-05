@@ -1,0 +1,689 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\MapBasic.def"
+Include "..\Icons.def"
+Include "..\Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\STRINGLib.def"
+Include "..\STYLELib.def"
+
+Include "T_DISPLAY_OVERRIDE.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoCopy(tdoFrom As T_DISPLAY_OVERRIDE, tdoTo As T_DISPLAY_OVERRIDE)
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	tdoTo.fMinZoom			= tdoFrom.fMinZoom
+	tdoTo.fMaxZoom			= tdoFrom.fMaxZoom
+	tdoTo.sZoomUnits		= tdoFrom.sZoomUnits
+	tdoTo.bShowLineDirection	= tdoFrom.bShowLineDirection
+	tdoTo.bShowNodes		= tdoFrom.bShowNodes
+	tdoTo.bShowCentroids	= tdoFrom.bShowCentroids
+	tdoTo.nAlpha			= tdoFrom.nAlpha
+
+	For i = 1 To Ubound(tdoTo.penOverrideLine)
+		tdoTo.penOverrideLine(i)	= tdoFrom.penOverrideLine(i)
+	Next
+
+	For i = 1 To Ubound(tdoTo.penOverrideBorder)
+		tdoTo.penOverrideBorder(i)	= tdoFrom.penOverrideBorder(i)
+	Next
+
+	For i = 1 To Ubound(tdoTo.brsOverride)
+		tdoTo.brsOverride(i)		= tdoFrom.brsOverride(i)
+	Next
+
+	For i = 1 To Ubound(tdoTo.symOverride)
+		tdoTo.symOverride(i)		= tdoFrom.symOverride(i)
+	Next
+
+	For i = 1 To Ubound(tdoTo.fntOverride)
+		tdoTo.fntOverride(i)		= tdoFrom.fntOverride(i)
+	Next
+
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoReset(	tdo As T_DISPLAY_OVERRIDE	'T_DISPLAY_OVERRIDE to reset
+			)
+
+OnError GoTo ErrorOccured
+
+	tdo.fMinZoom			= 0
+	tdo.fMaxZoom			= 30000
+	tdo.sZoomUnits			= "m"
+	tdo.bShowLineDirection	= FALSE
+	tdo.bShowNodes			= FALSE
+	tdo.bShowCentroids		= FALSE
+	tdo.nAlpha			= 255
+
+	Redim tdo.penOverrideLine(1)
+	tdo.penOverrideLine(1)	= CurrentLinePen()
+	Redim tdo.penOverrideBorder(1)
+	tdo.penOverrideBorder(1)	= CurrentPen()
+	Redim tdo.brsOverride(1)
+	tdo.brsOverride(1)		= CurrentBrush()
+	Redim tdo.fntOverride(1)
+	tdo.fntOverride(1)		= CurrentFont()
+	Redim tdo.symOverride(1)
+	tdo.symOverride(1)		= CurrentSymbol()
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoReset")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tdoToString(tdo As T_DISPLAY_OVERRIDE) As String
+
+Dim	sText, sStyle As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+	sText	= 	Str$(tdo.fMinZoom)
+				& ";" & Str$(tdo.fMaxZoom)
+				& ";" & sZoomUnits
+				& ";" & tdo.bShowLineDirection
+				& ";" & tdo.bShowNodes
+				& ";" & tdo.bShowCentroids
+				& ";" & tdo.nAlpha
+
+	For i = 1 To Ubound(tdo.penOverrideLine)
+		If i = 1 Then
+			sStyle	= STLPen2Text(tdo.penOverrideLine(i))
+		Else
+			sStyle	= sStyle & "#" & STLPen2Text(tdo.penOverrideLine(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tdo.penOverrideBorder)
+		If i = 1 Then
+			sStyle	= STLPen2Text(tdo.penOverrideBorder(i))
+		Else
+			sStyle	= sStyle & "#" & STLPen2Text(tdo.penOverrideBorder(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tdo.brsOverride)
+		If i = 1 Then
+			sStyle	= STLBrush2Text(tdo.brsOverride(i))
+		Else
+			sStyle	= sStyle & "#" & STLBrush2Text(tdo.brsOverride(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tdo.fntOverride)
+		If i = 1 Then
+			sStyle	= STLFont2Text(tdo.fntOverride(i))
+		Else
+			sStyle	= sStyle & "#" & STLFont2Text(tdo.fntOverride(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tdo.symOverride)
+		If i = 1 Then
+			sStyle	= STLSymbol2Text(tdo.symOverride(i))
+		Else
+			sStyle	= sStyle & "#" & STLSymbol2Text(tdo.symOverride(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	tdoToString = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tdoFromString(tdo As T_DISPLAY_OVERRIDE, ByVal sLayerInfo As String) As Logical
+
+Dim	arrItems(), arrStyles() As String,
+	i, nItems, nNumStyles, nStyle As Integer
+
+OnError GoTo ErrorOccured
+
+tdoFromString	= FALSE
+
+	nItems = STRINGSplit(sLayerInfo, ";", arrItems())
+
+	Call tdoReset(tdo)
+	i	= 0
+	If nItem = 11 Then
+		i = i + 1
+		tdo.fMinZoom			= Val(arrItems(i))
+		i = i + 1
+		tdo.fMaxZoom			= Val(arrItems(i))
+		i = i + 1
+		tdo.sZoomUnits			= arrItems(i)
+		i = i + 1
+		tdo.bShowLineDirection	= (arrItems(i) = "T")
+		i = i + 1
+		tdo.bShowNodes			= (arrItems(i) = "T")
+		i = i + 1
+		tdo.bShowCentroids		= (arrItems(i) = "T")
+
+		i = i + 1
+		nNumStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tdo.penOverrideLine(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo.penOverrideLine(nStyle) = STLText2Pen(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nNumStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tdo.penOverrideBorder(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo.penOverrideBorder(nStyle) = STLText2Pen(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nNumStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tdo.brsOverride(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo.brsOverride(nStyle) = STLText2Brush(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nNumStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tdo.fntOverride(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo.fntOverride(nStyle) = STLText2Font(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nNumStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tdo.symOverride(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo.symOverride(nStyle) = STLText2Symbol(arrStyles(nStyle))
+		Next
+
+		tdoFromString	= TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tdoGetDescription(tdo As T_DISPLAY_OVERRIDE) As String
+
+OnError GoTo ErrorOccured
+
+	tdoGetDescription = "Zoom: " & FormatNumber$(tdo.fMinZoom) & " - " & FormatNumber$(tdo.fMaxZoom) & " " & tdo.sZoomUnits
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoGetInfo(ByVal nMID As Integer, ByVal nLyrID As Integer, tdo() As T_DISPLAY_OVERRIDE)
+
+Dim	i, nStyle, nNumStyles, nOverride, nNumOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+	Set Distance Units MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+
+	nNumOverrides	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_STYLE_COUNT)
+	Redim tdo(nNumOverrides)
+
+	For nOverride = 1 To nNumOverrides
+		tdo(nOverride).fMinZoom			= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_ZOOM_MIN)
+		tdo(nOverride).fMaxZoom			= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_ZOOM_MAX)
+		tdo(nOverride).sZoomUnits		= MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+
+		tdo(nOverride).bShowLineDirection	= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_ARROWS)
+		tdo(nOverride).bShowNodes		= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_NODES)
+		tdo(nOverride).bShowCentroids		= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_CENTROIDS)
+		tdo(nOverride).nAlpha			= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_ALPHA)
+
+		nNumStyles	= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_LINE_COUNT)
+		Redim tdo(nOverride).penOverrideLine(nNumStyles)
+		Call DEBUGPrint("Redim tdo(" & nOverride & ").penOverrideLine(" & nNumStyles & ")")
+		For nStyle = 1 To nNumStyles
+			Call DEBUGPrint("Style" & nStyle)
+			tdo(nOverride).penOverrideLine(nStyle)	= LayerStyleInfo(nMID, nLyrID, nOverride, nStyle, STYLE_OVR_INFO_LINE)
+		Next
+
+		nNumStyles	= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_PEN_COUNT)
+		Redim tdo(nOverride).penOverrideBorder(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo(nOverride).penOverrideBorder(nStyle)	= LayerStyleInfo(nMID, nLyrID, nOverride, nStyle, STYLE_OVR_INFO_PEN)
+		Next
+
+		nNumStyles	= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_BRUSH_COUNT)
+		Redim tdo(nOverride).brsOverride(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo(nOverride).brsOverride(nStyle)	= LayerStyleInfo(nMID, nLyrID, nOverride, nStyle, LAYER_INFO_OVR_BRUSH)
+		Next
+
+		nNumStyles	= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_SYMBOL_COUNT)
+		Redim tdo(nOverride).symOverride(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo(nOverride).symOverride(nStyle)	= LayerStyleInfo(nMID, nLyrID, nOverride, nStyle, LAYER_INFO_OVR_SYMBOL)
+		Next
+
+		nNumStyles	= StyleOverrideInfo(nMID, nLyrID, nOverride, STYLE_OVR_INFO_FONT_COUNT)
+		Redim tdo(nOverride).fntOverride(nNumStyles)
+		For nStyle = 1 To nNumStyles
+			tdo(nOverride).fntOverride(nStyle)	= LayerStyleInfo(nMID, nLyrID, nOverride, nStyle, STYLE_OVR_INFO_FONT)
+		Next
+	Next	'nOverride
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoGetInfo")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tdoGetSetMapStatement(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+							, ByVal nLyrID As Integer		'LayerID to apply the settings to
+							, tdo() As T_DISPLAY_OVERRIDE		'The T_DISPLAY_OVERRIDE to store information about the layer
+							) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Dim	sCmd, sLayer As String,
+	bNormalLayer As Logical,
+	i, nStyle, nOverride As Integer
+
+OnError GoTo ErrorOccured
+
+tdoGetSetMapStatement = ""
+
+	sLayer	= LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			bNormalLayer = TRUE
+		Case LAYER_INFO_TYPE_COSMETIC
+			bNormalLayer = FALSE
+		Case LAYER_INFO_TYPE_IMAGE
+			bNormalLayer = FALSE
+		Case LAYER_INFO_TYPE_THEMATIC
+			bNormalLayer = FALSE
+		Case LAYER_INFO_TYPE_GRID
+			bNormalLayer = FALSE
+		Case Else
+			bNormalLayer = FALSE
+	End Case
+
+	If bNormalLayer Then
+		For nOverride = 1 To Ubound(tdo)
+			If sCmd = "" Then
+				sCmd	= " Style Override Add"
+			Else
+				sCmd = sCmd & lf & " Style Override Add"
+			End If
+
+			sCmd = sCmd & " Zoom (" & tdo(nOverride).fMinZoom & ", " & tdo(nOverride).fMaxZoom & ") Units " & eye & tdo(nOverride).sZoomUnits & eye
+					& " Arrows " & STRINGLogicalToText(tdo(nOverride).bShowLineDirection, "On", "Off")
+					& " Centroids " & STRINGLogicalToText(tdo(nOverride).bShowCentroids, "On", "Off")
+					& " Nodes " & STRINGLogicalToText(tdo(nOverride).bShowNodes, "On", "Off")
+
+			For i = 1 To Ubound(tdo(nOverride).penOverrideLine)
+				If i = 1 Then
+					sCmd = sCmd & lf & " Line (" & StyleAttr(tdo(nOverride).penOverrideLine(i), PEN_WIDTH)
+									& ", " & StyleAttr(tdo(nOverride).penOverrideLine(i), PEN_PATTERN)
+									& ", " & StyleAttr(tdo(nOverride).penOverrideLine(i), PEN_COLOR) & ")"
+				Else
+					sCmd = sCmd & ", Line (" & StyleAttr(tdo(nOverride).penOverrideLine(i), PEN_WIDTH)
+									& ", " & StyleAttr(tdo(nOverride).penOverrideLine(i), PEN_PATTERN)
+									& ", " & StyleAttr(tdo(nOverride).penOverrideLine(i), PEN_COLOR) & ")"
+				End If
+			Next
+
+			For nStyle = 1 To Ubound(tdo(nOverride).penOverrideBorder)
+				If nStyle = 1 Then
+					sCmd = sCmd & lf & " " & tdo(nOverride).penOverrideBorder(nStyle)
+				Else
+					sCmd = sCmd & ", " & tdo(nOverride).penOverrideBorder(nStyle)
+				End If
+			Next
+
+			For nStyle = 1 To Ubound(tdo(nOverride).brsOverride)
+				If nStyle = 1 Then
+					sCmd = sCmd & lf & " " & tdo(nOverride).brsOverride(nStyle)
+				Else
+					sCmd = sCmd & ", " & tdo(nOverride).brsOverride(nStyle)
+				End If
+			Next
+
+			For nStyle = 1 To Ubound(tdo(nOverride).symOverride)
+				If nStyle = 1 Then
+					sCmd = sCmd & lf & " Global " & tdo(nOverride).symOverride(nStyle)
+				Else
+					sCmd = sCmd & ", " & tdo(nOverride).symOverride(nStyle)
+				End If
+			Next
+
+			For nStyle = 1 To Ubound(tdo(nOverride).fntOverride)
+				If nStyle = 1 Then
+					sCmd = sCmd & lf & " Global " & tdo(nOverride).fntOverride(nStyle)
+				Else
+					sCmd = sCmd & ", " & tdo(nOverride).fntOverride(nStyle)
+				End If
+			Next
+		Next	'nOverride
+	End If
+
+	tdoGetSetMapStatement = sCmd
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoGetSetMapStatement")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoWriteToMetadata(	  ByVal sTab As String			'Name of table to write the tdo's to
+					, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tdo's to
+					, tdo() As T_DISPLAY_OVERRIDE		'The tdo's to write to the metadata
+					)
+
+Dim	nOverride, nNumOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumOverrides	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES"))
+	If nNumOverrides > Ubound(tdo) Then
+		For nOverride = Ubound(tdo) To nNumOverrides
+			'**removing potential extra label overrides
+			Call tdoRemoveSingleFromMetadata(sTab, nLayerInfoItem, nOverride)
+		Next
+	End If
+
+	nNumOverrides	= Ubound(tdo)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES" To Str$(nNumOverrides)
+
+	For nOverride = 1 To nNumOverrides
+		'**Writing Label overrides to metadata
+		Call tdoWriteSingleToMetadata(sTab, nLayerInfoItem, nOverride, tdo(nOverride))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoWriteToMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoWriteSingleToMetadata(	  ByVal sTab As String			'Name of table to write the tdo to
+						, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tdo to
+						, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to write the tdo to
+						, tdo As T_DISPLAY_OVERRIDE		'The tdo to write to the metadata
+						)
+
+Dim	nStyle, nNumStyles As Integer
+
+OnError GoTo ErrorOccured
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ZOOM_MIN" To Str$(tdo.fMinZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ZOOM_MAX" To Str$(tdo.fMaxZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ZOOM_UNITS" To tdo.sZoomUnits
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SHOW_LINEDIRECTION" To Str$(tdo.bShowLineDirection)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SHOW_NODES" To Str$(tdo.bShowNodes)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SHOW_CENTROIDS" To Str$(tdo.bShowCentroids)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ALPHA" To Str$(tdo.nAlpha)
+
+	nNumStyles = Ubound(tdo.penOverrideLine)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\LINE\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\LINE\" & nStyle To STLPen2Text(tdo.penOverrideLine(nStyle))
+	Next
+
+	nNumStyles = Ubound(tdo.penOverrideBorder)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\PEN\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\PEN\" & nStyle To STLPen2Text(tdo.penOverrideBorder(nStyle))
+	Next
+
+	nNumStyles = Ubound(tdo.brsOverride)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\BRUSH\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\BRUSH\" & nStyle To STLBrush2Text(tdo.brsOverride(nStyle))
+	Next
+
+	nNumStyles = Ubound(tdo.symOverride)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SYMBOL\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SYMBOL\" & nStyle To STLSymbol2Text(tdo.symOverride(nStyle))
+	Next
+
+	nNumStyles = Ubound(tdo.fntOverride)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\FONT\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\FONT\" & nStyle To STLFont2Text(tdo.fntOverride(nStyle))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoWriteSingleToMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoReadFromMetadata(	  ByVal sTab As String			'Name of table to read the tdo's from
+					, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tdo's from
+					, tdo() As T_DISPLAY_OVERRIDE		'The tdo's to read the metadata into
+					)
+
+Dim	nOverride, nNumOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumOverrides	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES"))
+	Redim tdo(nNumOverrides)
+
+	For nOverride = 1 To nNumOverrides
+		Call tdoReadSingleFromMetadata(sTab, nLayerInfoItem, nOverride, tdo(nOverride))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoReadFromMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoReadSingleFromMetadata(	  ByVal sTab As String			'Name of table to read the tdo from
+							, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tdo from
+							, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to read the tdo from
+							, tdo As T_DISPLAY_OVERRIDE		'The tdo to read the metadata into
+							)
+
+Dim	nStyle, nNumStyles As Integer
+
+OnError GoTo ErrorOccured
+
+	tdo.fMinZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ZOOM_MIN"))
+	tdo.fMaxZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ZOOM_MAX"))
+	tdo.sZoomUnits			= GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ZOOM_UNITS")
+
+	tdo.bShowLineDirection	= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SHOW_LINEDIRECTION") = "T")
+	tdo.bShowNodes			= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SHOW_NODES") = "T")
+	tdo.bShowCentroids		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SHOW_CENTROIDS") = "T")
+
+	tdo.nAlpha			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\ALPHA"))
+
+	nNumStyles	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\LINE"))
+	Redim tdo.penOverrideLine(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tdo.penOverrideLine(nStyle) = STLText2Pen(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\LINE\" & nStyle))
+	Next
+
+	nNumStyles	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\PEN"))
+	Redim tdo.penOverrideBorder(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tdo.penOverrideBorder(nStyle) = STLText2Pen(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\PEN\" & nStyle))
+	Next
+
+	nNumStyles	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\BRUSH"))
+	Redim tdo.brsOverride(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tdo.brsOverride(nStyle) = STLText2Brush(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\BRUSH\" & nStyle))
+	Next
+
+	nNumStyles	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SYMBOL"))
+	Redim tdo.symOverride(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tdo.symOverride(nStyle) = STLText2Symbol(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\SYMBOL\" & nStyle))
+	Next
+
+	nNumStyles	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\FONT"))
+	Redim tdo.fntOverride(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tdo.fntOverride(nStyle) = STLText2Font(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem & "\FONT\" & nStyle))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoReadSingleFromMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tdoRemoveSingleFromMetadata(	  ByVal sTab As String			'Name of table to remove the tdo from
+							, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to remove the tdo from
+							, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to remove
+							)
+
+OnError GoTo ErrorOccured
+
+	Metadata Table sTab
+		DropKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY_OVERRIDES\" & nOverrideItem
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tdoRemoveSingleFromMetadata")
+	Call ERRShow()
+
+End Sub

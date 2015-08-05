@@ -1,0 +1,27 @@
+'Requires MapInfo Pro 10.0
+
+Type T_GROUP_LAYER_INFO
+	nID				As Integer
+	nMID				As Integer
+	sName				As String
+	nParentID			As Integer
+	nNumLayers			As Integer
+	nNumGroupLayers		As Integer
+'	nNumLayersTop		As Integer
+'	nNumGroupLayersTop	As Integer
+	nNumAllLayersTop		As Integer
+	nLayerListID		As Integer
+End Type
+
+Declare Sub tgliCopy(	  tgliFrom As T_GROUP_LAYER_INFO	'Source T_GROUP_LAYER_INFO
+				, tgliTo As T_GROUP_LAYER_INFO	'Target T_GROUP_LAYER_INFO
+				)
+
+Declare Function tgliToString(	  tgli As T_GROUP_LAYER_INFO		'Convert a T_GROUP_LAYER_INFO to a string
+					) As String						'Returns a string describing the T_GROUP_LAYER_INFO
+Declare Function tgliGetDescription(	  tgli As T_GROUP_LAYER_INFO	'The T_GROUP_LAYER_INFO to get a description for
+					) As String						'Returns a short string representing the T_GROUP_LAYER_INFO
+
+Declare Sub tgliGetInfo(	  ByVal nMID As Integer			'The Map Window with the layer
+					, ByVal nGroupLayerID As Integer	'The group layer to query
+					, tgli As T_GROUP_LAYER_INFO)		'The T_GROUP_LAYER_INFO to store information about the group layer

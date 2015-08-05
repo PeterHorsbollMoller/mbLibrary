@@ -1,0 +1,30 @@
+'requires MapInfo Pro 10.5
+
+Type T_TOOLBAR
+	nWID		As Integer
+	sName 	As String
+	nState 	As Integer
+	pPosition 	As T_MI_POINT
+	nWidth 	As Integer
+	bHidden 	As Logical
+End Type
+
+Declare Sub ttbCopy(	  ttbFrom As T_TOOLBAR	'T_TOOLBAR to copy from
+				, ttbTo As T_TOOLBAR	'T_TOOLBAR to copy to
+				)
+Declare Function ttbAreIdentical(	  tmip1 As T_TOOLBAR	'First T_TOOLBAR to compare
+						, tmip2 As T_TOOLBAR	'Second T_TOOLBAR to compare
+						) As Logical		'Returns true if all elements are identical
+
+Declare Sub ttbFromString(	  ttbA As T_TOOLBAR		'T_TOOLBAR to setup using the settings in the string
+					, ByVal sToolbar As String	'string containing the settings for the toolbar
+					)
+Declare Function ttbToString(	  ttbA As T_TOOLBAR		'T_TOOLBAR which settings to convert to a string
+					) As String				'Returns a string representing the toolbar settings, such as possition etc
+
+Declare Sub ttbSetOnToolbar(	  ByVal sToolbarName As String	'Name of toolbar to apply settings on
+					, ttbA As T_TOOLBAR			'Toolbar settings to apply to toolbar
+					)
+Declare Sub ttbGetFromToolbar(	  ByVal sToolbarName As String	'Name of toolbar to get settings from
+						, ttbA As T_TOOLBAR			'T_TOOLBAR to hold the settings read from toolbar
+						)

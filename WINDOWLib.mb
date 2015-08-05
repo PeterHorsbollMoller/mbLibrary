@@ -1,0 +1,87 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Software
+'** 	Program:
+'** 	Modul:	WINDOWLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+Include "WINDOWLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function WINExists(ByVal nWID As Integer) As Logical
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+WINExists = FALSE
+
+	If nWID = 0 Then
+		Exit Function
+	End If
+
+	For i = 1 To NumWindows()
+		If WindowID(i) = nWID Then
+			WINExists = TRUE
+			Exit Function
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "WINExists")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function WINGetIDFromTitle(ByVal sTitle As String) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+WINGetIDFromTitle = 0
+
+	If sTitle = "" Then
+		Exit Function
+	End If
+
+	For i = 1 To NumWindows()
+		If WindowInfo(WindowID(i), WIN_INFO_NAME) = sTitle Then
+			WINGetIDFromTitle = WindowID(i)
+			Exit Function
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "WINGetIDFromTitle")
+	Call ERRShow()
+
+End Function

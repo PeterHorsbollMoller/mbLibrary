@@ -1,0 +1,33 @@
+'*******************************************************************************
+'	HISTORY of this module
+'*******************************************************************************
+'21-11-2011 13:14:05	Peter Møller added these functions:
+'					- Function SYSGetUserName() As String
+'					- Function SYSGetComputerName() As String
+'06-06-2012 17:13:00	Frank Salet added these method:
+'					- Method SYSGetProductInfo As String
+'03-12-2012 11:49:28	Peter Møller added this function
+'					- SYSFindExecutable(...) As String
+'*******************************************************************************
+
+Declare Function SYSGetUserName() As String
+Declare Function SYSGetComputerName() As String
+
+Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLib.dll" Alias "GetProductInfo" (ByVal strKey as String, ByVal intVersion as Integer) As String
+'Use SYSGetProductInfo to retrieve version information. As strKey you can either use:
+	'RegisteredOwner
+	'RegisteredOrganization
+	'ProductID
+	'AccessCode
+	'LicenseServerName
+	'LicenseServerPort
+	'Registered
+	'ProgramDirectory
+	'CLSID
+	'Level
+	'ActReqPath
+'Optional to include the MIVersion value. MIVersion value could be the SYS_INFO_MIVERSION. If no MIVersion value is given then the information of the last installation in the registry is returned.
+'If multiple installations are found in the registry, information about the last founded installation in the list is retrieved.
+
+Declare Function SYSFindTextEditor() As String
+Declare Function SYSFindExecutable(ByVal sDocument As String) As String

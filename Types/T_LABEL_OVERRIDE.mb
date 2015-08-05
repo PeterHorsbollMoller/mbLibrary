@@ -1,0 +1,579 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\MapBasic.def"
+Include "..\Icons.def"
+Include "..\Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\STRINGLib.def"
+Include "..\STYLELib.def"
+
+Include "T_LABEL_OVERRIDE.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloCopy(tloFrom As T_LABEL_OVERRIDE, tloTo As T_LABEL_OVERRIDE)
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	tloTo.fMinZoom			= tloFrom.fMinZoom
+	tloTo.fMaxZoom			= tloFrom.fMaxZoom
+	tloTo.sZoomUnits		= tloFrom.sZoomUnits
+	tloTo.sExpression		= tloFrom.sExpression
+	tloTo.nLineType		= tloFrom.nLineType
+	tloTo.fntLabel			= tloFrom.fntLabel
+	tloTo.nPosition		= tloFrom.nPosition
+	tloTo.bAllowOverlap		= tloFrom.bAllowOverlap
+	tloTo.bAllowDuplicates	= tloFrom.bAllowDuplicates
+	tloTo.nOffset			= tloFrom.nOffset
+	tloTo.nMaxNumber		= tloFrom.nMaxNumber
+	tloTo.bPartialSegments	= tloFrom.bPartialSegments
+	tloTo.nOrientation		= tloFrom.nOrientation
+	tloTo.nAlpha			= tloFrom.nAlpha
+	tloTo.bAutoRetry		= tloFrom.bAutoRetry
+	tloTo.penLabelLine		= tloFrom.penLabelLine
+	tloTo.nPercentOver		= tloFrom.nPercentOver
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloReset(	tlo As T_LABEL_OVERRIDE	'T_LABEL_OVERRIDE to reset
+			)
+
+OnError GoTo ErrorOccured
+
+	tlo.fMinZoom			= 0
+	tlo.fMaxZoom			= 30000
+	tlo.sZoomUnits			= "m"
+	tlo.sExpression		= "COL1"
+	tlo.nLineType			= LAYER_INFO_LBL_LT_NONE '| LAYER_INFO_LBL_LT_SIMPLE | LAYER_INFO_LBL_LT_ARROW
+	tlo.fntLabel			= CurrentFont()
+	tlo.nPosition			= LAYER_INFO_LBL_POS_CR 	' | _TL | _TC | _TR | _CL | _CC | _BL | _BC | _BR
+	tlo.bAllowOverlap		= FALSE
+	tlo.bAllowDuplicates	= TRUE
+	tlo.nOffset			= 8
+	tlo.nMaxNumber			= 2147483647
+	tlo.bPartialSegments	= TRUE
+	tlo.nOrientation		= LAYER_INFO_LABEL_ORIENT_HORIZONTAL	'LAYER_INFO_LABEL_ORIENT_PARALLEL | LAYER_INFO_LABEL_ORIENT_CURVED
+	tlo.nAlpha			= 255
+	tlo.bAutoRetry			= FALSE
+	tlo.penLabelLine		= MakePen(1, 2, BLACK)
+	tlo.nPercentOver		= 40
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloReset")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tloToString(tlo As T_LABEL_OVERRIDE) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Str$(tlo.fMinZoom)
+				& ";" & Str$(tlo.fMaxZoom)
+				& ";" & sZoomUnits
+				& ";" & tlo.sExpression
+				& ";" & tlo.nLineType
+				& ";" & STLFont2Text(tlo.fntLabel)
+				& ";" & tlo.nPosition
+				& ";" & tlo.bAllowOverlap
+				& ";" & tlo.bAllowDuplicates
+				& ";" & tlo.nOffset
+				& ";" & tlo.nMaxNumber
+				& ";" & tlo.bPartialSegments
+				& ";" & tlo.nOrientation
+				& ";" & tlo.nAlpha
+				& ";" & tlo.bAutoRetry
+				& ";" & STLPen2Text(tlo.penLabelLine)
+				& ";" & tlo.nPercentOver
+
+	tloToString = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tloFromString(tlo As T_LABEL_OVERRIDE, ByVal sLabelInfo As String) As Logical
+
+Dim	arrItems() As String,
+	i, nItems As Integer
+
+OnError GoTo ErrorOccured
+
+tloFromString	= FALSE
+
+	nItems = STRINGSplit(sLabelInfo, ";", arrItems())
+
+	Call tloReset(tlo)
+	If nItem = 17 Then
+		i = i + 1
+		tlo.fMinZoom			= Val(arrItems(i))
+		i = i + 1
+		tlo.fMaxZoom			= Val(arrItems(i))
+		i = i + 1
+		tlo.sZoomUnits			= arrItems(i)
+		i = i + 1
+		tlo.sExpression		= arrItems(i)
+		i = i + 1
+		tlo.nLineType			= Val(arrItems(i))
+		i = i + 1
+		tlo.fntLabel			= STLText2Font(arrItems(i))
+		i = i + 1
+		tlo.nPosition			= Val(arrItems(i))
+		i = i + 1
+		tlo.bAllowOverlap		= (arrItems(i) = "T")
+		i = i + 1
+		tlo.bAllowDuplicates	= (arrItems(i) = "T")
+		i = i + 1
+		tlo.nOffset			= Val(arrItems(i))
+		i = i + 1
+		tlo.nMaxNumber			= Val(arrItems(i))
+		i = i + 1
+		tlo.bPartialSegments	= (arrItems(i) = "T")
+		i = i + 1
+		tlo.nOrientation		= Val(arrItems(i))
+		i = i + 1
+		tlo.nAlpha			= Val(arrItems(i))
+		i = i + 1
+		tlo.bAutoRetry			= Val(arrItems(i))
+		i = i + 1
+		tlo.penLabelLine		= STLText2Pen(arrItems(i))
+		i = i + 1
+		tlo.nPercentOver		= Val(arrItems(i))
+
+		tloFromString	= TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tloGetDescription(tlo As T_LABEL_OVERRIDE) As String
+
+OnError GoTo ErrorOccured
+
+	tloGetDescription = "Zoom: " & FormatNumber$(tlo.fMinZoom) & " - " & FormatNumber$(tlo.fMaxZoom) & " " & tlo.sZoomUnits
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloGetInfo(ByVal nMID As Integer, ByVal nLyrID As Integer, tlo() As T_LABEL_OVERRIDE)
+
+Dim	i, nOverride, nNumOverrides  As Integer
+
+OnError GoTo ErrorOccured
+
+	Set Distance Units MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+
+	nNumOverrides	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_LBL_COUNT)
+	Redim tlo(nNumOverrides)
+
+	For nOverride = 1 To nNumOverrides
+		tlo(nOverride).fMinZoom			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_ZOOM_MIN)
+		tlo(nOverride).fMaxZoom			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_ZOOM_MAX)
+		tlo(nOverride).sZoomUnits		= MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+		tlo(nOverride).sExpression		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_EXPR)
+		tlo(nOverride).nLineType			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_LT)
+		tlo(nOverride).fntLabel			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_FONT)
+		tlo(nOverride).nPosition			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_POS)
+		tlo(nOverride).bAllowOverlap		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_OVERLAP)
+		tlo(nOverride).bAllowDuplicates	= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_DUPLICATES)
+		tlo(nOverride).nOffset			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_OFFSET)
+		tlo(nOverride).nMaxNumber		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_MAX)
+		tlo(nOverride).bPartialSegments	= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_PARTIALSEGS)
+		tlo(nOverride).nOrientation		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_ORIENTATION)
+		tlo(nOverride).nAlpha			= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_ALPHA)
+		tlo(nOverride).bAutoRetry		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_POS_RETRY)
+		tlo(nOverride).penLabelLine		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_LINE_PEN)
+		tlo(nOverride).nPercentOver		= LabelOverrideInfo(nMID, nLyrID, nOverride, LBL_OVR_INFO_PERCENT_OVER)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloGetInfo")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tloGetSetMapStatement(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+							, ByVal nLyrID As Integer		'LayerID to apply the settings to
+							, tlo() As T_LABEL_OVERRIDE		'The T_LABEL_OVERRIDE to store information about the layer
+							) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Dim	sTab, sCmd As String,
+	i, nOverride, nNumOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+tloGetSetMapStatement = ""
+
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			'**Let's continue, label settings should work
+		Case LAYER_INFO_TYPE_COSMETIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_IMAGE
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_THEMATIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_GRID
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case Else
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+	End Case
+
+	sTab = LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	If TableInfo(sTab, TAB_INFO_TYPE) IN (TAB_TYPE_IMAGE, TAB_TYPE_WMS) Then
+		Exit Function
+	End If
+
+	nNumOverrides	= Ubound(tlo)
+	For nOverride = 1 To nNumOverrides
+		If sCmd = "" Then
+			sCmd = " Label Override Add"
+		Else
+			sCmd = sCmd & lf & " Label Override Add"
+		End If
+		sCmd = sCmd & " Zoom (" & tlo(nOverride).fMinZoom & ", " & tlo(nOverride).fMaxZoom & ") Units " & eye & tlo(nOverride).sZoomUnits & eye
+
+		Do Case tlo(nOverride).nLineType
+			Case LAYER_INFO_LBL_LT_ARROW
+				sCmd = sCmd & " Line Arrow " & tlo(nOverride).penLabelLine
+			Case LAYER_INFO_LBL_LT_SIMPLE
+				sCmd = sCmd & " Line Simple " & tlo(nOverride).penLabelLine
+			Case LAYER_INFO_LBL_LT_NONE
+		End Case
+
+		Do Case tlo(nOverride).nPosition
+			Case LAYER_INFO_LBL_POS_TL
+				sCmd = sCmd & " Position Above Left"
+			Case LAYER_INFO_LBL_POS_TC
+				sCmd = sCmd & " Position Center Above"
+			Case LAYER_INFO_LBL_POS_TR
+				sCmd = sCmd & " Position Above Right"
+			Case LAYER_INFO_LBL_POS_CL
+				sCmd = sCmd & " Position Center Left"
+			Case LAYER_INFO_LBL_POS_CC
+				sCmd = sCmd & " Position Center"
+			Case LAYER_INFO_LBL_POS_CR
+				sCmd = sCmd & " Position Center Right"
+			Case LAYER_INFO_LBL_POS_BL
+				sCmd = sCmd & " Position Below Left"
+			Case LAYER_INFO_LBL_POS_BC
+				sCmd = sCmd & " Position Center Below"
+			Case LAYER_INFO_LBL_POS_BR
+				sCmd = sCmd & " Position Below Right"
+		End Case
+
+		sCmd = sCmd & " Offset " & tlo(nOverride).nOffset
+
+		If tlo(nOverride).sExpression = "" Then
+			sCmd = sCmd & lf & " " & tlo(nOverride).fntLabel '& " With COL1"
+		Else
+			sCmd = sCmd & lf & " " & tlo(nOverride).fntLabel & " With " & tlo(nOverride).sExpression
+		End If
+
+		Do Case tlo(nOverride).nOrientation
+			Case LAYER_INFO_LABEL_ORIENT_HORIZONTAL
+				sCmd = sCmd & " Parallel Off"
+			Case	LAYER_INFO_LABEL_ORIENT_PARALLEL
+				sCmd = sCmd & " Parallel On"
+			Case	LAYER_INFO_LABEL_ORIENT_CURVED
+				sCmd = sCmd & " Follow Path Percent Over " & tlo(nOverride).nPercentOver
+		End Case
+
+		sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlo(nOverride).bAllowOverlap, "On", "Off")
+				& " PartialSegments " & STRINGLogicalToText(tlo(nOverride).bPartialSegments, "On", "Off")
+				& " Duplicates " & STRINGLogicalToText(tlo(nOverride).bAllowDuplicates, "On", "Off")
+				& " Max " & tlo(nOverride).nMaxNumber
+				& " Auto Retry " & STRINGLogicalToText(tlo(nOverride).bAutoRetry, "On", "Off")
+				& " LabelAlpha " & tlo(nOverride).nAlpha
+
+	Next		'nOverride
+
+	tloGetSetMapStatement = sCmd
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloGetSetMapStatement")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloWriteToMetadata(	  ByVal sTab As String			'Name of table to write the tlo's to
+					, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tlo's to
+					, tlo() As T_LABEL_OVERRIDE		'The tlo's to write to the metadata
+					)
+
+Dim	nOverride, nNumOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumOverrides	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES"))
+	If nNumOverrides > Ubound(tlo) Then
+		For nOverride = Ubound(tlo) To nNumOverrides
+			'**removing potential extra label overrides
+			Call tloRemoveSingleFromMetadata(sTab, nLayerInfoItem, nOverride)
+		Next
+	End If
+
+	nNumOverrides	= Ubound(tlo)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES" To Str$(nNumOverrides)
+
+	For nOverride = 1 To nNumOverrides
+		'**Writing Label overrides to metadata
+		Call tloWriteSingleToMetadata(sTab, nLayerInfoItem, nOverride, tlo(nOverride))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloWriteToMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloWriteSingleToMetadata(	  ByVal sTab As String			'Name of table to write the tlo to
+						, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tlo to
+						, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to write the tlo to
+						, tlo As T_LABEL_OVERRIDE		'The tlo to write to the metadata
+						)
+
+OnError GoTo ErrorOccured
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ZOOM_MIN" To Str$(tlo.fMinZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ZOOM_MAX" To Str$(tlo.fMaxZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ZOOM_UNITS" To tlo.sZoomUnits
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\EXPRESSION" To tlo.sExpression
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\LINETYPE" To Str$(tlo.nLineType)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\FONT" To STLFont2Text(tlo.fntLabel)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\POSITION" To Str$(tlo.nPosition)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\OFFSET" To Str$(tlo.nOffset)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\OVERLAP" To Str$(tlo.bAllowOverlap)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\DUPLICATES" To Str$(tlo.bAllowDuplicates)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\MAX" To Str$(tlo.nMaxNumber)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\PARTIALSEGMENTS" To Str$(tlo.bPartialSegments)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ORIENTATION" To Str$(tlo.nOrientation)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ALPHA" To Str$(tlo.nAlpha)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\AUTO_RETRY" To Str$(tlo.bAutoRetry)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\LABEL_LINE" To STLPen2Text(tlo.penLabelLine)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\PERCENT_OVER" To Str$(tlo.nPercentOver)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloWriteSingleToMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloReadFromMetadata(	  ByVal sTab As String			'Name of table to read the tlo's from
+					, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tlo's from
+					, tlo() As T_LABEL_OVERRIDE		'The tlo's to read the metadata into
+					)
+
+Dim	nOverride, nNumOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumOverrides	= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES"))
+	Redim tlo(nNumOverrides)
+
+	For nOverride = 1 To nNumOverrides
+		Call tloReadSingleFromMetadata(sTab, nLayerInfoItem, nOverride, tlo(nOverride))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloReadFromMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloReadSingleFromMetadata(	  ByVal sTab As String			'Name of table to read the tlo from
+							, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tlo from
+							, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to read the tlo from
+							, tlo As T_LABEL_OVERRIDE		'The tlo to read the metadata into
+							)
+
+OnError GoTo ErrorOccured
+
+	tlo.fMinZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ZOOM_MIN"))
+	tlo.fMaxZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ZOOM_MAX"))
+	tlo.sZoomUnits			= GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ZOOM_UNITS")
+
+	tlo.sExpression		= GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\EXPRESSION")
+
+	tlo.nLineType			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\LINETYPE"))
+	tlo.fntLabel			= STLText2Font(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\FONT"))
+	tlo.nPosition			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\POSITION"))
+	tlo.nOffset			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\OFFSET"))
+
+	tlo.bAllowOverlap		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\OVERLAP") = "T")
+	tlo.bAllowDuplicates	= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\DUPLICATES") = "T")
+
+	tlo.nMaxNumber			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\MAX"))
+	tlo.bPartialSegments	= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\PARTIALSEGMENTS") = "T")
+	tlo.nOrientation		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ORIENTATION"))
+	tlo.nAlpha			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\ALPHA"))
+	tlo.bAutoRetry			= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\AUTO_RETRY") = "T")
+	tlo.penLabelLine		= STLText2Pen(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\LABEL_LINE"))
+	tlo.nPercentOver		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem & "\PERCENT_OVER"))
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloReadSingleFromMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tloRemoveSingleFromMetadata(	  ByVal sTab As String			'Name of table to remove the tlo from
+							, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to remove the tlo from
+							, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to remove
+							)
+
+OnError GoTo ErrorOccured
+
+	Metadata Table sTab
+		DropKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERRIDES\" & nOverrideItem
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tloRemoveSingleFromMetadata")
+	Call ERRShow()
+
+End Sub
+
+

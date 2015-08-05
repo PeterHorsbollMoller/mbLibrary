@@ -1,0 +1,424 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function TABIsOpen(ByVal sTab As String) as Logical
+
+Dim	nType As Integer
+
+OnError GoTo ErrorOccured
+
+TABIsOpen = FALSE
+
+	If NumTables() = 0 Then
+		Exit Function
+	End if
+
+	If sTab = "Selection" Then
+		If SelectionInfo(SEL_INFO_NROWS) = 0 Then
+			Exit Function
+		End if
+	Else
+		OnError GoTo ErrorNoSuchTable
+		nType = TableInfo(sTab, TAB_INFO_TYPE)
+
+		OnError GoTo ErrorOccured
+	End If
+
+	TABIsOpen = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABIsOpen: " & sTab)
+	Call ERRShow()
+	Exit Function
+
+'-------------------------
+ErrorNoSuchTable:
+	Exit Function
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub TABClose(ByVal sTab As String)
+
+OnError GoTo ErrorOccured
+
+	If TABIsOpen(sTab) Then
+		If sTab = "Selection" Then
+			Close Table SelectionInfo(SEL_INFO_SELNAME)
+		Else
+			Close Table sTab
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABClose: " & sTab)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub TABDrop(ByVal sTab As String)
+
+OnError GoTo ErrorOccured
+
+	If TABIsOpen(sTab) Then
+		If sTab = "Selection" Then
+			Close Table SelectionInfo(SEL_INFO_SELNAME)
+		Else
+			Drop Table sTab
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABDrop: " & sTab)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sTabFile : Name of tab file to find the tablename for
+'Return value:
+'	"" if no open table has the given tab file Name
+'	Name of table that matches the tab file name
+'**********************************************************************************************''
+Function TABGetNameFromTabFile(ByVal sTabFile As String) As String
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+TABGetNameFromTabFile = ""
+
+	For i = 1 To NumTables()
+		If TableInfo(i, TAB_INFO_TABFILE) = sTabFile Then
+			TABGetNameFromTabFile = TableInfo(i, TAB_INFO_NAME)
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABGetNameFromTabFile")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	nTypesToUse	: Bitsum describing what table to use, use TAB_USE_ constants
+'	arrTables()	: will contain the tables that meet the criteria, note that the arrays will not be cleared
+'Return value:
+'	Number of tables that met the criteria
+'**********************************************************************************************''
+Function TABGetListOfNames(	  ByVal nTypesToUse As Integer	'Bitsum describing what table to use, use TAB_USE_ constants
+					, arrTables() As String			'contains the tables that meet the criteria
+					) As Integer				'returns the number of tables found
+
+Dim	nTab, nCount As Integer,
+	sTab As String
+
+OnError GoTo ErrorOccured
+
+TABGetListOfNames = 0
+
+	nCount	= Ubound(arrTables)
+
+	If NumTables() = 0 Then
+		nCount	= nCount + 1
+		Redim arrTables(nCount)
+		arrTables(nCount) = "No open tables"
+		Exit Function
+	End If
+
+	If TABIsBitOn(TAB_USE_TEMP, nTypesToUse) And SelectionInfo(SEL_INFO_NROWS) Then
+		nCount		= nCount + 1
+		ReDim arrTables(nCount)
+		arrTables(nCount)	= "Selection"
+	End If
+
+	If nTypesToUse = TAB_USE_ALL Then
+		'** 'Use all tables' has been specified, no need to check each
+		For nTab = 1 To NumTables()
+			nCount		= nCount + 1
+			Redim arrTables(nCount)
+			arrTables(nCount)	= TableInfo(nTab, TAB_INFO_NAME)
+		Next
+	Else
+		For nTab = 1 To NumTables()
+			If TABUseTableNo(nTab, nTypesToUse)  Then
+				nCount		= nCount + 1
+				Redim arrTables(nCount)
+				arrTables(nCount)	= TableInfo(nTab, TAB_INFO_NAME)
+			End If
+		Next
+	End If
+
+TABGetListOfNames = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABGetListOfNames")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	nTab 		: Table# to check
+'	nTypesToUse : Bitsum describing what table to use, use TAB_USE_ constants
+'Return value:
+'	Returns true if the table meets all criterias
+'**********************************************************************************************''
+Function TABUseTableNo(	  ByVal nTab As Integer			'Table# to check
+				, ByVal nTypesToUse As Integer	'Bitsum describing what table to use, use TAB_USE_ constants
+				) As Logical				'Returns true if the table meets all criterias
+
+Dim	nType As Integer
+
+OnError GoTo ErrorOccured
+
+TABUseTableNo = FALSE
+
+	'**Only use tables that are mappable...
+	If NOT TableInfo(nTab, TAB_INFO_MAPPABLE) Then
+		If TABIsBitOn(TAB_USE_ONLY_MAPPABLE, nTypesToUse) Then
+			Exit Function
+		End If
+	End If
+
+	'**Use Read-Only tables...
+	If TableInfo(nTab, TAB_INFO_READONLY) Then
+		If NOT TABIsBitOn(TAB_USE_READONLY, nTypesToUse) Then
+			Exit Function
+		End If
+	End If
+
+	nType	= TableInfo(nTab, TAB_INFO_TYPE)
+	Do Case nType
+		Case TAB_TYPE_RESULT
+			'**Selections, queries....
+			If (not TABIsBitOn(TAB_USE_TEMP, nTypesToUse)) Then
+				Exit Function
+			End If
+		Case TAB_TYPE_BASE
+			'**base tables eg. normal tables...
+			If (not TABIsBitOn(TAB_USE_BASE, nTypesToUse)) Then
+				Exit Function
+			End If
+		Case TAB_TYPE_LINKED
+			'**linked tables eg. opende using ODBC...
+			If (not TABIsBitOn(TAB_USE_LINKED, nTypesToUse)) Then
+				Exit Function
+			End If
+		Case TAB_TYPE_IMAGE
+			'**Raster tables...
+			If SystemInfo(SYS_INFO_MIVERSION) >= 950 Then
+				Do Case RasterTableInfo(nTab, RASTER_TAB_INFO_IMAGE_TYPE)
+					Case IMAGE_TYPE_RASTER
+						If NOT TABIsBitOn(TAB_USE_RASTER, nTypesToUse) Then
+							Exit Function
+						End If
+					Case IMAGE_TYPE_GRID
+						If NOT TABIsBitOn(TAB_USE_GRID, nTypesToUse) Then
+							Exit Function
+						End If
+				End Case
+			Else
+				If (not TABIsBitOn(TAB_USE_RASTER, nTypesToUse)) AND (NOT TABIsBitOn(TAB_USE_GRID, nTypesToUse)) Then
+					Exit Function
+				End If
+			End If
+		'If SystemInfo(SYS_INFO_MIVERSION) >= 750 Then
+		Case TAB_TYPE_WMS
+			If (not TABIsBitOn(TAB_USE_WMS, nTypesToUse)) Then
+				Exit Function
+			End If
+		'If SystemInfo(SYS_INFO_MIVERSION) >= 780 Then
+		Case TAB_TYPE_WFS
+			If (not TABIsBitOn(TAB_USE_WFS, nTypesToUse)) Then
+				Exit Function
+			End If
+
+		'If SystemInfo(SYS_INFO_MIVERSION) >= 900 Then
+		Case TAB_TYPE_FME
+			If (not TABIsBitOn(TAB_USE_FME, nTypesToUse)) Then
+				Exit Function
+			End If
+
+		'If SystemInfo(SYS_INFO_MIVERSION) >= 1050 Then
+		Case TAB_TYPE_TILESERVER
+			If (not TABIsBitOn(TAB_USE_TILESERVER, nTypesToUse)) Then
+				Exit Function
+			End If
+	End Case
+
+TABUseTableNo = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABUseTableNo")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	nTab 		: Table to check
+'	nTypesToUse : Bitsum describing what table to use, use TAB_USE_ constants
+'Return value:
+'	Returns true if the table meets all criterias
+'**********************************************************************************************''
+Function TABUseTable(	  ByVal sTab As String			'Table to check
+				, ByVal nTypesToUse As Integer	'Bitsum describing what table to use, use TAB_USE_ constants
+				) As Logical				'Returns true if the table meets all criterias
+
+Dim	nTab As Integer
+
+OnError GoTo ErrorOccured
+
+	nTab		= TableInfo(sTab, TAB_INFO_NUM)
+	TABUseTable	= TABUseTableNo(nTab, nTypesToUse)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABUseTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	nBit 		: The bit to check for
+'	nBitSum	: The sum of bits to see if nBit is On
+'Return value:
+'	TRUE		: The bit nBit is set
+'	FALSE		: The bit nBit is not set
+'**********************************************************************************************''
+Function TABIsBitOn(ByVal nBit As Integer, ByVal nBitSum As Integer) As Logical
+
+Dim	nCurBit As Integer
+
+OnError GoTo ErrorOccured
+
+TABIsBitOn = FALSE
+
+	nCurBit	= 64
+	'**Finding the maximum bit that can be set in the nBitSum
+	Do While (nCurBit < nBitSum)
+		nCurBit = nCurBit * 2
+	Loop
+
+'	Print "Searching for " & nbit & " in " & nBitSum
+	Do While (nCurBit >= nBit)
+		If (nBitSum >= nCurBit) Then
+			If nCurBit = nBit Then
+'				Print "   " & nBit & " was found"
+				TABIsBitOn = TRUE
+				Exit Function
+			End If
+
+			nBitSum = nBitSum - nCurBit
+		End If
+		'**One has been tested once, so we are done
+		If nCurBit = 1 Then
+			Exit Function
+		End If
+
+		nCurBit = (nCurBit / 2)
+	Loop
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABIsBitOn")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function TABHasDeletedRows(	ByVal sTab As String	'Name of table to check
+						) As Logical				'returns True if the table has deleted records, otherwise false
+
+Dim	nNumRowsAll, nNumRowsQuery As Integer
+
+OnError GoTo ErrorOccured
+
+TABHasDeletedRows = FALSE
+
+	nNumRowsAll	= TableInfo(sTab, TAB_INFO_NROWS)
+'	Call DEBUGPrint("Rows in table: " & nNumRowsAll)
+	If nNumRowsAll = 0 Then
+		Exit Function
+	End If
+
+	Select *
+		From	sTab
+		Where COL1 OR NOT COL1
+		Into __COUNT__ROWS NoSelect
+
+	nNumRowsQuery	= TableInfo(__COUNT__ROWS, TAB_INFO_NROWS)
+'	Call DEBUGPrint("Rows in query: " & nNumRowsQuery)
+	Close Table __COUNT__ROWS
+
+	If nNumRowsQuery < nNumRowsAll Then
+		TABHasDeletedRows = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABHasDeletedRows")
+	Call ERRShow()
+
+End Function

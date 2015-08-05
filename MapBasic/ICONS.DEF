@@ -1,0 +1,595 @@
+
+'============================================================================
+' MapInfo version 12.0 - Icons, DrawModes, and Cursors
+'----------------------------------------------------------------------------
+' This file contains defines useful when programming in the MapBasic
+' language.
+'----------------------------------------------------------------------------
+
+'----------------------------------------------------------------------------
+' Defines for cursors built into MapBasic.
+' Available to be used with the ButtonPads.
+'----------------------------------------------------------------------------
+
+define MI_CURSOR_ARROW           0
+define MI_CURSOR_IBEAM           1
+define MI_CURSOR_CROSS           2
+define MI_CURSOR_PLUS            3
+define MI_CURSOR_WAIT            4
+define MI_CURSOR_FINGER_LEFT     128
+define MI_CURSOR_ZOOM_IN         129
+define MI_CURSOR_ZOOM_OUT        130
+define MI_CURSOR_DRAG_OBJ        131
+define MI_CURSOR_GRABBER         132
+define MI_CURSOR_CHANGE_WIDTH    133
+define MI_CURSOR_FINGER_UP       134
+define MI_CURSOR_IBEAM_CROSS     135
+define MI_CURSOR_HELP            137
+define MI_CURSOR_CROSSHAIR       138
+define MI_CURSOR_NODROP          139
+define MI_CURSOR_DRAG_LAYER      140
+define MI_CURSOR_DRAG_LAYERS     141
+define MI_CURSOR_BEGIN_DRAGNDROP 142
+define MI_CURSOR_DOING_DRAGNDROP 143
+define MI_CURSOR_DRAGNDROP_COPY  144
+define MI_CURSOR_DRAGNDROP_LINK  145
+define MI_CURSOR_DRAGNDROP_MOVE  146
+define MI_CURSOR_DRAGNDROP_NONE  147
+define MI_CURSOR_MOUSESCROLL_N   148
+define MI_CURSOR_MOUSESCROLL_NE  149
+define MI_CURSOR_MOUSESCROLL_E   150
+define MI_CURSOR_MOUSESCROLL_SE  151
+define MI_CURSOR_MOUSESCROLL_S   152
+define MI_CURSOR_MOUSESCROLL_SW  153
+define MI_CURSOR_MOUSESCROLL_W   154
+define MI_CURSOR_MOUSESCROLL_NW  155
+define MI_CURSOR_MOUSESCROLL_CTR 156
+define MI_CURSOR_SIZE_NESW       157
+define MI_CURSOR_SIZE_NS         158
+define MI_CURSOR_SIZE_NWSE       159 
+define MI_CURSOR_SIZE_WE         160
+define MI_CURSOR_MOVE            161
+define MI_CURSOR_ACT_HAND        162
+define MI_CURSOR_ACT_HAND2       163
+define MI_CURSOR_LRG_CROSSHAIR   164
+define MI_CURSOR_TINY_CROSSHAIR  165
+define MI_CURSOR_ADORNMENT       166
+define MI_CURSOR_ADORNMENT_MOVE  167
+
+
+define MI_CURSOR_FINGER_LEFT_1BPP     188
+define MI_CURSOR_ZOOM_IN_1BPP         189
+define MI_CURSOR_ZOOM_OUT_1BPP        190
+define MI_CURSOR_DRAG_OBJ_1BPP        191
+define MI_CURSOR_GRABBER_1BPP         192
+define MI_CURSOR_CHANGE_WIDTH_1BPP    193
+define MI_CURSOR_FINGER_UP_1BPP       194
+define MI_CURSOR_IBEAM_CROSS_1BPP     195
+define MI_CURSOR_HELP_1BPP            197
+define MI_CURSOR_CROSSHAIR_1BPP       198
+define MI_CURSOR_NODROP_1BPP          199
+define MI_CURSOR_DRAG_LAYER_1BPP      200
+define MI_CURSOR_DRAG_LAYERS_1BPP     201
+define MI_CURSOR_BEGIN_DRAGNDROP_1BPP 202
+define MI_CURSOR_DOING_DRAGNDROP_1BPP 203
+define MI_CURSOR_DRAGNDROP_COPY_1BPP  204
+define MI_CURSOR_DRAGNDROP_LINK_1BPP  205
+define MI_CURSOR_DRAGNDROP_MOVE_1BPP  206
+define MI_CURSOR_DRAGNDROP_NONE_1BPP  207
+define MI_CURSOR_MOUSESCROLL_N_1BPP   208
+define MI_CURSOR_MOUSESCROLL_NE_1BPP  209
+define MI_CURSOR_MOUSESCROLL_E_1BPP   210
+define MI_CURSOR_MOUSESCROLL_SE_1BPP  211
+define MI_CURSOR_MOUSESCROLL_S_1BPP   212
+define MI_CURSOR_MOUSESCROLL_SW_1BPP  213
+define MI_CURSOR_MOUSESCROLL_W_1BPP   214
+define MI_CURSOR_MOUSESCROLL_NW_1BPP  215
+define MI_CURSOR_MOUSESCROLL_CTR_1BPP 216
+define MI_CURSOR_SIZE_NESW_1BPP       217
+define MI_CURSOR_SIZE_NS_1BPP         218
+define MI_CURSOR_SIZE_NWSE_1BPP       219 
+define MI_CURSOR_SIZE_WE_1BPP         220
+define MI_CURSOR_MOVE_1BPP            221
+define MI_CURSOR_ACT_HAND_1BPP        222
+define MI_CURSOR_ACT_HAND2_1BPP       223
+define MI_CURSOR_LRG_CROSSHAIR_1BPP   224
+define MI_CURSOR_TINY_CROSSHAIR_1BPP  225
+define MI_CURSOR_ADORNMENT_1BPP       226
+define MI_CURSOR_ADORNMENT_MOVE_1BPP  227
+
+'----------------------------------------------------------------------------
+' Defines for different DrawModes for the custom tool.
+'----------------------------------------------------------------------------
+define DM_CUSTOM_CIRCLE     30
+define DM_CUSTOM_ELLIPSE    31
+define DM_CUSTOM_RECT       32
+define DM_CUSTOM_LINE       33
+define DM_CUSTOM_POINT      34
+define DM_CUSTOM_POLYGON    35
+define DM_CUSTOM_POLYLINE   36
+
+'----------------------------------------------------------------------------
+' Defined constants for icons built into MapInfo.
+' Available to be used on the ButtonPads.
+'----------------------------------------------------------------------------
+
+define MI_ICON_ARROW          0
+define MI_ICON_SEARCH_RECT    1
+define MI_ICON_SEARCH_RADIUS  2
+define MI_ICON_SEARCH_BDY     3
+define MI_ICON_ZOOM_IN        4
+define MI_ICON_ZOOM_OUT       5
+define MI_ICON_ZOOM_QUESTION  6
+define MI_ICON_GRABBER        7
+define MI_ICON_INFO           8
+define MI_ICON_LABEL          9
+define MI_ICON_LAYERS         10
+define MI_ICON_RULER          11
+define MI_ICON_LEGEND         12
+define MI_ICON_STATISTICS     13
+define MI_ICON_DISTRICT_MANY  14
+define MI_ICON_DISTRICT_SAME  15
+
+define MI_ICON_SYMBOL         16
+define MI_ICON_LINE           17
+define MI_ICON_POLYLINE       18
+define MI_ICON_ARC            19
+define MI_ICON_POLYGON        20
+define MI_ICON_ELLIPSE        21
+define MI_ICON_RECT           22
+define MI_ICON_ROUND_RECT     23
+define MI_ICON_TEXT           24
+define MI_ICON_WINDOW_FRAME   25
+define MI_ICON_RESHAPE        26
+define MI_ICON_ADD_NODE       27
+define MI_ICON_SYMBOL_STYLE   28
+define MI_ICON_LINE_STYLE     29
+define MI_ICON_REGION_STYLE   30
+define MI_ICON_TEXT_STYLE     31
+
+define MI_ICON_RUN            32
+define MI_ICON_WRENCH         33
+define MI_ICON_CROSSHAIR      34
+define MI_ICON_CLIP_MODE      35
+define MI_ICON_CLIP_REGION    36
+define MI_ICON_DRAG_HANDLE    37
+
+define MI_ICON_NEW_DOC        38
+define MI_ICON_OPEN_FILE      39
+define MI_ICON_SAVE_FILE      40
+define MI_ICON_PRINT          41
+define MI_ICON_CUT            42
+define MI_ICON_COPY           43
+define MI_ICON_PASTE          44
+define MI_ICON_UNDO           45
+define MI_ICON_HELP           46
+
+define MI_ICON_ARROW_1        47
+define MI_ICON_ARROW_2        48
+define MI_ICON_ARROW_3        49
+define MI_ICON_ARROW_4        50
+define MI_ICON_ARROW_5        51
+define MI_ICON_ARROW_6        52
+define MI_ICON_ARROW_7        53
+define MI_ICON_ARROW_8        54
+define MI_ICON_ARROW_9        55
+define MI_ICON_ARROW_10       56
+define MI_ICON_ARROW_11       57
+define MI_ICON_ARROW_12       58
+define MI_ICON_ARROW_13       59
+define MI_ICON_ARROW_14       60
+define MI_ICON_ARROW_15       61
+define MI_ICON_ARROW_16       62
+define MI_ICON_ARROW_17       63
+define MI_ICON_ARROW_18       64
+define MI_ICON_ARROW_19       65
+define MI_ICON_ARROW_20       66
+define MI_ICON_ARROW_21       67
+
+define MI_ICON_COMMUNICATION_1   68
+define MI_ICON_COMMUNICATION_2   69
+define MI_ICON_COMMUNICATION_3   70
+define MI_ICON_COMMUNICATION_4   71
+define MI_ICON_COMMUNICATION_5   72
+define MI_ICON_COMMUNICATION_6   73
+define MI_ICON_COMMUNICATION_7   74
+define MI_ICON_COMMUNICATION_8   75
+define MI_ICON_COMMUNICATION_9   76
+define MI_ICON_COMMUNICATION_10  77
+define MI_ICON_COMMUNICATION_11  78
+define MI_ICON_COMMUNICATION_12  79
+
+define MI_ICON_EMERGENCY_1       80
+define MI_ICON_EMERGENCY_2       81
+define MI_ICON_EMERGENCY_3       82
+define MI_ICON_EMERGENCY_4       83
+define MI_ICON_EMERGENCY_5       84
+define MI_ICON_EMERGENCY_6       85
+define MI_ICON_EMERGENCY_7       86
+define MI_ICON_EMERGENCY_8       87
+define MI_ICON_EMERGENCY_9       88
+define MI_ICON_EMERGENCY_10      89
+define MI_ICON_EMERGENCY_11      90
+define MI_ICON_EMERGENCY_12      91
+define MI_ICON_EMERGENCY_13      92
+define MI_ICON_EMERGENCY_14      93
+define MI_ICON_EMERGENCY_15      94
+define MI_ICON_EMERGENCY_16      95
+define MI_ICON_EMERGENCY_17      96
+define MI_ICON_EMERGENCY_18      97
+
+define MI_ICON_LETTERS_A         98
+define MI_ICON_LETTERS_B         99
+define MI_ICON_LETTERS_C         100
+define MI_ICON_LETTERS_D         101
+define MI_ICON_LETTERS_E         102
+define MI_ICON_LETTERS_F         103
+define MI_ICON_LETTERS_G         104
+define MI_ICON_LETTERS_H         105
+define MI_ICON_LETTERS_I         106
+define MI_ICON_LETTERS_J         107
+define MI_ICON_LETTERS_K         108
+define MI_ICON_LETTERS_L         109
+define MI_ICON_LETTERS_M         110
+define MI_ICON_LETTERS_N         111
+define MI_ICON_LETTERS_O         112
+define MI_ICON_LETTERS_P         113
+define MI_ICON_LETTERS_Q         114
+define MI_ICON_LETTERS_R         115
+define MI_ICON_LETTERS_S         116
+define MI_ICON_LETTERS_T         117
+define MI_ICON_LETTERS_U         118
+define MI_ICON_LETTERS_V         119
+define MI_ICON_LETTERS_W         120
+define MI_ICON_LETTERS_X         121
+define MI_ICON_LETTERS_Y         122
+define MI_ICON_LETTERS_Z         123
+
+define MI_ICONS_MAPS_1           124
+define MI_ICONS_MAPS_2           125
+define MI_ICONS_MAPS_3           126
+define MI_ICONS_MAPS_4           127
+define MI_ICONS_MAPS_5           128
+define MI_ICONS_MAPS_6           129
+define MI_ICONS_MAPS_7           130
+define MI_ICONS_MAPS_8           131
+define MI_ICONS_MAPS_9           132
+define MI_ICONS_MAPS_10          133
+define MI_ICONS_MAPS_11          134
+define MI_ICONS_MAPS_12          135
+define MI_ICONS_MAPS_13          136
+define MI_ICONS_MAPS_14          137
+define MI_ICONS_MAPS_15          138
+
+define MI_ICON_MAPSYMB_1         139
+define MI_ICON_MAPSYMB_2         140
+define MI_ICON_MAPSYMB_3         141
+define MI_ICON_MAPSYMB_4         142
+define MI_ICON_MAPSYMB_5         143
+define MI_ICON_MAPSYMB_6         144
+define MI_ICON_MAPSYMB_7         145
+define MI_ICON_MAPSYMB_8         146
+define MI_ICON_MAPSYMB_9         147
+define MI_ICON_MAPSYMB_10        148
+define MI_ICON_MAPSYMB_11        149
+define MI_ICON_MAPSYMB_12        150
+define MI_ICON_MAPSYMB_13        151
+define MI_ICON_MAPSYMB_14        152
+define MI_ICON_MAPSYMB_15        153
+define MI_ICON_MAPSYMB_16        154
+define MI_ICON_MAPSYMB_17        155
+define MI_ICON_MAPSYMB_18        156
+define MI_ICON_MAPSYMB_19        157
+define MI_ICON_MAPSYMB_20        158
+define MI_ICON_MAPSYMB_21        159
+define MI_ICON_MAPSYMB_22        160
+define MI_ICON_MAPSYMB_23        161
+define MI_ICON_MAPSYMB_24        162
+define MI_ICON_MAPSYMB_25        163
+define MI_ICON_MAPSYMB_26        164
+
+define MI_ICON_MARITIME_1        165
+define MI_ICON_MARITIME_2        166
+define MI_ICON_MARITIME_3        167
+define MI_ICON_MARITIME_4        168
+define MI_ICON_MARITIME_5        169
+define MI_ICON_MARITIME_6        170
+define MI_ICON_MARITIME_7        171
+define MI_ICON_MARITIME_8        172
+define MI_ICON_MARITIME_9        173
+define MI_ICON_MARITIME_10       174
+
+define MI_ICON_MB_1              175
+define MI_ICON_MB_2              176
+define MI_ICON_MB_3              177
+define MI_ICON_MB_4              178
+define MI_ICON_MB_5              179
+define MI_ICON_MB_6              180
+define MI_ICON_MB_7              181
+define MI_ICON_MB_8              182
+define MI_ICON_MB_9              183
+define MI_ICON_MB_10             184
+define MI_ICON_MB_11             185
+define MI_ICON_MB_12             186
+define MI_ICON_MB_13             187
+define MI_ICON_MB_14             188
+
+define MI_ICON_MISC_1            189
+define MI_ICON_MISC_2            190
+define MI_ICON_MISC_3            191
+define MI_ICON_MISC_4            192
+define MI_ICON_MISC_5            193
+define MI_ICON_MISC_6            194
+define MI_ICON_MISC_7            195
+define MI_ICON_MISC_8            196
+define MI_ICON_MISC_9            197
+define MI_ICON_MISC_10           198
+define MI_ICON_MISC_11           199
+define MI_ICON_MISC_12           200
+define MI_ICON_MISC_13           201
+define MI_ICON_MISC_14           202
+define MI_ICON_MISC_15           203
+define MI_ICON_MISC_16           204
+define MI_ICON_MISC_17           205
+define MI_ICON_MISC_18           206
+define MI_ICON_MISC_19           207
+define MI_ICON_MISC_20           208
+define MI_ICON_MISC_21           209
+define MI_ICON_MISC_22           210
+define MI_ICON_MISC_23           211
+define MI_ICON_MISC_24           212
+define MI_ICON_MISC_25           213
+define MI_ICON_MISC_26           214
+define MI_ICON_MISC_27           215
+define MI_ICON_MISC_28           216
+define MI_ICON_MISC_29           217
+define MI_ICON_MISC_30           218
+define MI_ICON_MISC_31           219
+
+define MI_ICON_NUMBERS_1         220
+define MI_ICON_NUMBERS_2         221
+define MI_ICON_NUMBERS_3         222
+define MI_ICON_NUMBERS_4         223
+define MI_ICON_NUMBERS_5         224
+define MI_ICON_NUMBERS_6         225
+define MI_ICON_NUMBERS_7         226
+define MI_ICON_NUMBERS_8         227
+define MI_ICON_NUMBERS_9         228
+define MI_ICON_NUMBERS_10        229
+define MI_ICON_NUMBERS_11        230
+define MI_ICON_NUMBERS_12        231
+define MI_ICON_NUMBERS_13        232
+define MI_ICON_NUMBERS_14        233
+define MI_ICON_NUMBERS_15        234
+define MI_ICON_NUMBERS_16        235
+define MI_ICON_NUMBERS_17        236
+define MI_ICON_NUMBERS_18        237
+define MI_ICON_NUMBERS_19        238
+define MI_ICON_NUMBERS_20        239
+define MI_ICON_NUMBERS_21        240
+define MI_ICON_NUMBERS_22        241
+define MI_ICON_NUMBERS_23        242
+define MI_ICON_NUMBERS_24        243
+define MI_ICON_NUMBERS_25        244
+define MI_ICON_NUMBERS_26        245
+define MI_ICON_NUMBERS_27        246
+define MI_ICON_NUMBERS_28        247
+define MI_ICON_NUMBERS_29        248
+define MI_ICON_NUMBERS_30        249
+define MI_ICON_NUMBERS_31        250
+define MI_ICON_NUMBERS_32        251
+
+define MI_ICON_REALESTATE_1      252
+define MI_ICON_REALESTATE_2      253
+define MI_ICON_REALESTATE_3      254
+define MI_ICON_REALESTATE_4      255
+define MI_ICON_REALESTATE_5      256
+define MI_ICON_REALESTATE_6      257
+define MI_ICON_REALESTATE_7      258
+define MI_ICON_REALESTATE_8      259
+define MI_ICON_REALESTATE_9      260
+define MI_ICON_REALESTATE_10     261
+define MI_ICON_REALESTATE_11     262
+define MI_ICON_REALESTATE_12     263
+define MI_ICON_REALESTATE_13     264
+define MI_ICON_REALESTATE_14     265
+define MI_ICON_REALESTATE_15     266
+define MI_ICON_REALESTATE_16     267
+define MI_ICON_REALESTATE_17     268
+define MI_ICON_REALESTATE_18     269
+define MI_ICON_REALESTATE_19     270
+define MI_ICON_REALESTATE_20     271
+define MI_ICON_REALESTATE_21     272
+define MI_ICON_REALESTATE_22     273
+define MI_ICON_REALESTATE_23     274
+
+define MI_ICON_SIGNS_1           275
+define MI_ICON_SIGNS_2           276
+define MI_ICON_SIGNS_3           277
+define MI_ICON_SIGNS_4           278
+define MI_ICON_SIGNS_5           279
+define MI_ICON_SIGNS_6           280
+define MI_ICON_SIGNS_7           281
+define MI_ICON_SIGNS_8           282
+define MI_ICON_SIGNS_9           283
+define MI_ICON_SIGNS_10          284
+define MI_ICON_SIGNS_11          285
+define MI_ICON_SIGNS_12          286
+define MI_ICON_SIGNS_13          287
+define MI_ICON_SIGNS_14          288
+define MI_ICON_SIGNS_15          289
+define MI_ICON_SIGNS_16          290
+define MI_ICON_SIGNS_17          291
+define MI_ICON_SIGNS_18          292
+define MI_ICON_SIGNS_19          293
+
+define MI_ICON_TRANSPORT_1       294
+define MI_ICON_TRANSPORT_2       295
+define MI_ICON_TRANSPORT_3       296
+define MI_ICON_TRANSPORT_4       297
+define MI_ICON_TRANSPORT_5       298
+define MI_ICON_TRANSPORT_6       299
+define MI_ICON_TRANSPORT_7       300
+define MI_ICON_TRANSPORT_8       301
+define MI_ICON_TRANSPORT_9       302
+define MI_ICON_TRANSPORT_10      303
+define MI_ICON_TRANSPORT_11      304
+define MI_ICON_TRANSPORT_12      305
+define MI_ICON_TRANSPORT_13      306
+define MI_ICON_TRANSPORT_14      307
+define MI_ICON_TRANSPORT_15      308
+define MI_ICON_TRANSPORT_16      309
+define MI_ICON_TRANSPORT_17      310
+define MI_ICON_TRANSPORT_18      311
+define MI_ICON_TRANSPORT_19      312
+define MI_ICON_TRANSPORT_20      313
+define MI_ICON_TRANSPORT_21      314
+define MI_ICON_TRANSPORT_22      315
+define MI_ICON_TRANSPORT_23      316
+define MI_ICON_TRANSPORT_24      317
+define MI_ICON_TRANSPORT_25      318
+define MI_ICON_TRANSPORT_26      319
+define MI_ICON_TRANSPORT_27      320
+
+define MI_ICON_ODBC_OPEN         321
+define MI_ICON_ODBC_REFRESH      322
+define MI_ICON_ODBC_UNLINK       323
+define MI_ICON_ODBC_MAPPABLE     324
+define MI_ICON_ODBC_SYMBOL       325
+
+define MI_ICON_COMPASS_EXPAND    326
+define MI_ICON_COMPASS_CONTRACT  327
+define MI_ICON_COMPASS_TAG       328
+define MI_ICON_COMPASS_UNTAG     329
+define MI_ICON_COMPASS_CIRCLE_TA 330
+define MI_ICON_COMPASS_POLY_TA   331
+
+define MI_ICON_SEARCH_POLYGON    332
+define MI_ICON_UNSELECT_ALL      333
+define MI_ICON_GRAPH_SELECT      334
+define MI_ICON_ODBC_DISCONNECT   335
+
+define MI_ICON_HOT_LINK          336
+define MI_ICON_INVERTSELECT      337
+define MI_ICON_OPENWMS           338
+define MI_ICON_OPENWFS           339
+define MI_ICON_OPEN_WOR          340
+define MI_ICON_SAVE_WIN          341
+define MI_ICON_SAVE_WOR          342
+define MI_ICON_CLOSE_ALL         343
+
+define MI_ICON_ADORNMENT         344
+define MI_ICON_PRINT_PDF         345
+define MI_ICON_SCALEBAR          346
+define MI_ICON_BING_AERIAL           347
+define MI_ICON_BING_HYBRID           348
+define MI_ICON_CATALOG_BROWSER       349
+define MI_ICON_VIEW_CATALOG_RECORD   350
+define MI_ICON_PBBI_DATA_CATALOG     351
+define MI_ICON_CREATE_CATALOG_RECORD 352
+define MI_ICON_ADD_BASEMAP           353
+define MI_ICON_ADD_FAVORITE          354
+define MI_ICON_TABLE_LIST            355
+define MI_ICON_BING_ROADS            356
+define MI_ICON_BING_MOVE_MAP_TO      357
+define MI_ICON_EDIT_METADATA_REC     358
+define MI_ICON_FILTER                359
+define MI_ICON_SORT                  360
+define MI_ICON_VIEW_METADATA_REC     361
+define MI_ICON_VINTAGE_METADATA      362
+define MI_ICON_ADDTOLIBRARY          363
+define MI_ICON_OSM_ROADS             364
+define MI_ICON_NAMED_VIEWS           365
+define MI_ICON_SORT_DESC             366
+define MI_ICON_SORT_CLEAR            367
+define MI_ICON_NEW_ACTIVE_LAYOUT     368
+
+
+' ----------------------------------------------------
+' New Icon Ids
+' ----------------------------------------------------
+define ORIGINAL_ICON_OFFSET                 1000
+
+define MI_ICON_ARROW_2ALT              MI_ICON_ARROW + ORIGINAL_ICON_OFFSET
+define MI_ICON_SEARCH_RECT_2           MI_ICON_SEARCH_RECT + ORIGINAL_ICON_OFFSET
+define MI_ICON_SEARCH_RADIUS_2         MI_ICON_SEARCH_RADIUS + ORIGINAL_ICON_OFFSET
+define MI_ICON_SEARCH_BDY_2            MI_ICON_SEARCH_BDY + ORIGINAL_ICON_OFFSET
+define MI_ICON_ZOOM_IN_2               MI_ICON_ZOOM_IN + ORIGINAL_ICON_OFFSET
+define MI_ICON_ZOOM_OUT_2              MI_ICON_ZOOM_OUT + ORIGINAL_ICON_OFFSET
+define MI_ICON_ZOOM_QUESTION_2         MI_ICON_ZOOM_QUESTION + ORIGINAL_ICON_OFFSET
+define MI_ICON_GRABBER_2               MI_ICON_GRABBER + ORIGINAL_ICON_OFFSET
+define MI_ICON_INFO_2                  MI_ICON_INFO + ORIGINAL_ICON_OFFSET
+define MI_ICON_LABEL_2                 MI_ICON_LABEL + ORIGINAL_ICON_OFFSET
+define MI_ICON_LAYERS_2                MI_ICON_LAYERS + ORIGINAL_ICON_OFFSET
+define MI_ICON_RULER_2                 MI_ICON_RULER + ORIGINAL_ICON_OFFSET
+define MI_ICON_LEGEND_2                MI_ICON_LEGEND + ORIGINAL_ICON_OFFSET
+define MI_ICON_STATISTICS_2            MI_ICON_STATISTICS + ORIGINAL_ICON_OFFSET
+define MI_ICON_DISTRICT_MANY_2         MI_ICON_DISTRICT_MANY + ORIGINAL_ICON_OFFSET
+
+define MI_ICON_SYMBOL_2                MI_ICON_SYMBOL + ORIGINAL_ICON_OFFSET
+define MI_ICON_LINE_2                  MI_ICON_LINE + ORIGINAL_ICON_OFFSET
+define MI_ICON_POLYLINE_2              MI_ICON_POLYLINE + ORIGINAL_ICON_OFFSET
+define MI_ICON_ARC_2                   MI_ICON_ARC + ORIGINAL_ICON_OFFSET
+define MI_ICON_POLYGON_2               MI_ICON_POLYGON + ORIGINAL_ICON_OFFSET
+define MI_ICON_ELLIPSE_2               MI_ICON_ELLIPSE + ORIGINAL_ICON_OFFSET
+define MI_ICON_RECT_2                  MI_ICON_RECT + ORIGINAL_ICON_OFFSET
+define MI_ICON_ROUND_RECT_2            MI_ICON_ROUND_RECT + ORIGINAL_ICON_OFFSET
+define MI_ICON_TEXT_2                  MI_ICON_TEXT + ORIGINAL_ICON_OFFSET
+define MI_ICON_WINDOW_FRAME_2          MI_ICON_WINDOW_FRAME + ORIGINAL_ICON_OFFSET
+define MI_ICON_RESHAPE_2               MI_ICON_RESHAPE + ORIGINAL_ICON_OFFSET
+define MI_ICON_ADD_NODE_2              MI_ICON_ADD_NODE + ORIGINAL_ICON_OFFSET
+define MI_ICON_SYMBOL_STYLE_2          MI_ICON_SYMBOL_STYLE + ORIGINAL_ICON_OFFSET
+define MI_ICON_LINE_STYLE_2            MI_ICON_LINE_STYLE + ORIGINAL_ICON_OFFSET
+define MI_ICON_REGION_STYLE_2          MI_ICON_REGION_STYLE + ORIGINAL_ICON_OFFSET
+define MI_ICON_TEXT_STYLE_2            MI_ICON_TEXT_STYLE + ORIGINAL_ICON_OFFSET
+
+define MI_ICON_RUN_2                   MI_ICON_RUN + ORIGINAL_ICON_OFFSET
+define MI_ICON_WRENCH_2                MI_ICON_WRENCH + ORIGINAL_ICON_OFFSET
+define MI_ICON_CROSSHAIR_2             MI_ICON_CROSSHAIR + ORIGINAL_ICON_OFFSET
+define MI_ICON_CLIP_MODE_2             MI_ICON_CLIP_MODE + ORIGINAL_ICON_OFFSET
+define MI_ICON_CLIP_REGION_2           MI_ICON_CLIP_REGION + ORIGINAL_ICON_OFFSET
+define MI_ICON_DRAG_HANDLE_2           MI_ICON_DRAG_HANDLE + ORIGINAL_ICON_OFFSET
+
+define MI_ICON_NEW_DOC_2               MI_ICON_NEW_DOC + ORIGINAL_ICON_OFFSET
+define MI_ICON_OPEN_FILE_2             MI_ICON_OPEN_FILE + ORIGINAL_ICON_OFFSET
+define MI_ICON_SAVE_FILE_2             MI_ICON_SAVE_FILE + ORIGINAL_ICON_OFFSET
+define MI_ICON_PRINT_2                 MI_ICON_PRINT + ORIGINAL_ICON_OFFSET
+define MI_ICON_CUT_2                   MI_ICON_CUT + ORIGINAL_ICON_OFFSET
+define MI_ICON_COPY_2                  MI_ICON_COPY + ORIGINAL_ICON_OFFSET
+define MI_ICON_PASTE_2                 MI_ICON_PASTE + ORIGINAL_ICON_OFFSET
+define MI_ICON_UNDO_2                  MI_ICON_UNDO + ORIGINAL_ICON_OFFSET
+define MI_ICON_HELP_2                  MI_ICON_HELP + ORIGINAL_ICON_OFFSET
+
+define MI_ICON_SEARCH_POLYGON_2        MI_ICON_SEARCH_POLYGON + ORIGINAL_ICON_OFFSET
+define MI_ICON_UNSELECT_ALL_2          MI_ICON_UNSELECT_ALL + ORIGINAL_ICON_OFFSET
+define MI_ICON_GRAPH_SELECT_2          MI_ICON_GRAPH_SELECT + ORIGINAL_ICON_OFFSET
+define MI_ICON_ODBC_DISCONNECT_2       MI_ICON_ODBC_DISCONNECT + ORIGINAL_ICON_OFFSET
+define MI_ICON_HOT_LINK_2              MI_ICON_HOT_LINK + ORIGINAL_ICON_OFFSET
+define MI_ICON_INVERTSELECT_2          MI_ICON_INVERTSELECT + ORIGINAL_ICON_OFFSET
+define MI_ICON_OPENWMS_2               MI_ICON_OPENWMS + ORIGINAL_ICON_OFFSET
+define MI_ICON_OPENWFS_2               MI_ICON_OPENWFS + ORIGINAL_ICON_OFFSET
+define MI_ICON_OPEN_WOR_2              MI_ICON_OPEN_WOR + ORIGINAL_ICON_OFFSET
+define MI_ICON_SAVE_WIN_2              MI_ICON_SAVE_WIN + ORIGINAL_ICON_OFFSET
+define MI_ICON_SAVE_WOR_2              MI_ICON_SAVE_WOR + ORIGINAL_ICON_OFFSET
+define MI_ICON_CLOSE_ALL_2             MI_ICON_CLOSE_ALL + ORIGINAL_ICON_OFFSET
+
+define MI_ICON_MB_1_2                  MI_ICON_MB_1 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_2_2                  MI_ICON_MB_2 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_3_2                  MI_ICON_MB_3 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_4_2                  MI_ICON_MB_4 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_5_2                  MI_ICON_MB_5 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_6_2                  MI_ICON_MB_6 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_7_2                  MI_ICON_MB_7 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_8_2                  MI_ICON_MB_8 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_9_2                  MI_ICON_MB_9 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_10_2                 MI_ICON_MB_10 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_11_2                 MI_ICON_MB_11 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_12_2                 MI_ICON_MB_12 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_13_2                 MI_ICON_MB_13 + ORIGINAL_ICON_OFFSET
+define MI_ICON_MB_14_2                 MI_ICON_MB_14 + ORIGINAL_ICON_OFFSET
+
+define MI_ICON_ODBC_OPEN_2             MI_ICON_ODBC_OPEN + ORIGINAL_ICON_OFFSET
+define MI_ICON_ODBC_REFRESH_2          MI_ICON_ODBC_REFRESH + ORIGINAL_ICON_OFFSET
+define MI_ICON_ODBC_UNLINK_2           MI_ICON_ODBC_UNLINK + ORIGINAL_ICON_OFFSET
+define MI_ICON_ODBC_MAPPABLE_2         MI_ICON_ODBC_MAPPABLE + ORIGINAL_ICON_OFFSET
+define MI_ICON_ODBC_SYMBOL_2           MI_ICON_ODBC_SYMBOL + ORIGINAL_ICON_OFFSET

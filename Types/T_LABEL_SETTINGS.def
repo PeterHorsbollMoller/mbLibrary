@@ -1,0 +1,58 @@
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    T _ L A B E L _  S E T T I N G S
+'**********************************************************************************************************************
+'	18-01-2012 	- Created first version of this module for Hack day January 2012
+'**********************************************************************************************************************
+
+Type T_LABEL_SETTINGS
+	bAutoDisplay		As Logical
+	nVisibility		As Integer
+	fMinZoom			As Float
+	fMaxZoom			As Float
+	sZoomUnits		As String
+	sExpression		As String
+	nLineType			As Integer
+	fntLabel			As Font
+	nPosition			As Integer
+	bAllowOverlap		As Logical
+	bAllowDuplicates	As Logical
+	nOffset			As Integer
+	nMaxNumber		As Integer
+	bPartialSegments	As Logical
+	nOrientation		As Integer
+	nAlpha			As Integer
+	bAutoPosition		As Logical
+	bAutoSizes		As Logical
+	bSuppressIfNotFit	As Logical
+	nAutoSizeStes		As SmallInt
+	bCurvedBestPostion	As Logical
+	bCurvedFallback	As Logical
+	bUseAbbreviation	As Logical
+	sAbbreviationExpr	As String
+	bAutoCallOut		As Logical
+	nLabelOrder		As SmallInt
+End Type
+
+Declare Sub tlbsCopy(  tlbsFrom As T_LABEL_SETTINGS	'Source T_LABEL_SETTINGS
+				, tlbsTo As T_LABEL_SETTINGS)	'Target T_LABEL_SETTINGS
+
+Declare Sub tlbsReset(		tlbs As T_LABEL_SETTINGS	'T_LABEL_SETTINGS to reset
+					)
+Declare Function tlbsToString(	tlbs As T_LABEL_SETTINGS	'Convert a T_LABEL_SETTINGS to a string
+							) As String			'Returns a string describing the layer
+Declare Function tlbsFromString(	  tlbs As T_LABEL_SETTINGS	'tlbs to be set with values from the string
+							, ByVal sLabelInfo As String	'a string version of the tlbs
+							) As Logical				'returns true if the tils was set using the string
+
+Declare Function tlbsGetDescription(  tlbs As T_LABEL_SETTINGS	'The T_LABEL_SETTINGS to get a description for
+							) As String					'Returns a short string representing the T_LABEL_SETTINGS
+
+Declare Sub tlbsGetInfo(	  ByVal nMID As Integer		'The Map Window with the layer
+					, ByVal nLyrID As Integer	'The layer to query
+					, tlbs As T_LABEL_SETTINGS	'The T_LABEL_SETTINGS to store information about the layer
+					)
+
+Declare Function tlbsGetSetMapStatement(  ByVal nMID As Integer			'Mapper Window where the layer exists
+								, ByVal nLyrID As Integer		'LayerID to apply the settings to
+								, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
+								) As String					'Returns a string that can be used in combination with a "Set Map" Statement

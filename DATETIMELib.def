@@ -1,0 +1,50 @@
+'*******************************************************************************
+'	HISTORY of this module
+'*******************************************************************************
+'15-12-2011 12:53:04	Peter Møller added these functions:
+'					- Function DATEGetDateAsDDMMYYYY() As String
+'					- Function DATEGetDateAsYYYYMMDD() As String
+'11-04-2012 15:08:06	Peter Møller added
+'					- Function DATEGetAgeInYears(...) As Integer
+'03-06-2013			Peter Møller Added
+'					- Function DATEGetTimeAsHHMMSS()  As String
+'*******************************************************************************
+
+
+' /////     Class "DATETIMELib.MBDateAndTime"     /////
+' Allows you to retreive information from a MapBasic Date (i.e. YYYYMMDD) or
+' DateTime (i.e. YYYYMMDDHHMMSSFFF) string
+
+' Convert the string to it's equivalent long date string representation
+' (depends on Control Panel > Regional and Language Options)
+Declare Method RegionalLongDate
+	Class "DATETIMELib.MBDateAndTime"
+	Lib "DATETIMELib.dll" (ByVal sDateString as string) As String
+
+' Extract from the string the name of the month in the regional language
+' (depends on Control Panel > Regional and Language Options)
+Declare Method RegionalMonth
+	Class "DATETIMELib.MBDateAndTime"
+	Lib "DATETIMELib.dll" (ByVal sDateString as string) As String
+
+' Extract from the string the name of the weekday in the regional language
+' (depends on Control Panel > Regional and Language Options)
+Declare Method RegionalWeekday
+	Class "DATETIMELib.MBDateAndTime"
+	Lib "DATETIMELib.dll" (ByVal sDateString as string) As String
+
+Declare Function DATEGetISODate(	  ByVal dDate As Date			'Date to format as ISO date
+							) As String					'Returns a string in this format: YYYYMMDD
+Declare Function DATEGetDateAsDDMMYYYY(	  ByVal dDate As Date		'Date variable to format
+								, ByVal sSeparator As String	'Separator to use to devide the elements
+								) As String				'String in this form DD-MM-YYYY where "-" is the separator
+Declare Function DATEGetDateAsYYYYMMDD(	  ByVal dDate As Date		'Date variable to format
+								, ByVal sSeparator As String	'Separator to use to devide the elements
+								) As String				'String in this form YYYY-MM-DD where "-" is the separator
+
+Declare Function DATEGetTimeAsHHMMSS(	  ByVal tTime As Time		'Time variable to format
+								, ByVal sSeparator As String	'Separator to use to devide the elements
+								) As String				'String in this form HH:MM:SS where ":" is the separator
+
+Declare Function DATEGetAgeInYears(	ByVal dBirthDate As Date		'Date of Birth or creation
+							) As Integer					'Full number of years since birth

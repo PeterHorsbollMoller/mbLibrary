@@ -1,0 +1,145 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\..\Library\MapBasic.def"
+'**default constants...
+Include "..\..\Library\Defaults.def"
+
+'-------------------------------------
+Include "..\..\Library\DEBUGLib.def"
+Include "..\..\Library\ERRORLib.def"
+Include "..\..\Library\TABLELib.def"
+
+Include "T_MI_POINT.def"
+Include "T_MI_LINE.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmilFrom:	T_MI_LINE to copy from
+'	tmilTo:	T_MI_LINE to copy to
+'**********************************************************************************************''
+Sub tmilCopy( tmilFrom As T_MI_LINE, tmilTo As T_MI_LINE)
+
+OnError GoTo ErrorOccured
+
+	Call tmipCopy(tmilFrom.StartPoint, tmilTo.StartPoint)
+	Call tmipCopy(tmilFrom.EndPoint, tmilTo.EndPoint)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmilCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmil:		T_MI_LINE to offset
+'	tmilTo:	T_MI_LINE to copy to
+'**********************************************************************************************''
+Sub tmilOffset( 	  tmil As T_MI_LINE		'T_MI_LINE to offset - this will be changed
+			, ByVal fDistance As Float	'Distance to offset the T_MI_LINE
+			, ByVal fDirection As Float	'Direction to offset the T_MI_LINE
+				)
+
+OnError GoTo ErrorOccured
+
+	Call tmipOffset(tmil.StartPoint, fDistance, fDirection)
+	Call tmipOffset(tmil.EndPoint, fDistance, fDirection)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmilCopy")
+	Call ERRShow()
+
+End Sub
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmil1 & tmil2 : T_MI_LINE to compare
+'Return value:
+'	TRUE: If the two T_MI_LINEs are identical
+'	FALSE: If the two T_MI_LINEs are NOT identical
+'**********************************************************************************************''
+Function tmilAreIdentical( tmil1 As T_MI_LINE, tmil2 As T_MI_LINE) As Logical
+
+OnError GoTo ErrorOccured
+
+tmilAreIdentical = FALSE
+
+	If NOT tmipAreIdentical(tmil1.StartPoint, tmil2.StartPoint) Then
+		Exit Function
+	ElseIf NOT tmipAreIdentical(tmil1.EndPoint, tmil2.EndPoint) Then
+		Exit Function
+	End If
+
+tmilAreIdentical = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmilAreIdentical")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmil : T_MI_LINE to use when creating the MapInfo Point
+'Return value:
+'	A point with the current Pen style
+'**********************************************************************************************''
+Function tmilToLine( tmil As T_MI_LINE) As Object
+
+OnError GoTo ErrorOccured
+
+	tmilToLine = tmilToLineWithStyle(tmil, CurrentLinePen())
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmilToLine")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmil : T_MI_LINE to use when creating the MapInfo Point
+'	penUse: Pen style to asign to the Point
+'Return value:
+'	A point with the Pen style given
+'**********************************************************************************************''
+Function tmilToLineWithStyle( tmil As T_MI_LINE, ByVal penUse As Pen) As Object
+
+Dim	oLine As Object
+
+OnError GoTo ErrorOccured
+
+	oLine = CreateLine(tmil.StartPoint.fX, tmil.StartPoint.fY, tmil.EndPoint.fX, tmil.EndPoint.fY)
+	tmilToLineWithStyle = oLine
+
+	Alter Object oLine
+		Info OBJ_INFO_SYMBOL, penUse
+
+	tmilToLineWithStyle = oLine
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmilToLineWithStyle")
+	Call ERRShow()
+
+End Function
+
+'

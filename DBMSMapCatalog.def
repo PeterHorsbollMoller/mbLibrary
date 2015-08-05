@@ -1,0 +1,66 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    D B M S M A P C A T A L O G
+'********************************************************************************************************
+'	Created 01-12-2011
+'	- Currently the coordsys is hardcoded as the Server Create Map statement fails to use variables or function as the coordinate system
+'	06-03-2012
+'	- Fixed a variable type error in DBMCGetMapCatalogTableName
+'	20-09-2012
+'	- Changed the name of the MapInfo MapCatalog to be lower case
+'********************************************************************************************************
+'	Requires:
+'	- DEBUGLib
+'	- DBMSMapCatalog
+'	- DBMSInfoLib
+'	- DBMSUtilityLib
+'	- ERRORLib
+'	- FILELib
+'********************************************************************************************************
+
+'**Will create the MapCatalog in the MS Access database
+Declare Sub DBMCCreateInMSAccessFile(	  ByVal sDBFile As String	'Name of MSAccess file
+								, ByVal sUsername As String	'Username to access the database, can be ""
+								, ByVal sPassword As String	'Password to access the database, can be ""
+								)
+
+'**Will create the MapCatalog in the MS Access database
+Declare Sub DBMCCreate(	ByVal nConnection As Integer		'Connection to use, must be open in MI Pro
+						)
+
+'**Will register a table as a XY mappable table in the MapCatalog
+Declare Sub DBMCRegisterTableXYInMSAccessFile( ByVal sDBFile As String	'Name of MSAccess file
+									, ByVal sUsername As String	'Username to access the database, can be ""
+									, ByVal sPassword As String	'Password to access the database, can be ""
+									, ByVal sSchema As String	'Name of the schema in the database, can be ""
+									, ByVal sTable As String		'Name of the table to register in the MapCatalog
+									, ByVal sColumnX As String	'name of the column holding the X coordinates
+									, ByVal sColumnY As String	'name of the column holding the Y coordinates
+									, ByVal symDefault As Symbol	'Default symbol to set in the MapCatalog
+									, ByVal sCoordSys As String	'Coordinate system:
+															' Currently these are hardcoded and currently only these are supported:
+															'	"UTM32_ETRS89", "EPSG:25832"
+															'	"UTM33_ETRS89", "EPSG:25833"
+									)
+
+'**Will register a table as a XY mappable table in the MapCatalog
+Declare Sub DBMCRegisterTableXY(	  ByVal nConnection As Integer	'Connection to use, must be open in MI Pro
+							, ByVal sSchema As String		'Name of the schema in the database, can be "" in certain databases
+							, ByVal sTable As String			'Name of the table to register in the MapCatalog
+							, ByVal sColumnX As String		'name of the column holding the X coordinates
+							, ByVal sColumnY As String		'name of the column holding the Y coordinates
+							, ByVal symDefault As Symbol		'Default symbol to set in the MapCatalog
+							, ByVal sCoordSys As String		'Coordinate system:
+														' Currently these are hardcoded and currently only these are supported:
+														'	"UTM32_ETRS89", "EPSG:25832"
+														'	"UTM33_ETRS89", "EPSG:25833"
+							)
+
+'**Will check if a table already is registered in the MapCatalog
+Declare Function DBMCTableIsRegistered(	  ByVal nConnection As Integer	'Connection to use, must be open in MI Pro
+								, ByVal sSchema As String		'Name of the schema in the database, can be "" in certain databases
+								, ByVal sTable As String			'Name of table to look for
+								) As Logical					'returns TRUE if the table is registered, otherwise FALSE
+
+'**Will return the name of the MapCatalog in the database, including schema etc
+Declare Function DBMCGetMapCatalogTableName(	ByVal nConnection As Integer	'Connection to use, must be open in MI Pro
+									) As String				'Will return the name of the MapCatalog, including schema etc

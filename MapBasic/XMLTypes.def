@@ -1,0 +1,5 @@
+Define MIXmlDocument         IntPtr
+Define MIXmlNode             IntPtr
+Define MIXmlNodeList         IntPtr
+Define MIXmlNamedNodeMap     IntPtr
+Define MIXMLSchemaCollection IntPtr

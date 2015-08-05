@@ -1,0 +1,56 @@
+' --------------------------------------------------------------
+' STANDARD TABS
+' --------------------------------------------------------------
+Define	TAB_HOME					"TabHome"				'HOME'
+Define	TAB_TABLE					"TabTable"			'TABLE'
+Define	TAB_MAP					"TabMap"				'MAP'
+Define	TAB_SPATIAL				"TabSpatial"			'SPATIAL'
+Define	TAB_LAYOUT				"TabLayout"			'LAYOUT'
+Define	TAB_LEGACY				"TabLegacy"			'LEGACY'
+
+' --------------------------------------------------------------
+' STANDARD GROUPS ON 'HOME' TAB
+' --------------------------------------------------------------
+Define	TAB_GROUP_HOME_FILE			"HomeFile"			'File'
+Define	TAB_GROUP_HOME_CLIPBOARD		"HomeClipboard"		'Clipboard'
+Define	TAB_GROUP_HOME_WINDOW		"HomeWindow"			'Window'
+Define	TAB_GROUP_HOME_OUTPUT		"HomeOutput"			'Output'
+Define	TAB_GROUP_HOME_TOOLS		"HomeTools"			'Tools'
+
+' --------------------------------------------------------------
+' STANDARD GROUPS ON 'TABLE' TAB
+' --------------------------------------------------------------
+Define	TAB_GROUP_TABLE_DATA		"TableData"			'Content'
+Define	TAB_GROUP_TABLE_SELECTION	"TableSelection"		'Selection'
+Define	TAB_GROUP_TABLE_EDIT		"TableAddEdit"			'Edit'
+Define	TAB_GROUP_TABLE_BROWSERTOOLS	"BrowserTools"			'Browser Tools'
+Define	TAB_GROUP_TABLE_SORTFILTER	"BrowserSortFilter"		'Sort and Filter'
+Define	TAB_GROUP_TABLE_MAINTENANCE	"TableMaintenance"		'Maintenance'
+
+'--------------------------------------------------------------
+' STANDARD GROUPS ON 'MAP' TAB
+' --------------------------------------------------------------
+Define	TAB_GROUP_MAP_FILE			"MapFile"				'Content'
+Define	TAB_GROUP_MAP_SELECTION		"MapSelection"			'Selection'
+Define	TAB_GROUP_MAP_NAVIGATE		"MapNavigate"			'Navigate'
+Define	TAB_GROUP_MAP_LABEL			"MapLabel"			'Label'
+Define	TAB_GROUP_MAP_ANALYZE		"MapAnalyze"			'Analyze'
+Define	TAB_GROUP_MAP_OPTIONS		"MapOptions"			'Options'
+
+'--------------------------------------------------------------
+' STANDARD GROUPS ON 'SPATIAL' TAB
+' --------------------------------------------------------------
+Define	TAB_GROUP_SPATIAL_CLIPBOARD	"SpatialClipboardBar"	'Clipboard'
+Define	TAB_GROUP_SPATIAL_SELECTION	"SpatialSelectionBar"	'Selection'
+Define	TAB_GROUP_SPATIAL_EDIT		"SpatialEditBar"		'Edit'
+Define	TAB_GROUP_SPATIAL_CREATE		"SpatialCreateBar"		'Create'
+
+'--------------------------------------------------------------
+' STANDARD GROUPS ON 'LAYOUT' TAB
+' --------------------------------------------------------------
+Define	TAB_GROUP_LAYOUT_PAGE		"LayoutPage"			'Page'
+Define	TAB_GROUP_LAYOUT_EDIT		"LayoutEdit"			'Edit'
+Define	TAB_GROUP_LAYOUT_ARRANGE		"LayoutArrange"		'Arrange'
+Define	TAB_GROUP_LAYOUT_TOOLS		"LayoutTools"			'Tools'
+Define	TAB_GROUP_LAYOUT_LAYERSTYLE	"LayerStyleStyle"		'Style'
+Define	TAB_GROUP_LAYOUT_OUTPUT		"LayoutOutput"			'Output'

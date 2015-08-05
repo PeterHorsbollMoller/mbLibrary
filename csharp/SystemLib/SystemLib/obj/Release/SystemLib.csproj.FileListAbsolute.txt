@@ -1,0 +1,5 @@
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\bin\Release\SystemLib.dll
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\bin\Release\SystemLib.pdb
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\obj\Release\ResolveAssemblyReference.cache
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\obj\Release\SystemLib.dll
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\obj\Release\SystemLib.pdb

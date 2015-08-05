@@ -1,0 +1,674 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "OBJLib.def"
+Include "TABLELib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJIsInitialized(ByVal oObj As Object) As Logical
+
+Dim	nType As Integer
+
+OnError GoTo ErrorOccured
+
+OBJIsInitialized = FALSE
+
+	OnError GoTo NotInitialized
+	nType = ObjectInfo(oObj, OBJ_INFO_TYPE)
+
+OBJIsInitialized = TRUE
+
+	Exit Function
+'-------------------------
+NotInitialized:
+	OBJIsInitialized = FALSE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJIsInitialized")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJFindNode(	  ByVal oObj As Object		'The object (polyline or polygon) to search in, only the first segment of the object will be searched
+					, ByVal oNode As Object		'Node position to look for
+					, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
+					) As Integer				'Returns the first matching node number, or 0 if no found
+
+Dim	nSegm, nNode As Integer
+
+OnError GoTo ErrorOccured
+
+OBJFindNode = 0
+
+	If OBJFindSegmentAndNode(oObj, oNode, fTolerance, nSegm, nNode) Then
+		If nSegm = 1 Then
+			OBJFindNode = nNode
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJFindNode")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJFindSegmentAndNode( ByVal oObj As Object		'The object (polyline or polygon) to search in
+						, ByVal oNode As Object		'Node position to look for
+						, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
+						, nSegmentFound As Integer	'The Segment number where the node was found
+						, nNodeFound As Integer		'The matching node number
+						) As Logical				'Returns TRUE if a matching node was found, otherwise FALSE
+
+Dim	nSegm, nNode As Integer,
+	fNodeX, fNodeY, fX, fY, fDistance As Float
+
+OnError GoTo ErrorOccured
+
+OBJFindSegmentAndNode = FALSE
+
+	If NOT ObjectInfo(oObj, OBJ_INFO_TYPE) IN (OBJ_TYPE_PLINE, OBJ_TYPE_REGION) Then
+		Exit Function
+	End If
+
+	fNodeX	= CentroidX(oNode)
+	fNodeY	= CentroidY(oNode)
+
+	For nSegm = 1 To ObjectInfo(oObj, OBJ_INFO_NPOLYGONS)
+		For nNode = 1 To ObjectInfo(oObj, OBJ_INFO_NPOLYGONS + nSegm)
+			fX	= ObjectNodeX(oObj, nSegm, nNode)
+			fY	= ObjectNodeY(oObj, nSegm, nNode)
+
+			fDistance	= CartesianDistance(fNodeX, fNodeY, fX, fY, "m")
+			If fDistance <= fTolerance Then
+'				Call DEBUGPrint("   Found node as no " & nNode & " " & fDistance & " m from point")
+				nSegmentFound	= nSegm
+				nNodeFound	= nNode
+				OBJFindSegmentAndNode = TRUE
+				Exit Function
+			End If
+		Next		'nNode
+	Next		'nSegm
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJFindSegmentAndNode")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJFindNodeBinary(	  ByVal oObj As Object		'The object (polyline or polygon) to search in, only the first segment of the object will be searched
+						, ByVal oNode As Object		'Node position to look for
+						, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
+						, ByVal nOffset As Integer	'Offset of 1st node in polyline based on original
+						) As Integer				'Returns the first matching node number, or 0 if no found
+
+Dim	objLow, objHigh As Object,
+	nPnts, nNode, nMid As Integer
+
+OnError GoTo ErrorOccured
+
+OBJFindNodeBinary = 0
+
+	nPnts = ObjectInfo(oObj, OBJ_INFO_NPNTS)
+
+	If nPnts < 100 Then
+'		Call DEBUGPrint("   Searching using OBJFindNode (" & nPnts & " points)")
+		nNode = OBJFindNode( oObj, oNode, fTolerance)
+		If nNode > 0 Then
+			OBJFindNodeBinary = (nNode + nOffset)
+		End If
+		Exit Function
+	End If
+
+	' Determine the middle point
+	nMid = nPnts \ 2 + nPnts Mod 2
+'	Call DEBUGPrint("   Mid: " & nMid & " out of " & nPnts & " points. Offset = " & nOffset)
+
+	' Start with the lower half
+	objLow = ExtractNodes( oObj, 1, 1, nMid, FALSE)
+	If oNode Within CartesianBuffer(MBR(objLow), 25, fTolerance, "m") Then
+'		Call DEBUGPrint("   Searching in lower part: 1 - " & nMid )
+		nNode = OBJFindNodeBinary(objLow, oNode, fTolerance, nOffset)
+		OBJFindNodeBinary = nNode
+	Else
+		' Forget this branch
+		nNode = 0
+	End If
+
+	' If we couldn't find it in the lower, then check the upper half
+	If nNode = 0 Then
+		objHigh = ExtractNodes(oObj, 1, nMid + 1, nPnts, FALSE )
+		If oNode Within CartesianBuffer(MBR(objHigh), 25, fTolerance, "m") Then
+'			Call DEBUGPrint("   Searching in higher part: " & (nMid + 1) & " - " & nPnts)
+			nNode = OBJFindNodeBinary( objHigh, oNode, fTolerance, nOffset + nMid)
+		Else
+			' Forget this branch
+			nNode = 0
+		End If
+	End If
+
+	OBJFindNodeBinary = nNode
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJFindNodeBinary: nNode: " & nNode)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJRemoveDuplicateNodes(	  ByVal oObj As Object		'The object (polyline or polygon) to remove duplicate nodes in
+							, ByVal fTolerance As Float	'The tolerance defining whether two nodes are "the same", distance is measured using Cartesian calculation
+							) As Object				'Returns the object with duplicate nodes removed
+
+Dim	nSegm, nNode, nNumNodes As Integer,
+	fPrevX, fPrevY, fX, fY As Float
+
+OnError GoTo ErrorOccured
+
+OBJRemoveDuplicateNodes = oObj
+
+	If NOT ObjectInfo(oObj, OBJ_INFO_TYPE) IN (OBJ_TYPE_PLINE, OBJ_TYPE_REGION) Then
+		Exit Function
+	End If
+
+'	Call DEBUGPrint("OBJRemoveDuplicateNodes")
+	For nSegm = 1 To ObjectInfo(oObj, OBJ_INFO_NPOLYGONS)
+'		Call DEBUGPrint("   Segment: " & nSegm)
+
+		nNumNodes	= ObjectInfo(oObj, OBJ_INFO_NPOLYGONS + nSegm)
+		fPrevX	= ObjectNodeX(oObj, nSegm, nNumNodes)
+		fPrevY	= ObjectNodeY(oObj, nSegm, nNumNodes)
+
+		For nNode = (nNumNodes - 1) To 1 Step -1
+'			Call DEBUGPrint("      Node: " & nNode)
+			fX	= ObjectNodeX(oObj, nSegm, nNode)
+			fY	= ObjectNodeY(oObj, nSegm, nNode)
+
+			If CartesianDistance(fPrevX, fPrevY, fX, fY, "m") <= fTolerance Then
+				If nNode = 1 Then
+					Call DEBUGPrint("      - Node 1 on segment " & nSegm)
+'					Alter Object oObj
+'						Node Remove Position nSegm, 2
+				Else
+					Call DEBUGPrint("      - Removing Node " & nNode & " from segment " & nSegm)
+					Alter Object oObj
+						Node Remove Position nSegm, nNode
+				End If
+			Else
+				fPrevX	= fX
+				fPrevY	= fY
+			End If
+		Next		'nNode
+	Next		'nSegm
+
+OBJRemoveDuplicateNodes = oObj
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJRemoveDuplicateNodes")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJReverse(  ByVal oObj As Object			'The object which node order to reverse, only line, polyline and polygons are supported
+				) As Object					'Returns the object with the nodes in reversed order
+
+OnError GoTo ErrorOccured
+
+	Do Case ObjectInfo(oObj, OBJ_INFO_TYPE)
+		Case OBJ_TYPE_LINE
+			OBJReverse = OBJReverseLine(oObj)
+		Case OBJ_TYPE_PLINE
+			OBJReverse = OBJReversePolyline(oObj)
+		Case Else
+			OBJReverse = oObj
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJReverse")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJReversePolyline(  ByVal oObj As Object		'The polyline which node order to reverse, only is supported
+							) As Object			'Returns the polyline with the nodes in reversed order
+
+Dim	nSegm, nNode As Integer,
+	fX, fY As Float,
+	oNew As object
+
+OnError GoTo ErrorOccured
+
+OBJReversePolyline = oObj
+
+	Create Pline
+		Into Variable oNew
+		'[ Multiple num_sections ]
+		0	'num_points ( x1, y1 ) ( x2, y2 ) [ ... ]
+		Pen ObjectInfo(oObj, OBJ_INFO_PEN)
+
+
+	For nSegm = 1 To ObjectInfo(oObj, OBJ_INFO_NPOLYGONS)
+		For nNode = 1 To ObjectInfo(oObj, OBJ_INFO_NPOLYGONS + nSegm)
+			fX	= ObjectNodeX(oObj, nSegm, nNode)
+			fY	= ObjectNodeY(oObj, nSegm, nNode)
+
+			Alter Object oNew
+				Node Add Position nSegm, 1 ( fX, fY )
+		Next		'nNode
+	Next		'nSegm
+
+OBJReversePolyline = oNew
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJReversePolyline")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJReverseLine(	  ByVal oObj As Object		'The line which node order to reverse, only line is supported
+					) As Object				'Returns the line with the nodes in reversed order
+
+Dim	oNew As Object
+
+OnError GoTo ErrorOccured
+
+	Create Line
+		Into Variable oNew
+		( ObjectGeography(oObj, OBJ_GEO_LINEENDX), ObjectGeography(oObj, OBJ_GEO_LINEENDY))
+		( ObjectGeography(oObj, OBJ_GEO_LINEBEGX), ObjectGeography(oObj, OBJ_GEO_LINEBEGY))
+		Pen ObjectInfo(oObj, OBJ_INFO_PEN)
+
+	OBJReverseLine = oNew
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJReverseLine")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJAreTouchingAtEndNodes(	  ByVal oFirst As Object		'The first object to use
+							, ByVal oSecond As Object	'The second object to use
+							, ByVal fTolerance As Float	'The tolerance distance allowed
+							) As Logical				'Returns true if the distance between two end nodes are less than fTolereance
+
+Dim	fAX1, fAY1, fAX2, fAY2, fBX1, fBY1, fBX2, fBY2 As Float,
+	arrDistance(4) As Float,
+	nSegments, i, nMinimum As Integer
+
+OnError GoTo ErrorOccured
+
+OBJAreTouchingAtEndNodes = FALSE
+
+	fAX1		= ObjectNodeX(oFirst, 1, 1)
+	fAY1		= ObjectNodeY(oFirst, 1, 1)
+	nSegments	= ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS)
+	fAX2		= ObjectNodeX(oFirst, nSegments, ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS + nSegments))
+	fAY2 	= ObjectNodeY(oFirst, nSegments, ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS + nSegments))
+
+	fBX1		= ObjectNodeX(oSecond, 1, 1)
+	fBY1		= ObjectNodeY(oSecond, 1, 1)
+	nSegments	= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS)
+	fBX2		= ObjectNodeX(oSecond, nSegments, ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegments))
+	fBY2		= ObjectNodeY(oSecond, nSegments, ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegments))
+
+	arrDistance(1)	= Distance(fAX1, fAY1, fBX1, fBY1, "m")
+	arrDistance(2)	= Distance(fAX1, fAY1, fBX2, fBY2, "m")
+	arrDistance(3)	= Distance(fAX2, fAY2, fBX1, fBY1, "m")
+	arrDistance(4)	= Distance(fAX2, fAY2, fBX2, fBY2, "m")
+
+	nMinimum	= 1
+	For i = 2 To 4
+'		Call DEBUGPrint("OBJAreTouchingAtEndNodes: " & arrDistance(nMinimum) & " > " & arrDistance(i))
+		If arrDistance(nMinimum) > arrDistance(i) Then
+			nMinimum	= i
+'			Call DEBUGPrint("OBJAreTouchingAtEndNodes: Minimum: " & arrDistance(nMinimum))
+		End If
+	Next
+
+'	Call DEBUGPrint("OBJAreTouchingAtEndNodes: Minimum: " & arrDistance(nMinimum))
+	If arrDistance(nMinimum) <= fTolerance Then
+		OBJAreTouchingAtEndNodes = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJAreTouchingAtEndNodes")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJFindNearestEndNodes(	  ByVal oFirst As Object		'The first object to use
+							, ByVal oSecond As Object	'The second object to use
+							) As Integer				'Returns 1: First And First node, 2: First and Last, 3: Last and First, 4 Last and Last
+
+Dim	fAX1, fAY1, fAX2, fAY2, fBX1, fBY1, fBX2, fBY2 As Float,
+	arrDistance(4) As Float,
+	nSegments, i, nMinimum As Integer
+
+OnError GoTo ErrorOccured
+
+OBJFindNearestEndNodes = FALSE
+
+	fAX1		= ObjectNodeX(oFirst, 1, 1)
+	fAY1		= ObjectNodeY(oFirst, 1, 1)
+	nSegments	= ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS)
+	fAX2		= ObjectNodeX(oFirst, nSegments, ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS + nSegments))
+	fAY2 	= ObjectNodeY(oFirst, nSegments, ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS + nSegments))
+
+	fBX1		= ObjectNodeX(oSecond, 1, 1)
+	fBY1		= ObjectNodeY(oSecond, 1, 1)
+	nSegments	= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS)
+	fBX2		= ObjectNodeX(oSecond, nSegments, ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegments))
+	fBY2		= ObjectNodeY(oSecond, nSegments, ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegments))
+
+	arrDistance(1)	= Distance(fAX1, fAY1, fBX1, fBY1, "m")
+	arrDistance(2)	= Distance(fAX1, fAY1, fBX2, fBY2, "m")
+	arrDistance(3)	= Distance(fAX2, fAY2, fBX1, fBY1, "m")
+	arrDistance(4)	= Distance(fAX2, fAY2, fBX2, fBY2, "m")
+
+	nMinimum	= 1
+	For i = 2 To 4
+'		Call DEBUGPrint("OBJFindNearestEndNodes: " & arrDistance(nMinimum) & " > " & arrDistance(i))
+		If arrDistance(nMinimum) > arrDistance(i) Then
+			nMinimum	= i
+'			Call DEBUGPrint("OBJFindNearestEndNodes: Minimum: " & arrDistance(nMinimum))
+		End If
+	Next
+
+'	Call DEBUGPrint("OBJFindNearestEndNodes: Minimum: " & arrDistance(nMinimum))
+	OBJFindNearestEndNodes = nMinimum
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJFindNearestEndNodes")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCombineAtEndNode(	  ByVal oFirst As Object			'The first object to use
+						, ByVal oSecond As Object		'The second object to use
+						) As Object					'Return the combined object where one of the end nodes of oSecond has been moved to the nearest end node of oFirst
+
+Dim	nNearestNodes, nSegmA, nNodeA, nSegmB, nNodeB As Integer,
+	sText1, sText2 As String
+
+OnError GoTo ErrorOccured
+
+OBJCombineAtEndNode = FALSE
+
+	nNearestNodes	= OBJFindNearestEndNodes(oFirst, oSecond)
+	Do Case nNearestNodes
+		Case 1, 2
+			nSegmA	= 1
+			nNodeA	= 1
+			sText2	= " to first node (" & nSegmA & ", " & nNodeA & ") of first object"
+		Case 3, 4
+			nSegmA	= ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS)
+			nNodeA	= ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS + nSegmA)
+			sText2	= " to last node (" & nSegmA & ", " & nNodeA & ")  of first object"
+	End Case
+	Do Case nNearestNodes
+		Case 1, 3
+			nSegmB	= 1
+			nNodeB	= 1
+			sText1	= "Moving first node (" & nSegmB & ", " & nNodeB & ") of second object "
+		Case 2, 4
+			nSegmB	= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS)
+			nNodeB	= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegmB)
+			sText1	= "Moving last node (" & nSegmB & ", " & nNodeB & ") of second object "
+	End Case
+
+'	Call DEBUGPrint("OBJCombineAtEndNode: " & sText1 & sText2 & " Distance, m: " & Distance(ObjectNodeX(oSecond, nSegmB, nNodeB), ObjectNodeY(oSecond, nSegmB, nNodeB), ObjectNodeX(oFirst, nSegmA, nNodeA), ObjectNodeY(oFirst, nSegmA, nNodeA), "m"))
+	Alter Object oSecond
+		Node Set Position nSegmB, nNodeB (ObjectNodeX(oFirst, nSegmA, nNodeA), ObjectNodeY(oFirst, nSegmA, nNodeA))
+
+	OBJCombineAtEndNode = Combine(oFirst, oSecond)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCombineAtEndNode")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCombineAtEndNodeNByN(	  ByVal oFirst As Object			'The first object to use
+							, ByVal oSecond As Object		'The second object to use
+							) As Object					'Return the combined object where one of the end nodes of oSecond has been moved to the nearest end node of oFirst
+
+Dim	nNearestNodes, nSegmA, nNodeA, nSegmB, nNodeB As Integer,
+	nNode, nStartNode, nEndNode, nNodeStep As Integer,
+	sText1, sText2 As String
+
+OnError GoTo ErrorOccured
+
+OBJCombineAtEndNodeNByN = FALSE
+
+	If ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS) > 1 Then
+'		Call DEBUGPrint("OBJCombineAtEndNodeNByN using OBJCombineAtEndNode as second object has several segments")
+		OBJCombineAtEndNodeNByN	= OBJCombineAtEndNodeNByN(oFirst, oSecond)
+		Exit Function
+	End If
+
+	nNearestNodes	= OBJFindNearestEndNodes(oFirst, oSecond)
+	Do Case nNearestNodes
+		Case 1, 2
+			nSegmA	= 1
+			nNodeA	= 1
+			sText2	= " to first node (" & nSegmA & ", " & nNodeA & ") of first object"
+		Case 3, 4
+			nSegmA	= ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS)
+			nNodeA	= (ObjectInfo(oFirst, OBJ_INFO_NPOLYGONS + nSegmA) + 1)
+			sText2	= " to last node (" & nSegmA & ", " & nNodeA & ")  of first object"
+	End Case
+	Do Case nNearestNodes
+		Case 1, 3
+			nSegmB		= 1
+			nNodeB		= 1
+			nStartNode 	= 2
+			nEndNode 		= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegmB)
+			nNodeStep		= 1
+			sText1	= "Moving first node (" & nSegmB & ", " & nNodeB & ") of second object "
+		Case 2, 4
+			nSegmB		= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS)
+			nNodeB		= ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegmB)
+			nStartNode 	= (ObjectInfo(oSecond, OBJ_INFO_NPOLYGONS + nSegmB) - 1)
+			nEndNode 		= 1
+			nNodeStep		= -1
+			sText1	= "Moving last node (" & nSegmB & ", " & nNodeB & ") of second object "
+	End Case
+
+'	Call DEBUGPrint("For " & nNode & " = " & nStartNode & " To " & nEndNode & " Step " & nNodeStep)
+	For nNode = nStartNode To nEndNode Step nNodeStep
+
+'		Call DEBUGPrint("OBJCombineAtEndNodeNByN: Adding Node" & nNode & " at position " & nNodeA)
+		Alter Object oFirst
+			Node Add Position nSegmA, nNodeA (ObjectNodeX(oSecond, nSegmB, nNode), ObjectNodeY(oSecond, nSegmB, nNode))
+
+		If nNodeA > 1 Then
+			nNodeA	= nNodeA + 1
+		End If
+	Next
+
+	OBJCombineAtEndNodeNByN = oFirst
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCombineAtEndNodeNByN")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJAddNodeOnPolyline(  ByVal oPolyline As Object		'The polyline that should have the node added
+						, ByVal oPoint As Object			'The Node Point to add
+						, ByVal fTolerance As Float		'The tolerance distance, m, that determines if the node is on the line
+						) As Object					'The polyline with the added node
+
+Dim	nSegm, nNode As Integer,
+	oSegment, oLine As Object,
+	fDistance, fMinDistance As Float
+
+OnError GoTo ErrorOccured
+
+OBJAddNodeOnPolyline = oPolyline
+
+	fMinDistance	= 1000000
+	For nSegm = 1 To ObjectInfo(oPolyline, OBJ_INFO_NPOLYGONS)
+		If Distance(CentroidX(oPoint), CentroidY(oPoint), ObjectNodeX(oPolyline, nSegm, 1), ObjectNodeY(oPolyline, nSegm, 1), "m") <= fTolerance Then
+'			Call DEBUGPrint("Using existing node no 1")
+			Exit Function
+		End If
+
+		For nNode = 1 To (ObjectInfo(oPolyline, OBJ_INFO_NPOLYGONS + nSegm) - 1)
+			If Distance(CentroidX(oPoint), CentroidY(oPoint), ObjectNodeX(oPolyline, nSegm, (nNode + 1)), ObjectNodeY(oPolyline, nSegm, (nNode + 1)), "m") <= fTolerance Then
+'				Call DEBUGPrint("Using existing node no " & nNode)
+				Exit Function
+			End If
+
+			oSegment	= ExtractNodes(oPolyline, nSegm, nNode, (nNode + 1), FALSE)
+'			oLine	= ConnectObjects(oSegment, oPoint, TRUE)
+			fDistance	= CartesianObjectDistance(oSegment, oPoint, "m")
+
+'			If ObjectLen(oLine, "m") <= fTolerance Then
+			If fDistance <= fTolerance Then
+				Alter Object oPolyline
+					Node Add Position nSegm, (nNode + 1) (CentroidX(oPoint), CentroidY(oPoint))
+'				Call DEBUGPrint("   Adding node as no " & (nNode + 1) & " " & fDistance & " m from polyline")
+				OBJAddNodeOnPolyline = oPolyline
+				Exit Function
+			Else
+				fMinDistance	= Minimum(fMinDistance, fDistance)
+			End If
+
+		Next		'nNode
+	Next		'nSegm
+
+'	Call DEBUGPrint("Not found on polyline. Minimum distance: " & FormatNumber$(fMinDistance))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJAddNodeOnPolyline")
+	Call ERRShow()
+
+End Function

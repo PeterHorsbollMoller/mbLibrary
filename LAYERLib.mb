@@ -1,0 +1,130 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "LAYERLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function LAYERExists(ByVal nMID As Integer, ByVal sLayer As String) As Logical
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+LAYERExists = FALSE
+
+	For i = 1 To MapperInfo(nMID, MAPPER_INFO_LAYERS)
+		If LayerInfo(nMID, i, LAYER_INFO_NAME) = sLayer Then
+			LAYERExists = TRUE
+			Exit Function
+		End If
+	Next
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "LAYERExists: " & nMID & " : " & sLayer)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function LAYERGetLayerNumber(ByVal nMID As Integer, ByVal sLayer As String) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+LAYERGetLayerNumber = FALSE
+
+	For i = 1 To MapperInfo(nMID, MAPPER_INFO_LAYERS)
+		If LayerInfo(nMID, i, LAYER_INFO_NAME) = sLayer Then
+			LAYERGetLayerNumber = i
+			Exit Function
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "LAYERGetLayerNumber: nMID: " & nMID & " sLayer: "  & sLayer)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function LAYERGetPositionInGroupLayer(	  ByVal nMID As Integer			'MapWindow to search
+								, ByVal nGroupLayerID As Integer	'Group Layer ID to search, use 0 as top level
+								, ByVal sLayer As String			'Layer Name to find
+								) As Integer					'Returns the position within this group layer, return -1 if not found
+															'If you want to use to insert a layer, use (Position - 1) if you insert into the top level
+
+Dim	nLayer, ll, llOffset, nCount As Integer
+
+OnError GoTo ErrorOccured
+
+LAYERGetPositionInGroupLayer = -1
+
+	llOffset	= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+
+	For nLayer = 1 To GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_ALL_LAYERS)
+		ll = llOffset + nLayer
+'		Call DEBUGPrint("   " & ll & ": " & LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME))
+
+		If LayerListInfo(nMID, ll, LAYERLIST_INFO_TYPE) = LAYERLIST_INFO_TYPE_GROUP Then
+			If GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_PARENT_GROUP_ID) = nGroupLayerID Then
+				nCount = nCount + 1
+'				Print nCount & ": " & GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_NAME)
+			End If
+		Else
+			If LayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_LAYER_ID), LAYER_INFO_PARENT_GROUP_ID) = nGroupLayerID Then
+				nCount = nCount + 1
+'				Print nCount & ": " & LayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_LAYER_ID), LAYER_INFO_NAME)
+
+
+				If LayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_LAYER_ID), LAYER_INFO_NAME) = sLayer Then
+					LAYERGetPositionInGroupLayer = nCount
+'					Call DEBUGPrint("Layer " & sLayer & " found at position " & nCount & " in Layer Group " & nGroupLayerID)
+					Exit Function
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "LAYERGetPositionInGroupLayer")
+	Call ERRShow()
+
+End Function

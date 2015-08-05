@@ -1,0 +1,291 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+'Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "Types\T_ERROR.def"
+
+Dim	mnNumErrors As Integer,
+	marrErrors() As T_ERROR
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ERRCreate(	  ByVal nErrorNo As Integer
+			, ByVal sErrorText As String
+			, ByVal sErrorDescription As string
+				)
+
+OnError GoTo ErrorOccured
+
+	mnNumErrors	= mnNumErrors + 1
+
+	Redim marrErrors(mnNumErrors)
+
+	marrErrors(mnNumErrors).nNo			= nErrorNo
+	marrErrors(mnNumErrors).sText			= sErrorText
+	marrErrors(mnNumErrors).sDescription	= sErrorDescription
+	marrErrors(mnNumErrors).dDate			= CurDate()
+	marrErrors(mnNumErrors).sTime			= Time(24)
+'	marrErrors(mnNumErrors).sUser			=
+'	marrErrors(mnNumErrors).sComputer		=
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Note Err() & " " & Error$() & ": "
+		& lf & nErrorNo & ": " & sErrorText & lf & sErrorDescription
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function ERRGetErrorNo(ByVal nErrorItem As Integer) As Integer
+
+OnError GoTo ErrorOccured
+
+	ERRGetErrorNo	= marrErrors(nErrorItem).nNo
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRGetErrorNo")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ERRGetDescription(ByVal nErrorItem As Integer, ByVal bOnMultipleLines As Logical) As String
+
+OnError GoTo ErrorOccured
+
+	ERRGetDescription = ""
+
+	If nErrorItem > 0 AND nErrorItem <= mnNumErrors Then
+		If bOnMultipleLines Then
+			ERRGetDescription = marrErrors(nErrorItem).nNo
+							& lf & marrErrors(nErrorItem).sText
+							& lf & marrErrors(nErrorItem).sDescription
+		Else
+			ERRGetDescription = marrErrors(nErrorItem).nNo
+							& " " & marrErrors(nErrorItem).sText
+							& " " & marrErrors(nErrorItem).sDescription
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ERRGetFullDescription(ByVal nErrorItem As Integer, ByVal bOnMultipleLines As Logical) As String
+
+OnError GoTo ErrorOccured
+
+	ERRGetFullDescription = ""
+
+	If nErrorItem > 0 AND nErrorItem <= mnNumErrors Then
+		If bOnMultipleLines Then
+			ERRGetFullDescription = Formatdate$(marrErrors(nErrorItem).dDate) & " " & marrErrors(nErrorItem).sTime & ": " & marrErrors(nErrorItem).nNo
+								& lf & marrErrors(nErrorItem).sText
+								& lf & marrErrors(nErrorItem).sDescription
+		Else
+			ERRGetFullDescription = Formatdate$(marrErrors(nErrorItem).dDate) & " " & marrErrors(nErrorItem).sTime & ": " & marrErrors(nErrorItem).nNo
+								& " " & marrErrors(nErrorItem).sText
+								& " " & marrErrors(nErrorItem).sDescription
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function ERRGetLatestErrorNo() As Integer
+
+OnError GoTo ErrorOccured
+
+	ERRGetLatestErrorNo	= ERRGetErrorNo(mnNumErrors)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRGetLatestErrorNo")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function ERRGetLatestDescription(ByVal bOnMultipleLines As Logical) As String
+
+OnError GoTo ErrorOccured
+
+	ERRGetLatestDescription	= ERRGetDescription(mnNumErrors, bOnMultipleLines)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRGetLatestDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function ERRGetLatestFullDescription(ByVal bOnMultipleLines As Logical) As String
+
+OnError GoTo ErrorOccured
+
+	ERRGetLatestFullDescription	= ERRGetFullDescription(mnNumErrors, bOnMultipleLines)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRGetLatestFullDescription")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ERRShow()
+
+OnError GoTo ErrorOccured
+
+	If mnNumErrors > 0 Then
+		Note "Error: " & ERRGetLatestDescription(TRUE)
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRShow")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ERRPrint()
+
+OnError GoTo ErrorOccured
+
+	If mnNumErrors > 0 Then
+		Print "Error: " & ERRGetLatestDescription(FALSE)
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRShow")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ERRDump
+
+Dim	sFile As String
+
+OnError GoTo ErrorOccured
+
+	sFile = FileSaveAsDlg("", "ErrorsDump", "TXT", "Please pick place and name of error dump file...")
+	If sFile = "" Then
+		Exit Sub
+	End If
+
+	Call ERRDumpToFile(sFile)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRDump")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ERRDumpToFile(ByVal sFile As String)
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	If sFile = "" Then
+		Exit Sub
+	End If
+
+	Open File sFile
+		For Append
+		As #971
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+
+	For i = 1 To mnNumErrors
+		Print #971, ERRGetFullDescription(i, FALSE)
+	Next
+
+	Close File #971
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ERRDump")
+	Call ERRShow()
+
+End Sub
+
+

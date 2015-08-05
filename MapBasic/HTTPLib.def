@@ -1,0 +1,350 @@
+Define MIWEBSERVICES_LIB_NAME "MapInfo.WebServiceUtil.dll"
+
+Define INTERNET_OPEN_TYPE_PRECONFIG               0   ' use registry configuration
+Define INTERNET_OPEN_TYPE_DIRECT                  1   ' direct to net
+Define INTERNET_OPEN_TYPE_PROXY                   3   ' via named proxy
+
+Define INTERNET_FLAG_NO_AUTO_REDIRECT  &H200000  '  don't handle redirections automatically
+Define INTERNET_FLAG_SECURE            &H800000  ' use PCT/SSL if applicable (HTTP)
+Define INTERNET_FLAG_FROM_CACHE        &H1000000  ' use offline semantics
+Define INTERNET_FLAG_MAKE_PERSISTENT   &H2000000  ' make this item persistent in cache
+Define INTERNET_FLAG_NO_CACHE_WRITE    &H4000000  ' don't write this item to the cache
+Define INTERNET_FLAG_DONT_CACHE        INTERNET_FLAG_NO_CACHE_WRITE
+Define INTERNET_FLAG_OFFLINE           INTERNET_FLAG_FROM_CACHE
+Define INTERNET_FLAG_EXISTING_CONNECT  &H20000000 ' FTP: use existing InternetConnect handle for server if possible
+Define INTERNET_FLAG_RELOAD            &H80000000  ' retrieve the original item
+
+Define HTTP_VERB_POST   0
+Define HTTP_VERB_GET    1
+Define HTTP_VERB_HEAD   2
+Define HTTP_VERB_PUT    3
+Define HTTP_VERB_LINK   4
+Define HTTP_VERB_DELETE 5
+Define HTTP_VERB_UNLINK 6
+
+Define HTTP_STATUS_CONTINUE            100 ' OK to continue with request
+Define HTTP_STATUS_SWITCH_PROTOCOLS    101 ' server has switched protocols in upgrade header
+
+Define HTTP_STATUS_OK                  200 ' request completed
+Define HTTP_STATUS_CREATED             201 ' object created, reason = new URI
+Define HTTP_STATUS_ACCEPTED            202 ' async completion (TBS)
+Define HTTP_STATUS_PARTIAL             203 ' partial completion
+Define HTTP_STATUS_NO_CONTENT          204 ' no info to return
+Define HTTP_STATUS_RESET_CONTENT       205 ' request completed, but clear form
+Define HTTP_STATUS_PARTIAL_CONTENT     206 ' partial GET furfilled
+
+Define HTTP_STATUS_AMBIGUOUS           300 ' server couldn't decide what to return
+Define HTTP_STATUS_MOVED               301 ' object permanently moved
+Define HTTP_STATUS_REDIRECT            302 ' object temporarily moved
+Define HTTP_STATUS_REDIRECT_METHOD     303 ' redirection w/ new access method
+Define HTTP_STATUS_NOT_MODIFIED        304 ' if-modified-since was not modified
+Define HTTP_STATUS_USE_PROXY           305 ' redirection to proxy, location header specifies proxy to use
+Define HTTP_STATUS_REDIRECT_KEEP_VERB  307 ' HTTP/1.1: keep same verb
+
+Define HTTP_STATUS_BAD_REQUEST         400 ' invalid syntax
+Define HTTP_STATUS_DENIED              401 ' access denied
+Define HTTP_STATUS_PAYMENT_REQ         402 ' payment required
+Define HTTP_STATUS_FORBIDDEN           403 ' request forbidden
+Define HTTP_STATUS_NOT_FOUND           404 ' object not found
+Define HTTP_STATUS_BAD_METHOD          405 ' method is not allowed
+Define HTTP_STATUS_NONE_ACCEPTABLE     406 ' no response acceptable to client found
+Define HTTP_STATUS_PROXY_AUTH_REQ      407 ' proxy authentication required
+Define HTTP_STATUS_REQUEST_TIMEOUT     408 ' server timed out waiting for request
+Define HTTP_STATUS_CONFLICT            409 ' user should resubmit with more info
+Define HTTP_STATUS_GONE                410 ' the resource is no longer available
+Define HTTP_STATUS_LENGTH_REQUIRED     411 ' the server refused to accept request w/o a length
+Define HTTP_STATUS_PRECOND_FAILED      412 ' precondition given in request failed
+Define HTTP_STATUS_REQUEST_TOO_LARGE   413 ' request entity was too large
+Define HTTP_STATUS_URI_TOO_LONG        414 ' request URI too long
+Define HTTP_STATUS_UNSUPPORTED_MEDIA   415 ' unsupported media type
+Define HTTP_STATUS_RETRY_WITH          449 ' retry after doing the appropriate action.
+
+Define HTTP_STATUS_SERVER_ERROR        500 ' internal server error
+Define HTTP_STATUS_NOT_SUPPORTED       501 ' required not supported
+Define HTTP_STATUS_BAD_GATEWAY         502 ' error response received from gateway
+Define HTTP_STATUS_SERVICE_UNAVAIL     503 ' temporarily overloaded
+Define HTTP_STATUS_GATEWAY_TIMEOUT     504 ' timed out waiting for gateway
+Define HTTP_STATUS_VERSION_NOT_SUP     505 ' HTTP version not supported
+
+Define HTTP_STATUS_FIRST               HTTP_STATUS_CONTINUE
+Define HTTP_STATUS_LAST                HTTP_STATUS_VERSION_NOT_SUP
+
+Define INTERNET_SERVICE_FTP    1
+Define INTERNET_SERVICE_GOPHER 2
+Define INTERNET_SERVICE_HTTP   3
+Define AFX_INET_SERVICE_UNK        &H1000
+Define AFX_INET_SERVICE_FILE       (AFX_INET_SERVICE_UNK+1)
+Define AFX_INET_SERVICE_MAILTO     (AFX_INET_SERVICE_UNK+2)
+Define AFX_INET_SERVICE_MID        (AFX_INET_SERVICE_UNK+3)
+Define AFX_INET_SERVICE_CID        (AFX_INET_SERVICE_UNK+4)
+Define AFX_INET_SERVICE_NEWS       (AFX_INET_SERVICE_UNK+5)
+Define AFX_INET_SERVICE_NNTP       (AFX_INET_SERVICE_UNK+6)
+Define AFX_INET_SERVICE_PROSPERO   (AFX_INET_SERVICE_UNK+7)
+Define AFX_INET_SERVICE_TELNET     (AFX_INET_SERVICE_UNK+8)
+Define AFX_INET_SERVICE_WAIS       (AFX_INET_SERVICE_UNK+9)
+Define AFX_INET_SERVICE_AFS        (AFX_INET_SERVICE_UNK+10)
+Define AFX_INET_SERVICE_HTTPS      (AFX_INET_SERVICE_UNK+11)
+
+Define HTTP_QUERY_CUSTOM                       65535
+Define HTTP_QUERY_FLAG_REQUEST_HEADERS         &H80000000
+Define HTTP_QUERY_FLAG_SYSTEMTIME              &H40000000
+Define HTTP_QUERY_FLAG_NUMBER                  &H20000000
+
+Define HTTP_QUERY_MIME_VERSION                 0
+Define HTTP_QUERY_CONTENT_TYPE                 1
+Define HTTP_QUERY_CONTENT_TRANSFER_ENCODING    2
+Define HTTP_QUERY_CONTENT_ID                   3
+Define HTTP_QUERY_CONTENT_DESCRIPTION          4
+Define HTTP_QUERY_CONTENT_LENGTH               5
+Define HTTP_QUERY_CONTENT_LANGUAGE             6
+Define HTTP_QUERY_ALLOW                        7
+Define HTTP_QUERY_PUBLIC                       8
+Define HTTP_QUERY_DATE                         9
+Define HTTP_QUERY_EXPIRES                      10
+Define HTTP_QUERY_LAST_MODIFIED                11
+Define HTTP_QUERY_MESSAGE_ID                   12
+Define HTTP_QUERY_URI                          13
+Define HTTP_QUERY_DERIVED_FROM                 14
+Define HTTP_QUERY_COST                         15
+Define HTTP_QUERY_LINK                         16
+Define HTTP_QUERY_PRAGMA                       17
+Define HTTP_QUERY_VERSION                      18  '// special: part of status line
+Define HTTP_QUERY_STATUS_CODE                  19  '// special: part of status line
+Define HTTP_QUERY_STATUS_TEXT                  20  '// special: part of status line
+Define HTTP_QUERY_RAW_HEADERS                  21  '// special: all headers as ASCIIZ
+Define HTTP_QUERY_RAW_HEADERS_CRLF             22  '// special: all headers
+
+Define HTTP_QUERY_CONNECTION                   23
+Define HTTP_QUERY_ACCEPT                       24
+Define HTTP_QUERY_ACCEPT_CHARSET               25
+Define HTTP_QUERY_ACCEPT_ENCODING              26
+Define HTTP_QUERY_ACCEPT_LANGUAGE              27
+Define HTTP_QUERY_AUTHORIZATION                28
+Define HTTP_QUERY_CONTENT_ENCODING             29
+Define HTTP_QUERY_FORWARDED                    30
+Define HTTP_QUERY_FROM                         31
+Define HTTP_QUERY_IF_MODIFIED_SINCE            32
+Define HTTP_QUERY_LOCATION                     33
+Define HTTP_QUERY_ORIG_URI                     34
+Define HTTP_QUERY_REFERER                      35
+Define HTTP_QUERY_RETRY_AFTER                  36
+Define HTTP_QUERY_SERVER                       37
+Define HTTP_QUERY_TITLE                        38
+Define HTTP_QUERY_USER_AGENT                   39
+Define HTTP_QUERY_WWW_AUTHENTICATE             40
+Define HTTP_QUERY_PROXY_AUTHENTICATE           41
+Define HTTP_QUERY_ACCEPT_RANGES                42
+Define HTTP_QUERY_SET_COOKIE                   43
+Define HTTP_QUERY_COOKIE                       44
+Define HTTP_QUERY_REQUEST_METHOD               45  '// special: GET/POST etc.
+Define HTTP_QUERY_REFRESH                      46
+Define HTTP_QUERY_CONTENT_DISPOSITION          47
+
+'FTP
+Define FTP_TRANSFER_TYPE_UNKNOWN   0 '0x00000000
+Define FTP_TRANSFER_TYPE_ASCII     1 '0x00000001
+Define FTP_TRANSFER_TYPE_BINARY    2 '0x00000002
+
+Define FILE_ATTRIBUTE_READONLY     1   '0x00000001
+Define FILE_ATTRIBUTE_HIDDEN       2   '0x00000002
+Define FILE_ATTRIBUTE_SYSTEM       4   '0x00000004
+Define FILE_ATTRIBUTE_DIRECTORY    16  '0x00000010
+Define FILE_ATTRIBUTE_ARCHIVE      32  '0x00000020
+Define FILE_ATTRIBUTE_NORMAL       128 '0x00000080
+Define FILE_ATTRIBUTE_TEMPORARY    256 '0x00000100
+
+'error codes used for MIErrorDlg
+Define INTERNET_ERROR_BASE                     12000
+Define ERROR_SUCCESS                           0
+Define ERROR_INVALID_HANDLE                    6
+Define ERROR_CANCELLED                         1223
+Define ERROR_INTERNET_INCORRECT_PASSWORD       (INTERNET_ERROR_BASE + 14)
+Define ERROR_INTERNET_FORCE_RETRY              (INTERNET_ERROR_BASE + 32)
+Define ERROR_INTERNET_SEC_CERT_DATE_INVALID    (INTERNET_ERROR_BASE + 37)
+Define ERROR_INTERNET_SEC_CERT_CN_INVALID      (INTERNET_ERROR_BASE + 38)
+Define ERROR_INTERNET_HTTP_TO_HTTPS_ON_REDIR   (INTERNET_ERROR_BASE + 39)
+Define ERROR_INTERNET_POST_IS_NON_SECURE       (INTERNET_ERROR_BASE + 43)
+Define ERROR_INTERNET_INVALID_CA               (INTERNET_ERROR_BASE + 45)
+
+Declare Function MIGetErrorMessage Lib MIWEBSERVICES_LIB_NAME Alias "MIGetErrorMessage" () As String
+Declare Function MIGetErrorCode Lib MIWEBSERVICES_LIB_NAME Alias "MIGetErrorCode" () As Integer
+Declare Function MICreateSession Lib MIWEBSERVICES_LIB_NAME Alias "MICreateSession" (
+	ByVal strAgent As String)
+	As CInternetSession
+Declare Function MICreateSessionFull Lib MIWEBSERVICES_LIB_NAME Alias "MICreateSessionFull" (
+	ByVal strAgent As String,
+	ByVal dwContext As Integer,
+	ByVal dwAccessType As Integer,
+	ByVal strProxyName As String,
+	ByVal strProxyBypass As String,
+	ByVal dwFlags As Integer)
+	As CInternetSession
+Declare Sub MICloseSession Lib MIWEBSERVICES_LIB_NAME Alias "MICloseSession" (
+	ByVal hSession As CInternetSession)
+Declare Function MISetSessionTimeout Lib MIWEBSERVICES_LIB_NAME Alias "MISetSessionTimeout" (
+	ByVal hSession As CInternetSession,
+	ByVal Connect As Integer,
+	ByVal Send As Integer,
+	ByVal Receive As Integer)
+	As SmallInt
+Declare Function MIParseURL Lib MIWEBSERVICES_LIB_NAME Alias "MIParseURL" (
+	ByVal strURL As String,
+	pServiceType As Integer,
+	pServer As String,
+	ByVal nServerLen As Integer,
+	pObject As String,
+	ByVal nObjectLen As Integer,
+	pPort As INTERNET_PORT)
+	As SmallInt
+Declare Function MIGetHttpConnection Lib MIWEBSERVICES_LIB_NAME Alias "MIGetHttpConnection" (
+	ByVal hSession As CInternetSession,
+	ByVal strServer As String,
+	ByVal nPort As INTERNET_PORT)
+	As CHttpConnection
+Declare Sub MICloseHttpConnection Lib MIWEBSERVICES_LIB_NAME Alias "MICloseHttpConnection" (
+	ByVal hConnection As CHttpConnection)
+Declare Function MIOpenRequest Lib MIWEBSERVICES_LIB_NAME Alias "MIOpenRequest" (
+	ByVal hConnection As CHttpConnection,
+	ByVal nVerb As Integer,
+	ByVal strObjectName As String)
+	As CHttpFile
+Declare Function MIOpenRequestFull Lib  MIWEBSERVICES_LIB_NAME Alias "MIOpenRequestFull" (
+	ByVal hConnection As CHttpConnection,
+	ByVal nVerb As Integer,
+	ByVal strObjectName As String,
+	ByVal strReferer As String,
+	ByVal dwContext As Integer,
+	ByVal strVersion As String,
+	ByVal dwFlags As Integer)
+	As CHttpFile
+Declare Sub MICloseHttpFile Lib MIWEBSERVICES_LIB_NAME Alias "MICloseHttpFile" (
+	ByVal hFile As CHttpFile)
+Declare Function MISendRequest Lib MIWEBSERVICES_LIB_NAME Alias "MISendRequest" (
+	ByVal hFile As CHttpFile,
+	ByVal strHeaders As String,
+	ByVal dwHeadersLen As Integer,
+	ByVal strOptional As String,
+	ByVal dwOptionalLen As Integer,
+	ByVal bAuthenticate As SmallInt)
+	As SmallInt
+Declare Function MISendSimpleRequest Lib MIWEBSERVICES_LIB_NAME Alias "MISendSimpleRequest" (
+	ByVal hFile As CHttpFile,
+	ByVal bAuthenticate As SmallInt)
+	As SmallInt
+Declare Function MIQueryInfoStatusCode Lib MIWEBSERVICES_LIB_NAME Alias "MIQueryInfoStatusCode" (
+	ByVal hFile As CHttpFile,
+	pStatusCode As Integer)
+	As SmallInt
+Declare Function MIErrorDlg Lib MIWEBSERVICES_LIB_NAME Alias "MIErrorDlg" (
+	ByVal hFile As CHttpFile,
+	ByVal dwError As Integer)
+	As Integer
+Declare Function MIQueryInfo Lib MIWEBSERVICES_LIB_NAME Alias "MIQueryInfo" (
+	ByVal hFile As CHttpFile,
+	ByVal dwInfoLevel As Integer,
+	pBuffer As String,
+	pBufferLength As Integer)
+	As SmallInt
+Declare Function MIGetContentType Lib MIWEBSERVICES_LIB_NAME Alias "MIGetContentType" (
+	ByVal hFile As CHttpFile,
+	pBuffer As String,
+	pBufferLength As Integer)
+	As SmallInt
+Declare Function MIGetFileURL Lib MIWEBSERVICES_LIB_NAME Alias "MIGetFileURL" (
+	ByVal hFile As CHttpFile,
+	pURL As String,
+	ByVal lURLLen As Integer)
+	As SmallInt
+Declare Function MIGetContent Lib MIWEBSERVICES_LIB_NAME Alias "MIGetContent" (
+	ByVal hFile As CHttpFile)
+	As CString
+Declare Function MIGetContentToFile Lib MIWEBSERVICES_LIB_NAME Alias "MIGetContentToFile" (
+	ByVal hFile As CHttpFile,
+	ByVal strFileName As String)
+	As SmallInt
+Declare Sub MICloseContent Lib MIWEBSERVICES_LIB_NAME Alias "MICloseContent" (
+	ByVal hContent As CString)
+Declare Function MIGetContentLen Lib MIWEBSERVICES_LIB_NAME Alias "MIGetContentLen" (
+	ByVal hContent As CString)
+	As Integer
+Declare Function MIGetContentString Lib MIWEBSERVICES_LIB_NAME Alias "MIGetContentString" (
+	ByVal hContent As CString)
+	As String
+Declare Function MIGetContentBuffer Lib MIWEBSERVICES_LIB_NAME Alias "MIGetContentBuffer" (
+	ByVal hContent As CString,
+	pBuffer As String,
+	ByVal nLen As Integer)
+	As SmallInt
+Declare Function MISaveContent Lib MIWEBSERVICES_LIB_NAME Alias "MISaveContent" (
+	ByVal hContent As CString,
+	ByVal strFileName As String)
+	As SmallInt
+
+'The following are the FTP functions
+
+Declare Function MIGetFtpConnection Lib MIWEBSERVICES_LIB_NAME Alias "MIGetFtpConnection" (
+	ByVal hSession As CInternetSession,
+	ByVal strServer As String,
+	ByVal strUserName As String,
+	ByVal atrPassword As String,
+	ByVal nPort As INTERNET_PORT)
+	As CFtpConnection
+
+Declare Sub MICloseFtpConnection Lib MIWEBSERVICES_LIB_NAME Alias "MICloseFtpConnection" (
+	ByVal hConnection As CFtpConnection)
+
+Declare Function MIGetFtpFile Lib MIWEBSERVICES_LIB_NAME Alias "MIGetFtpFile" (
+	ByVal hConnection As CFtpConnection,
+	ByVal strRemoteFile As String,
+	ByVal strLocalFile As String,
+	ByVal bFailIfExists As SmallInt,
+	ByVal dwAttributes As Integer,
+	ByVal dwFlags As Integer)
+	As SmallInt
+
+Declare Function MIPutFtpFile Lib MIWEBSERVICES_LIB_NAME Alias "MIPutFtpFile" (
+	ByVal hConnection As CFtpConnection,
+	ByVal strLocalFile As String,
+	ByVal strRemoteFile As String,
+	ByVal dwFlags As Integer)
+	As SmallInt
+
+Declare Function MISetCurrentFtpDirectory Lib MIWEBSERVICES_LIB_NAME Alias "MISetCurrentFtpDirectory"(
+	Byval hConnection As CFtpConnection,
+	Byval strDirName As String)
+	As SmallInt
+
+Declare Function MIGetCurrentFtpDirectory Lib MIWEBSERVICES_LIB_NAME Alias "MIGetCurrentFtpDirectory"(
+	Byval hConnection As CFtpConnection,
+	pDirName As String,
+	lpdwLen As Integer)
+	As SmallInt
+
+Declare Function MIGetFtpFileFind Lib MIWEBSERVICES_LIB_NAME Alias "MIGetFtpFileFind" (
+	ByVal hConnection As CFtpConnection)
+	As CFtpFileFind
+
+Declare Sub MICloseFtpFileFind Lib MIWEBSERVICES_LIB_NAME Alias "MICloseFtpFileFind" (
+	ByVal hFTPFind As CFtpFileFind)
+
+Declare Function MIFindFtpFile Lib MIWEBSERVICES_LIB_NAME Alias "MIFindFtpFile" (
+	ByVal hFTPFind As CFtpFileFind,
+	ByVal strName As String)
+	As SmallInt
+
+Declare Function MIFindNextFtpFile Lib MIWEBSERVICES_LIB_NAME Alias "MIFindNextFtpFile" (
+	ByVal hFTPFind As CFtpFileFind)
+	As SmallInt
+
+Declare Sub MIGetFtpFileName Lib MIWEBSERVICES_LIB_NAME Alias "MIGetFtpFileName"(
+	ByVal hFTPFind As CFtpFileFind,
+	pFileName As String,
+	ByVal bufferLen As Integer)
+
+Declare Function MIIsFtpDirectory Lib MIWEBSERVICES_LIB_NAME Alias "MIIsFtpDirectory"(
+	ByVal hFTPFind As CFtpFileFind)
+	As SmallInt
+
+Declare Function MIIsFtpDots Lib MIWEBSERVICES_LIB_NAME Alias "MIIsFtpDots"(
+	ByVal hFTPFind As CFtpFileFind)
+	As SmallInt

@@ -1,0 +1,23 @@
+'**************************************************************************************************
+'     H I S T O R Y
+'**************************************************************************************************
+'	06-12-2011 13:06:45		Peter Møller added:
+'							- Function LAYERExists(...) As Logical
+'	17-01-2013 14:58:33		Added:
+'							- Function LAYERGetLayerNumber(...) As Integer
+'	05-06-2013 12:19:20		Added:
+'							- Function LAYERGetPositionInGroupLayer(...) As Integer
+'**************************************************************************************************
+
+Declare Function LAYERExists(	  ByVal nMID As Integer
+						, ByVal sLayer As String
+						) As Logical
+Declare Function LAYERGetLayerNumber(	  ByVal nMID As Integer
+								, ByVal sLayer As String
+								) As Integer
+Declare Function LAYERGetPositionInGroupLayer(	  ByVal nMID As Integer			'MapWindow to search
+										, ByVal nGroupLayerID As Integer	'Group Layer ID to search, use 0 as top level
+										, ByVal sLayer As String			'Layer Name to find
+										) As Integer					'Returns the position within this group layer
+																	'If you want to use to insert a layer,
+																	'use (Position - 1) if you insert into the top level

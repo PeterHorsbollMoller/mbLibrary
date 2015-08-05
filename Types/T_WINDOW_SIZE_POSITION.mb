@@ -1,0 +1,535 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\..\Library\MapBasic.def"
+Include "..\..\Library\Icons.def"
+Include "..\..\Library\Menu.def"
+'**default constants...
+Include "..\..\Library\Defaults.def"
+
+'-------------------------------------
+Include "..\..\Library\DEBUGLib.def"
+Include "..\..\Library\ERRORLib.def"
+Include "..\..\Library\STRINGLib.def"
+Include "..\..\Library\TABLELib.def"
+
+Include "T_WINDOW_SIZE_POSITION.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub twspCopy( twspFrom As T_WINDOW_SIZE_POSITION, twspTo As T_WINDOW_SIZE_POSITION)
+
+OnError GoTo ErrorOccured
+
+	twspTo.nWID		= twspFrom.nWID
+	twspTo.sName		= twspFrom.sName
+	twspTo.nType		= twspFrom.nType
+	twspTo.fX			= twspFrom.fX
+	twspTo.fY			= twspFrom.fY
+	twspTo.fHeight		= twspFrom.fHeight
+	twspTo.fWidth		= twspFrom.fWidth
+	twspTo.sPaperUnits	= twspFrom.sPaperUnits
+	twspTo.nWindowState	= twspFrom.nWindowState
+	twspTo.bIsOpen		= twspFrom.bIsOpen
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function twspAreIdentical( twsp1 As T_WINDOW_SIZE_POSITION, twsp2 As T_WINDOW_SIZE_POSITION) As Logical
+
+OnError GoTo ErrorOccured
+
+twspAreIdentical = FALSE
+
+	If twsp1.nWID <> twsp2.nWID Then
+		Exit Function
+	ElseIf twsp1.sName <> twsp2.sName Then
+		Exit Function
+	ElseIf twsp1.nType <> twsp2.nType Then
+		Exit Function
+	ElseIf twsp1.fX <> twsp2.fX Then
+		Exit Function
+	ElseIf twsp1.fY <> twsp2.fY Then
+		Exit Function
+	ElseIf twsp1.fHeight <> twsp2.fHeight Then
+		Exit Function
+	ElseIf twsp1.fWidth <> twsp2.fWidth Then
+		Exit Function
+	ElseIf twsp1.nWindowState <> twsp2.nWindowState Then
+		Exit Function
+	ElseIf twsp1.bIsOpen <> twsp2.bIsOpen Then
+		Exit Function
+	ElseIf twsp1.sPaperUnits <> twsp2.sPaperUnits Then
+		Exit Function
+	End If
+
+twspAreIdentical = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspAreIdentical")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function twspIsValid( twsp As T_WINDOW_SIZE_POSITION) As Logical
+
+OnError GoTo ErrorOccured
+
+twspIsValid = FALSE
+
+	If twsp.fHeight = 0 Then
+		Call DEBUGPrint("twspIsValid: Height = 0")
+		Exit Function
+	ElseIf twsp.fWidth = 0 Then
+		Call DEBUGPrint("twspIsValid: Width = 0")
+		Exit Function
+'	ElseIf NOT twsp.nWindowState IN (WIN_STATE_NORMAL, WIN_STATE_MINIMIZED, WIN_STATE_MAXIMIZED) Then
+'		Exit Function
+	End If
+
+	twspIsValid = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspIsValid")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub twspGetFromWindow( ByVal nWID As Integer, twsp As T_WINDOW_SIZE_POSITION)
+
+OnError GoTo ErrorOccured
+
+	If NOT twsp.sPaperUnits IN ("cm", "in", "mm", "pica", "pt") Then
+		twsp.sPaperUnits = "cm"
+	End If
+
+	Set Paper Units twsp.sPaperUnits
+	twsp.nWID			= nWID
+	twsp.sName		= WindowInfo(nWID, WIN_INFO_NAME)
+	twsp.nType		= WindowInfo(nWID, WIN_INFO_TYPE)
+	twsp.fX			= WindowInfo(nWID, WIN_INFO_X)
+	twsp.fY			= WindowInfo(nWID, WIN_INFO_Y)
+	twsp.fHeight		= WindowInfo(nWID, WIN_INFO_HEIGHT)
+	twsp.fWidth		= WindowInfo(nWID, WIN_INFO_WIDTH)
+	twsp.nWindowState	= WindowInfo(nWID, WIN_INFO_STATE)
+	twsp.bIsOpen		= WindowInfo(nWID, WIN_INFO_OPEN)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	If nWID IN (WIN_MAPBASIC) Then
+		'**These windows must be open to be "read"
+'		Call ERRCreate(Err(), Error$(), "twspGetFromWindow: " & nWID)
+'		Call ERRShow()
+		twsp.bIsOpen	= FALSE
+		Exit Sub
+	Else
+		Call ERRCreate(Err(), Error$(), "twspGetFromWindow: " & nWID)
+		Call ERRShow()
+	End If
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub twspSetOnWindow( ByVal nWID As Integer, twsp As T_WINDOW_SIZE_POSITION)
+
+Dim	sDebug As String
+
+OnError GoTo ErrorOccured
+
+	If NOT twsp.sPaperUnits IN ("cm", "in", "mm", "pica", "pt") Then
+		twsp.sPaperUnits = "cm"
+	End If
+	If nWID = 0 Then
+		nWID = twsp.nWID
+	End If
+
+	If NOT twspIsValid(twsp) Then
+		Call DEBUGPrint("twspSetOnWindow: twsp is not valid!")
+		Exit Sub
+	End If
+
+	If nWID = WIN_RULER Then
+		sDebug = "Set Window " & nWID
+				& " Position (" & twsp.fX & ", " & twsp.fY & ") Units '" & twsp.sPaperUnits & "'"
+
+		Set Window nWID
+			Position (twsp.fX, twsp.fY) Units twsp.sPaperUnits
+	Else
+		If nWID IN (WIN_MESSAGE, WIN_INFO, WIN_LEGEND, WIN_STATISTICS) Then
+			'**These windows can not be minimized nor maximized
+			sDebug = "Set Window " & nWID
+					& " Position (" & twsp.fX & ", " & twsp.fY & ") Units '" & twsp.sPaperUnits & "'"
+					& " Width " & twsp.fWidth & " Units '" & twsp.sPaperUnits & "'"
+					& " Height " & twsp.fHeight & " Units '" & twsp.sPaperUnits & "'"
+
+			Set Window nWID
+				Position (twsp.fX, twsp.fY) Units twsp.sPaperUnits
+				Width twsp.fWidth Units twsp.sPaperUnits
+				Height twsp.fHeight Units twsp.sPaperUnits
+		Else
+			Do Case twsp.nWindowState
+				Case WIN_STATE_MAXIMIZED
+					sDebug = "Set Window " & nWID
+							& " Position (" & twsp.fX & ", " & twsp.fY & ") Units '" & twsp.sPaperUnits & "'"
+							& " Width " & twsp.fWidth & " Units '" & twsp.sPaperUnits & "'"
+							& " Height " & twsp.fHeight & " Units '" & twsp.sPaperUnits & "'"
+							& " Max"
+
+					Set Window nWID
+						Position (twsp.fX, twsp.fY) Units twsp.sPaperUnits
+						Width twsp.fWidth Units twsp.sPaperUnits
+						Height twsp.fHeight Units twsp.sPaperUnits
+						Max
+				Case WIN_STATE_MINIMIZED
+					sDebug = "Set Window " & nWID
+							& " Position (" & twsp.fX & ", " & twsp.fY & ") Units '" & twsp.sPaperUnits & "'"
+							& " Width " & twsp.fWidth & " Units '" & twsp.sPaperUnits & "'"
+							& " Height " & twsp.fHeight & " Units '" & twsp.sPaperUnits & "'"
+							& " Min"
+
+					Set Window nWID
+						Position (twsp.fX, twsp.fY) Units twsp.sPaperUnits
+						Width twsp.fWidth Units twsp.sPaperUnits
+						Height twsp.fHeight Units twsp.sPaperUnits
+						Min
+				Case WIN_STATE_NORMAL
+					sDebug = "Set Window " & nWID
+							& " Position (" & twsp.fX & ", " & twsp.fY & ") Units '" & twsp.sPaperUnits & "'"
+							& " Width " & twsp.fWidth & " Units '" & twsp.sPaperUnits & "'"
+							& " Height " & twsp.fHeight & " Units '" & twsp.sPaperUnits & "'"
+							& " Restore"
+
+					Set Window nWID
+						Position (twsp.fX, twsp.fY) Units twsp.sPaperUnits
+						Width twsp.fWidth Units twsp.sPaperUnits
+						Height twsp.fHeight Units twsp.sPaperUnits
+						Restore
+				Case Else
+					Call DEBUGPrint(" Window state has unexpected value: " & twsp.nWindowState)
+			End Case
+		End If
+	End If
+
+	Call DEBUGPrint("twspSetOnWindow: " & sDebug)
+
+	If twsp.bIsOpen Then
+		If nWID IN (WIN_MAPBASIC, WIN_MESSAGE, WIN_INFO, WIN_STATISTICS, WIN_LEGEND) Then
+			Set Window nWID Show
+		End If
+	Else
+		If nWID IN (WIN_MAPBASIC) Then
+			Close Window nWID
+		End If
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspSetOnWindow: " & nWID & " " & twsp.nWID)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'	A string presenting the position of the window
+'**********************************************************************************************''
+Function twspGetPositionWithUnit(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Round(twsp.fX, 0.01) & " " & Round(twsp.fY, 0.01) & " " & twsp.sPaperUnits
+
+twspGetPositionWithUnit = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspGetPositionWithUnit")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'	A string presenting the position of the window
+'**********************************************************************************************''
+Function twspGetXWithUnit(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Round(twsp.fX, 0.01) & " " & twsp.sPaperUnits
+
+twspGetXWithUnit = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspGetXWithUnit")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'	A string presenting the position of the window
+'**********************************************************************************************''
+Function twspGetYWithUnit(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Round(twsp.fY, 0.01) & " " & twsp.sPaperUnits
+
+twspGetYWithUnit = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspGetYWithUnit")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'	A string presenting the size of the window
+'**********************************************************************************************''
+Function twspGetSizeWithUnit(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Round(twsp.fHeight, 0.01) & " " & Round(twsp.fWidth, 0.01) & " " & twsp.sPaperUnits
+
+twspGetSizeWithUnit = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspGetSizeWithUnit")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'	A string presenting the height of the window
+'**********************************************************************************************''
+Function twspGetHeightWithUnit(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Round(twsp.fHeight, 0.01) & " " & twsp.sPaperUnits
+
+twspGetHeightWithUnit = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspGetHeightWithUnit")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'	A string presenting the width of the window
+'**********************************************************************************************''
+Function twspGetWidthWithUnit(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= Round(twsp.fWidth, 0.01) & " " & twsp.sPaperUnits
+
+twspGetWidthWithUnit = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspGetWidthWithUnit")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function twspToHash(twsp As T_WINDOW_SIZE_POSITION) As String
+
+Dim	sHash As String
+
+OnError GoTo ErrorOccured
+
+twspToHash = ""
+
+	sHash = twsp.nWID
+	sHash = sHash & ",{" & twsp.sName & "}"
+	sHash = sHash & "," & twsp.nType
+	sHash = sHash & "," & twsp.fX
+	sHash = sHash & "," & twsp.fY
+	sHash = sHash & "," & twsp.fWidth
+	sHash = sHash & "," & twsp.fHeight
+	sHash = sHash & "," & twsp.nWindowState
+	sHash = sHash & "," & STRINGLogicalToNumber(twsp.bIsOpen)
+
+	Do Case twsp.sPaperUnits
+		Case "cm", ""
+			sHash = sHash & ",cm"
+		Case "in"
+			sHash = sHash & ",in"
+		Case "mm"
+			sHash = sHash & ",mm"
+		Case "pica"
+			sHash = sHash & ",pica"
+		Case "pt"
+			sHash = sHash & ",pt"
+	End Case
+
+twspToHash = sHash
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspToHash")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub twspFromHash(ByVal sHash As String, twsp As T_WINDOW_SIZE_POSITION)
+
+Dim	arrItems(), sName As String,
+	nItems As Integer
+
+OnError GoTo ErrorOccured
+
+	nItems = STRINGSplit(sHash, ",", arrItems())
+	If InStr(1, sHash, "{") > 0 Then
+		sName	= STRINGGetValueBetweenChars(sHash, "{", "}")
+		sHash	= STRINGReplace(sHash, sName, "NAME")
+	End If
+
+	Do Case nItems
+		Case 10
+			twsp.nWID			= arrItems(1)
+			twsp.sName		= arrItems(2)
+			twsp.nType		= arrItems(3)
+			twsp.fX			= Val(arrItems(4))
+			twsp.fY			= Val(arrItems(5))
+			twsp.fWidth		= Val(arrItems(6))
+			twsp.fHeight		= Val(arrItems(7))
+			twsp.nWindowState	= Val(arrItems(8))
+			twsp.bIsOpen		= STRINGNumberToLogical(arrItems(9))
+			twsp.sPaperUnits	= arrItems(10)
+		Case 9
+			twsp.nWID			= arrItems(1)
+			twsp.sName		= arrItems(2)
+			twsp.nType		= arrItems(3)
+			twsp.fX			= Val(arrItems(4))
+			twsp.fY			= Val(arrItems(5))
+			twsp.fWidth		= Val(arrItems(6))
+			twsp.fHeight		= Val(arrItems(7))
+			twsp.nWindowState	= Val(arrItems(8))
+			twsp.bIsOpen		= FALSE
+			twsp.sPaperUnits	= arrItems(9)
+		Case Else
+			Call DEBUGPrint("twspFromHash: Number of elements is not as expected (" & nItems & " Expected: 10) : " & sHash)
+'			twsp.nWID			= arrItems(1)
+'			twsp.sName		= arrItems(2)
+'			twsp.nType		= arrItems(3)
+'			twsp.fX			= Val(arrItems(4))
+'			twsp.fY			= Val(arrItems(5))
+'			twsp.fWidth		= Val(arrItems(6))
+'			twsp.fHeight		= Val(arrItems(7))
+'			twsp.nWindowState	= Val(arrItems(8))
+'			twsp.sPaperUnits	= arrItems(9)
+	End Case
+
+	If sName <> "" Then
+		twsp.sName = sName
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "twspFromHash")
+	Call ERRShow()
+
+End Sub
+

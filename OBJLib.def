@@ -1,0 +1,80 @@
+'**************************************************************
+' H I S T O R Y
+'**************************************************************
+'	13-11-2012 10:05:17	- Added:
+'						- OBJFindNode(...) As Integer
+'						- OBJFindSegmentAndNode(...) As Logical
+'						- OBJRemoveDuplicateNodes(...) As Object
+'						- Declare Function OBJReverse(...) As Object
+'						- Declare Function OBJReversePolyline(...) As Object
+'						- Declare Function OBJReverseLine(...) As Object
+'	22-04-2013 09:23:39	- Added:
+'						- Function OBJAreTouchingAtEndNodes(...) As Logical
+'							Returns true if the distance bwtween two end nodes are less than fTolereance
+'						- OBJFindNearestEndNodes(...) As Integer
+'							Returns 1: First And First node, 2: First and Last, 3: Last and First, 4 Last and Last
+'						- OBJCombineAtEndNode(...) As Object
+'							Returns the combined object where one of the end nodes of osecond has been moved to the nearest end node of oFirst
+'						- OBJCombineAtEndNodeNByN(...) As Object
+'							Returns the combined object where one of the end nodes of oSecond has been moved to the nearest end node of oFirst
+'							Adds the nodes from oSecond to oFirst one at a time to avoid topology changes
+'						- OBJAddNodeOnPolyline(...) As Object
+'							Returns the polyline with the added node.
+'							The node will be added to the first line where the distance from the node to the line is shorter than fTolerance
+'	06-12-2013 15:50:57	- Added:
+'						- OBJFindNodeBinary(...) As Integer
+'							Uses a binary search algorytm to find the nearest node
+'							Splits the object into two half for each run thru and searches only the part where the node is within the MBR
+'	08-08-2014 18:16:44	- Fixed an error in OBJFindNodeBinary that meant that the wrong node was return in a number of cases
+'**************************************************************
+'Requires MapInfo Pro 4.0
+
+Declare Function OBJIsInitialized(ByVal oObj As Object) As Logical
+
+Declare Function OBJFindNode(	  ByVal oObj As Object		'The object (polyline or polygon) to search in, only the first segment of the object will be searched
+						, ByVal oNode As Object		'Node position to look for
+						, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
+						) As Integer				'Returns the first matching node number, or 0 if no found
+Declare Function OBJFindSegmentAndNode(	  ByVal oObj As Object		'The object (polyline or polygon) to search in
+								, ByVal oNode As Object		'Node position to look for
+								, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
+								, nSegmentFound As Integer	'The Segment number where the node was found
+								, nNodeFound As Integer		'The matching node number
+								) As Logical				'Returns TRUE if a matching node was found, otherwise FALSE
+Declare Function OBJFindNodeBinary(  ByVal oObj As Object		'The object (polyline or polygon) to search in, only the first segment of the object will be searched
+							, ByVal oNode As Object		'Node position to look for
+							, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
+							, ByVal nOffset As Integer	'Offset of 1st node in polyline based on original, use 0 in your initial use of this function
+							) As Integer				'Returns the first matching node number, or 0 if no found
+
+Declare Function OBJRemoveDuplicateNodes( ByVal oObj As Object		'The object (polyline or polygon) to remove duplicate nodes in
+								, ByVal fTolerance As Float	'The tolerance defining whether two nodes are "the same", distance is measured using Cartesian calculation
+								) As Object				'Returns the object with duplicate nodes removed
+
+Declare Function OBJReverse(	  ByVal oObj As Object			'The object which node order to reverse, only line and polyline are supported
+						) As Object					'Returns the object with the nodes in reversed order
+Declare Function OBJReversePolyline(  ByVal oPLine As Object	'The polyline which node order to reverse, only is supported
+							) As Object				'Returns the polyline with the nodes in reversed order
+Declare Function OBJReverseLine(	  ByVal oLine As Object		'The line which node order to reverse, only line is supported
+							) As Object				'Returns the line with the nodes in reversed order
+
+Declare Function OBJAreTouchingAtEndNodes(	  ByVal oFirst As Object		'The first object to use
+									, ByVal oSecond As Object		'The second object to use
+									, ByVal fTolerance As Float		'The tolerance distance allowed
+									) As Logical					'Returns true if the distance bwtween two end nodes are less than fTolereance
+Declare Function OBJFindNearestEndNodes(	  ByVal oFirst As Object		'The first object to compare
+									, ByVal oSecond As Object	'The second object to compare
+									) As Integer				'Returns 1: First And First node, 2: First and Last node, 3: Last and First node, 4 Last and Last node
+Declare Function OBJCombineAtEndNode(	  ByVal oFirst As Object			'The first object to use
+								, ByVal oSecond As Object		'The second object to use
+								) As Object					'Returns the combined object where one of the end nodes of osecond has been moved to the nearest end node of oFirst
+Declare Function OBJCombineAtEndNodeNByN( ByVal oFirst As Object			'The first object to use
+								, ByVal oSecond As Object		'The second object to use
+								) As Object					'Returns the combined object where one of the end nodes of oSecond has been moved to the nearest end node of oFirst
+															'Adds the nodes from oSecond to oFirst one at a time to avoid topology changes
+
+Declare Function OBJAddNodeOnPolyline(	  ByVal oPolyline As Object		'The polyline that should have the node added
+								, ByVal oPoint As Object			'The Node Point to add
+								, ByVal fTolerance As Float		'The tolerance distance, m, that determines if the node is on the line
+								) As Object					'Returns the polyline with the added node.
+															'The node will be added to the first line where the distance from the node to the line is shorter than fTolerance

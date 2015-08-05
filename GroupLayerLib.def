@@ -1,0 +1,52 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    G R O U P L A Y E R L I B
+'********************************************************************************************************
+'	22-03-2013 11:08:01:	- Added Function GLYRGetLayerListID(...) As Integer
+'********************************************************************************************************
+
+'Requires MapInfo Pro 10.0
+
+Declare Function GLYRGetGroupLayerList(	  ByVal nMID As Integer					'Map Window to query
+								, arrGroupLayers() As T_GROUP_LAYER_INFO	'Array of T_GROUP_LAYER_INFO found in the map
+								) As Integer
+
+Declare Function GLYRGetGroupLayersListInGroupLayer(	  ByVal nMID As Integer					'Map Window to query
+											, ByVal nGroupLayerID As Integer			'Group Layer ID to get list of Group Layers from
+											, ByVal bTopLevelOnly As Logical			'Only search in top level of the parent GL ?
+											, arrGroupLayers() As T_GROUP_LAYER_INFO	'Array of T_GROUP_LAYER_INFO found in the Group Layer
+											) As Integer							'Returns the number of Group Layers found in the Group Layer
+
+Declare Function GLYRGetLayersListInGroupLayer(	  ByVal nMID As Integer			'Map Window to query
+										, ByVal nGroupLayerID As Integer	'Group Layer ID to get list of layers from
+										, ByVal bTopLevelOnly As Logical	'Only search in top level of the parent GL ?
+										, arrLayers() As T_LAYER_INFO		'Array of T_LAYER_INFO found in the Group Layer
+										) As Integer					'Returns the number of layers found in the Group Layer
+
+Declare Function GLYRCreateGroupLayer(	  ByVal nMID As Integer					'Map Window to create the Group Layer in
+								, ByVal sGroupLayer As String				'Name of new Group Layer
+								, ByVal sDestinationGroupLayer As String	'Name of parent Group Layer
+								, arrLayers() As T_LAYER_INFO				'List of layer name to add to this new Group Layer
+								) As Integer							'Returns the Group Layer ID of the new GL
+
+Declare Function GLYRCreateGroupLayerFromLayerNames(	  ByVal nMID As Integer					'Map Window to create the Group Layer in
+											, ByVal sGroupLayer As String				'Name of new Group Layer
+											, ByVal sDestinationGroupLayer As String	'Name or Number of parent Group Layer to hold the new GL
+											, arrLayerNames() As String				'List of layers to add to the new GL
+											) As Integer							'Returns the Group Layer ID of the new GL
+
+Declare Function GLYRGetGroupLayerID(	  ByVal nMID As Integer			'Map Window to query
+								, ByVal nGroupLayerID As Integer	'Group Layer ID of the parent GL, 0 if top level
+								, ByVal sGroupLayer As String		'Name of Group Layer to find the ID for
+								, ByVal bTopLevelOnly As Logical	'Only search in top level of the parent GL ?
+								) As Integer					'Returns the Group Layer ID of the Group Layer found, or -1 if not found
+
+Declare Function GLYRGetLayerListID(	  ByVal nMID As Integer			'Map Window to query
+								, ByVal nGroupLayerID As Integer	'Group Layer ID of the parent GL, 0 if top level
+								, ByVal sGroupLayer As String	'Name of Group Layer to find the ID for
+								, ByVal bTopLevelOnly As Logical	'Only search in top level of the parent GL ?
+								) As Integer					'Returns the Layer ID of the Group Layer found, or -1 if not found
+
+Declare Function GLYRGetPositionInGroupLayer(  ByVal nMID As Integer			'MapWindow to search
+									, ByVal nGroupLayerID As Integer	'Group Layer ID to search, use 0 as top level
+									, ByVal sGroupLayer As String		'GroupLayer Name to find
+									) As Integer					'Returns the position within this group layer, return -1 if not found

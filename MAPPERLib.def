@@ -1,0 +1,25 @@
+'**************************************************************
+'16-03-2011 08:59:42	Peter Moller added these functions:
+'					- Function MAPContainsObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+'					- MAPContainsEntireObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+'					- MAPContainsPartObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+'					- MAPGetExtent(ByVal nMID As Integer) As Logical
+'21-11-2011 08:23:47	Peter Møller Added these functions:
+'					- Function MAPFrontWindow() As Integer
+'					- Function MAPFrontMostWindow() As Integer
+'16-04-2012 10:53:59	Peter Møller added
+'					- an extra check condition to MAPFrontWindow()
+'**************************************************************
+
+'Requires MapInfo Pro 4.0
+
+Declare Function MAPGetEditLayerName(	ByVal nMID As Integer		'Map Window to query
+						) As String					'Return name of editable layer, "" if no layer is editable
+
+Declare Function MAPContainsObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+Declare Function MAPContainsEntireObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+Declare Function MAPContainsPartObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+Declare Function MAPGetExtent(ByVal nMID As Integer) As Object
+
+Declare Function MAPFrontWindow() As Integer		'Returns the ID of the FrontWindow, if it is a map - otherwise it returns 0
+Declare Function MAPFrontMostWindow() As Integer	'Returns the ID of the FrontWindow, if it is a map, or the most recently opened Map, if no maps are found, it returns 0

@@ -1,0 +1,340 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:	DEBUGLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+
+'-------------------------------------
+Dim	mbDebugEnabled As Logical
+Dim	msDebugFile As String
+Dim mbDebugAddDateToMessageWindow As Logical
+Dim mbDebugAddDateToFile As Logical
+Dim mbDebugAddSeparatorToIsoDate As Logical
+Dim mbDebugIsoDateSeparator As String
+Dim mbDebugDateForMessageWindow As String
+Dim mbDebugDateForFile As String
+
+'**********************************************************************************************''
+'Created by ???, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DEBUGAddDateToDebugLines(ByVal bAddToMessageWindow As Logical, ByVal bAddToFile As Logical, ByVal bAddSeparatorToIsoDate As Logical, ByVal sIsoDateSeparator As String)
+
+OnError GoTo ErrorOccured
+
+	mbDebugAddDateToMessageWindow = bAddToMessageWindow
+	mbDebugAddDateToFile		= bAddToFile
+	mbDebugAddSeparatorToIsoDate	= bAddSeparatorToIsoDate
+	mbDebugIsoDateSeparator		= sIsoDateSeparator
+	mbDebugDateForMessageWindow	= createDebugDate(mbDebugAddDateToMessageWindow)
+	mbDebugDateForFile			= createDebugDate(mbDebugAddDateToFile)
+
+Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGAddDateToDebugLines")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by ???, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Function createDebugDate(ByVal bAddDate As Logical) As String
+
+Dim	sDate As String
+
+OnError GoTo ErrorOccured
+
+	sDate = ""
+	If (bAddDate) Then
+		sDate = CurDate()
+		If (mbDebugAddSeparatorToIsoDate) Then
+			'Could probably use Format$(CurDate(),####-##-##) but IMHO implementation with separator in variable is more flexible thus better :-)
+			sDate = Left$(sDate,4) & mbDebugIsoDateSeparator & Left$(Right$(sDate,4),2) & mbDebugIsoDateSeparator & Right$(sDate,2)
+		End If
+		'Add trailing space because date string prefixes debug line
+		createDebugDate = sDate & " "
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "createDebugDate")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sFile		: Name of file to exists to enable debug state
+'**********************************************************************************************''
+Sub DEBUGEnableByFile(ByVal sFile As String)
+
+OnError GoTo ErrorOccured
+
+	If FileExists(sFile) Then
+		Call DEBUGEnable(TRUE)
+
+		'**Overwriting default debug file with name of application specific debug file
+		msDebugFile		= sFile
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGEnableByFile: " & sFile)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	bValue		: Value (true/false) to set the debug state to
+'**********************************************************************************************''
+Sub DEBUGEnable(ByVal bValue As Logical)
+
+OnError GoTo ErrorOccured
+
+	mbDebugEnabled	= bValue
+	msDebugFile		= ApplicationDirectory$() & "debug.log"
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGEnable: " & bValue)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DEBUGIsEnabled() As Logical
+
+OnError GoTo ErrorOccured
+
+	DEBUGIsEnabled = mbDebugEnabled
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGIsEnabled")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by ???, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DEBUGLevelPrint(  ByVal iDebugLevel As Integer		'Defined variable that maps to value for debug level
+				, ByVal iDefaultLevel As Integer		'Defined variable that maps to default value for debug level
+				, ByVal sMessage As String			'Message to print to the message window - and write to debug file.
+				)
+
+OnError GoTo ErrorOccured
+
+	If DEBUGIsEnabled() Then
+		Dim sDebugLevel As String
+		sDebugLevel = ""
+		If (iDebugLevel >= iDefaultLevel)Then
+			sDebugLevel = DEBUGGetLevelDescription(iDebugLevel)
+			If (Len(sDebugLevel) > 0) Then
+				sMessage = sDebugLevel & sp & sMessage
+			End If
+			Call DEBUGPrint(sMessage)
+		End If
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGLevelPrint: " & sMessage)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by ???, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Function DEBUGGetLevelDescription(	ByVal iDebugLevel As Integer	'Map defined variable that to description string value for debug level
+							) As String
+
+Dim	sDebugLevel As String
+
+OnError GoTo ErrorOccured
+
+	Do Case iDebugLevel
+		Case 100
+			sDebugLevel = "DEBUG_ALL"
+		Case 200
+			sDebugLevel = "DEBUG_TRACE"
+		Case 300
+			sDebugLevel = "DEBUG_DEBUG"
+		Case 400
+			sDebugLevel = "DEBUG_INFO"
+		Case 500
+			sDebugLevel = "DEBUG_WARN"
+		Case 600
+			sDebugLevel = "DEBUG_ERROR"
+		Case 700
+			sDebugLevel = "DEBUG_FATAL"
+		Case 800
+			sDebugLevel = "DEBUG_OFF"
+		Case Else
+			sDebugLevel = "DEBUG_UNKNOWN"
+	End Case
+
+	DEBUGGetLevelDescription = sDebugLevel
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGGetLevelDescription: " & sMessage)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by ???, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Function DEBUGGetLevelValue(	ByVal sDebugLevel As String	'Map string variable to integer value for debug level
+						) As Integer
+
+Dim	iDebugLevel As Integer
+
+OnError GoTo ErrorOccured
+
+	Do Case sDebugLevel
+		Case "DEBUG_ALL"
+			iDebugLevel = 100
+		Case "DEBUG_TRACE"
+			iDebugLevel = 200
+		Case "DEBUG_DEBUG"
+			iDebugLevel = 300
+		Case "DEBUG_INFO"
+			iDebugLevel = 400
+		Case "DEBUG_WARN"
+			iDebugLevel = 500
+		Case "DEBUG_ERROR"
+			iDebugLevel = 600
+		Case "DEBUG_FATAL"
+			iDebugLevel = 700
+		Case "DEBUG_OFF"
+			iDebugLevel = 800
+		Case Else
+			iDebugLevel = 0
+	End Case
+
+	DEBUGGetLevelValue= iDebugLevel
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGGetLevelDescription: " & sMessage)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sMessage	: Message to print to the message window - and write to debug file.
+'			  Note that a time stamp is inserted in front of the message
+'**********************************************************************************************''
+Sub DEBUGPrint(ByVal sMessage As String)
+
+OnError GoTo ErrorOccured
+
+	If DEBUGIsEnabled() Then
+		Print mbDebugDateForMessageWindow & Time(24) & " " & sMessage
+		Call DEBUGWriteToFile(sMessage)
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGPrint: " & sMessage)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sMessage	: Message to write to debug file.
+'			  Note that a time stamp is inserted in front of the message
+'**********************************************************************************************''
+Sub DEBUGWriteToFile(ByVal sMessage As String)
+
+Dim	nErr As Integer
+
+OnError GoTo ErrorOccured
+
+	If DEBUGIsEnabled() Then
+		Open File msDebugFile
+			For Append
+			As #975
+			CharSet SystemInfo(SYS_INFO_CHARSET)
+
+		Print #975, mbDebugDateForFile & Time(24) & " " & sMessage
+
+		Close File #975
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	nErr = Err()
+	If nErr = 825 Then
+		Resume 0
+	Else
+		Call ERRCreate(nErr, Error$(), "DEBUGWriteToFile: " & sMessage)
+		Call ERRShow()
+	End If
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sMessage	: Message to show in messagebox - and write to debug file.
+'**********************************************************************************************''
+Sub DEBUGNote(ByVal sMessage As String)
+
+OnError GoTo ErrorOccured
+
+	If DEBUGIsEnabled() Then
+		Note sMessage
+		Call DEBUGWriteToFile(sMessage)
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGNote: " & sMessage)
+	Call ERRShow()
+
+End Sub
+

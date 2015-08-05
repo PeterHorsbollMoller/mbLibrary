@@ -1,0 +1,130 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    A R R A Y L I B
+'********************************************************************************************************
+'	Created 01-12-2011
+'		- Added the basics functions for working with string arrays, add, remove, find and to separated text
+'	08-02-2012
+'		- Added Sub ARRAYAddValueAsItemString(...)
+'		- Added Sub ARRAYMoveItemBetweenArraysString(...)
+'		- Changed ARRAYRemoveValueString to remove all instances of the string
+'	13-04-2012
+'		- Added Sub ARRAYCopyString(...)
+'	16-04-2012
+'		- added Function ARRAYToQuotedSeparatedTextString(...)
+'	26-04-2012
+'		- added Sub ARRAYCopyInteger(...)
+'	12-11-2012 10:41:49
+'		- Added Sub ARRAYAddArrayString(...)
+'		- Added Sub ARRAYSortAscString(...)
+'		- Added Sub ARRAYSortDescString(...)
+'		- Added Function ARRAYFindPositionAscSortedString(...) As Integer
+'		- Added Function ARRAYFindPositionDescSortedString(...) As Integer
+'		- Added Sub ARRAYAddArrayString(...)
+'	07-01-2013 13:43:57
+'		- Added Sub ARRAYAddValueInteger(...)
+'		- Added Sub ARRAYRemoveItemInteger(...)
+'		- Added Sub ARRAYRemoveValueInteger(...)
+'		- Added Function ARRAYFindValueInteger(...) As Integer
+'		- Added Sub ARRAYAddArrayInteger(...)
+'	08-01-2013 12:52:32
+'		- Added Function ARRAYToSeparatedTextInteger(...) As String
+'		- Added Sub ARRAYQuickSortDescString(...)
+'		- Added Sub ARRAYSwapString(...)
+'		- ARRAYSortDescString is now using ARRAYQuickSortDescString
+'	11-01-2013 10:40:59
+'		- Added Sub ARRAYRemoveValuesString(...)
+'********************************************************************************************************
+
+'--------------------------------------------------------------------------------------------------------------------------------------------------
+'** S T R I N G     A R R A Y S
+'--------------------------------------------------------------------------------------------------------------------------------------------------
+Declare Sub ARRAYAddValueString(		  arrValues() As String			'Array of values to work on
+								, ByVal sNewValue As String		'New string value to insert at a certain position
+								)							'The existing values will be maintained - the new value will be added at the end
+Declare Sub ARRAYAddValueAsItemString(	  arrValues() As String			'Array of values to work on
+								, ByVal sNewValue As String		'New string value to insert at a certain position
+								, ByVal nItem As Integer			'The position to insert the value at, -1 it will be added at the end
+								)							'The existing values will be maintain but values from nItem and up will be moved by one
+Declare Sub ARRAYAddArrayString(		  arrToAdd() As String			'Array of values to copy to the other array
+								, arrTo() As String				'Array of values to recieve the values from the first array
+								)							'The arrTo will be now hold the original records and the records from the arrToAdd
+
+Declare Sub ARRAYRemoveItemString(		  arrValues() As String			'Array of values to work on
+								, ByVal nItem As Integer			'Item to remove from the array
+								)							'The existing values will be maintain only the given item with will be removed
+Declare Sub ARRAYRemoveValueString(	  arrValues() As String			'Array of values to work on
+								, ByVal sValue As String			'String value to remove from the array
+								)							'The existing values will be maintain only all items with the given value will be removed
+Declare Sub ARRAYRemoveValuesString(	  arrValues() As String			'Array of values to work on
+								, arrValuesToRemove() As String	'Array of value to remove from the array
+								)							'The existing values will be maintain only all items with the given values will be removed
+
+Declare Sub ARRAYMoveItemBetweenArraysString(  arrFromValues() As String		'Array of values to move the item from
+									, ByVal nFromItem As Integer		'The position of the value to move to the to-array
+									, arrToValues() As String		'Array of values to move the item to
+									, ByVal nToItem As Integer		'The position to insert the value at, -1 it will be added at the end
+									)							'The FromArray will have the Item removed and the FromArray will have the Item added
+
+Declare Sub ARRAYSortAscString(	arrValues() As String					'Array to sort, now using QuickSort which is pretty quick
+						)
+Declare Sub ARRAYSortDescString(	arrValues() As String					'Array to sort, sorting can be slow with huge arrays: 1300 elements: 6 secs, 2600 elements: 24 secs, 5200 elements: 98 secs
+						)
+Declare Sub ARRAYQuickSortDescString(	  arrValues() As String
+								, ByVal nFirst As Integer
+								, ByVal nLast As Integer
+								)
+Declare Sub ARRAYSwapString(s1 As String, s2 As String)
+
+Declare Function ARRAYFindPositionAscSortedString(  ByVal sValue As String		'Value to find position for in the sorted array
+										, arrValues() As String		'Sorted array to find position in
+										) As Integer				'Returns the position to insert the value into
+Declare Function ARRAYFindPositionDescSortedString( ByVal sValue As String		'Value to find position for in the sorted array
+										, arrValues() As String		'Sorted array to find position in
+										) As Integer				'Returns the position to insert the value into
+
+
+Declare Function ARRAYContainsValueString(	  arrValues() As String			'Array of values to work on
+									, ByVal sValue As String			'String value to find in the array
+									) As Logical					'Returns true if the value was found
+Declare Function ARRAYFindValueString(		  arrValues() As String			'Array of values to work on
+									, ByVal sValue As String			'String value to find in the array
+									) As Integer					'The first item that has the value given
+Declare Function ARRAYToSeparatedTextString(	  arrValues() As String			'Array of values to work on
+									, ByVal sSeparator As String		'Separator to use to separate the string values in the separated string
+									) As String					'A string with all values saparated with the sSeparator
+Declare Function ARRAYToQuotedSeparatedTextString(  arrValues() As String		'Array of values to work on
+										, ByVal sSeparator As String	'Separator to use to separate the string values in the separated string
+										, ByVal sQuote As String		'Quote character to put around all string values in the separated string
+										) As String				'A string with all values quoted and saparated with the sSeparator
+
+Declare Sub ARRAYCopyString(				  arrFrom() As String			'Array of values to copy to the other array
+									, arrTo() As String				'Array of values to recieve the values from the first array
+									)							'The arrTo will be resized to contain exactly the same number of elements as the arrFrom
+
+'--------------------------------------------------------------------------------------------------------------------------------------------------
+'** I N T E G E R     A R R A Y S
+'--------------------------------------------------------------------------------------------------------------------------------------------------
+Declare Sub ARRAYAddValueInteger(		  arrValues() As Integer			'Array of values to work on
+								, ByVal nNewValue As Integer		'New string value to insert at a certain position
+								)							'The existing values will be maintained - the new value will be added at the end
+Declare Sub ARRAYRemoveValueInteger(	  arrValues() As Integer			'Array of values to work on
+								, ByVal nValue As Integer		'Integer value to remove from the array
+								)							'The existing values will be maintain only all items with the given value will be removed
+Declare Sub ARRAYRemoveItemInteger(	  arrValues() As Integer			'Array of values to work on
+								, ByVal nItem As Integer			'Item to remove from the array
+								)							'The existing values will be maintain only the given item with will be removed
+Declare Sub ARRAYAddArrayInteger(		  arrToAdd() As Integer			'Array of values to copy to the other array
+								, arrTo() As Integer			'Array of values to recieve the values from the first array
+								)							'The arrTo will be now hold the original records and the records from the arrToAdd
+
+Declare Function ARRAYFindValueInteger(		  arrValues() As Integer		'Array of values to work on
+									, ByVal nValue As Integer	'Integer value to find in the array
+									) As Integer				'The first item that has the value given
+
+Declare Function ARRAYToSeparatedTextInteger(  arrValues() As Integer			'Array of values to work on
+									, ByVal sSeparator As String		'Separator to use to separate the integer values in the separated string
+									) As String					'A string with all values saparated with the sSeparator
+
+Declare Sub ARRAYCopyInteger(			  arrFrom() As Integer			'Array of values to copy to the other array
+								, arrTo() As Integer			'Array of values to recieve the values from the first array
+								)							'The arrTo will be resized to contain exactly the same number of elements as the arrFrom

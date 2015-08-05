@@ -1,0 +1,244 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:	MAPLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "MAPPERLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	nMID :	ID of the Mapper Window to query
+'Return value:
+'	"" : If no layer currently is editable
+'	else the name of the editable layer
+'**********************************************************************************************''
+Function MAPGetEditLayerName(ByVal nMID As Integer) As String
+
+Dim	nEditLayerID As Integer
+
+OnError GoTo ErrorOccured
+
+MAPGetEditLayerName = ""
+
+	nEditLayerID	= MapperInfo(nMID, MAPPER_INFO_EDIT_LAYER)
+	Do Case nEditLayerID
+		Case -1
+			'**No editable layer currently
+		Case 0
+			'**The cosmetic layer is currently editable
+			MAPGetEditLayerName	= LayerInfo(nMID, nEditLayerID, LAYER_INFO_NAME)
+		Case Else
+			MAPGetEditLayerName	= LayerInfo(nMID, nEditLayerID, LAYER_INFO_NAME)
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPGetEditLayerName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MAPContainsObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+
+Dim	oExtent As Object
+
+OnError GoTo ErrorOccured
+
+MAPContainsObject = FALSE
+
+	oExtent = MAPGetExtent(nMID)
+	If oExtent Contains oQuery Then
+		MAPContainsObject = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPContainsObject")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MAPContainsEntireObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+
+Dim	oExtent As Object
+
+OnError GoTo ErrorOccured
+
+MAPContainsEntireObject = FALSE
+
+	oExtent = MAPGetExtent(nMID)
+	If oExtent Contains Entire oQuery Then
+		MAPContainsEntireObject = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPContainsEntireObject")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MAPContainsPartObject(ByVal nMID As Integer, ByVal oQuery As Object) As Logical
+
+Dim	oExtent As Object
+
+OnError GoTo ErrorOccured
+
+MAPContainsPartObject = FALSE
+
+	oExtent = MAPGetExtent(nMID)
+	If oExtent Contains Part oQuery Then
+		MAPContainsPartObject = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPContainsPartObject")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MAPGetExtent(ByVal nMID As Integer) As Object
+
+Dim	fMinX, fMinY, fMaxX, fMaxY As Float,
+	oExtent As Object
+
+OnError GoTo ErrorOccured
+
+	fMinX	= MapperInfo(nMID, MAPPER_INFO_MINX)
+	fMinY	= MapperInfo(nMID, MAPPER_INFO_MINY)
+	fMaxX	= MapperInfo(nMID, MAPPER_INFO_MAXX)
+	fMaxY	= MapperInfo(nMID, MAPPER_INFO_MAXY)
+
+	Create Pline
+		Into Variable oExtent
+		4
+		(fMinX, fMinY) (fMaxX, fMinY) (fMaxX, fMaxY) (fMinX, fMaxY)
+	oExtent = ConvertToRegion(oExtent)
+
+MAPGetExtent = oExtent
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPGetExtent")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'	0: No windows open or the FrontWindow isn't a mapper window
+'	> 0: The ID of a front window that also is a mapper window
+'**********************************************************************************************''
+Function MAPFrontWindow() As Integer
+
+Dim	nWID, i As Integer
+
+OnError GoTo ErrorOccured
+
+	MAPFrontWindow = 0
+
+	If NumWindows() = 0 Then
+		Exit Function
+	End If
+	nWID = FrontWindow()
+	If nWID > 0 Then
+		If WindowInfo(nWID, WIN_INFO_TYPE) = WIN_MAPPER Then
+			MAPFrontWindow = nWID
+			Exit Function
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPFrontWindow")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'	0: No Mapper Windows open
+'	> 0: The ID of a Mapper window, either the FrontWindow or the most recently opened map window
+'**********************************************************************************************''
+Function MAPFrontMostWindow() As Integer
+
+Dim	nWID, i As Integer
+
+OnError GoTo ErrorOccured
+
+	MAPFrontMostWindow = 0
+
+	nWID = MAPFrontWindow()
+	If nWID > 0 Then
+		MAPFrontMostWindow = nWID
+		Exit Function
+	End If
+
+	For i = NumWindows() To 1 Step -1
+		If WindowInfo(WindowID(i), WIN_INFO_TYPE) = WIN_MAPPER Then
+			MAPFrontMostWindow = WindowID(i)
+			Exit Function
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPFrontMostWindow")
+	Call ERRShow()
+
+End Function

@@ -1,0 +1,25 @@
+'Requires MapInfo Pro 4.0
+
+Type T_MI_POINT
+	fX	As Float
+	fY	As Float
+End Type
+
+Declare Sub tmipCopy(	  tmipFrom As T_MI_POINT	'T_MI_POINT to copy
+				, tmipTo As T_MI_POINT)		'New T_MI_POINT that will hold the values of tmipFrom
+Declare Sub tmipOffset(   tmip As T_MI_POINT		'Point to offset
+				, ByVal fDistance As Float	'Distance to offset the Point
+				, ByVal fDirection As Float	'Direction to offset the point
+				)
+Declare Function tmipAreIdentical(	  tmip1 As T_MI_POINT	'T_MI_POINT A
+						, tmip2 As T_MI_POINT	'T_MI_POINT B
+						) As Logical		'Returns true if "elements" of A are equal to "elements" of B
+
+Declare Function tmipToPoint(	  tmip As T_MI_POINT		'Creates a point using the X and Y of the T_MI_POINT
+					) As Object				'Returns a point with the current style
+Declare Function tmipToPointWithStyle(	  tmip As T_MI_POINT		'Creates a point using the X and Y of the T_MI_POINT
+							, ByVal symUse As Symbol	'Symbol to use for the point to create
+							) As Object				'Returns a point with the style given
+
+
+

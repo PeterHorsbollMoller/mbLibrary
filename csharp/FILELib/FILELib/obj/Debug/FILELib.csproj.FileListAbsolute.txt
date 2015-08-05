@@ -1,0 +1,15 @@
+C:\1. Data\Visual Studio 2008\Projects\FILELib\FILELib\obj\Debug\ResolveAssemblyReference.cache
+C:\1. Data\Visual Studio 2008\Projects\FILELib\FILELib\bin\Debug\FILELib.dll
+C:\1. Data\Visual Studio 2008\Projects\FILELib\FILELib\bin\Debug\FILELib.pdb
+C:\1. Data\Visual Studio 2008\Projects\FILELib\FILELib\obj\Debug\FILELib.dll
+C:\1. Data\Visual Studio 2008\Projects\FILELib\FILELib\obj\Debug\FILELib.pdb
+C:\1. Data\3. MB_Kode\Library\csharp\FILELib\FILELib\bin\Debug\FILELib.dll
+C:\1. Data\3. MB_Kode\Library\csharp\FILELib\FILELib\bin\Debug\FILELib.pdb
+C:\1. Data\3. MB_Kode\Library\csharp\FILELib\FILELib\obj\Debug\ResolveAssemblyReference.cache
+C:\1. Data\3. MB_Kode\Library\csharp\FILELib\FILELib\obj\Debug\FILELib.dll
+C:\1. Data\3. MB_Kode\Library\csharp\FILELib\FILELib\obj\Debug\FILELib.pdb
+D:\Source\mapinfo.unfuddle.com\svn\mapinfo_mblibrary\csharp\FILELib\FILELib\bin\Debug\FILELib.dll
+D:\Source\mapinfo.unfuddle.com\svn\mapinfo_mblibrary\csharp\FILELib\FILELib\bin\Debug\FILELib.pdb
+D:\Source\mapinfo.unfuddle.com\svn\mapinfo_mblibrary\csharp\FILELib\FILELib\obj\Debug\ResolveAssemblyReference.cache
+D:\Source\mapinfo.unfuddle.com\svn\mapinfo_mblibrary\csharp\FILELib\FILELib\obj\Debug\FILELib.dll
+D:\Source\mapinfo.unfuddle.com\svn\mapinfo_mblibrary\csharp\FILELib\FILELib\obj\Debug\FILELib.pdb

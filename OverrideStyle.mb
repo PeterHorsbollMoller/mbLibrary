@@ -1,0 +1,43 @@
+Sub PrintOverridePensForAllLayersv105
+
+Dim	nMID, nLayer, nOverride, nPass As Integer,
+	sPen As String
+
+	nMID = FrontWindow()
+	For nLayer = 1 To MapperInfo(nMID, MAPPER_INFO_LAYERS)
+
+		Print "Layer " & nLayer & " : " & LayerInfo(nMID, nLayer, LAYER_INFO_NAME)
+
+		For nOverride = 1 To LayerStyleOverrideInfo(nMID, nLayer, LAYER_INFO_STYLE_COUNT)
+			sPen = ""
+			For nPass = 1 To LayerStyleOverrideInfo(nMID, nLayer, nOverride, LAYER_OVR_MULTI_PEN_COUNT)
+				If sPen = "" Then
+					sPen = LayerStyleInfo(nMID, nLayer, nOverride, nPass, LAYER_INFO_OVR_PEN)
+				Else
+					sPen = sPen & ", " & LayerStyleInfo(nMID, nLayer, nOverride, nPass, LAYER_INFO_OVR_PEN)
+				End If
+			Next	'nPass
+			Print "  Override " & nOverride & " Pen " & sPen
+
+		Next	'nOverride
+
+	Next	'nLayer
+
+End Sub
+
+Sub PrintOverridePensForAllLayersv100
+
+Dim	nMID, nLayer, nOverride, nPass As Integer,
+	sPen As String
+
+	nMID = FrontWindow()
+	For nLayer = 1 To MapperInfo(nMID, MAPPER_INFO_LAYERS)
+
+		Print "Layer " & nLayer & " : " & LayerInfo(nMID, nLayer, LAYER_INFO_NAME)
+		sPen = LayerInfo(nMID, nLayer, LAYER_INFO_OVR_PEN)
+
+		Print "  Override " & nOverride & " Pen " & sPen
+
+	Next	'nLayer
+
+End Sub

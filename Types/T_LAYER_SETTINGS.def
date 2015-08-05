@@ -1,0 +1,49 @@
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    T _ L A Y E R _  S E T T I N G S
+'**********************************************************************************************************************
+'	18-01-2012 	- Created first version of this module for Hack day January 2012
+'**********************************************************************************************************************
+
+Type T_LAYER_SETTINGS
+	bEditable			As Logical
+	bSelectable		As Logical
+	bZoomLayered		As Logical
+	fMinZoom			As Float
+	fMaxZoom			As Float
+	sZoomUnits		As String
+	nDisplay			As Integer
+	bShowLineDirection	As Logical
+	bShowNodes		As Logical
+	bShowCentroids		As Logical
+	nAlpha			As Integer
+	penOverrideLine()	As Pen
+	penOverrideBorder()	As Pen
+	brsOverride()		As Brush
+	symOverride()		As Symbol
+	fntOverride()		As Font
+	bTrancparency		As Logical
+	nTransparencyColour	As Integer
+End Type
+
+Declare Sub tlsCopy(  tlsFrom As T_LAYER_SETTINGS	'Source T_LAYER_SETTINGS
+				, tlsTo As T_LAYER_SETTINGS)	'Target T_LAYER_SETTINGS
+
+Declare Sub tlsReset(		tls As T_LAYER_SETTINGS	'T_LAYER_SETTINGS to reset
+					)
+Declare Function tlsToString(		tls As T_LAYER_SETTINGS	'Convert a T_LAYER_SETTINGS to a string
+							) As String			'Returns a string describing the layer
+Declare Function tlsFromString( tls As T_LAYER_SETTINGS	'tls to be set with values from the string
+						, ByVal sLayerInfo As String	'a string version of the tls
+						) As Logical				'returns true if the tils was set using the string
+
+Declare Function tlsGetDescription(	  tls As T_LAYER_SETTINGS	'The T_LAYER_SETTINGS to get a description for
+							) As String					'Returns a short string representing the T_LAYER_SETTINGS
+
+Declare Sub tlsGetInfo(	  ByVal nMID As Integer		'The Map Window with the layer
+					, ByVal nLyrID As Integer	'The layer to query
+					, tls As T_LAYER_SETTINGS	'The T_LAYER_SETTINGS to store information about the layer
+					)
+Declare Function tlsGetSetMapStatement(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+								, ByVal nLyrID As Integer		'LayerID to apply the settings to
+								, tls As T_LAYER_SETTINGS		'The T_LAYER_SETTINGS to store information about the layer
+								) As String					'Returns a string that can be used in combination with a "Set Map" Statement

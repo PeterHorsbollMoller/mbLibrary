@@ -1,0 +1,279 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "DBMSMapCatalog.def"
+Include "DBMSInfoLib.def"
+Include "DBMSUtilityLib.def"
+Include "ERRORLib.def"
+Include "FILELib.def"
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sDBFile:	MS Access database file that should have a MapCatalog table added
+'**********************************************************************************************''
+Sub DBMCCreateInMSAccessFile(ByVal sDBFile As String, ByVal sUsername As String, ByVal sPassword As String)
+
+Dim	nConnection As Integer
+
+OnError GoTo ErrorOccured
+
+	nConnection = DBUOpenConnectionToMSAccessFile(sDBFile, sUsername, sPassword)
+	If nConnection > 0 Then
+		Call DBMCCreate(nConnection)
+
+		Server nConnection Disconnect
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBMCCreateInMSAccessFile")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	nConnection:	Connection to a MS Access database that should have a MapCatalog table added
+'**********************************************************************************************''
+Sub DBMCCreate(ByVal nConnection As Integer)
+
+Dim	nStmt As Integer,
+	sQuote, sMapCatalogTableName, sStatement As String
+
+OnError GoTo ErrorOccured
+
+	sMapCatalogTableName	= DBMCGetMapCatalogTableName(nConnection)
+	If NOT DBITableExists(nConnection, sMapCatalogTableName) Then
+		Call DEBUGPrint("Opretter kortkatalog via tilslutning " & nConnection)
+		sQuote		= DBIGetQuoteChar(nConnection)
+		sStatement	= "CREATE TABLE " & sMapCatalogTableName & " ("
+						+ "SPATIALTYPE      DOUBLE,"
+						+ "TABLENAME        TEXT(32),"
+						+ "OWNERNAME        TEXT(32),"
+						+ "SPATIALCOLUMN    TEXT(32),"
+						+ "DB_X_LL          DOUBLE,"
+						+ "DB_Y_LL          DOUBLE,"
+						+ "DB_X_UR          DOUBLE,"
+						+ "DB_Y_UR          DOUBLE,"
+						+ "COORDINATESYSTEM TEXT(254),"
+						+ "SYMBOL           TEXT(254),"
+						+ "XCOLUMNNAME      TEXT(32),"
+						+ "YCOLUMNNAME      TEXT(32),"
+						+ "RENDITIONTYPE    INTEGER,"
+						+ "RENDITIONCOLUMN  TEXT(32),"
+						+ "RENDITIONTABLE   TEXT(32),"
+						+ "NUMBER_ROWS      INTEGER)"
+
+		nStmt = Server_Execute(nConnection, sStatement)
+		Server nStmt Close
+
+		nStmt = Server_execute(nConnection,
+				"CREATE UNIQUE INDEX " & sQuote & "MAPINFO_MAPCATALOG_INDEX" & sQuote
+					& " ON " & sQuote & "MAPINFO_MAPCATALOG" & sQuote & "(" & sQuote & "TABLENAME" & sQuote & ")")
+		Server nStmt Close
+	Else
+		Call DEBUGPrint("Kortkatalog findes allerede (tilslutning: " & nConnection & ")")
+
+		OnError GoTo ErrorOccuredWhileAddingColumns
+
+		sStatement	= "ALTER TABLE " & sMapCatalogTableName & " Add COLUMN RENDITIONTYPE INTEGER"
+		nStmt = Server_Execute(nConnection, sStatement)
+		Server nStmt Close
+
+		sStatement	= "ALTER TABLE " & sMapCatalogTableName & " Add COLUMN RENDITIONCOLUMN TEXT(32)"
+		nStmt = Server_Execute(nConnection, sStatement)
+		Server nStmt Close
+
+		sStatement	= "ALTER TABLE " & sMapCatalogTableName & " Add COLUMN RENDITIONTABLE TEXT(32)"
+		nStmt = Server_Execute(nConnection, sStatement)
+		Server nStmt Close
+
+		sStatement	= "ALTER TABLE " & sMapCatalogTableName & " Add COLUMN NUMBER_ROWS INTEGER"
+		nStmt = Server_Execute(nConnection, sStatement)
+		Server nStmt Close
+
+		OnError GoTo ErrorOccured
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBMCCreate")
+	Call ERRShow()
+
+	Exit Sub
+'-------------------------
+ErrorOccuredWhileAddingColumns:
+	If NOT Err() IN (962, 1339) Then
+		Call ERRCreate(Err(), Error$(), "DBMCCreate: " & sStatement)
+		Call DEBUGPrint("DBMCCreate: " & Err() & ": " & Error$() & lf & "   " & sStatement)
+	End If
+	Resume Next
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sDBFile:	MS Access database file that should have a MapCatalog table added
+'**********************************************************************************************''
+Sub DBMCRegisterTableXYInMSAccessFile( 	  ByVal sDBFile As String, ByVal sUsername As String, ByVal sPassword As String
+								, ByVal sSchema As String, ByVal sTable As String
+								, ByVal sColumnX As String, ByVal sColumnY As String
+								, ByVal symDefault As Symbol, ByVal sCoordSys As String)
+
+
+Dim	nConnection As Integer
+
+OnError GoTo ErrorOccured
+
+	nConnection = DBUOpenConnectionToMSAccessFile(sDBFile, sUsername, sPassword)
+	If nConnection > 0 Then
+		Call DBMCRegisterTableXY(nConnection, sSchema, sTable, sColumnX, sColumnY, symDefault, sCoordSys)
+
+		Server nConnection Disconnect
+	Else
+		Note "Error creating connection to database file: " & sDBFile
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBMCRegisterTableXYInMSAccessFile")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	nConnection:	Connection to a MS Access database that should have a MapCatalog table added
+'**********************************************************************************************''
+Sub DBMCRegisterTableXY(	  ByVal nConnection As Integer, ByVal sSchema As String, ByVal sTable As String
+					, ByVal sColumnX As String, ByVal sColumnY As String
+					, ByVal symDefault As Symbol, ByVal sCoordSys As String)
+
+Dim	nStmt As Integer,
+	sQuote As String
+
+OnError GoTo ErrorOccured
+
+	If NOT DBMCTableIsRegistered(nConnection, sSchema, sTable) Then
+		Do Case sCoordSys
+			Case "UTM32_ETRS89", "EPSG:25832"
+				Server nConnection Create Map
+					For DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+					Type XYINDEX (sColumnX, sColumnY)
+					CoordSys Earth Projection 8, 115, 7, 9.0, 0, 0.9996, 500000, 0
+					MapBounds Data
+					ObjectType Point
+					Symbol symDefault
+			Case "UTM33_ETRS89", "EPSG:25833"
+				Server nConnection Create Map
+					For DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+					Type XYINDEX (sColumnX, sColumnY)
+					CoordSys Earth Projection 8, 115, 7, 15.0, 0, 0.9996, 500000, 0
+					MapBounds Data
+					ObjectType Point
+					Symbol symDefault
+			Case Else
+				Note "Unspecified coordinate system - table has not been registered in the MapCatalog"
+		End Case
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBMCRegisterTableXY")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBMCTableIsRegistered(ByVal nConnection As Integer, ByVal sSchema As String, ByVal sTable As String) As Logical
+
+Dim	sQuote, sCmd, sMapCatalogTable As String
+
+OnError GoTo ErrorOccured
+
+DBMCTableIsRegistered = FALSE
+
+	sQuote			= DBIGetQuoteChar(nConnection)
+	sMapCatalogTable	= DBMCGetMapCatalogTableName(nConnection)
+	sCmd = "Select * From " & sMapCatalogTable
+			& " Where (" & sQuote & "TABLENAME" & sQuote & " = '" & sTable & "')"
+
+	If sSchema <> "" Then
+		sCmd = sCmd & " And (" & sQuote & "OWNERNAME" & sQuote & " = '" & sSchema & "')"
+	End If
+
+	Call DEBUGPrint("DBMCTableIsRegistered Query:" & sCmd)
+	Server nConnection Link Table
+		sCmd
+		Toolkit "ODBC"
+		Into "__IS__TABLE__REGISTERED"
+		File FILEWindowsTempFolder() & "__IS__TABLE__REGISTERED.TAB"
+
+	If TableInfo(__IS__TABLE__REGISTERED, TAB_INFO_NROWS) > 0 Then
+'		Call DEBUGPrint("Table " & sSchema & "." & sTable & " is registered in the MapCatalog")
+		DBMCTableIsRegistered = TRUE
+	Else
+'		Call DEBUGPrint("Table " & sSchema & "." & sTable & " is NOT registered in the MapCatalog")
+	End If
+	Drop Table __IS__TABLE__REGISTERED
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBMCTableIsRegistered")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBMCGetMapCatalogTableName(ByVal nConnection As Integer) As String
+
+OnError GoTo ErrorOccured
+
+	If DBIGetSQLDatabaseType(nConnection) = DATA_SOURCE_MSACCESS Then
+		DBMCGetMapCatalogTableName = DBUGetDatabaseTableName(nConnection, "", "mapinfo_mapcatalog")
+	Else
+		DBMCGetMapCatalogTableName = DBUGetDatabaseTableName(nConnection, "mapinfo", "mapinfo_mapcatalog")
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBMCGetMapCatalogTableName")
+	Call ERRShow()
+
+End Function

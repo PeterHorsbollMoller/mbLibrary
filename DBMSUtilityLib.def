@@ -1,0 +1,127 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    D B M S U T I L I T Y L I B
+'*****************************************************************************************************************
+'	01-12-2011 	Created
+'	01-12-2011 	Peter Møller added:
+'					- Function DBUOpenLinkedTable(...) As Integer
+'					- Function DBUOpenLinkedTableCondition(...) As Integer
+'					- Function DBUGetDatabaseTableName(...) As String
+'					- Function DBUOpenConnectionToMSAccessFile(...) As Integer
+'	12-12-2011 	Peter Møller added:
+'					- Function DBUOpenLinkedQuery(...) As Integer
+'	20-12-2011 	Peter Møller added:
+'					- Sub DBUSetMSAccessDriverName()
+'					- Function DBUGetMSAccessDriverName() As String
+'					- Function DBUOpenConnectionToDSN(...) As Integer
+'					- Function DBUOpenConnectionToFileDSN(...) As Integer
+'	12-01-2012	Peter Møller added:
+'					- DBUOpenLiveCacheTable(...) As Integer
+'	06-03-2012	Peter Møller added
+'					- DBUOpenConnection(...) As Integer
+'					- DBUOpenLiveTable(...) As Integer
+'	07-03-2012	Peter Møller
+'					- Minor fix in DBUOpenConnection(), Toolkit was hardcoded to "ODBC"
+'	24-01-2014 	Peter Møller Added:
+'					- Function DBUFindOpenConnection(...) As Integer
+'					- Function DBUGetQueryFromTable(...) As String
+'					- Function DBUGetConnectionStringFromTable(...) As String
+'	04-03-2015	Peter Møller added:
+'					- Function DBUGetListOfColumnNames(...) As Integer
+'					- Function DBUGetListOfColumnNamesAndTypes(...) As Integer
+'					- Function DBUGetColumnValuesAsString(...) As Integer
+'*****************************************************************************************************************
+'	Requires:
+'	- DEBUGLib
+'	- DBMSInfoLib
+'	- DBMSUtilityLib
+'	- ERRORLib
+'	- STRINGLib
+'********************************************************************************************************
+'
+Define	DBU_LINK_TABLE_FAILED		-1
+Define	DBU_OPEN_CONNECTION_FAILED	-1
+Define	DBU_OPEN_LIVE_TABLE_FAILED	-1
+
+Declare Function DBUOpenLinkedTable( ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+							, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+							, ByVal sTable As String			'The name of the table in the database
+							, ByVal sFile As String			'The name of the tab file to save the linked table into
+							) As Integer					'Returns DBU_LINK_TABLE_FAILED if the table was not opened, otherwise it returns the number of records in the table
+Declare Function DBUOpenLinkedQuery( ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+							, ByVal sQuery As String			'The query to run in the database. The results will be opened as a table in MI Pro
+							, ByVal sFile As String			'The name of the tab file to save the linked table into
+							) As Integer					'Returns DBU_LINK_TABLE_FAILED if the table was not opened, otherwise it returns the number of records in the table
+Declare Function DBUOpenLinkedTableCondition(  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+									, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+									, ByVal sTable As String			'The name of the table in the database
+									, ByVal sCondition As String		'Condition starting with "Where ..."
+									, ByVal sFile As String			'The name of the tab file to save the live cache table into
+									) As Integer					'Returns DBU_LINK_TABLE_FAILED if the table was not opened, otherwise it returns the number of records in the table
+
+Declare Function DBUOpenLiveCacheTable(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+								, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+								, ByVal sTable As String			'The name of the table in the database
+								, ByVal sFile As String			'The name of the tab file to save the linked table into
+								) As Integer					'Returns DBU_OPEN_LIVE_TABLE_FAILED if the table was not opened, otherwise it 1
+Declare Function DBUOpenLiveTable(		  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+								, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+								, ByVal sTable As String			'The name of the table in the database
+								, ByVal sFile As String			'The name of the tab file to save the live table into
+								) As Integer					'Returns DBU_OPEN_LIVE_TABLE_FAILED if the table was not opened, otherwise it 1
+
+
+Declare Function DBUGetDatabaseTableName( ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+								, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+								, ByVal sTable As String			'The name of the table in the database
+								) As String					'A string of this type ´schemaname´.´tablename´
+
+Declare Sub DBUSetMSAccessDriverName(	ByVal sDriver As String			'Name of database driver to use when connection to a MS Access DB file
+								)
+Declare Function DBUGetMSAccessDriverName() As String					'returns the name of the database driver to use when connecting to a MS Access DB File
+
+Declare Function DBUFindOpenConnection(		  ByVal sConnString As String	'The Connection String to search for
+									, ByVal sToolkit As String	'Toolkit of the connection, "ODBC" or "ORAINET"
+									) As Integer				'The connection number that points to the database. Return 0 if no match was found
+Declare Function DBUOpenConnection(		  ByVal sConnString As String	'The Connection String to use to open the connection
+									, ByVal sToolkit As String	'Toolkit to use to open the connection, "ODBC" or "ORAINET"
+									) As Integer				'The connection number that points to the database. DBU_OPEN_CONNECTION_FAILED if the connection failed
+Declare Function DBUOpenConnectionToDSN(	  ByVal sDSN As String		'The name of the DSN to connect using
+									, ByVal sUsername As String	'The user used to connect to the database, can be ""
+									, ByVal sPassword As String	'The password used to connect to the database, can be ""
+									) As Integer				'The connection number that points to the database. DBU_OPEN_CONNECTION_FAILED if the connection failed
+Declare Function DBUOpenConnectionToFileDSN(	  ByVal sFileDSN As String	'The name and path of the File DSN to connect using
+									, ByVal sUsername As String	'The user used to connect to the database, can be ""
+									, ByVal sPassword As String	'The password used to connect to the database, can be ""
+									) As Integer				'The connection number that points to the database. 0 if the connection failed
+Declare Function DBUOpenConnectionToMSAccessFile(	  ByVal sDBFile As String	'The name of the MS Access database file
+										, ByVal sUsername As String	'The user used to connect to the database, can be ""
+										, ByVal sPassword As String	'The password used to connect to the database, can be ""
+										) As Integer				'The connection number that points to the database. DBU_OPEN_CONNECTION_FAILED if the connection failed
+
+Declare Function DBUGetQueryFromTable(			  ByVal sTab As String 	'The DBMS table to get the Database Query from
+										) As String			'Returns the query stored in the metadata section of the tab file
+Declare Function DBUGetConnectionStringFromTable(  ByVal sTab As String 	'The DBMS table to get the Connection String from
+										) As String			'Returns the Connection String stored in the metadata section of the tab file
+
+Declare Function DBUGetListOfColumnNames(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+									, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+									, ByVal sTable As String			'The name of the table in the database
+									, ByVal nCriterias As String		'Type of columns to return, see ColumnLib.def for types
+									, arrColumnNames() As String		'Array to fill the column names into
+									) As Integer					'Returns the number of columns returned
+Declare Function DBUGetListOfColumnNamesAndTypes(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+										, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+										, ByVal sTable As String			'The name of the table in the database
+										, ByVal nCriterias As String		'Type of columns to return, see ColumnLib.def for types
+										, arrColumnNames() As String		'Array to fill the column names into
+										, arrColumnTypes() As Integer		'Array to fill the column types into
+										) As Integer					'Returns the number of columns returned
+
+Declare Function DBUGetColumnValuesAsString(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+									, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+									, ByVal sTable As String			'The name of the table in the database
+									, ByVal sColumn As String		'The name of the column to read the values from
+									, ByVal sOrderBy As String		'Column or Expression to order the values by
+									, ByVal sGroupBy As String		'Column or Expression to group the values by
+									, arrValues() As String			'Array to fill the values into
+									) As Integer					'Returns the number of values returned

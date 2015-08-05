@@ -1,0 +1,175 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "SYSTEMLib.def"
+Include "WINAPI.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function SYSGetUserName() As String
+
+Dim	nSize, nResult As Integer,
+	sValue As String
+
+OnError GoTo ErrorOccured
+
+	nSize	= 1024
+	sValue	= String$(nSize, Chr$(32))
+
+	nResult		= GetUserName(sValue, nSize)
+	SYSGetUserName	= RTrim$(sValue)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "SYSGetUserName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function SYSGetComputerName() As String
+
+Dim	nSize, nResult As Integer,
+	sValue As String
+
+OnError GoTo ErrorOccured
+
+	nSize	= 1024
+	sValue	= String$(nSize, Chr$(32))
+
+	nResult			= GetComputerName(sValue, nSize)
+	SYSGetComputerName	= RTrim$(sValue)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "SYSGetComputerName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function SYSFindTextEditor() As String
+
+Dim	nResult As Integer,
+	sDocument, sProgram, sError As String
+
+OnError GoTo ErrorOccured
+
+SYSFindTextEditor = ""
+
+	sDocument	= PathToDirectory$(TempFileName$("")) & "test.txt"
+	Open File sDocument
+		For Output
+		As #123
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+	Print #123, "some text - doesn't really matter!"
+	Close File #123
+
+	sProgram = Space$(255)
+	nResult = WAPIFindExecutable(PathToFilename$(sDocument), PathToDirectory$(sDocument), sProgram)
+	if nResult <= 32 then
+		Do Case nResult
+			Case ERROR_OUT_OF_MEMORY
+				sError = "Out of memory"
+			Case ERROR_NO_ASSOCIATION
+				sError = "No association for *." & Right$(sDocument, 3) & " files."
+			Case ERROR_FILE_NOT_FOUND
+				sError = sDocument & ": file not found"
+			Case ERROR_PATH_NOT_FOUND
+				sError = sDocument & ": path not found"
+			Case ERROR_BAD_FORMAT
+				sError = "bad format"
+			Case Else
+				sError = "Unknown error " & Str$(nResult)
+		End Case
+
+		Call DEBUGPrint("WAPIFindExecutable reported this error: " & nResult & ": " & sError)
+	Else
+		SYSFindTextEditor = sProgram
+	End If
+
+	Kill sDocument
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "SYSFindTextEditor")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function SYSFindExecutable(ByVal sDocument As String) As String
+
+Dim	nResult As Integer,
+	sProgram, sError As String
+
+OnError GoTo ErrorOccured
+
+SYSFindExecutable = ""
+
+	sProgram = Space$(255)
+	nResult = WAPIFindExecutable(PathToFilename$(sDocument), PathToDirectory$(sDocument), sProgram)
+	if nResult <= 32 then
+		Do Case nResult
+			Case ERROR_OUT_OF_MEMORY
+				sError = "Out of memory"
+			Case ERROR_NO_ASSOCIATION
+				sError = "No association for *." & Right$(sDocument, 3) & " files."
+			Case ERROR_FILE_NOT_FOUND
+				sError = sDocument & ": file not found"
+			Case ERROR_PATH_NOT_FOUND
+				sError = sDocument & ": path not found"
+			Case ERROR_BAD_FORMAT
+				sError = "bad format"
+			Case Else
+				sError = "Unknown error " & Str$(nResult)
+		End Case
+
+		Call DEBUGPrint("WAPIFindExecutable reported this error: " & nResult & ": " & sError)
+	Else
+		SYSFindExecutable = sProgram
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "SYSFindExecutable")
+	Call ERRShow()
+
+End Function

@@ -1,0 +1,3 @@
+' This file is obsolete. It's only here for backward compatibility.
+' For the W3C extended color keyword defines, please refer to the file below:
+Include "Colors.def"

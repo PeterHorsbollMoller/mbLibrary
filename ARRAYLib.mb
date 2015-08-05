@@ -1,0 +1,784 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Software
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "ARRAYLib.def"
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddValueString(arrValues() As String, ByVal sNewValue As String)
+
+Dim nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues) + 1
+	Redim arrValues(nNumItems)
+
+	arrValues(nNumItems) = sNewValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddValueString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddValueAsItemString(	  arrValues() As String			'Array of values to work on
+							, ByVal sNewValue As String		'New string value to insert at a certain position
+							, ByVal nItem As Integer			'The position to insert the value at, -1 it will be added at the end
+							)							'The existing values will be maintain but values from nItem and up will be moved by one
+
+Dim	nNumItems, i As Integer,
+	sCurrentValue As String
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues) + 1
+	Redim arrValues(nNumItems)
+
+	If nItem = -1 Then
+		nItem = nNumItems
+	ElseIf nItem > nNumItems Then
+		nItem = nNumItems
+	ElseIf nItem < 1 Then
+		nItem = 1
+	End If
+
+	For i = nItem To Ubound(arrValues)
+		sCurrentValue	= arrValues(i)
+		arrValues(i)	= sNewValue
+		sNewValue		= sCurrentValue
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddValueAsItemString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddArrayString(	  arrToAdd() As String			'Array of values to copy to the other array
+					, arrTo() As String				'Array of values to recieve the values from the first array
+					)							'The arrTo will be now hold the original records and the records from the arrToAdd
+
+Dim	nNumItems, nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems	= Ubound(arrTo)
+	Redim arrTo(nNumItems + Ubound(arrToAdd))
+
+	For nItem = 1 To Ubound(arrToAdd)
+		arrTo(nNumItems + nItem)	= arrToAdd(nItem)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddArrayString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYRemoveItemString(arrValues() As String, ByVal nItem As Integer)
+
+Dim	nNumItems, i As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues)
+	If (nItem > 0) AND (nItem < nNumItems) Then
+		For i = nItem To (nNumItems - 1)
+			arrValues(i) = arrValues(i + 1)
+		Next
+
+		Redim arrValues(nNumItems - 1)
+	ElseIf nItem = nNumItems Then
+		Redim arrValues(nNumItems - 1)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYRemoveItemString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYRemoveValueString(arrValues() As String, ByVal sValue As String)
+
+Dim nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nItem = ARRAYFindValueString(arrValues, sValue)
+	Do While (nItem > 0)
+		Call ARRAYRemoveItemString(arrValues, nItem)
+		nItem = ARRAYFindValueString(arrValues, sValue)
+	Loop
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYRemoveValueString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYRemoveValuesString(	  arrValues() As String			'Array of values to work on
+						, arrValuesToRemove() As String	'Array of value to remove from the array
+						)							'The existing values will be maintain only all items with the given values will be removed
+
+Dim 	i As Integer
+
+OnError GoTo ErrorOccured
+
+	For i = 1 To Ubound(arrValuesToRemove)
+		Call ARRAYRemoveValueString(arrValues, arrValuesToRemove(i))
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYRemoveValuesString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYMoveItemBetweenArraysString(	  arrFromValues() As String		'Array of values to move the item from
+								, ByVal nFromItem As Integer		'The position of the value to move to the to-array
+								, arrToValues() As String		'Array of values to move the item to
+								, ByVal nToItem As Integer		'The position to insert the value at, -1 it will be added at the end
+								)							'The FromArray will have the Item removed and the FromArray will have the Item added
+
+Dim	sValue As String
+
+OnError GoTo ErrorOccured
+
+	If nFromItem <= Ubound(arrFromValues) Then
+		sValue	= arrFromValues(nFromItem)
+		Call ARRAYRemoveItemString(arrFromValues, nFromItem)
+
+		Call ARRAYAddValueAsItemString(arrToValues, sValue, nToItem)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYMoveItemBetweenArraysString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYSortAscString(arrValues() As String)
+
+Dim	i, j As Integer,
+	sValue As String,
+	nChanged As Logical
+
+OnError GoTo ErrorOccured
+
+	For i = 2 To Ubound(arrValues)
+		nChanged = FALSE
+		For j = Ubound(arrValues) To i Step -1
+			If arrValues(j - 1) > arrValues(j) Then
+				sValue			= arrValues(j)
+				arrValues(j)		= arrValues(j - 1)
+				arrValues(j - 1)	= sValue
+			End If
+		Next
+		If NOT nChanged Then
+			Exit For
+		End If
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYSortAscString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYSortDescString(arrValues() As String)
+
+Dim	i, j As Integer,
+	sValue As String,
+	nChanged As Logical
+
+OnError GoTo ErrorOccured
+
+	Call ARRAYQuickSortDescString(arrValues(), 1, Ubound(arrValues))
+
+'	For i = 2 To Ubound(arrValues)
+'		nChanged = FALSE
+'		For j = Ubound(arrValues) To i Step -1
+'			If arrValues(j-1) < arrValues(j) Then
+'				sValue		= arrValues(j)
+'				arrValues(j)	= arrValues(j-1)
+'				arrValues(j-1)	= sValue
+'			End If
+'		Next
+'		If NOT nChanged Then
+'			Exit For
+'		End If
+'	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYSortDescString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYQuickSortDescString(arrValues() As String, ByVal nFirst As Integer, ByVal nLast As Integer)
+
+Dim	nLow As Integer, nHigh As Integer,
+	MidValue As String
+
+OnError GoTo ErrorOccured
+
+	nLow		= nFirst
+	nHigh	= nLast
+	MidValue	= arrValues((nFirst + nLast) \ 2)
+
+	Do
+		Do While (arrValues(nLow) < MidValue)
+			nLow = nLow + 1
+		Loop
+
+		Do While (arrValues(nHigh) > MidValue)
+			nHigh = nHigh - 1
+		Loop
+
+		If nLow <= nHigh Then
+			Call ARRAYSwapString(arrValues(nLow), arrValues(nHigh))
+			nLow = nLow + 1
+			nHigh = nHigh - 1
+		End If
+	Loop While (nLow <= nHigh)
+
+	If nFirst < nHigh Then
+		Call ARRAYQuickSortDescString(arrValues, nFirst, nHigh)
+	End If
+	If nLow < nLast Then
+		Call ARRAYQuickSortDescString(arrValues, nLow, nLast)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYQuickSortDescString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYSwapString(s1 As String, s2 As String)
+
+Dim	s3 As String
+
+OnError GoTo ErrorOccured
+
+	s3 = s1
+	s1 = s2
+	s2 = s3
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYSwapString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYFindPositionDescSortedString(ByVal sValue As String, arrValues() As String) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+ARRAYFindPositionDescSortedString = Ubound(arrValues) + 1
+
+	'Find position for C in this order
+	'1: Z
+	'2: H
+	'3: A
+
+	For i = 1 To Ubound(arrValues)
+		If sValue > arrValues(i) Then
+			ARRAYFindPositionDescSortedString = i
+			Exit Function
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYFindPositionDescSortedString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYFindPositionAscSortedString(ByVal sValue As String, arrValues() As String) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+ARRAYFindPositionAscSortedString = Ubound(arrValues) + 1
+
+	'Find position for C in this order
+	'1: A
+	'2: H
+	'3: Z
+
+	For i = 1 To Ubound(arrValues)
+		If sValue < arrValues(i) Then
+			ARRAYFindPositionAscSortedString = i
+			Exit Function
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYFindPositionAscSortedString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYContainsValueString(arrValues() As String, ByVal sValue As String) As Logical
+
+OnError GoTo ErrorOccured
+
+	ARRAYContainsValueString = (ARRAYFindValueString(arrValues, sValue) > 0)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYContainsValueString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYFindValueString(arrValues() As String, ByVal sValue As String) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	ARRAYFindValueString = 0
+
+	For i = 1 To Ubound(arrValues)
+		If arrValues(i) = sValue Then
+			ARRAYFindValueString = i
+			Exit Function
+		End if
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYFindValueString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYToSeparatedTextString(arrValues() As String, ByVal sSeparator As String) As String
+
+Dim	sValue As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+ARRAYToSeparatedTextString = ""
+
+	If Ubound(arrValues) = 0 Then
+		Exit Function
+	End If
+
+	sValue = arrValues(1)
+	For i = 2 To Ubound(arrValues)
+		sValue	= sValue & sSeparator & arrValues(i)
+	Next
+
+ARRAYToSeparatedTextString = sValue
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYToSeparatedTextString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYToQuotedSeparatedTextString(arrValues() As String, ByVal sSeparator As String, ByVal sQuote As String) As String
+
+Dim	sValue As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+ARRAYToQuotedSeparatedTextString = ""
+
+	If Ubound(arrValues) = 0 Then
+		Exit Function
+	End If
+
+	sValue = sQuote & arrValues(1) & sQuote
+	For i = 2 To Ubound(arrValues)
+		sValue	= sValue & sSeparator & sQuote & arrValues(i) & sQuote
+	Next
+
+ARRAYToQuotedSeparatedTextString = sValue
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYToQuotedSeparatedTextString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYCopyString(  arrFrom() As String			'Array of values to copy to the other array
+				, arrTo() As String				'Array of values to recieve the values from the first array
+				)							'The arrTo will be resized to contain exactly the same number of elements as the arrFrom
+
+Dim	nNumItems, nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems	= Ubound(arrFrom)
+	Redim arrTo(nNumItems)
+
+	For nItem = 1 To nNumItems
+		arrTo(nItem)	= arrFrom(nItem)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYCopyString")
+	Call ERRShow()
+
+End Sub
+
+'********************************************************************************************************************************************************************************************
+'********************************************************************************************************************************************************************************************
+'** I N T E G E R     A R R A Y S
+'********************************************************************************************************************************************************************************************
+'********************************************************************************************************************************************************************************************
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddValueInteger(arrValues() As Integer, ByVal nNewValue As Integer)
+
+Dim nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues) + 1
+	Redim arrValues(nNumItems)
+
+	arrValues(nNumItems) = nNewValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddValueInteger")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddArrayInteger(	  arrToAdd() As Integer		'Array of values to copy to the other array
+						, arrTo() As Integer		'Array of values to recieve the values from the first array
+					)							'The arrTo will be now hold the original records and the records from the arrToAdd
+
+Dim	nNumItems, nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems	= Ubound(arrTo)
+	Redim arrTo(nNumItems + Ubound(arrToAdd))
+
+	For nItem = 1 To Ubound(arrToAdd)
+		arrTo(nNumItems + nItem)	= arrToAdd(nItem)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddArrayInteger")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYRemoveItemInteger(arrValues() As Integer, ByVal nItem As Integer)
+
+Dim	nNumItems, i As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues)
+	If (nItem > 0) AND (nItem < nNumItems) Then
+		For i = nItem To (nNumItems - 1)
+			arrValues(i) = arrValues(i + 1)
+		Next
+
+		Redim arrValues(nNumItems - 1)
+	ElseIf nItem = nNumItems Then
+		Redim arrValues(nNumItems - 1)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYRemoveItemInteger")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYRemoveValueInteger(arrValues() As Integer, ByVal nValue As Integer)
+
+Dim nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nItem = ARRAYFindValueInteger(arrValues, nValue)
+	Do While (nItem > 0)
+		Call ARRAYRemoveItemInteger(arrValues, nItem)
+		nItem = ARRAYFindValueInteger(arrValues, nValue)
+	Loop
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYRemoveValueInteger")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYFindValueInteger(arrValues() As Integer, ByVal nValue As Integer) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	ARRAYFindValueInteger = 0
+
+	For i = 1 To Ubound(arrValues)
+		If arrValues(i) = nValue Then
+			ARRAYFindValueInteger = i
+			Exit Function
+		End if
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYFindValueInteger")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ARRAYToSeparatedTextInteger(arrValues() As Integer, ByVal sSeparator As String) As String
+
+Dim	sValue As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+ARRAYToSeparatedTextInteger = ""
+
+	If Ubound(arrValues) = 0 Then
+		Exit Function
+	End If
+
+	sValue = arrValues(1)
+	For i = 2 To Ubound(arrValues)
+		sValue	= sValue & sSeparator & arrValues(i)
+	Next
+
+ARRAYToSeparatedTextInteger = sValue
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYToSeparatedTextInteger")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYCopyInteger(  arrFrom() As Integer			'Array of values to copy to the other array
+				, arrTo() As Integer			'Array of values to recieve the values from the first array
+				)							'The arrTo will be resized to contain exactly the same number of elements as the arrFrom
+
+Dim	nNumItems, nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems	= Ubound(arrFrom)
+	Redim arrTo(nNumItems)
+
+	For nItem = 1 To nNumItems
+		arrTo(nItem)	= arrFrom(nItem)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYCopyInteger")
+	Call ERRShow()
+
+End Sub
+

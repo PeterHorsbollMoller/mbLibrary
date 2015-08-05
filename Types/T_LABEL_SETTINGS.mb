@@ -1,0 +1,440 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\STRINGLib.def"
+Include "..\STYLELib.def"
+
+Include "T_LABEL_SETTINGS.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tlbsCopy(tlbsFrom As T_LABEL_SETTINGS, tlbsTo As T_LABEL_SETTINGS)
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	tlbsTo.bAutoDisplay			= tlbsFrom.bAutoDisplay
+	tlbsTo.nVisibility			= tlbsFrom.nVisibility
+	tlbsTo.fMinZoom			= tlbsFrom.fMinZoom
+	tlbsTo.fMaxZoom			= tlbsFrom.fMaxZoom
+	tlbsTo.sZoomUnits			= tlbsFrom.sZoomUnits
+	tlbsTo.sExpression			= tlbsFrom.sExpression
+	tlbsTo.nLineType			= tlbsFrom.nLineType
+	tlbsTo.fntLabel			= tlbsFrom.fntLabel
+	tlbsTo.nPosition			= tlbsFrom.nPosition
+	tlbsTo.bAllowOverlap		= tlbsFrom.bAllowOverlap
+	tlbsTo.bAllowDuplicates		= tlbsFrom.bAllowDuplicates
+	tlbsTo.nOffset				= tlbsFrom.nOffset
+	tlbsTo.nMaxNumber			= tlbsFrom.nMaxNumber
+	tlbsTo.bPartialSegments		= tlbsFrom.bPartialSegments
+	tlbsTo.nOrientation			= tlbsFrom.nOrientation
+	tlbsTo.nAlpha				= tlbsFrom.nAlpha
+	tlbsTo.bAutoPosition		= tlbsFrom.bAutoPosition
+	tlbsTo.bAutoSizes			= tlbsFrom.bAutoSizes
+	tlbsTo.bSuppressIfNotFit		= tlbsFrom.bSuppressIfNotFit
+	tlbsTo.nAutoSizeStes		= tlbsFrom.nAutoSizeStes
+	tlbsTo.bCurvedBestPostion	= tlbsFrom.bCurvedBestPostion
+	tlbsTo.bCurvedFallback		= tlbsFrom.bCurvedFallback
+	tlbsTo.bUseAbbreviation		= tlbsFrom.bUseAbbreviation
+	tlbsTo.sAbbreviationExpr		= tlbsFrom.sAbbreviationExpr
+	tlbsTo.bAutoCallOut			= tlbsFrom.bAutoCallOut
+	tlbsTo.nLabelOrder			= tlbsFrom.nLabelOrder
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tlbsReset(	tlbs As T_LABEL_SETTINGS	'T_LABEL_SETTINGS to reset
+			)
+
+OnError GoTo ErrorOccured
+
+	tlbs.bAutoDisplay		= FALSE
+	tlbs.nVisibility		= LAYER_INFO_LBL_VIS_ON 	'| LAYER_INFO_LBL_VIS_OFF | LAYER_INFO_LBL_VIS_ZOOM
+	tlbs.fMinZoom			= 0
+	tlbs.fMaxZoom			= 30000
+	tlbs.sZoomUnits		= "m"
+	tlbs.sExpression		= "COL1"
+	tlbs.nLineType			= LAYER_INFO_LBL_LT_NONE '| LAYER_INFO_LBL_LT_SIMPLE | LAYER_INFO_LBL_LT_ARROW
+	tlbs.fntLabel			= CurrentFont()
+	tlbs.nPosition			= LAYER_INFO_LBL_POS_CR 	' | _TL | _TC | _TR | _CL | _CC | _BL | _BC | _BR
+	tlbs.bAllowOverlap		= FALSE
+	tlbs.bAllowDuplicates	= TRUE
+	tlbs.nOffset			= 8
+	tlbs.nMaxNumber		= 2147483647
+	tlbs.bPartialSegments	= TRUE
+	tlbs.nOrientation		= LAYER_INFO_LABEL_ORIENT_HORIZONTAL	'LAYER_INFO_LABEL_ORIENT_PARALLEL | LAYER_INFO_LABEL_ORIENT_CURVED
+	tlbs.nAlpha			= 255
+	tlbs.bAutoPosition		= FALSE
+	tlbs.bAutoSizes		= FALSE
+	tlbs.bSuppressIfNotFit	= FALSE
+	tlbs.nAutoSizeStes		= 2
+	tlbs.bCurvedBestPostion	= FALSE
+	tlbs.bCurvedFallback	= FALSE
+	tlbs.bUseAbbreviation	= FALSE
+	tlbs.sAbbreviationExpr	= ""
+	tlbs.bAutoCallOut		= FALSE
+	tlbs.nLabelOrder		= 0
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsReset")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlbsToString(tlbs As T_LABEL_SETTINGS) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= tlbs.bAutoDisplay
+				& ";" & tlbs.nVisibility
+				& ";" & Str$(tlbs.fMinZoom)
+				& ";" & Str$(tlbs.fMaxZoom)
+				& ";" & tlbs.sZoomUnits
+				& ";" & tlbs.sExpression
+				& ";" & tlbs.nLineType
+				& ";" & STLFont2Text(tlbs.fntLabel)
+				& ";" & tlbs.nPosition
+				& ";" & tlbs.bAllowOverlap
+				& ";" & tlbs.bAllowDuplicates
+				& ";" & tlbs.nOffset
+				& ";" & tlbs.nMaxNumber
+				& ";" & tlbs.bPartialSegments
+				& ";" & tlbs.nOrientation
+				& ";" & tlbs.nAlpha
+				& ";" & tlbs.bAutoPosition
+				& ";" & tlbs.bAutoSizes
+				& ";" & tlbs.bSuppressIfNotFit
+				& ";" & tlbs.nAutoSizeStes
+				& ";" & tlbs.bCurvedBestPostion
+				& ";" & tlbs.bCurvedFallback
+				& ";" & tlbs.bUseAbbreviation
+				& ";" & tlbs.sAbbreviationExpr
+				& ";" & tlbs.bAutoCallOut
+				& ";" & tlbs.nLabelOrder
+
+	tlbsToString = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlbsFromString(tlbs As T_LABEL_SETTINGS, ByVal sLabelInfo As String) As Logical
+
+Dim	arrItems() As String,
+	nItems As Integer
+
+OnError GoTo ErrorOccured
+
+tlbsFromString	= FALSE
+
+	nItems = STRINGSplit(sLabelInfo, ";", arrItems())
+'	Call DEBUGPrint("tlbsFromString: " & nItems & " items in " & sLabelInfo)
+
+	Call tlbsReset(tlbs)
+	If nItems >= 16 Then
+		tlbs.bAutoDisplay		= Val(arrItems(1))
+		tlbs.nVisibility		= Val(arrItems(2))
+		tlbs.fMinZoom			= Val(arrItems(3))
+		tlbs.fMaxZoom			= Val(arrItems(4))
+		tlbs.sZoomUnits		= arrItems(5)
+		tlbs.sExpression		= arrItems(6)
+		tlbs.nLineType			= Val(arrItems(7))
+		tlbs.fntLabel			= STLText2Font(arrItems(8))
+		tlbs.nPosition			= Val(arrItems(9))
+		tlbs.bAllowOverlap		= (arrItems(10) = "T")
+		tlbs.bAllowDuplicates	= (arrItems(11) = "T")
+		tlbs.nOffset			= Val(arrItems(12))
+		tlbs.nMaxNumber		= Val(arrItems(13))
+		tlbs.bPartialSegments	= (arrItems(14) = "T")
+		tlbs.nOrientation		= Val(arrItems(15))
+		tlbs.nAlpha			= Val(arrItems(16))
+
+		If nItems = 26 Then
+			tlbs.bAutoPosition		= (arrItems(17) = "T")
+			tlbs.bAutoSizes		= (arrItems(18) = "T")
+			tlbs.bSuppressIfNotFit	= (arrItems(19) = "T")
+			tlbs.nAutoSizeStes		= Val(arrItems(20))
+			tlbs.bCurvedBestPostion	= (arrItems(21) = "T")
+			tlbs.bCurvedFallback	= (arrItems(22) = "T")
+			tlbs.bUseAbbreviation	= (arrItems(23) = "T")
+			tlbs.sAbbreviationExpr	= arrItems(24)
+			tlbs.bAutoCallOut		= (arrItems(25) = "T")
+			tlbs.nLabelOrder		= Val(arrItems(26))
+		End If
+
+		tlbsFromString	= TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlbsGetDescription(tlbs As T_LABEL_SETTINGS) As String
+
+OnError GoTo ErrorOccured
+
+	tlbsGetDescription = "Zoom: " & FormatNumber$(tlbs.fMinZoom) & " - " & FormatNumber$(tlbs.fMaxZoom) & " " & tlbs.sZoomUnits
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tlbsGetInfo(ByVal nMID As Integer, ByVal nLyrID As Integer, tlbs As T_LABEL_SETTINGS)
+
+Dim	i, nStyles As Integer
+
+OnError GoTo ErrorOccured
+
+	Set Distance Units MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+
+	tlbs.bAutoDisplay		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_AUTODISPLAY)
+	tlbs.nVisibility		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_VISIBILITY)
+	tlbs.fMinZoom			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_ZOOM_MIN)
+	tlbs.fMaxZoom			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_ZOOM_MAX)
+	tlbs.sZoomUnits		= MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+	tlbs.sExpression		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_EXPR)
+	tlbs.nLineType			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_LT)
+	tlbs.fntLabel			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_FONT)
+	tlbs.nPosition			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_POS)
+	tlbs.bAllowOverlap		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_OVERLAP)
+	tlbs.bAllowDuplicates	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_DUPLICATES)
+	tlbs.nOffset			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_OFFSET)
+	tlbs.nMaxNumber		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_MAX)
+	tlbs.bPartialSegments	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_PARTIALSEGS)
+	tlbs.nOrientation		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_ORIENTATION)
+	tlbs.nAlpha			= LayerInfo(nMID, nLyrID, LAYER_INFO_LABEL_ALPHA)
+
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+		tlbs.bAutoPosition		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_AUTO_POSITION)
+		tlbs.bAutoSizes		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_AUTO_SIZES)
+		tlbs.bSuppressIfNotFit	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_SUPPRESS_IF_NO_FIT)
+		tlbs.nAutoSizeStes		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_AUTO_SIZE_STEP)
+		tlbs.bCurvedBestPostion	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_CURVED_BEST_POSITION)
+		tlbs.bCurvedFallback	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_CURVED_FALLBACK)
+		tlbs.bUseAbbreviation	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_USE_ABBREVIATION)
+		tlbs.sAbbreviationExpr	= LayerInfo(nMID, nLyrID, LAYER_INFO_ABBREVIATION_EXPR)
+		tlbs.bAutoCallOut		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_AUTO_CALLOUT)
+		tlbs.nLabelOrder		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_ORDER)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsGetInfo")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlbsGetSetMapStatement(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+							, ByVal nLyrID As Integer		'LayerID to apply the settings to
+							, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
+							) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Dim	sTab, sCmd As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+tlbsGetSetMapStatement = ""
+
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			'**Let's continue, label settings should work
+		Case LAYER_INFO_TYPE_COSMETIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_IMAGE
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_THEMATIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_GRID
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case Else
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+	End Case
+
+	sTab = LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	If TableInfo(sTab, TAB_INFO_TYPE) IN (TAB_TYPE_IMAGE, TAB_TYPE_WMS) Then
+		Exit Function
+	End If
+
+	sCmd = " Label"
+			& " Auto " & STRINGLogicalToText(tlbs.bAutoDisplay, "On", "Off")
+
+	Do Case tlbs.nLineType
+		Case LAYER_INFO_LBL_LT_ARROW
+			sCmd = sCmd & " Line Arrow"
+		Case LAYER_INFO_LBL_LT_SIMPLE
+			sCmd = sCmd & " Line Simple"
+		Case LAYER_INFO_LBL_LT_NONE
+	End Case
+	' [ Pen... ] ??
+
+	Do Case tlbs.nPosition
+		Case LAYER_INFO_LBL_POS_TL
+			sCmd = sCmd & " Position Above Left"
+		Case LAYER_INFO_LBL_POS_TC
+			sCmd = sCmd & " Position Center Above"
+		Case LAYER_INFO_LBL_POS_TR
+			sCmd = sCmd & " Position Above Right"
+		Case LAYER_INFO_LBL_POS_CL
+			sCmd = sCmd & " Position Center Left"
+		Case LAYER_INFO_LBL_POS_CC
+			sCmd = sCmd & " Position Center"
+		Case LAYER_INFO_LBL_POS_CR
+			sCmd = sCmd & " Position Center Right"
+		Case LAYER_INFO_LBL_POS_BL
+			sCmd = sCmd & " Position Below Left"
+		Case LAYER_INFO_LBL_POS_BC
+			sCmd = sCmd & " Position Center Below"
+		Case LAYER_INFO_LBL_POS_BR
+			sCmd = sCmd & " Position Below Right"
+	End Case
+
+	sCmd = sCmd & " Offset " & tlbs.nOffset
+
+	If tlbs.sExpression = "" Then
+		sCmd = sCmd & lf & " " & tlbs.fntLabel
+				& lf & " With COL1"
+	Else
+		sCmd = sCmd & lf & " " & tlbs.fntLabel
+				& lf & " With " & tlbs.sExpression
+	End If
+
+	Do Case tlbs.nOrientation
+		Case LAYER_INFO_LABEL_ORIENT_HORIZONTAL
+			sCmd = sCmd & " Parallel Off"
+		Case	LAYER_INFO_LABEL_ORIENT_PARALLEL
+			sCmd = sCmd & " Parallel On"
+		Case	LAYER_INFO_LABEL_ORIENT_CURVED
+			sCmd = sCmd & " Follow Path"
+
+			If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+				sCmd = sCmd & " BestPosition " & STRINGLogicalToText(tlbs.bCurvedBestPostion, "On", "Off")
+					'& " Percent Over " & percent
+					& " Fallback " & STRINGLogicalToText(tlbs.bCurvedFallback, "On", "Off")
+			End If
+	End Case
+
+	Do Case tlbs.nVisibility
+		Case LAYER_INFO_LBL_VIS_ON
+			sCmd = sCmd & lf & " Visibility On"
+		Case LAYER_INFO_LBL_VIS_ZOOM
+			sCmd = sCmd & lf & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
+		Case LAYER_INFO_LBL_VIS_OFF
+			sCmd = sCmd & lf & " Visibility Off"
+	End Case
+
+	sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlbs.bAllowOverlap, "On", "Off")
+			& " PartialSegments " & STRINGLogicalToText(tlbs.bPartialSegments, "On", "Off")
+			& " Duplicates " & STRINGLogicalToText(tlbs.bAllowDuplicates, "On", "Off")
+			& lf & " Max " & tlbs.nMaxNumber
+			& " LabelAlpha " & tlbs.nAlpha
+
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+		sCmd = sCmd & " AutoPosition " & STRINGLogicalToText(tlbs.bAutoPosition, "On", "Off")
+				& " AutoSizes " & Maximum(tlbs.bAutoSizes, 1)
+				& " AutoSizeStep " & tlbs.nAutoSizeStes
+				& " SuppressIfNoFit " & STRINGLogicalToText(tlbs.bSuppressIfNotFit, "On", "Off")
+				& " AutoCallout " & STRINGLogicalToText(tlbs.bAutoCallOut, "On", "Off")
+
+		If tlbs.sAbbreviationExpr = "" Then
+			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+					& " Abbreviate with COL1"
+		Else
+			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+					& " Abbreviate with " & tlbs.sAbbreviationExpr
+		End If
+
+		'tlbs.nLabelOrder - no way to set this?
+	End If
+
+	tlbsGetSetMapStatement = sCmd
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsGetSetMapStatement")
+	Call ERRShow()
+
+End Function

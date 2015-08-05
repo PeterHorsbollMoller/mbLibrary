@@ -1,0 +1,354 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:	STRINGLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "STRINGLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Function STRINGSplit(ByVal sText As String, ByVal sSplitChar As String, arrParts() As String) As Integer
+
+Dim	sCopy As String,
+	nBeg, nEnd As Integer,
+	nCount As Integer
+
+OnError GoTo ErrorOccured
+
+	nEnd		= 0
+	nCount	= 0
+	sCopy	= UCase$(sText)
+
+	Do While nEnd <= Len(sCopy)
+		nBeg = nEnd + 1
+		nEnd = InStr(nBeg, sCopy, sSplitChar)
+		If nEnd = 0 Then
+			nEnd = Len(sCopy) + 1
+		End If
+
+		nCount = nCount + 1
+		ReDim arrParts(nCount)
+		If nBeg = nEnd Then
+			arrParts(nCount) = ""
+		Else
+			arrParts(nCount) = Mid$(sText, nBeg, nEnd - nBeg)
+		End If
+	Loop
+
+	STRINGSplit = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGSplit: " & sText & " at " & sSplitChar)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Function STRINGSplitAndTrim(ByVal sText As String, ByVal sSplitChar As String, arrParts() As String) As Integer
+
+Dim	i, nCount As Integer
+
+OnError GoTo ErrorOccured
+
+	nCount = STRINGSplit(sText, sSplitChar, arrParts())
+	For i = 1 To nCount
+		arrParts(i) = STRINGTrim(arrParts(i))
+	Next
+	STRINGSplitAndTrim = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGSplit: " & sText & " at " & sSplitChar)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Function STRINGTrim(ByVal sText As String) As String
+
+OnError GoTo ErrorOccured
+
+	STRINGTrim = LTrim$(RTrim$(sText))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGTrim: " & sText)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGLogicalToNumber(ByVal bValue As Logical) As String
+
+OnError GoTo ErrorOccured
+
+STRINGLogicalToNumber = "0"
+
+	If bValue Then
+		STRINGLogicalToNumber = "1"
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGLogicalToNumber")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGNumberToLogical(ByVal sNumber As String) As Logical
+
+OnError GoTo ErrorOccured
+
+STRINGNumberToLogical = FALSE
+
+	If sNumber = "1" Then
+		STRINGNumberToLogical = TRUE
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGNumberToLogical")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGLogicalToText(	  ByVal bValue As Logical	'Logical to convert to a text
+						, ByVal sTrueText As String	'Text to send back if bValue is TRUE
+						, ByVal sFalseText As String	'Text to send back if bValue is FALSE
+						) As String				'Returns sTrueText or sFalseText depending on the value of bValue
+
+OnError GoTo ErrorOccured
+
+	If bValue Then
+		STRINGLogicalToText = sTrueText
+	Else
+		STRINGLogicalToText = sFalseText
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGLogicalToText")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGReplace(ByVal sToBeSearched As String, ByVal sSearchFor As String, ByVal sReplaceWith As String) As String
+
+Dim	i As Integer,
+	sToBeSearchedUCase, sSearchForU As String
+
+OnError GoTo ErrorOccured
+
+STRINGReplace = sToBeSearched
+
+	'**Enables Case sensitivity in Instr(...)
+	sToBeSearchedUCase 	= UCase$(sToBeSearched)
+	sSearchForU			= UCase$(sSearchFor)
+
+	i = InStr(1, sToBeSearchedUCase, sSearchForU)
+	Do While i > 0
+		If i = 1 Then
+			sToBeSearched = sReplaceWith + Right$(sToBeSearched, Len(sToBeSearched) - (Len(sSearchFor)))
+		Else
+			sToBeSearched = Left$(sToBeSearched,i - 1) + sReplaceWith + Right$(sToBeSearched, Len(sToBeSearched) - ((i - 1) + Len(sSearchFor)))
+		End If
+'		Print "i: " & sToBeSearched
+		sToBeSearchedUCase 	= UCase$(sToBeSearched)
+		i 				= InStr(i + Len(sReplaceWith), sToBeSearchedUCase, sSearchForU)
+	Loop
+
+STRINGReplace = sToBeSearched
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGReplace: Replacing " & sSearchFor & " with " & sReplaceWith & " in " & sToBeSearched)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGReplacePosition(	  ByVal sToBeSearched As String	'Text to be searched
+							, ByVal sSearchFor As String		'text to search for
+							, ByVal sReplaceWith As String	'text to replace the found text with
+							, ByVal nStartPosition As Integer	'Position to start search
+							) As String					'returns the text where the value has been replaced
+
+Dim	nPos, nLenR, nLenS As Integer
+
+OnError GoTo ErrorOccured
+
+STRINGReplacePosition = sToBeSearched
+
+	nLenR	= Len(sReplaceWith)
+	nLenS	= Len(sSearchFor)
+	nPos		= InStr(nStartPosition, sToBeSearched, sSearchFor)
+	Do While nPos > 0
+		sToBeSearched	= Left$(sToBeSearched, nPos - 1) + sReplaceWith + Right$(sToBeSearched, Len(sToBeSearched) - ((nPos - 1) + nLenS))
+'		Print "nPos: " & sToBeSearched
+		nPos 		= InStr(nPos + nLenR, sToBeSearched, sSearchFor)
+	Loop
+
+STRINGReplacePosition = sToBeSearched
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGReplacePosition: Replacing " & sSearchFor & " with " & sReplaceWith & " in " & sToBeSearched)
+	Call ERRPrint()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Function STRINGGetValueBetweenChars(ByVal sText As String, ByVal sStartChar As String, ByVal sEndChar As String) As String
+
+Dim	nBeg, nEnd As Integer,
+	sValue As String
+
+OnError GoTo ErrorOccured
+
+	nBeg = InStr(1, sText, sStartChar ) + 1
+	nEnd = InStr(nBeg, sText, sEndChar )
+
+	If nEnd = 0 Then
+		sValue = ""
+	ElseIf nBeg = 0 Then
+		sValue = ""
+	Else
+		sValue = Mid$(sText, nBeg, nEnd - nBeg)
+	End If
+
+STRINGGetValueBetweenChars = sValue
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGGetValueBetweenChars: Look for string in " & sText & " between " & sStartChar & " " & sEndChar)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGContainsOnlyNumbers(	ByVal sText As String	'the text to check
+							) As Logical			'return true if all characters int he text are numerical (0-9)
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+STRINGContainsOnlyNumbers = FALSE
+
+	For i = 1 To Len(sText)
+		If NOT Asc(Mid$(sText, i, 1)) Between Asc("0") AND Asc("9") Then
+			Call DEBUGPrint("STRINGContainsOnlyNumbers " & sText & ": char " & i & " (" & Mid$(sText, i, 1) & ") is not numerical")
+			Exit Function
+		End If
+	Next
+
+STRINGContainsOnlyNumbers = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGContainsOnlyNumbers")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGConcatenateWithSeparator(  ByVal sFirst As String		'First part of the concatenated string
+								, ByVal sLast As String		'Last part of the concatenated string
+								, ByVal sSeparator As String	'Separator between the two string, only used if both are not equal to ""
+								) As String
+
+OnError GoTo ErrorOccured
+
+	If sFirst <> "" AND sLast <> "" Then
+		STRINGConcatenateWithSeparator = sFirst & sSeparator & sLast
+	Else
+		STRINGConcatenateWithSeparator = sFirst & sLast
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGConcatenateWithSeparator")
+	Call ERRShow()
+
+End Function

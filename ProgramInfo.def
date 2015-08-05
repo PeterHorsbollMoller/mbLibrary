@@ -1,0 +1,93 @@
+'Requires MapInfo Pro 10.0
+'********************************************************
+'17-03-2011 10:09:55	Fixed some issues with the same variable used by more properties
+'23-04-2012 10:08:20	Added property set Sub PRGISetApplicationDevelopedFor(...) / PRGIGetApplicationDevelopedFor() As String
+'07-08-2014 13:05:56	Improved the handling of language files by adding:
+'					- PRGILoadLanguageStrings: which will discover existing language files in the application directory and pick the one matching the language given thru the parameter
+'					Changed the default URL_PBBI_WEBSITE to www.mapinfo.com
+'					The module now also requires these modules ARRAYLib and RESSTRNGLib
+'15-08-2014 13:16:14	Added support for new features that will come with MapInfo Pro 12.5 x64:
+'						- Sub PRGISetDescription(...)
+'						- Function PRGIGetDescription() As String
+'						- Sub PRGISetApplicationImageUri(...)
+'						- Function PRGIGetApplicationImageUri() As String
+'					The procedures/functions below can be called by the interface for MapBasic application in MI Pro in the Tools Windows
+'						- Sub AddIn_About
+'						- Sub AddIn_Help
+'						- Function AddIn_Name() As String
+'						- Function AddIn_Description() As String
+'						- Function AddIn_Version() As String
+'						- Function AddIn_ImageUri() As String
+'13-09-2014 13:24:51	Fixed an error in PRGIAbout_OnLoad so that languages now are shown in the About dialog
+'********************************************************
+
+'When using this module, make sure to set these values in your main module
+'
+'Define xProgram 	"Nodes Displayer"
+'Define xVersion 	"1.0.0"
+'Define xYear		"2011"
+'
+'	Call PRGISetApplicationName(xProgram)
+'	Call PRGISetApplicationVersion(xVersion)
+'	Call PRGISetApplicationCopyrightYear(xYear)
+'	Call PRGISetApplicationDevelopedBy("Peter Horsbøll Møller")
+'********************************************************
+'Set and get the Name of the Application, deafult is "unknown" or name of MBX if running on MI Pro 10.0 or newer
+Declare Sub PRGISetApplicationName(	ByVal sName As String)
+Declare Function PRGIGetApplicationName() As String
+'Set and get the Version of the Application, default is ""
+Declare Sub PRGISetApplicationVersion(ByVal sVersion As String)
+Declare Function PRGIGetApplicationVersion() As String
+'Set and get the Copyright Year of the Application, default is Year(CurDate())
+Declare Sub PRGISetApplicationCopyrightYear(ByVal sYear As String)
+Declare Function PRGIGetApplicationCopyrightYear() As String
+'Set and get the Copyright Company of the Application, default is "Pitney Bowes Software"
+Declare Sub PRGISetCopyrightCompany(ByVal sName As String)
+Declare Function PRGIGetCopyrightCompany() As String
+'Set and get the Description of the Application, default is [NAME] + " " [VERSION] + " Developed by " + [DEVELOPEDBY]
+Declare Sub PRGISetDescription(ByVal sDescription As String)
+Declare Function PRGIGetDescription() As String
+
+
+'Set and get the Name of the developer of the Application, default is "Pitney Bowes Software"
+Declare Sub PRGISetApplicationDevelopedBy(ByVal sName As String)
+Declare Function PRGIGetApplicationDevelopedBy() As String
+'Set and get the Name of who the Application was developed for, default is ""
+Declare Sub PRGISetApplicationDevelopedFor(ByVal sName As String)
+Declare Function PRGIGetApplicationDevelopedFor() As String
+
+'Set and get the Web Page Name, default is "pbinsight.com"
+Declare Sub PRGISetWebPageName(ByVal sName As String)
+Declare Function PRGIGetWebPageName() As String
+'Set and get the URL to the Web Page, default is "www.pbinsight.com"
+Declare Sub PRGISetWebPageURL(ByVal sURL As String)
+Declare Function PRGIGetWebPageURL() As String
+
+'Set and get the Application Image
+Declare Sub PRGISetApplicationImageUri(ByVal sImageUri As String)
+Declare Function PRGIGetApplicationImageUri() As String
+
+'Set and get the help file for the application, can be PDF, DOC, TXT or any file Windows can "run"
+Declare Sub PRGISetApplicationHelpFile(ByVal sHelpFile As String)
+Declare Function PRGIGetApplicationHelpFile() As String
+
+'Set and get variables for using multiple languages. If these are not set the language popup shows value 'default'
+Declare Sub PRGISetApplicationLanguages(sLanguages() As String)	'Don't use any more - call PRGILoadLanguageStrings
+Declare Sub PRGISetApplicationLanguage(iLanguage As Integer)	'Don't use any more - call PRGILoadLanguageStrings
+Declare Function PRGIGetApplicationLanguage() As Integer
+Declare Function PRGIGetApplicationLanguageName() As String
+
+Declare Sub PRGILoadLanguageStrings(ByVal sLanguage As String)
+
+'Show the About box using the Information given above
+Declare Sub PRGIAboutbox
+'Launches the help file, if any specified
+Declare Sub PRGILaunchHelpFile
+
+'**Supported by MapInfo Professional 12.5 x64 on onwards
+Declare Sub AddIn_About
+Declare Sub AddIn_Help
+Declare Function AddIn_Name() As String
+Declare Function AddIn_Description() As String
+Declare Function AddIn_Version() As String
+Declare Function AddIn_ImageUri() As String

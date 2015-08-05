@@ -1,0 +1,693 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:	STYLELib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "STRINGLib.def"
+Include "TABLELib.def"
+
+Include "STYLELib.def"
+
+'**********************************************************************************************''
+'
+'	How to use these:
+'	You can use these functions thru a Update statement:
+'
+'	Dim penNew As Pen
+'	penNew = MakePen(1, 2, BLUE)
+'	Update MYTABLE
+'     	Set OBJ = STLAlterPen(OBJ, penNew)
+'
+'	However you need to make sure the records do have an object
+'
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLAlterClosedObject(  ByVal oObj As Object		'Closed object whoes style to change
+						, ByVal penNew As Pen		'New Pen style to assign
+						, ByVal brsNew As Brush		'New Brush style to assign
+						) As Object
+
+OnError GoTo ErrorOccured
+
+STLAlterClosedObject = oObj
+
+	oObj	= STLAlterPen(oObj, penNew)
+	oObj	= STLAlterBrush(oObj, brsNew)
+
+STLAlterClosedObject = oObj
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLAlterClosedObject")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLAlterPen( ByVal oObj As Object		'Object whoes style to change
+				, ByVal penNew As Pen		'New Pen style to assign
+				) As Object
+
+OnError GoTo ErrorOccured
+
+STLAlterPen = oObj
+
+	If STLObjectHasPen(oObj) Then
+		Alter Object oObj
+			Info OBJ_INFO_PEN, penNew
+		STLAlterPen = oObj
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLAlterPen")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLAlterBrush(	  ByVal oObj As Object		'Object whoes style to change
+					, ByVal brsNew As Brush		'New Brush style to assign
+					) As Object
+
+OnError GoTo ErrorOccured
+
+STLAlterBrush = oObj
+
+
+	If STLObjectHasBrush(oObj) Then
+		Alter Object oObj
+			Info OBJ_INFO_BRUSH, brsNew
+		STLAlterBrush = oObj
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLAlterBrush")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLAlterSymbol(	  ByVal oObj As Object		'Object whoes style to change
+					, ByVal symNew As Symbol	'New Symbol style to assign
+					) As Object
+
+OnError GoTo ErrorOccured
+
+STLAlterSymbol = oObj
+
+
+	If STLObjectHasSymbol(oObj) Then
+		Alter Object oObj
+			Info OBJ_INFO_SYMBOL, symNew
+		STLAlterSymbol = oObj
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLAlterSymbol")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLAlterFont(	  ByVal oObj As Object		'Object whoes style to change
+					, ByVal fntNew As Font		'New Font style to assign
+					) As Object
+
+OnError GoTo ErrorOccured
+
+STLAlterFont = oObj
+
+
+	If STLObjectHasFont(oObj) Then
+		Alter Object oObj
+			Info OBJ_INFO_FONT, fntNew
+		STLAlterFont = oObj
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLAlterFont")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLObjectHasPen(ByVal oObj As Object) As Logical
+
+OnError GoTo ErrorOccured
+
+STLObjectHasPen = FALSE
+
+	Do Case ObjectInfo(oObj, OBJ_INFO_TYPE)
+		Case OBJ_TYPE_ARC, OBJ_TYPE_LINE, OBJ_TYPE_PLINE
+			STLObjectHasPen = TRUE
+'		Case OBJ_TYPE_TEXT
+'		Case OBJ_TYPE_POINT, OBJ_TYPE_MPOINT
+		Case OBJ_TYPE_REGION, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT, OBJ_TYPE_ELLIPSE
+			STLObjectHasPen = TRUE
+		Case OBJ_TYPE_COLLECTION
+			STLObjectHasPen = TRUE
+		Case OBJ_TYPE_FRAME
+			STLObjectHasPen = TRUE
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLObjectHasPen")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLObjectHasBrush(ByVal oObj As Object) As Logical
+
+OnError GoTo ErrorOccured
+
+STLObjectHasBrush = FALSE
+
+	Do Case ObjectInfo(oObj, OBJ_INFO_TYPE)
+'		Case OBJ_TYPE_ARC, OBJ_TYPE_LINE, OBJ_TYPE_PLINE
+'		Case OBJ_TYPE_TEXT
+'		Case OBJ_TYPE_POINT, OBJ_TYPE_MPOINT
+		Case OBJ_TYPE_REGION, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT, OBJ_TYPE_ELLIPSE
+			STLObjectHasBrush = TRUE
+		Case OBJ_TYPE_COLLECTION
+			STLObjectHasBrush = TRUE
+		Case OBJ_TYPE_FRAME
+			STLObjectHasBrush = TRUE
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLObjectHasBrush")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLObjectHasSymbol(ByVal oObj As Object) As Logical
+
+OnError GoTo ErrorOccured
+
+STLObjectHasSymbol = FALSE
+
+	Do Case ObjectInfo(oObj, OBJ_INFO_TYPE)
+'		Case OBJ_TYPE_ARC, OBJ_TYPE_LINE, OBJ_TYPE_PLINE
+'		Case OBJ_TYPE_TEXT
+		Case OBJ_TYPE_POINT, OBJ_TYPE_MPOINT
+			STLObjectHasSymbol = TRUE
+'		Case OBJ_TYPE_REGION, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT, OBJ_TYPE_ELLIPSE
+		Case OBJ_TYPE_COLLECTION
+			STLObjectHasSymbol = TRUE
+'		Case OBJ_TYPE_FRAME
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLObjectHasSymbol")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLObjectHasFont(ByVal oObj As Object) As Logical
+
+OnError GoTo ErrorOccured
+
+STLObjectHasFont = FALSE
+
+	Do Case ObjectInfo(oObj, OBJ_INFO_TYPE)
+'		Case OBJ_TYPE_ARC, OBJ_TYPE_LINE, OBJ_TYPE_PLINE
+		Case OBJ_TYPE_TEXT
+			STLObjectHasFont = TRUE
+		Case OBJ_TYPE_COLLECTION
+			STLObjectHasFont = TRUE
+'		Case OBJ_TYPE_POINT, OBJ_TYPE_MPOINT
+'		Case OBJ_TYPE_REGION, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT, OBJ_TYPE_ELLIPSE
+'		Case OBJ_TYPE_FRAME
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLObjectHasFont")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLChangeSymbolColour(ByVal symNow As Symbol, ByVal nColourNew As Integer) As Symbol
+
+OnError GoTo ErrorOccured
+
+	Do Case StyleAttr(symNow, SYMBOL_KIND)
+		Case 1	'MapInfo 3.0 symbol
+			STLChangeSymbolColour = MakeSymbol(	StyleAttr(symNow, SYMBOL_CODE), nColourNew, StyleAttr(symNow, SYMBOL_POINTSIZE))
+		Case 2	'TrueType symbol
+			STLChangeSymbolColour = MakeFontSymbol(	StyleAttr(symNow, SYMBOL_CODE), nColourNew, StyleAttr(symNow, SYMBOL_POINTSIZE),
+										StyleAttr(symNow, SYMBOL_FONT_NAME), StyleAttr(symNow, SYMBOL_FONT_STYLE), StyleAttr(symNow, SYMBOL_ANGLE))
+		Case 3	'Bitmap file symbol
+			STLChangeSymbolColour = MakeCustomSymbol(	StyleAttr(symNow, SYMBOL_CUSTOM_NAME), nColourNew, StyleAttr(symNow, SYMBOL_POINTSIZE), StyleAttr(symNow, SYMBOL_CUSTOM_STYLE))
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangeSymbolColour")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLChangeSymbolSymbolCode(  ByVal symNow As Symbol			'Symbol to change the colour of
+							, ByVal nSymbolCodeNew As Integer	'Colour to set on the Symbol
+							) As Symbol					'Symbol with the new symbol
+
+OnError GoTo ErrorOccured
+
+	Do Case StyleAttr(symNow, SYMBOL_KIND)
+		Case 1	'MapInfo 3.0 symbol
+			STLChangeSymbolSymbolCode = MakeSymbol(	  nSymbolCodeNew
+											, StyleAttr(symNow, SYMBOL_COLOR)
+											, StyleAttr(symNow, SYMBOL_POINTSIZE))
+		Case 2	'TrueType symbol
+			STLChangeSymbolSymbolCode = MakeFontSymbol(	  nSymbolCodeNew
+												, StyleAttr(symNow, SYMBOL_COLOR)
+												, StyleAttr(symNow, SYMBOL_POINTSIZE)
+												, StyleAttr(symNow, SYMBOL_FONT_NAME)
+												, StyleAttr(symNow, SYMBOL_FONT_STYLE)
+												, StyleAttr(symNow, SYMBOL_ANGLE))
+		Case 3	'Bitmap file symbol
+			STLChangeSymbolSymbolCode = symNow
+'			STLChangeSymbolSymbolCode = MakeCustomSymbol( StyleAttr(symNow, SYMBOL_CUSTOM_NAME)
+'											, StyleAttr(symNow, SYMBOL_COLOR)
+'											, StyleAttr(symNow, SYMBOL_POINTSIZE)
+'											, StyleAttr(symNow, SYMBOL_CUSTOM_STYLE))
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangeSymbolSymbolCode")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLChangePenColour(ByVal penNow As Pen, ByVal nColourNew As Integer) As Pen
+
+OnError GoTo ErrorOccured
+
+	STLChangePenColour = MakePen(StyleAttr(penNow, PEN_WIDTH), StyleAttr(penNow, PEN_PATTERN), nColourNew)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangePenColour")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLChangeBrushFGColour(	  ByVal brsNow As Brush
+							, ByVal nColourNew As Integer
+							) As Brush
+
+OnError GoTo ErrorOccured
+
+	STLChangeBrushFGColour = MakeBrush(StyleAttr(brsNow, BRUSH_PATTERN), nColourNew, StyleAttr(brsNow, BRUSH_BACKCOLOR))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangeBrushColour")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLChangeBrushPattern( ByVal brsNow As Brush			'Brush to change the pattern of
+						, ByVal nPatternNew As Integer	'Pattern to set on the Brush
+						) As Brush					'Brush with the new pattern
+
+OnError GoTo ErrorOccured
+
+	STLChangeBrushPattern = MakeBrush(nPatternNew, StyleAttr(brsNow, BRUSH_FORECOLOR), StyleAttr(brsNow, BRUSH_BACKCOLOR))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangeBrushPattern")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLSymbol2Text(ByVal symCur As Symbol) As String
+
+OnError GoTo ErrorOccured
+
+STLSymbol2Text = ""
+
+	Do Case StyleAttr(symCur, SYMBOL_KIND)
+		Case 1			'MapInfo 3.0 symbol set
+			STLSymbol2Text = "1" & "," & StyleAttr(symCur, SYMBOL_CODE) & "," & StyleAttr(symCur, SYMBOL_COLOR)
+						& "," & StyleAttr(symCur, SYMBOL_POINTSIZE)
+		Case 2			'TrueType font as the symbol
+			STLSymbol2Text = "2" & "," & StyleAttr(symCur, SYMBOL_CODE) & "," & StyleAttr(symCur, SYMBOL_COLOR)
+						& "," & StyleAttr(symCur, SYMBOL_POINTSIZE) & "," & StyleAttr(symCur, SYMBOL_FONT_NAME)
+						& "," & StyleAttr(symCur, SYMBOL_FONT_STYLE) & "," & StyleAttr(symCur, SYMBOL_ANGLE)
+		Case 3			'Symbol value based on a bitmap file
+			STLSymbol2Text = "3" & "," & StyleAttr(symCur, SYMBOL_CUSTOM_NAME) & "," & StyleAttr(symCur, SYMBOL_COLOR)
+						& "," & StyleAttr(symCur, SYMBOL_POINTSIZE) & "," & StyleAttr(symCur, SYMBOL_CUSTOM_STYLE)
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLSymbol2Text")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLText2Symbol(ByVal sSymbol As String) As Symbol
+
+Dim	arrItems() As String,
+	nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+STLText2Symbol = CurrentSymbol()
+
+	nNumItems = STRINGSplit(sSymbol, ",", arrItems)
+
+	If nNumItems = 3 Then
+		'MapInfo 3.0 symbol set
+		STLText2Symbol = MakeSymbol(Val(arrItems(1)), Val(arrItems(2)), Val(arrItems(3)))
+
+	ElseIf nNumItems > 3 Then
+		Do Case arrItems(1)
+			Case "1"
+				'MapInfo 3.0 symbol set
+				STLText2Symbol = MakeSymbol(Val(arrItems(2)), Val(arrItems(3)), Val(arrItems(4)))
+
+			Case "2"
+				'TrueType font as the symbol
+				STLText2Symbol = MakeFontSymbol(Val(arrItems(2)), Val(arrItems(3)), Val(arrItems(4)), arrItems(5), Val(arrItems(6)), Val(arrItems(7)))
+
+			Case "3"
+				'Symbol value based on a bitmap file
+				STLText2Symbol = MakeCustomSymbol(arrItems(2), Val(arrItems(3)), Val(arrItems(4)), Val(arrItems(5)))
+		End Case
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLText2Symbol")
+	Call ERRShow()
+	STLText2Symbol = CurrentSymbol()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLBrush2Text(	ByVal brsCur As Brush	'Convert the Brush to a standard text
+					) As String			'Returns a Text illustrating the Brush
+
+OnError GoTo ErrorOccured
+
+	STLBrush2Text = StyleAttr(brsCur, BRUSH_PATTERN) & "," & StyleAttr(brsCur, BRUSH_FORECOLOR) & "," & StyleAttr(brsCur, BRUSH_BACKCOLOR)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLBrush2Text")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLText2Brush(	ByVal sBrush As String	'Convert a standard text to a Brush
+					) As Brush			'Return the Brush from the text
+
+Dim	arrItems() As String,
+	nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+STLText2Brush = CurrentBrush()
+
+	nNumItems = STRINGSplit(sBrush, ",", arrItems)
+
+	If nNumItems = 3 Then
+		STLText2Brush =  MakeBrush(Val(arrItems(1)), Val(arrItems(2)), Val(arrItems(3)))
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLText2Brush")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLPen2Text(	ByVal penCur As Pen			'Convert the Pen to a standard text
+					) As String				'Returns a Text illustrating the Pen
+
+OnError GoTo ErrorOccured
+
+	STLPen2Text = StyleAttr(penCur, PEN_WIDTH) & "," & StyleAttr(penCur, PEN_PATTERN) & "," & StyleAttr(penCur, PEN_COLOR)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLPen2Text")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLText2Pen(	ByVal sPen As String		'Convert a standard text to a Pen
+					) As Pen					'Return the Pen from the text
+
+Dim	arrItems() As String,
+	nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+STLText2Pen = CurrentPen()
+
+	nNumItems = STRINGSplit(sPen, ",", arrItems)
+
+	If nNumItems = 3 Then
+		STLText2Pen =  MakePen(Val(arrItems(1)), Val(arrItems(2)), Val(arrItems(3)))
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLText2Pen")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLFont2Text(	ByVal fntCur As Font	'Convert the Font to a standard text
+					) As String			'Returns a Text illustrating the Font
+
+OnError GoTo ErrorOccured
+
+STLFont2Text = ""
+
+	'MakeFont( fontname, style, size, forecolor, backcolor )
+	STLFont2Text = StyleAttr(fntCur, FONT_NAME) & "," & StyleAttr(fntCur, FONT_STYLE) & "," & StyleAttr(fntCur, FONT_POINTSIZE)
+					& "," & StyleAttr(fntCur, FONT_FORECOLOR) & "," & StyleAttr(fntCur, FONT_BACKCOLOR)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLFont2Text")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLText2Font(	ByVal sFont As String	'Convert a standard text to a Font
+						) As Font			'Return the Font from the text
+
+Dim	arrItems() As String,
+	nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+STLText2Font = CurrentFont()
+
+	nNumItems = STRINGSplit(sFont, ",", arrItems)
+
+	If nNumItems = 5 Then
+		'MakeFont( fontname, style, size, forecolor, backcolor )
+		STLText2Font = MakeFont(arrItems(1), Val(arrItems(2)), Val(arrItems(3)), Val(arrItems(4)), Val(arrItems(5)))
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLText2Font")
+	Call ERRShow()
+	STLText2Font = CurrentFont()
+
+End Function

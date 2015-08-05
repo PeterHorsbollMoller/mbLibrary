@@ -1,0 +1,162 @@
+'*******************************************************************************
+'** 	Library: ConfigFileLib
+'**   Author: reimplemented By Rob Marjot; adapted from earlier code (using .NET) by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'** 	Program:
+'** 	Module:
+'**
+
+'*******************************************************************************
+
+'-------------------------------------
+Define MAX_LEN			2048
+Define DEFAULT_INT		0
+
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+
+Include "WINAPI.def"
+Include "ConfigFileLib.def"
+Include "ERRORLib.def"
+
+'**default constants...
+Include "Defaults.def"
+
+'**********************************************************************************************
+'Created by Rob Marjot
+'
+' Wraps the corresponding API import
+'
+'Parameters:
+'	sFile    : File to read the value from
+' sSection : Section (without []) to read the value from
+' sKey     : Key to read value from
+'Return value:
+'	Returns the value read from the key specified, or "" if key wasn't found
+'**********************************************************************************************
+Function CONFIGReadKey(ByVal sFile As String, ByVal sSection As String, ByVal sKey As String) As String
+
+Dim	iResult As Integer,
+	sDefault, sOut As String
+
+OnError GoTo ErrorHandler
+
+	sDefault	= ""
+	sOut		= Space$(MAX_LEN)
+
+	iResult = GetPrivateProfileString(sSection, sKey, sDefault, sOut, MAX_LEN, sFile)
+	CONFIGReadKey = sOut
+
+	Exit Function
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGReadKey")
+	Call ERRShow()
+	CONFIGReadKey = ""
+
+End Function
+
+'**********************************************************************************************
+'Created by Rob Marjot
+'
+' Wraps the corresponding API import
+'
+'Parameters:
+'	sFile    : File to read the value from
+' sSection : Section (without []) to read the value from
+' sKey     : Key to read value from
+'Return value:
+'	Returns the value read from the key specified, or 0 if key wasn't found
+'**********************************************************************************************
+Function CONFIGReadKeyInt(ByVal sFile As String, ByVal sSection As String, ByVal sKey As String) As Integer
+
+OnError GoTo ErrorHandler
+
+	CONFIGReadKeyInt = GetPrivateProfileInt(sSection, sKey, DEFAULT_INT, sFile)
+
+	Exit Function
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGReadKeyInt")
+	Call ERRShow()
+	CONFIGReadKeyInt = 0
+
+End Function
+
+'**********************************************************************************************
+'Created by Rob Marjot
+'
+' Wraps the corresponding API import
+'
+'Parameters:
+'	sFile    : File to write configuration to
+' sSection : Section (without []) to write the value to
+' sKey     : Key to write the value to
+' sValue   : value to write to the key above
+'**********************************************************************************************
+Sub CONFIGWriteKey (ByVal sFile As String, ByVal sSection As String, ByVal sKey As String, ByVal sValue As String)
+
+Dim	iResult As Integer
+
+OnError GoTo ErrorHandler
+
+	iResult = WritePrivateProfileString(sSection, sKey, sValue, sFile)
+
+	Exit Sub
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGWriteKey")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************
+'Created by Rob Marjot
+'
+' Wraps the corresponding API import
+'
+'Parameters:
+'	sFile    : File to delete the key from
+' sSection : Section (without []) to delete the key from
+' sKey     : Key to delete
+'**********************************************************************************************
+Sub CONFIGDeleteKey(ByVal sFile As String, ByVal sSection As String, ByVal sKey As String)
+
+Dim	iResult As Integer
+
+OnError GoTo ErrorHandler
+
+	iResult = DeleteKey(sSection, sKey, 0, sFile)
+
+	Exit Sub
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGDeleteKey")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************
+'Created by Rob Marjot
+'
+' Wraps the corresponding API import
+'
+'Parameters:
+'	sFile    : File to delete the section from
+' sSection : Section (without []) to delete
+'**********************************************************************************************
+Sub CONFIGDeleteSection(ByVal sFile As String, ByVal sSection As String)
+
+Dim	iResult As Integer
+
+OnError GoTo ErrorHandler
+
+	iResult = DeleteSection(sSection, 0, 0, sFile)
+
+	Exit Sub
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGDeleteSection")
+	Call ERRShow()
+
+End Sub

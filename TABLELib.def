@@ -1,0 +1,57 @@
+'************************************************************************************************************
+'	H I S T O R Y
+'************************************************************************************************************
+'	18-01-2011 10:28:49	Added new functions:
+'					- TABGetListOfNames(ByVal nTypesToUse As Integer, arrTables() As String) As Integer
+'					- TABUseTableNo(ByVal nTab As Integer, ByVal nTypesToUse As Integer) As Logical
+'					- TABUseTable(ByVal sTab As Integer, ByVal nTypesToUse As Integer) As Logical
+'					- TABIsBitOn(ByVal nBit As Integer, ByVal nBitSum As Integer) As Logical
+'	04-12-2014 10:42:38	Added
+'					- Function TABHasDeletedRows(...) As Logical
+'************************************************************************************************************
+
+'Requires MapInfo Pro 9.5
+
+Define TAB_USE_ONLY_MAPPABLE	1
+Define TAB_USE_TEMP		2
+Define TAB_USE_BASE		4
+Define TAB_USE_LINKED		8
+Define TAB_USE_WMS		16
+Define TAB_USE_WFS		32
+Define TAB_USE_FME		64
+Define TAB_USE_RASTER		128
+Define TAB_USE_GRID		256
+Define TAB_USE_READONLY		512
+Define TAB_USE_TILESERVER	1024
+
+Define TAB_USE_ALL				(2+4+8+16+32+64+128+256+512+1024)
+Define TAB_USE_ALL_MAPPABLE			(1+2+4+8+16+32+64+128+256+512+1024)
+Define TAB_USE_ALL_BUT_IMAGES			TAB_USE_ALL - (TAB_USE_WMS + TAB_USE_RASTER + TAB_USE_GRID + TAB_USE_TILESERVER)
+Define TAB_USE_ALL_MAPPABLE_BUT_IMAGES	TAB_USE_ALL_MAPPABLE - (TAB_USE_WMS + TAB_USE_RASTER + TAB_USE_GRID + TAB_USE_TILESERVER)
+
+
+Declare Function TABIsOpen(	ByVal sTab As String	'Table to check for
+					) As Logical		'Returns true if the table is open
+Declare Sub TABClose(	ByVal sTab As String		'Closes the table if it is open
+				)
+Declare Sub TABDrop(	ByVal sTab As String		'Drops the tables if it is open
+				)
+
+Declare Function TABGetNameFromTabFile(	ByVal sTabFile As String	'Tab File to look for
+							) As String				'Return the name of the table if it is open,
+												'  and "" if a table with this tab file isn't open
+
+Declare Function TABGetListOfNames(	  ByVal nTypesToUse As Integer	'Bitsum describing what table to use, use TAB_USE_ constants
+						, arrTables() As String			'contains the tables that meet the criteria, note that the arrays will not be cleared
+						) As Integer					'returns the number of tables found
+Declare Function TABUseTableNo(	  ByVal nTab As Integer		'Table# to check
+						, ByVal nTypesToUse As Integer	'Bitsum describing what table to use, use TAB_USE_ constants
+						) As Logical					'Returns true if the table meets all criterias
+Declare Function TABUseTable(		  ByVal sTab As String		'Table to check
+						, ByVal nTypesToUse As Integer	'Bitsum describing what table to use, use TAB_USE_ constants
+						) As Logical					'Returns true if the table meets all criterias
+Declare Function TABIsBitOn(		  ByVal nBit As Integer		'Bit to check for
+						, ByVal nBitSum As Integer		'Bit sum to check if bit is set
+						) As Logical					'True if the bit is set in the bit sum
+Declare Function TABHasDeletedRows(	ByVal sTab As String	'Name of table to check
+							) As Logical				'returns True if the table has deleted records, otherwise false

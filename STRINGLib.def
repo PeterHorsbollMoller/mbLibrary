@@ -1,0 +1,53 @@
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    S T R I N G L I B
+'**********************************************************************************************************************
+'	18-01-2012 	- Added STRINGLogicalToText(...) As String
+'	11.03.2013	- Added STRINGContainsOnlyNumbers(...) As Logical
+'	28-02-2015 	- Added STRINGReplacePosition(...) As Logical
+'	30-04-2015 	- Added STRINGConcatenateWithSeparator(...) As String
+'**********************************************************************************************************************
+'Requires MapInfo Pro 4.0
+
+Declare Function STRINGSplit(	  ByVal sText As String		'Text to be split into elements
+					, ByVal sSplitChar As String	'Char used as delimiter, could be ",", ";" or any other
+					, arrParts() As String		'Array of the elements that sText consists of, without the delimeter char
+					) As Integer			'Number of elements found in the sText
+Declare Function STRINGSplitAndTrim(	  ByVal sText As String		'Text to be split into elements
+							, ByVal sSplitChar As String	'Char used as delimiter, could be ",", ";" or any other
+							, arrParts() As String		'Array of the elements that sText consists of, without the delimeter char
+												'Eventual spaces at the end and beginning of each will be removed
+							) As Integer			'Number of elements found in the sText
+Declare Function STRINGTrim(	  ByVal sText As String		'Text to trim (remove spaces to the right and left
+					) As String				'Returns the text trimmed
+
+Declare Function STRINGLogicalToNumber(	  ByVal bValue As Logical	'Logical to convert to "1" or "0"
+							) As String				'Returns "1" or "0" depending on the value of bValue
+Declare Function STRINGNumberToLogical(	  ByVal sNumber As String	'Converts a numeric string to logical
+							) As Logical			'returns true if sNumber = "1", otherwise it returns false
+Declare Function STRINGLogicalToText(	  ByVal bValue As Logical	'Logical to convert to a text
+								, ByVal sTrueText As String	'Text to send back if bValue is TRUE
+								, ByVal sFalseText As String	'Text to send back if bValue is FALSE
+								) As String				'Returns sTrueText or sFalseText depending on the value of bValue
+
+Declare Function STRINGReplace(	  ByVal sToBeSearched As String	'Text to be searched
+							, ByVal sSearchFor As String		'text to search for
+							, ByVal sReplaceWith As String	'text to replace the found text with
+							) As String					'returns the text where the value has been replaced
+Declare Function STRINGReplacePosition(	  ByVal sToBeSearched As String	'Text to be searched
+								, ByVal sSearchFor As String		'text to search for
+								, ByVal sReplaceWith As String	'text to replace the found text with
+								, ByVal nStartPosition As Integer	'Position to start search
+								) As String					'returns the text where the value has been replaced
+
+
+Declare Function STRINGGetValueBetweenChars(	  ByVal sText As String		'Text to extract a certain value from
+								, ByVal sStartChar As String	'Start character, could be "[", "(" or any character
+								, ByVal sEndChar As String	'End character, could be "]", ")" or any character
+								) As String				'returns the first text between the two characters
+Declare Function STRINGContainsOnlyNumbers(	ByVal sText As String	'the text to check
+									) As Logical			'return true if all characters int he text are numerical (0-9)
+
+Declare Function STRINGConcatenateWithSeparator(	  ByVal sFirst As String		'First part of the concatenated string
+										, ByVal sLast As String		'Last part of the concatenated string
+										, ByVal sSeparator As String	'Separator between the two string, only used if both are not equal to ""
+										) As String

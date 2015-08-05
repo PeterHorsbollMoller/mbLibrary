@@ -1,0 +1,541 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\STRINGLib.def"
+Include "..\STYLELib.def"
+
+Include "T_LAYER_SETTINGS.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tlsCopy(tlsFrom As T_LAYER_SETTINGS, tlsTo As T_LAYER_SETTINGS)
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	tlsTo.bEditable			= tlsFrom.bEditable
+	tlsTo.bSelectable			= tlsFrom.bSelectable
+	tlsTo.bZoomLayered			= tlsFrom.bZoomLayered
+	tlsTo.fMinZoom				= tlsFrom.fMinZoom
+	tlsTo.fMaxZoom				= tlsFrom.fMaxZoom
+	tlsTo.sZoomUnits			= tlsFrom.sZoomUnits
+	tlsTo.nDisplay				= tlsFrom.nDisplay
+	tlsTo.bShowLineDirection		= tlsFrom.bShowLineDirection
+	tlsTo.bShowNodes			= tlsFrom.bShowNodes
+	tlsTo.bShowCentroids		= tlsFrom.bShowCentroids
+	tlsTo.nAlpha				= tlsFrom.nAlpha
+	tlsTo.bTrancparency			= tlsFrom.bTrancparency
+	tlsTo.nTransparencyColour	= tlsFrom.nTransparencyColour
+
+	For i = 1 To Ubound(tlsTo.penOverrideLine)
+		tlsTo.penOverrideLine(i)	= tlsFrom.penOverrideLine(i)
+	Next
+
+	For i = 1 To Ubound(tlsTo.penOverrideBorder)
+		tlsTo.penOverrideBorder(i)	= tlsFrom.penOverrideBorder(i)
+	Next
+
+	For i = 1 To Ubound(tlsTo.brsOverride)
+		tlsTo.brsOverride(i)		= tlsFrom.brsOverride(i)
+	Next
+
+	For i = 1 To Ubound(tlsTo.symOverride)
+		tlsTo.symOverride(i)		= tlsFrom.symOverride(i)
+	Next
+
+	For i = 1 To Ubound(tlsTo.fntOverride)
+		tlsTo.fntOverride(i)		= tlsFrom.fntOverride(i)
+	Next
+
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tlsReset(	tls As T_LAYER_SETTINGS	'T_LAYER_SETTINGS to reset
+			)
+
+OnError GoTo ErrorOccured
+
+	tls.bEditable				= FALSE
+	tls.bSelectable			= TRUE
+	tls.bZoomLayered			= FALSE
+	tls.fMinZoom				= 0
+	tls.fMaxZoom				= 30000
+	tls.sZoomUnits				= "m"
+	tls.nDisplay				= LAYER_INFO_DISPLAY_GRAPHIC
+	tls.bShowLineDirection		= FALSE
+	tls.bShowNodes				= FALSE
+	tls.bShowCentroids			= FALSE
+	tls.nAlpha				= 255
+	tls.bTrancparency			= FALSE
+	tls.nTransparencyColour		= BLACK
+
+	Redim tls.penOverrideLine(1)
+	tls.penOverrideLine(1)	= CurrentLinePen()
+	Redim tls.penOverrideBorder(1)
+	tls.penOverrideBorder(1)	= CurrentPen()
+	Redim tls.brsOverride(1)
+	tls.brsOverride(1)		= CurrentBrush()
+	Redim tls.fntOverride(1)
+	tls.fntOverride(1)		= CurrentFont()
+	Redim tls.symOverride(1)
+	tls.symOverride(1)		= CurrentSymbol()
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsReset")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlsToString(tls As T_LAYER_SETTINGS) As String
+
+Dim	sText, sStyle As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+	sText	= 	tls.bEditable
+				& ";" & tls.bSelectable
+				& ";" & tls.bZoomLayered
+				& ";" & Str$(tls.fMinZoom)
+				& ";" & Str$(tls.fMaxZoom)
+				& ";" & tls.sZoomUnits
+				& ";" & tls.nDisplay
+				& ";" & tls.bShowLineDirection
+				& ";" & tls.bShowNodes
+				& ";" & tls.bShowCentroids
+				& ";" & tls.nAlpha
+
+	For i = 1 To Ubound(tls.penOverrideLine)
+		If i = 1 Then
+			sStyle	= STLPen2Text(tls.penOverrideLine(i))
+		Else
+			sStyle	= sStyle & "#" & STLPen2Text(tls.penOverrideLine(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tls.penOverrideBorder)
+		If i = 1 Then
+			sStyle	= STLPen2Text(tls.penOverrideBorder(i))
+		Else
+			sStyle	= sStyle & "#" & STLPen2Text(tls.penOverrideBorder(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tls.brsOverride)
+		If i = 1 Then
+			sStyle	= STLBrush2Text(tls.brsOverride(i))
+		Else
+			sStyle	= sStyle & "#" & STLBrush2Text(tls.brsOverride(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tls.fntOverride)
+		If i = 1 Then
+			sStyle	= STLFont2Text(tls.fntOverride(i))
+		Else
+			sStyle	= sStyle & "#" & STLFont2Text(tls.fntOverride(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	For i = 1 To Ubound(tls.symOverride)
+		If i = 1 Then
+			sStyle	= STLSymbol2Text(tls.symOverride(i))
+		Else
+			sStyle	= sStyle & "#" & STLSymbol2Text(tls.symOverride(i))
+		End If
+	Next
+	sText	= sText & ";" & sStyle
+
+	sText	= sText & ";" & tls.bTrancparency
+				 & ";" & Str$(tls.nTransparencyColour)
+
+	tlsToString = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlsFromString(tls As T_LAYER_SETTINGS, ByVal sLayerInfo As String) As Logical
+
+Dim	arrItems(), arrStyles() As String,
+	i, nItems, nStyles, nStyle As Integer
+
+OnError GoTo ErrorOccured
+
+tlsFromString	= FALSE
+
+	nItems = STRINGSplit(sLayerInfo, ";", arrItems())
+
+'	Call DEBUGPrint("tlsFromString: " & nItems & " items in " & sLayerInfo)
+	Call tlsReset(tls)
+	i	= 0
+	If nItems >= 16 Then
+		i = i + 1
+		tls.bEditable			= (arrItems(i) = "T")
+		i = i + 1
+		tls.bSelectable		= (arrItems(i) = "T")
+		i = i + 1
+		tls.bZoomLayered		= (arrItems(i) = "T")
+		i = i + 1
+		tls.fMinZoom			= Val(arrItems(i))
+		i = i + 1
+		tls.fMaxZoom			= Val(arrItems(i))
+		i = i + 1
+		tls.sZoomUnits			= arrItems(i)
+		i = i + 1
+		tls.nDisplay			= Val(arrItems(i))
+		i = i + 1
+		tls.bShowLineDirection	= (arrItems(i) = "T")
+		i = i + 1
+		tls.bShowNodes			= (arrItems(i) = "T")
+		i = i + 1
+		tls.bShowCentroids		= (arrItems(i) = "T")
+		i = i + 1
+		tls.nAlpha			= Val(arrItems(i))
+
+		i = i + 1
+		nStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tls.penOverrideLine(nStyles)
+		For nStyle = 1 To nStyles
+			tls.penOverrideLine(nStyle) = STLText2Pen(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tls.penOverrideBorder(nStyles)
+		For nStyle = 1 To nStyles
+			tls.penOverrideBorder(nStyle) = STLText2Pen(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tls.brsOverride(nStyles)
+		For nStyle = 1 To nStyles
+			tls.brsOverride(nStyle) = STLText2Brush(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tls.fntOverride(nStyles)
+		For nStyle = 1 To nStyles
+			tls.fntOverride(nStyle) = STLText2Font(arrStyles(nStyle))
+		Next
+
+		i = i + 1
+		nStyles	= STRINGSplit(arrItems(i), "#", arrStyles())
+		Redim tls.symOverride(nStyles)
+		For nStyle = 1 To nStyles
+			tls.symOverride(nStyle) = STLText2Symbol(arrStyles(nStyle))
+		Next
+
+		If nItems >= 18 Then
+			i = i + 1
+			tls.bTrancparency		= (arrItems(i) = "T")
+			i = i + 1
+			tls.nTransparencyColour	= Val(arrItems(i))
+		End If
+
+		tlsFromString	= TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlsGetDescription(tls As T_LAYER_SETTINGS) As String
+
+OnError GoTo ErrorOccured
+
+	tlsGetDescription = "Zoom: " & FormatNumber$(tls.fMinZoom) & " - " & FormatNumber$(tls.fMaxZoom) & " " & tls.sZoomUnits
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tlsGetInfo(ByVal nMID As Integer, ByVal nLyrID As Integer, tls As T_LAYER_SETTINGS)
+
+Dim	i, nStyles As Integer,
+	bNormalLayer, bImageLayer As Logical
+
+OnError GoTo ErrorOccured
+
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			bNormalLayer	= TRUE
+		Case LAYER_INFO_TYPE_COSMETIC
+			bNormalLayer 	= FALSE
+		Case LAYER_INFO_TYPE_IMAGE, LAYER_INFO_TYPE_WMS, LAYER_INFO_TYPE_TILESERVER
+			bNormalLayer 	= FALSE
+		Case LAYER_INFO_TYPE_THEMATIC
+			bNormalLayer	= FALSE
+		Case LAYER_INFO_TYPE_GRID
+			bNormalLayer	= FALSE
+		Case Else
+			bNormalLayer	= FALSE
+	End Case
+
+	Set Distance Units MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+
+	tls.bEditable			= LayerInfo(nMID, nLyrID, LAYER_INFO_EDITABLE)
+	tls.bSelectable		= LayerInfo(nMID, nLyrID, LAYER_INFO_SELECTABLE)
+
+	tls.bZoomLayered		= LayerInfo(nMID, nLyrID, LAYER_INFO_ZOOM_LAYERED)
+	tls.fMinZoom			= LayerInfo(nMID, nLyrID, LAYER_INFO_ZOOM_MIN)
+	tls.fMaxZoom			= LayerInfo(nMID, nLyrID, LAYER_INFO_ZOOM_MAX)
+	tls.sZoomUnits			= MapperInfo(nMID, MAPPER_INFO_DISTUNITS)	'SessionInfo(SESSION_INFO_DISTANCE_UNITS)
+
+	tls.nDisplay			= LayerInfo(nMID, nLyrID, LAYER_INFO_DISPLAY)
+	tls.bShowLineDirection	= LayerInfo(nMID, nLyrID, LAYER_INFO_ARROWS)
+	tls.bShowNodes			= LayerInfo(nMID, nLyrID, LAYER_INFO_NODES)
+	tls.bShowCentroids		= LayerInfo(nMID, nLyrID, LAYER_INFO_CENTROIDS)
+	tls.nAlpha			= LayerInfo(nMID, nLyrID, LAYER_INFO_LAYER_ALPHA)
+
+	tls.bTrancparency		= FALSE
+	tls.nTransparencyColour	= BLACK
+
+	If bNormalLayer Then
+		nStyles	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_LINE_COUNT)
+		Redim tls.penOverrideLine(nStyles)
+		For i = 1 To nStyles
+			tls.penOverrideLine(i)	= LayerStyleInfo(nMID, nLyrID, 0, i, STYLE_OVR_INFO_LINE)
+		Next
+
+		nStyles	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_PEN_COUNT)
+		Redim tls.penOverrideBorder(nStyles)
+		For i = 1 To nStyles
+			tls.penOverrideBorder(i)	= LayerStyleInfo(nMID, nLyrID, 0, i, STYLE_OVR_INFO_PEN)
+		Next
+
+		nStyles	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_BRUSH_COUNT)
+		Redim tls.brsOverride(nStyles)
+		For i = 1 To nStyles
+			tls.brsOverride(i)	= LayerStyleInfo(nMID, nLyrID, 0, i, LAYER_INFO_OVR_BRUSH)
+		Next
+
+		nStyles	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_SYMBOL_COUNT)
+		Redim tls.symOverride(nStyles)
+		For i = 1 To nStyles
+			tls.symOverride(i)	= LayerStyleInfo(nMID, nLyrID, 0, i, LAYER_INFO_OVR_SYMBOL)
+		Next
+
+		nStyles	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_FONT_COUNT)
+		Redim tls.fntOverride(nStyles)
+		For i = 1 To nStyles
+			tls.fntOverride(i)	= LayerStyleInfo(nMID, nLyrID, 0, i, STYLE_OVR_INFO_FONT)
+		Next
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsGetInfo")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlsGetSetMapStatement(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+							, ByVal nLyrID As Integer		'LayerID to apply the settings to
+							, tls As T_LAYER_SETTINGS		'The T_LAYER_SETTINGS to store information about the layer
+							) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Dim	sCmd, sLayer As String,
+	bNormalLayer, bImageLayer As Logical,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+tlsGetSetMapStatement = ""
+
+	sLayer	= LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			bNormalLayer	= TRUE
+			bImageLayer	= FALSE
+		Case LAYER_INFO_TYPE_COSMETIC
+			bNormalLayer	= FALSE
+			bImageLayer	= FALSE
+		Case LAYER_INFO_TYPE_IMAGE, LAYER_INFO_TYPE_WMS, LAYER_INFO_TYPE_TILESERVER
+			bNormalLayer	= FALSE
+			bImageLayer	= TRUE
+		Case LAYER_INFO_TYPE_THEMATIC
+			bNormalLayer	= FALSE
+			bImageLayer	= FALSE
+		Case LAYER_INFO_TYPE_GRID
+			bNormalLayer	= FALSE
+			bImageLayer	= TRUE
+		Case Else
+			bNormalLayer	= FALSE
+			bImageLayer	= FALSE
+	End Case
+
+	If bNormalLayer Then
+		If tls.bEditable Then
+			If TableInfo(sLayer, TAB_INFO_READONLY) Then
+				sCmd = sCmd & " Editable Off"
+			ElseIf Not TableInfo(sLayer, TAB_INFO_USEREDITABLE) Then
+				sCmd = sCmd & " Editable Off"
+			Else
+				sCmd = sCmd & " Editable On"
+			End If
+		Else
+			sCmd = sCmd & " Editable Off"
+		End If
+
+		sCmd = sCmd & " Selectable " & STRINGLogicalToText(tls.bSelectable, "On", "Off")
+
+		sCmd = sCmd & " Alpha " & tls.nAlpha
+	End If
+
+	sCmd = sCmd & " Zoom (" & tls.fMinZoom & ", " & tls.fMaxZoom & ") Units " & eye & tls.sZoomUnits & eye & " " & STRINGLogicalToText(tls.bZoomLayered, "On", "Off")
+			& " Arrows " & STRINGLogicalToText(tls.bShowLineDirection, "On", "Off")
+			& " Centroids " & STRINGLogicalToText(tls.bShowCentroids, "On", "Off")
+			& " Nodes " & STRINGLogicalToText(tls.bShowNodes, "On", "Off")
+
+	Do Case tls.nDisplay
+		Case LAYER_INFO_DISPLAY_OFF
+			sCmd = sCmd & lf & " Display Off"
+		Case LAYER_INFO_DISPLAY_GRAPHIC
+			sCmd = sCmd & lf & " Display Graphic"
+		Case LAYER_INFO_DISPLAY_GLOBAL
+			sCmd = sCmd & lf & " Display Global"
+	End Case
+
+	If bNormalLayer Then
+		For i = 1 To Ubound(tls.penOverrideLine)
+			If i = 1 Then
+				sCmd = sCmd & lf & " Global Line (" & StyleAttr(tls.penOverrideLine(i), PEN_WIDTH)
+								& ", " & StyleAttr(tls.penOverrideLine(i), PEN_PATTERN)
+								& ", " & StyleAttr(tls.penOverrideLine(i), PEN_COLOR) & ")"
+			Else
+				sCmd = sCmd & ", Line (" & StyleAttr(tls.penOverrideLine(i), PEN_WIDTH)
+								& ", " & StyleAttr(tls.penOverrideLine(i), PEN_PATTERN)
+								& ", " & StyleAttr(tls.penOverrideLine(i), PEN_COLOR) & ")"
+			End If
+		Next
+
+		For i = 1 To Ubound(tls.penOverrideBorder)
+			If i = 1 Then
+				sCmd = sCmd & lf & " Global " & tls.penOverrideBorder(i)
+			Else
+				sCmd = sCmd & ", " & tls.penOverrideBorder(i)
+			End If
+		Next
+
+		For i = 1 To Ubound(tls.brsOverride)
+			If i = 1 Then
+				sCmd = sCmd & lf & " Global " & tls.brsOverride(i)
+			Else
+				sCmd = sCmd & ", " & tls.brsOverride(i)
+			End If
+		Next
+
+		For i = 1 To Ubound(tls.symOverride)
+			If i = 1 Then
+				sCmd = sCmd & lf & " Global " & tls.symOverride(i)
+			Else
+				sCmd = sCmd & ", " & tls.symOverride(i)
+			End If
+		Next
+
+		For i = 1 To Ubound(tls.fntOverride)
+			If i = 1 Then
+				sCmd = sCmd & lf & " Global " & tls.fntOverride(i)
+			Else
+				sCmd = sCmd & ", " & tls.fntOverride(i)
+			End If
+		Next
+	End If
+
+	If bImageLayer Then
+		sCmd = sCmd & lf & " Transparency " & STRINGLogicalToText(tls.bTrancparency, "On", "Off")
+						& " Color " & tls.nTransparencyColour
+	End If
+
+	tlsGetSetMapStatement = sCmd
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlsGetSetMapStatement")
+	Call ERRShow()
+
+End Function

@@ -1,0 +1,49 @@
+'Requires MapInfo Pro 6.5
+
+Type T_WINDOW_SIZE_POSITION
+	nWID			As Integer
+	sName			As String
+	nType			As Integer
+	fX			As Float
+	fY			As Float
+	fHeight		As Float
+	fWidth		As Float
+	nWindowState	As Integer
+	bIsOpen		As Logical
+	sPaperUnits		As String
+End Type
+
+Declare Sub twspCopy(	  twspFrom As T_WINDOW_SIZE_POSITION	'Source T_WINDOW_SIZE_POSITION
+				, twspTo As T_WINDOW_SIZE_POSITION		'Target T_WINDOW_SIZE_POSITION
+				)
+Declare Function twspAreIdentical(	  twsp1 As T_WINDOW_SIZE_POSITION	'First T_WINDOW_SIZE_POSITION to compare
+						, twsp2 As T_WINDOW_SIZE_POSITION	'Second T_WINDOW_SIZE_POSITION to compare
+						) As Logical				'Return true id all elements are identical
+Declare Function twspIsValid( 	twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION to check for validation
+					) As Logical					'Returns true is Height and Width are more than 0
+
+Declare Sub twspGetFromWindow(	  ByVal nWID As Integer			'Window to get information from
+						, twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION to store window information on
+						)
+Declare Sub twspSetOnWindow(		 ByVal nWID As Integer			'Window to apply T_WINDOW_SIZE_POSITION to
+						, twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION	to apply settings on
+						)
+
+Declare Function twspGetPositionWithUnit(	twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION to get value from
+						) As String						'return a string with the position and Units
+Declare Function twspGetXWithUnit(	  twsp As T_WINDOW_SIZE_POSITION		'T_WINDOW_SIZE_POSITION to get value from
+						) As String						'return a string with the X position and Units
+Declare Function twspGetYWithUnit(	  twsp As T_WINDOW_SIZE_POSITION		'T_WINDOW_SIZE_POSITION to get value from
+						) As String						'return a string with the Y position and Units
+Declare Function twspGetSizeWithUnit(	  twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION to get value from
+						) As String						'return a string with the Size and Units
+Declare Function twspGetHeightWithUnit(	  twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION to get value from
+						) As String						'return a string with the Height and Units
+Declare Function twspGetWidthWithUnit(	  twsp As T_WINDOW_SIZE_POSITION	'T_WINDOW_SIZE_POSITION to get value from
+						) As String						'return a string with the Width and Units
+
+Declare Function twspToHash(	  twsp As T_WINDOW_SIZE_POSITION		'T_WINDOW_SIZE_POSITION to convert to a string
+					) As String						'Return a string holding settings from the T_WINDOW_SIZE_POSITION
+Declare Sub twspFromHash(	  ByVal sHash As String				'A string holding the T_WINDOW_SIZE_POSITION settings
+					, twsp As T_WINDOW_SIZE_POSITION		'T_WINDOW_SIZE_POSITION to update with the settings in the string
+					)

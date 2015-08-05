@@ -1,0 +1,104 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:	TOOLBARLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TOOLBARLib.def"
+
+Include "Types\T_MI_POINT.def"
+Include "Types\T_TOOLBAR.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function TOOLBARExists(ByVal sToolbarName As String) As Logical
+
+Dim	nWID, i As Integer
+
+OnError GoTo ErrorOccured
+
+TOOLBARExists = FALSE
+
+	For i = 1 To NumAllWindows()
+		nWID = WindowID(-1 * i)
+		If WindowInfo(nWID, WIN_INFO_NAME) = sToolbarName Then
+			If WindowInfo(nWID, WIN_INFO_TYPE) IN (WIN_BUTTONPAD, WIN_TOOLBAR) Then
+				TOOLBARExists = TRUE
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TOOLBARExists: " & sToolbarName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub TOOLBARSetSettings(ByVal sToolbarName As String, ByVal sToolbarSettings As String)
+
+Dim	ttbA As T_TOOLBAR
+
+OnError GoTo ErrorOccured
+
+	If TOOLBARExists(sToolbarName) Then
+		Call ttbFromString(ttbA, sToolbarSettings)
+		Call ttbSetOnToolbar(sToolbarName, ttbA)
+	Else
+		Call DEBUGPrint("TOOLBARSetSettings: Toolbar does not exist: " & sToolbarName)
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TOOLBARSetSettings: " & sToolbarName & " -> " & sToolbarSettings)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function TOOLBARGetSettings(ByVal sToolbarName As String) As String
+
+Dim	ttbA As T_TOOLBAR
+
+OnError GoTo ErrorOccured
+
+	If TOOLBARExists(sToolbarName) Then
+		Call ttbGetFromToolbar(sToolbarName, ttbA)
+		TOOLBARGetSettings = ttbToString(ttbA)
+	Else
+		Call DEBUGPrint("TOOLBARGetSettings: Toolbar does not exist: " & sToolbarName)
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TOOLBARGetSettings: " & sToolbarName)
+	Call ERRShow()
+
+End Function

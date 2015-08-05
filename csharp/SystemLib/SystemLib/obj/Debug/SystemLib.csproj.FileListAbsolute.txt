@@ -1,0 +1,10 @@
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\obj\Debug\ResolveAssemblyReference.cache
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\bin\Debug\SystemLib.dll
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\bin\Debug\SystemLib.pdb
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.dll
+E:\Software\MapBasic\MapBasic Common Library\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.pdb
+D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\bin\Debug\SystemLib.dll
+D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\bin\Debug\SystemLib.pdb
+D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\obj\Debug\ResolveAssemblyReference.cache
+D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.dll
+D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.pdb

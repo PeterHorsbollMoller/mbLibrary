@@ -1,0 +1,24 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    R E A D R E C O R D S L I B
+'********************************************************************************************************
+'	01-02-2012
+'		- Added Function RRGetValuesAsString(...) As Integer
+'	13-04-2012
+'		- Fixed a problem when grouping (and sorting) by non character columns
+'	22-11-2012 08:36:30
+'		- Added Function RRGetValuesAsInteger(...) As Integer
+'********************************************************************************************************
+
+Declare Function RRGetValuesAsString(	  ByVal sTab As String		'Table to read the reocrds from
+								, ByVal sCol As String		'Column to read the values from
+								, ByVal sOrderBy As String	'Column to order the values by, if "" the values will be read as they are
+								, ByVal sGroupBy As String	'Column to group the values by, if "" the records will not be grouped and can be non unique
+								, arrValues() As String		'Array to insert the values into - note the array will not be reset, but values will be added
+								) As Integer				'Will return the number of values that was read
+
+Declare Function RRGetValuesAsInteger(	  ByVal sTab As String		'Table to read the reocrds from
+								, ByVal sCol As String		'Column to read the values from
+								, ByVal sOrderBy As String	'Column to order the values by, if "" the values will be read as they are
+								, ByVal sGroupBy As String	'Column to group the values by, if "" the records will not be grouped and can be non unique
+								, arrValues() As Integer		'Array to insert the values into - note the array will not be reset, but values will be added
+								) As Integer				'Will return the number of values that was read

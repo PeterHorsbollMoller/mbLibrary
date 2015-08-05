@@ -1,0 +1,139 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\MapBasic.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+
+Include "T_MI_POINT.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmipFrom:	T_MI_POINT to copy from
+'	tmipTo:	T_MI_POINT to copy to
+'**********************************************************************************************''
+Sub tmipCopy( tmipFrom As T_MI_POINT, tmipTo As T_MI_POINT)
+
+OnError GoTo ErrorOccured
+
+	tmipTo.fX	= tmipFrom.fX
+	tmipTo.fY	= tmipFrom.fY
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmipCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tmipOffset(   tmip As T_MI_POINT
+			, ByVal fDistance As Float
+			, ByVal fDirection As Float
+			)
+
+OnError GoTo ErrorOccured
+
+	tmip.fX = tmip.fX + ((Cos(fDirection * DEG_2_RAD)) * fDistance)
+	tmip.fY = tmip.fY + ((Sin(fDirection * DEG_2_RAD)) * fDistance)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmipOffset")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmip1 & tmip2 : T_MI_POINT to compare
+'Return value:
+'	TRUE: If the two T_MI_POINTs are identical
+'	FALSE: If the two T_MI_POINTs are NOT identical
+'**********************************************************************************************''
+Function tmipAreIdentical( tmip1 As T_MI_POINT, tmip2 As T_MI_POINT) As Logical
+
+OnError GoTo ErrorOccured
+
+tmipAreIdentical = FALSE
+
+	If tmip1.fX	<> tmip2.fX Then
+		Exit Function
+	ElseIf tmip1.fY <> tmip2.fY Then
+		Exit Function
+	End If
+
+tmipAreIdentical = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmipAreIdentical")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmip : T_MI_POINT to use when creating the MapInfo Point
+'Return value:
+'	A point with the current symbol style
+'**********************************************************************************************''
+Function tmipToPoint( tmip As T_MI_POINT) As Object
+
+OnError GoTo ErrorOccured
+
+	tmipToPoint = tmipToPointWithStyle(tmip, CurrentSymbol())
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmipToPoint")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	tmip : T_MI_POINT to use when creating the MapInfo Point
+'	symUse: Symbol style to asign to the Point
+'Return value:
+'	A point with the symbol style given
+'**********************************************************************************************''
+Function tmipToPointWithStyle( tmip As T_MI_POINT, ByVal symUse As Symbol) As Object
+
+Dim	oPnt As Object
+
+OnError GoTo ErrorOccured
+
+	oPnt = CreatePoint(tmip.fX, tmip.fY)
+	tmipToPointWithStyle = oPnt
+
+	Alter Object oPnt
+		Info OBJ_INFO_SYMBOL, symUse
+
+	tmipToPointWithStyle = oPnt
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmipToPointWithStyle")
+	Call ERRShow()
+
+End Function
+

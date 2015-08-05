@@ -1,0 +1,38 @@
+'********************************************************
+'	07-08-2014 13:05:56		Added support for multiple language files
+'						- RESSTRNGGetString(...) As String
+'						- RESSTRNGLoadStrings(...) As Logical
+'	30-04-2015 11:02:26		Added:
+'						- RESSTRNGSetStringFilesFolder(...)
+'						- RESSTRNGGetStringFilesFolder() As String
+'********************************************************
+'**The string ini file has this structure in the string file:
+'[ADMIN]
+'LANGUAGE=English
+
+'[STRINGS]
+'1=The first text
+'2=Another text
+'********************************************************
+
+' Public functions
+Declare Function RESSTRNGGetString(ByVal iResId As Integer) As String
+
+Declare Function RESSTRNGLoadStrings(ByVal FileName As String) As Logical
+
+' Languages in a INI file type
+Declare Function RESSTRNGLoadStringsByLanguage(ByVal sLanguage As String) As Logical			'Loads strings into memory
+Declare Function RESSTRNGLoadStringsINI(ByVal sFile As String) As Logical					'Loads strings into memory
+Declare Function RESSTRNGFindStringFiles(ByVal sPath As String) As Integer					'Finds possible string files (*.str) in a specific folder
+
+Declare Function RESSTRNGGetStringFileName(ByVal nFile As Integer) As String				'Returns the full path to one of the files found
+Declare Function RESSTRNGGetStringFileLanguageItem(ByVal nFile As Integer) As String			'Returns the language of one of the files found
+Declare Function RESSTRNGGetStringFileLanguage(ByVal sFile As String) As String				'Returns the language of one of the files found
+Declare Function RESSTRNGGetStringFileItemByLanguage(ByVal sLanguage As string) As Integer	'Returns the language of one of the files found
+
+Declare Function RESSTRNGGetStringFiles(  arrFiles() As String
+								, arrlanguages() As String) As Integer		'Returns lists of language files and their languages
+Declare Function RESSTRNGGetLanguages(  arrlanguages() As String) As Integer		'Returns lists of languages
+
+Declare Sub RESSTRNGSetStringFilesFolder(ByVal sPath As String)
+Declare Function RESSTRNGGetStringFilesFolder() As String

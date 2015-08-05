@@ -1,0 +1,10 @@
+'********************************************************************************************************
+'  H I S T R Y    O F    A R R A Y L I B
+'********************************************************************************************************
+'	18-03-2013 10:59:48	- Added
+'						- WINExists(...) As Logical
+'						- WINGetIDFromTitle(...) As Integer
+'********************************************************************************************************
+
+Declare Function WINExists(ByVal nWID As Integer) As Logical
+Declare Function WINGetIDFromTitle(ByVal sTitle As String) As Integer

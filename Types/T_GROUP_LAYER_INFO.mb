@@ -1,0 +1,147 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\..\Library\MapBasic.def"
+Include "..\..\Library\Icons.def"
+Include "..\..\Library\Menu.def"
+'**default constants...
+Include "..\..\Library\Defaults.def"
+
+'-------------------------------------
+Include "..\..\Library\DEBUGLib.def"
+Include "..\..\Library\ERRORLib.def"
+Include "..\..\Library\TABLELib.def"
+
+Include "T_GROUP_LAYER_INFO.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tgliCopy(tgliFrom As T_GROUP_LAYER_INFO, tgliTo As T_GROUP_LAYER_INFO)
+
+OnError GoTo ErrorOccured
+
+	tgliTo.nID				= tgliFrom.nID
+	tgliTo.nMID				= tgliFrom.nMID
+	tgliTo.sName				= tgliFrom.sName
+	tgliTo.nParentID			= tgliFrom.nParentID
+	tgliTo.nNumLayers			= tgliFrom.nNumLayers
+	tgliTo.nNumGroupLayers		= tgliFrom.nNumGroupLayers
+'	tgliTo.nNumLayersTop		= tgliFrom.nNumLayersTop
+'	tgliTo.nNumGroupLayersTop	= tgliFrom.nNumGroupLayersTop
+	tgliTo.nNumAllLayersTop		= tgliFrom.nNumAllLayersTop
+	tgliTo.nLayerListID			= tgliFrom.nLayerListID
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tgliCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tgliToString(tgli As T_GROUP_LAYER_INFO) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= "GroupLayer " & tgliGetDescription(tgli) & " LayerList#: " & tgli.nLayerListID
+	If tgli.nParentID > 0 Then
+		sText	= sText & lf & "    Child to: GroupLayer " & GroupLayerInfo(tgli.nMID, tgli.nParentID, GROUPLAYER_INFO_NAME) & " (ID: " & tgli.nParentID & ")"
+	End If
+	sText	= sText & lf & "    Contains:"
+			& lf & "       " & tgli.nNumLayers & " view layers"
+			& lf & "       " & tgli.nNumGroupLayers & " group layers"
+			& lf & "       " & tgli.nNumAllLayersTop & " layers in top level"
+
+	tgliToString = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tgliToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tgliGetDescription(tgli As T_GROUP_LAYER_INFO) As String
+
+OnError GoTo ErrorOccured
+
+	tgliGetDescription = eye & tgli.sName & eye & " (ID: " & tgli.nID & ")"
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tgliGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tgliGetInfo(ByVal nMID As Integer, ByVal nGroupLayerID As Integer, tgli As T_GROUP_LAYER_INFO)
+
+OnError GoTo ErrorOccured
+
+'Define GROUPLAYER_INFO_NAME                     1
+'Define GROUPLAYER_INFO_LAYERLIST_ID             2
+'Define GROUPLAYER_INFO_DISPLAY                  3
+'Define GROUPLAYER_INFO_LAYERS                   4
+'Define GROUPLAYER_INFO_ALL_LAYERS               5
+'Define GROUPLAYER_INFO_TOPLEVEL_LAYERS          6
+'Define GROUPLAYER_INFO_PARENT_GROUP_ID          7
+
+'GROUP_LAYER_INFO_NAME
+'GROUP_LAYER_INFO_ID = the group layer number
+'GROUP_LAYER_INFO_DISPLAY (see comment above)
+'GROUP_LAYER_INFO_LAYERS = # of view layers (all)
+'GROUP_LAYER_INFO_ALL_LAYERS = # of view & group layers (all)
+'GROUP_LAYER_INFO_ALL_LAYERS_LVL =  # of view & group layers at top level of group layer
+'GROUP_LAYER_INFO_LAYERS_LVL = number of ‘generic’ layers at top level of group layer
+'GROUP_LAYER_INFO_LAYER_LIST_ID = numerical_counter for LayerListInfo
+
+	tgli.nMID				= nMID
+	tgli.nID				= nGroupLayerID
+	tgli.sName			= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_NAME)
+	tgli.nParentID			= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_PARENT_GROUP_ID)
+	tgli.nNumLayers		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERS)
+	tgli.nNumGroupLayers	= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_ALL_LAYERS) - tgli.nNumLayers
+'	tgli.nNumLayersTop	= ...
+'	tgli.nNumGroupLayersTop	= ...
+	tgli.nNumAllLayersTop	= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_TOPLEVEL_LAYERS)
+	tgli.nLayerListID		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tgliGetInfo")
+	Call ERRShow()
+
+End Sub
+
+
+

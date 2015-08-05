@@ -1,0 +1,913 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "COLUMNLib.def"
+Include "DBMSInfoLib.def"
+Include "DBMSUtilityLib.def"
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "STRINGLib.def"
+'
+
+Define	DRIVER_NAME_MSACCESS_DEFAULT	"Microsoft Access Driver (*.mdb, *.accdb)"
+
+Dim	msMSAccessDriverName As String
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenLinkedTable(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+						, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+						, ByVal sTable As String			'The name of the table in the database
+						, ByVal sFile As String			'The name of the tab file to save the linked table into
+						) As Integer					'Returns DBU_LINK_TABLE_FAILED if the table was not opened, otherwise it returns the number of records in the table
+
+Dim	sCmd, sTab As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenLinkedTable = DBU_LINK_TABLE_FAILED
+
+	sCmd 	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+	sTab		= PathToTableName$(sFile)
+
+	Server nConnection Link Table
+		sCmd
+		Toolkit "ODBC"
+		Into sTab
+		File sFile
+
+	DBUOpenLinkedTable = TableInfo(sTab, TAB_INFO_NROWS)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenLinkedTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenLinkedQuery(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+						, ByVal sQuery As String			'The query to pass to the database, can be a join
+						, ByVal sFile As String			'The name of the tab file to save the linked table into
+						) As Integer					'Returns DBU_LINK_TABLE_FAILED if the table was not opened, otherwise it returns the number of records in the table
+
+Dim	sTab As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenLinkedQuery = DBU_LINK_TABLE_FAILED
+
+	sTab		= PathToTableName$(sFile)
+
+'	Call DEBUGPrint("DBUOpenLinkedQuery: " & sQuery)
+'	Call DEBUGPrint("   into: " & sFile)
+	Server nConnection Link Table
+		sQuery
+		Toolkit "ODBC"
+		Into sTab
+		File sFile
+
+	DBUOpenLinkedQuery = TableInfo(sTab, TAB_INFO_NROWS)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenLinkedQuery")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenLinkedTableCondition(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+								, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+								, ByVal sTable As String			'The name of the table in the database
+								, ByVal sCondition As String		'Condition starting with "Where ..."
+								, ByVal sFile As String			'The name of the tab file to save the linked table into
+								) As Integer					'Returns DBU_LINK_TABLE_FAILED if the table was not opened, otherwise it returns the number of records in the table
+
+Dim	sCmd, sTab As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenLinkedTableCondition = DBU_LINK_TABLE_FAILED
+
+	sCmd 	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+				& " " & sCondition
+	sTab		= PathToTableName$(sFile)
+
+'	Call DEBUGPrint("DBUOpenLinkedTableCondition: " & sCmd)
+'	Call DEBUGPrint("   into: " & sFile)
+	Server nConnection Link Table
+		sCmd
+		Toolkit "ODBC"
+		Into sTab
+		File sFile
+
+	DBUOpenLinkedTableCondition = TableInfo(sTab, TAB_INFO_NROWS)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenLinkedTableCondition")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenLiveCacheTable( ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+						, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+						, ByVal sTable As String			'The name of the table in the database
+						, ByVal sFile As String			'The name of the tab file to save the linked table into
+						) As Integer					'Returns DBU_OPEN_LIVE_TABLE_FAILED if the table was not opened, otherwise it returns 1
+
+Dim	sCmd, sTab As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenLiveCacheTable = DBU_OPEN_LIVE_TABLE_FAILED
+
+	sCmd 	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+	sTab		= PathToTableName$(sFile)
+
+	Register Table sTab
+		Type ODBC
+		Connection Handle nConnection
+		Toolkit "ODBC"
+		Cache ON
+		Table sCmd
+		Into sFile
+
+	Open Table sFile
+
+	DBUOpenLiveCacheTable = TableInfo(sTab, TAB_INFO_NROWS)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenLiveCacheTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenLiveTable(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+						, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+						, ByVal sTable As String			'The name of the table in the database
+						, ByVal sFile As String			'The name of the tab file to save the linked table into
+						) As Integer					'Returns DBU_OPEN_LIVE_TABLE_FAILED if the table was not opened, otherwise it returns 1
+
+Dim	sCmd, sTab As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenLiveTable = DBU_OPEN_LIVE_TABLE_FAILED
+
+	sCmd 	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+	sTab		= PathToTableName$(sFile)
+
+'	Call DEBUGPrint("DBUOpenLiveTable: " & sCmd)
+'	Call DEBUGPrint("   into: " & sFile)
+	Register Table sTab
+		Type ODBC
+		Connection Handle nConnection
+		Toolkit "ODBC"
+		Cache OFF
+		Table sCmd
+		Into sFile
+
+	Open Table sFile
+
+	DBUOpenLiveTable = TableInfo(sTab, TAB_INFO_NROWS)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenLiveTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUGetDatabaseTableName(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+							, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+							, ByVal sTable As String			'The name of the table in the database
+							) As String					'A string of this type ´schemaname´.´tablename´
+
+Dim	sQuote As String
+
+OnError GoTo ErrorOccured
+
+	sQuote			= DBIGetQuoteChar(nConnection)
+	If sSchema = "" Then
+		DBUGetDatabaseTableName = sQuote & sTable & sQuote
+	Else
+		DBUGetDatabaseTableName = sQuote & sSchema & sQuote & "." & sQuote & sTable & sQuote
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetDatabaseTableName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DBUSetMSAccessDriverName(ByVal sDriver As String)
+
+OnError GoTo ErrorOccured
+
+	msMSAccessDriverName	= sDriver
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUSetMSAccessDriverName")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function DBUGetMSAccessDriverName() As String
+
+OnError GoTo ErrorOccured
+
+	If msMSAccessDriverName = "" Then
+		DBUGetMSAccessDriverName = DRIVER_NAME_MSACCESS_DEFAULT
+	Else
+		DBUGetMSAccessDriverName = msMSAccessDriverName
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetMSAccessDriverName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUFindOpenConnection( ByVal sConnString As String		'The Connection String to search for
+						, ByVal sToolkit As String		'Toolkit of the connection, "ODBC" or "ORAINET"
+						) As Integer					'The connection number that points to the database. Return 0 if no match was found
+
+Dim	i, nConnection, nConnErrors As Integer,
+	arrValues(), arrSubValues(), sDB, sUser, sDSN, sFileDSN, sServer As String,
+	bMatch As Logical
+
+OnError GoTo ErrorOccured
+
+DBUFindOpenConnection = 0
+
+	If STRINGSplit(sConnString, ";", arrValues()) = 0 Then
+		Exit Function
+	End If
+
+	Call DEBUGPrint("DBUFindOpenConnection: " & sConnString)
+	For i = 1 To Ubound(arrValues)
+		Call DEBUGPrint(i & ": " & arrValues(i))
+		Redim arrSubValues(0)
+		If STRINGSplit(arrValues(i), "=", arrSubValues()) = 2 Then
+			Call DEBUGPrint("   Sub Value 1: " & arrSubValues(1))
+			Call DEBUGPrint("   Sub Value 2: " & arrSubValues(2))
+
+			Do Case arrSubValues(1)
+				Case "DB", "DATABASE"
+					sDB		= arrSubValues(2)
+					Call DEBUGPrint("      Assigned to DATABASE")
+				Case "DSN"
+					sDSN		= arrSubValues(2)
+					Call DEBUGPrint("      Assigned to DSN")
+				Case "FILEDSN"
+					sFileDSN	= arrSubValues(2)
+					Call DEBUGPrint("      Assigned to FILEDSN")
+				Case "USER", "UID"
+					sUser	= arrSubValues(2)
+					Call DEBUGPrint("      Assigned to USER")
+				Case "SRV"
+					sServer	= arrSubValues(2)
+					Call DEBUGPrint("      Assigned to SERVER")
+			End Case
+		End If
+	Next
+
+	nConnection = 0
+	Do While (TRUE)
+		nConnection	= nConnection + 1
+		bMatch 		= TRUE
+
+		OnError GoTo ErrorConnection
+		If Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_DRIVER_NAME) = sToolkit Then
+			nConnErrors = 0	'Resetting errors
+
+			If NOT sDSN = "" Then
+				If NOT sDSN = DBIGetDSNName(nConnection) Then
+					Call DEBUGPrint("   " & nConnection & ". DSN doesn't match: " & sDSN & " <> " & DBIGetDSNName(nConnection))
+					bMatch = FALSE
+				End If
+			End If
+			If NOT sFileDSN = "" Then
+				If NOT sFileDSN = DBIGetDSNName(nConnection) Then
+					Call DEBUGPrint("   " & nConnection & ". FILEDSN doesn't match: " & sFileDSN & " <> " & DBIGetDSNName(nConnection))
+					bMatch = FALSE
+				End If
+			End If
+			If NOT sUser IN ("", "DBO") Then
+				If NOT DBIGetSQLUserid(nConnection) = "DBO" Then	'ignoring DBO users
+					If NOT sUser = DBIGetSQLUserid(nConnection) Then
+						Call DEBUGPrint("   " & nConnection & ". USER doesn't match: " & sUser & " <> " & DBIGetSQLUserid(nConnection))
+						bMatch = FALSE
+					End If
+				End If
+			End If
+			If NOT sServer = "" Then
+				If NOT sServer = DBIGetServerName(nConnection) Then
+					Call DEBUGPrint("   " & nConnection & ". SERVER doesn't match: " & sServer & " <> " & DBIGetServerName(nConnection))
+					bMatch = FALSE
+				End If
+			End If
+'			Keeping the database out of this as it returns "MS SQL Server" for a MS SQL Server database, not the name of the database
+'			If NOT sDB = "" Then
+'				If NOT sDB = DBIGetDBName(nConnection) Then
+'					Call DEBUGPrint("   " & nConnection & ". DATABASE doesn't match: " & sDB & " <> " & DBIGetDBName(nConnection))
+'					bMatch = FALSE
+'				End If
+'			End If
+		End If
+
+		If bMatch Then
+			DBUFindOpenConnection = nConnection
+			Call DEBUGPrint("   Match found in Connection " & nConnection)
+			Exit Do
+		End If
+
+		'-------------------------
+		TryNextConnectionNo:
+		If nConnErrors > 4 Then
+			Exit Do
+		End If
+	Loop
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUFindOpenConnection: " & sConnString)
+	Call ERRShow()
+
+	Exit Function
+'-------------------------
+ErrorConnection:
+	nConnErrors = nConnErrors + 1
+	Resume TryNextConnectionNo
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Function DBUOpenConnection(	  ByVal sConnString As String	'The Connection String to use to open the connection
+						, ByVal sToolkit As String	'Toolkit to use to open the connection, "ODBC" or "ORAINET"
+						) As Integer				'The connection number that points to the database. DBU_OPEN_CONNECTION_FAILED if the connection failed
+
+Dim	nConnection As Integer
+
+OnError GoTo ErrorOccured
+
+DBUOpenConnection = DBU_OPEN_CONNECTION_FAILED
+
+	nConnection	= Server_Connect(sToolkit, sConnString)
+
+	DBUOpenConnection	= nConnection
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenConnection: " & sConnString)
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenConnectionToDSN(	  ByVal sDSN As String		'The name of the DSN to connect using
+							, ByVal sUsername As String	'The user used to connect to the database, can be ""
+							, ByVal sPassword As String	'The password used to connect to the database, can be ""
+							) As Integer				'The connection number that points to the database. 0 if the connection failed
+
+Dim	nConnection As Integer,
+	sConnection As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenConnectionToDSN = DBU_OPEN_CONNECTION_FAILED
+
+	sConnection	= "DSN=" & sDSN
+	If sUsername <> "" Then
+		sConnection	= sConnection & ";UID=" & sUsername
+		If sPassword <> "" Then
+			sConnection	= sConnection & ";PWD=" & sPassword
+		End If
+	End If
+
+	nConnection	= DBUOpenConnection(sConnection, "ODBC")
+
+DBUOpenConnectionToDSN = nConnection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenConnectionToDSN: " & sConnection)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenConnectionToFileDSN(	  ByVal sFileDSN As String	'The name and path of the File DSN to connect using
+								, ByVal sUsername As String	'The user used to connect to the database, can be ""
+								, ByVal sPassword As String	'The password used to connect to the database, can be ""
+								) As Integer				'The connection number that points to the database. 0 if the connection failed
+
+Dim	nConnection As Integer,
+	sConnection As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenConnectionToFileDSN = DBU_OPEN_CONNECTION_FAILED
+
+	sConnection	= "FILEDSN=" & sFileDSN
+	If sUsername <> "" Then
+		sConnection	= sConnection & ";UID=" & sUsername
+		If sPassword <> "" Then
+			sConnection	= sConnection & ";PWD=" & sPassword
+		End If
+	End If
+
+	nConnection	= DBUOpenConnection(sConnection, "ODBC")
+
+DBUOpenConnectionToFileDSN = nConnection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenConnectionToFileDSN: " & sConnection)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUOpenConnectionToMSAccessFile( ByVal sDBFile As String	'The name of the MS Access database file
+								, ByVal sUsername As String	'The user used to connect to the database, can be ""
+								, ByVal sPassword As String	'The password used to connect to the database, can be ""
+								) As Integer				'The connection number that points to the database. 0 if the connection failed
+
+Dim	nConnection As Integer,
+	sConnection As String
+
+OnError GoTo ErrorOccured
+
+DBUOpenConnectionToMSAccessFile = DBU_OPEN_CONNECTION_FAILED
+
+	sConnection	= "DRIVER=" & DBUGetMSAccessDriverName() & ";DBQ=" & sDBFile
+	If sUsername <> "" Then
+		sConnection	= sConnection & ";UID=" & sUsername
+		If sPassword <> "" Then
+			sConnection	= sConnection & ";PWD=" & sPassword
+		End If
+	End If
+
+'	Call DEBUGPrint("Opretter tilslutning til: " & sDBFile & " Connectionstreng: " & sConnection)
+	nConnection	= DBUOpenConnection(sConnection, "ODBC")
+'	Call DEBUGPrint("   Tilslutning " & nConnection)
+
+DBUOpenConnectionToMSAccessFile = nConnection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUOpenConnectionToMSAccessFile: " & sConnection)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUGetQueryFromTable(  ByVal sTab As String 	'The DBMS table to get the Database Query from
+						) As String			'Returns the query stored in the metadata section of the tab file
+
+Dim	i As Integer,
+	sAdd, sQuery As String
+
+OnError GoTo ErrorOccured
+
+DBUGetQueryFromTable = ""
+
+	'"\DATALINK\Query" = "select ""AREALKVALITET"", ""BBR_REFERENCE"", ""BYGNINGSTYPE"", ""BYGNING_ID"", ""FLYV_DATO"", ""FOT_ID"", ""FREMSTILLER"", ""IDNR"", ""MAALESTED"", ""METODE_3D"", ""MOD_DATO"", ""OPRETTET_AF"", ""OPRETTET_DATO"", ""OPRET_DATO"", ""OPR_ID"
+	'"\DATALINK\Query\+1" = """, ""PLAN_MIDDELF"", ""REDIGERET_AF"", ""REDIGERET_DATO"", ""TANK_SILO_TYPE"", ""MI_STYLE"", ""MI_PRINX"", ""OBJECT"" from ""GIS"".""dbo"".""BYGNINGER_HISTORIK"""
+
+	sQuery = GetMetadata$(sTab, "\DATALINK\Query")
+
+	If sQuery <> "" Then
+		i = 1
+		sAdd = GetMetadata$(sTab, "\DATALINK\Query\+" & i)
+		Do While (sAdd <> "")
+			sQuery = sQuery & sAdd
+
+			i	= i + 1
+			sAdd = GetMetadata$(sTab, "\DATALINK\Query\+" & i)
+		Loop
+	End If
+
+DBUGetQueryFromTable = sQuery
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetQueryFromTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUGetConnectionStringFromTable(  ByVal sTab As String 	'The DBMS table to get the Connection String from
+										) As String			'Returns the Connection String stored in the metadata section of the tab file
+
+Dim	i As Integer,
+	sAdd, sConnString As String
+
+OnError GoTo ErrorOccured
+
+DBUGetConnectionStringFromTable = FALSE
+
+	'"\DATALINK\ConnectionString" = "DSN=GIS;Description=GIS for SQL Server workshop;UID=AdminUser;APP=MapInfo Professional®;WSID=WIN02062;DATABASE=GIS;MARS_Connection=yes"
+
+	sConnString = GetMetadata$(sTab, "\DATALINK\ConnectionString")
+
+	If sConnString <> "" Then
+		i = 1
+		sAdd = GetMetadata$(sTab, "\DATALINK\ConnectionString\+" & i)
+		Do While (sAdd <> "")
+			sConnString = sConnString & sAdd
+
+			i	= i + 1
+			sAdd = GetMetadata$(sTab, "\DATALINK\ConnectionString\+" & i)
+		Loop
+	End If
+
+DBUGetConnectionStringFromTable = sConnString
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetConnectionStringFromTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUGetListOfColumnNames(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+							, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+							, ByVal sTable As String			'The name of the table in the database
+							, ByVal nCriterias As String		'Type of columns to return, see ColumnLib.def for types
+							, arrColumnNames() As String		'Array to fill the column names into
+							) As Integer
+OnError GoTo ErrorOccured
+
+Dim	sQuery As String,
+	nStmt, nCol, nCols, nCount As Integer,
+	bAdd As Logical
+
+OnError GoTo ErrorOccured
+
+DBUGetListOfColumnNames = 0
+
+	sQuery	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+	nStmt	= Server_Execute(nConnection, sQuery)
+
+	nCols	= Server_NumCols(nStmt)
+	Redim arrColumnNames(nCols)
+
+	For nCol = 1 To nCols
+		bAdd = FALSE
+
+		Do Case Server_ColumnInfo(nStmt, nCol, SRV_COL_INFO_TYPE)
+			Case SRV_COL_TYPE_CHAR, SRV_COL_TYPE_FIXED_LEN_STRING
+				If COLIsBitOn(CRITERIA_USE_CHAR, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case SRV_COL_TYPE_DECIMAL
+				If COLIsBitOn(CRITERIA_USE_DECIMAL, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case SRV_COL_TYPE_INTEGER
+				If COLIsBitOn(CRITERIA_USE_INTEGER, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case SRV_COL_TYPE_SMALLINT
+				If COLIsBitOn(CRITERIA_USE_SMALLINT, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case SRV_COL_TYPE_DATE
+				If COLIsBitOn(CRITERIA_USE_DATE, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case SRV_COL_TYPE_LOGICAL
+				If COLIsBitOn(CRITERIA_USE_LOGICAL, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case SRV_COL_TYPE_FLOAT
+				If COLIsBitOn(CRITERIA_USE_FLOAT, nCriterias) Then
+					bAdd = TRUE
+				End If
+			Case	SRV_COL_TYPE_NONE
+				'**Not to be used
+'			Case COL_TYPE_TIME
+'				If COLIsBitOn(CRITERIA_USE_TIME, nCriterias) Then
+'					bAdd = TRUE
+'				End If
+'			Case COL_TYPE_DATETIME
+'				If COLIsBitOn(CRITERIA_USE_DATETIME, nCriterias) Then
+'					bAdd = TRUE
+'				End If
+		End Case
+
+		If bAdd Then
+			nCount				= nCount + 1
+			arrColumnNames(nCount) 	= Server_ColumnInfo(nStmt, nCol, SRV_COL_INFO_NAME)
+		End If
+	Next
+
+	Redim arrColumnNames(nCount)
+	Server nStmt Close
+
+	DBUGetListOfColumnNames = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetListOfColumnNames: Table: " & sTab & ", Criterias: " & nCriterias)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUGetListOfColumnNamesAndTypes(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+									, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+									, ByVal sTable As String			'The name of the table in the database
+									, ByVal nCriterias As String		'Type of columns to return, see ColumnLib.def for types
+									, arrColumnNames() As String		'Array to fill the column names into
+									, arrColumnTypes() As Integer		'Array to fill the column types into
+									) As Integer
+
+OnError GoTo ErrorOccured
+
+Dim	sQuery As String,
+	nStmt, nCol, nCols, nCount, nType As Integer,
+	bAdd As Logical
+
+OnError GoTo ErrorOccured
+
+DBUGetListOfColumnNamesAndTypes = 0
+
+	sQuery	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+	nStmt	= Server_Execute(nConnection, sQuery)
+
+	nCols	= Server_NumCols(nStmt)
+	Redim arrColumnNames(nCols)
+	Redim arrColumnTypes(nCols)
+
+	For nCol = 1 To nCols
+		bAdd = FALSE
+
+		Do Case Server_ColumnInfo(nStmt, nCol, SRV_COL_INFO_TYPE)
+			Case SRV_COL_TYPE_CHAR, SRV_COL_TYPE_FIXED_LEN_STRING
+				If COLIsBitOn(CRITERIA_USE_CHAR, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_CHAR
+				End If
+			Case SRV_COL_TYPE_DECIMAL
+				If COLIsBitOn(CRITERIA_USE_DECIMAL, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_DECIMAL
+				End If
+			Case SRV_COL_TYPE_INTEGER
+				If COLIsBitOn(CRITERIA_USE_INTEGER, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_INTEGER
+				End If
+			Case SRV_COL_TYPE_SMALLINT
+				If COLIsBitOn(CRITERIA_USE_SMALLINT, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_SMALLINT
+				End If
+			Case SRV_COL_TYPE_DATE
+				If COLIsBitOn(CRITERIA_USE_DATE, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_DATE
+				End If
+			Case SRV_COL_TYPE_LOGICAL
+				If COLIsBitOn(CRITERIA_USE_LOGICAL, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_LOGICAL
+				End If
+			Case SRV_COL_TYPE_FLOAT
+				If COLIsBitOn(CRITERIA_USE_FLOAT, nCriterias) Then
+					bAdd		= TRUE
+					nType	= COL_TYPE_FLOAT
+				End If
+			Case	SRV_COL_TYPE_NONE
+				'**Not to be used
+'			Case COL_TYPE_TIME
+'				If COLIsBitOn(CRITERIA_USE_TIME, nCriterias) Then
+'					bAdd = TRUE
+'				End If
+'			Case COL_TYPE_DATETIME
+'				If COLIsBitOn(CRITERIA_USE_DATETIME, nCriterias) Then
+'					bAdd = TRUE
+'				End If
+		End Case
+
+		If bAdd Then
+			nCount				= nCount + 1
+			arrColumnNames(nCount) 	= Server_ColumnInfo(nStmt, nCol, SRV_COL_INFO_NAME)
+			arrColumnTypes(nCount) 	= nType
+		End If
+	Next
+
+	Redim arrColumnNames(nCount)
+	Server nStmt Close
+
+	DBUGetListOfColumnNamesAndTypes = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetListOfColumnNamesAndTypes: Table: " & sTab & ", Criterias: " & nCriterias)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DBUGetColumnValuesAsString(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
+								, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
+								, ByVal sTable As String			'The name of the table in the database
+								, ByVal sColumn As String		'The name of the column to read the values from
+								, ByVal sOrderBy As String		'Column or Expression to order the values by
+								, ByVal sGroupBy As String		'Column or Expression to group the values by
+								, arrValues() As String			'Array to fill the values into
+								) As Integer					'Returns the number of values returned
+
+Dim	sQuery, sValue As String,
+	nStmt, nColumnType, nValueStatus, nCount As Integer
+
+OnError GoTo ErrorOccured
+
+DBUGetColumnValuesAsString = 0
+
+	sQuery	= "Select " & sColumn
+				& " From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+				& " Group By " & sGroupBy
+				& " Order By " & sOrderBy
+
+	nStmt		= Server_Execute(nConnection, sQuery)
+	nColumnType	= Server_ColumnInfo(nStmt, 1, SRV_COL_INFO_TYPE)
+
+	Server nStmt Fetch First
+	Do Until Server_Eot(nStmt)
+		If Server_ColumnInfo(nStmt, 1, SRV_COL_INFO_STATUS) <> SRV_NULL_DATA Then
+			If nCount = 32000 Then
+				Print "This column holds more unique values than 32000. Only the first 32000 will be returned!"
+				Exit Do
+			End If
+
+			nCount = nCount + 1
+			If nCount > Ubound(arrValues) Then
+				Redim arrValues(Ubound(arrValues) + 1000)
+			End If
+
+			Do Case nColumnType
+				Case SRV_COL_TYPE_CHAR, SRV_COL_TYPE_FIXED_LEN_STRING
+					arrValues(nCount)	= Server_ColumnInfo(nStmt, 1, SRV_COL_INFO_VALUE)
+
+				Case SRV_COL_TYPE_DECIMAL, SRV_COL_TYPE_INTEGER, SRV_COL_TYPE_SMALLINT, SRV_COL_TYPE_FLOAT
+					arrValues(nCount)	= FormatNumber$(Server_ColumnInfo(nStmt, 1, SRV_COL_INFO_VALUE))
+			End Case
+		End If
+		Server nStmt Fetch Next
+	Loop
+
+	Redim arrValues(nCount)
+
+	Server nStmt Close
+
+DBUGetColumnValuesAsString = Ubound(arrValues)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBUGetColumnValuesAsString")
+	Call ERRShow()
+
+End Function

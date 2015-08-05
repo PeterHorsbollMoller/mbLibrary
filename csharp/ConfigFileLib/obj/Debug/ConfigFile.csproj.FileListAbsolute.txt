@@ -1,0 +1,17 @@
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\ReadConfigFile\obj\Debug\ResolveAssemblyReference.cache
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\ReadConfigFile\bin\Debug\ConfigFile.dll
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\ReadConfigFile\bin\Debug\ConfigFile.pdb
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\ReadConfigFile\obj\Debug\ConfigFile.dll
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\ReadConfigFile\obj\Debug\ConfigFile.pdb
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\obj\Debug\ResolveAssemblyReference.cache
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\obj\Debug\ConfigFile.dll
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\MapBasic\ConfigFile.dll
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\MapBasic\ConfigFile.pdb
+C:\1. Data\Visual Studio 2008\Projects\ReadConfigFile\obj\Debug\ConfigFile.pdb
+C:\1. Data\3. MB_Kode\Library\ConfigFile.dll
+C:\1. Data\3. MB_Kode\Library\ConfigFile.pdb
+C:\1. Data\3. MB_Kode\Library\csharp\ConfigFileLib\obj\Debug\ResolveAssemblyReference.cache
+C:\1. Data\3. MB_Kode\Library\csharp\ConfigFileLib\obj\Debug\ConfigFile.dll
+C:\1. Data\3. MB_Kode\Library\csharp\ConfigFileLib\obj\Debug\ConfigFile.pdb
+C:\1. Data\3. MB_Kode\Library\csharp\ConfigFileLib\bin\Debug\ConfigFile.dll
+C:\1. Data\3. MB_Kode\Library\csharp\ConfigFileLib\bin\Debug\ConfigFile.pdb

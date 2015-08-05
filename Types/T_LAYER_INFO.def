@@ -1,0 +1,64 @@
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    T _ L A Y E R _  S E T T I N G S
+'**********************************************************************************************************************
+'	18-01-2012 	- Added
+'					- Function tliApplyInfo(...) As Logical
+'				- Modified
+'					- the type itself
+'						- tlsLyrSettings, tlbsLblSettings, arrDisplayOverrides(), arrLabelOverrides()
+'					- Sub tliGetInfo(...)
+'	25-01-2012	- Added:
+'					- Sub tliWriteSingleToMetadata(...)
+'					- Sub tliReadSingleFromMetadata(...)
+'					- Sub tliRemoveSingleFromMetadata(...)
+'	14-02-2012 	- Please note that the T_DISPLAY_OVERRIDE and T_LABEL_OVERRIDE types are not working correctly
+'					MapBasic does not expose a way to figure out whether an override is active or not
+'	16-01-2013 	- I have now removed all references to T_DISPLAY_OVERRIDE and T_LABEL_OVERRIDE
+'					T_LAYER_INFO will not get or set override settings
+'**********************************************************************************************************************
+'Requires MapInfo Pro 10.0
+
+Type T_LAYER_INFO
+	nID					As Integer
+	nMID					As Integer
+	sName				As String
+	nType				As Integer
+	nParentID				As Integer
+	nLayerListID			As Integer
+	tlsLyrSettings			As T_LAYER_SETTINGS
+	tlbsLblSettings		As T_LABEL_SETTINGS
+'	arrDisplayOverrides()	As T_DISPLAY_OVERRIDE
+'	arrLabelOverrides()		As T_LABEL_OVERRIDE
+End Type
+
+Declare Sub tliCopy(  tliFrom As T_LAYER_INFO	'Source T_LAYER_INFO
+				, tliTo As T_LAYER_INFO		'Target T_LAYER_INFO
+				)
+
+Declare Function tliToString(	tli As T_LAYER_INFO		'Convert a T_LAYER_INFO to a string
+						) As String			'Returns a string describing the layer
+Declare Function tliGetDescription(	  tli As T_LAYER_INFO	'The T_LAYER_INFO to get a description for
+							) As String				'Returns a short string representing the T_LAYER_INFO
+
+Declare Sub tliGetInfo(	  ByVal nMID As Integer		'The Map Window with the layer
+					, ByVal nLyrID As Integer	'The layer to query
+					, tli As T_LAYER_INFO		'The T_LAYER_INFO to store information about the layer
+					)
+
+Declare Function tliApplyInfo(  ByVal nMID As Integer		'The Map Window with the layer
+						, ByVal nLyrID As Integer	'The layer to apply the setting on
+						, tli As T_LAYER_INFO		'The T_LAYER_INFO holding the settings to apply
+						) As Logical				'Returns true if the settings were set on the layer
+
+Declare Sub tliWriteSingleToMetadata(	  ByVal sTab As String			'Name of table to write the tli to
+								, ByVal sName As String			'Name to store the tli as in the metadata
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tli to
+								, tli As T_LAYER_INFO			'The tli to write to the metadata
+								)
+Declare Sub tliReadSingleFromMetadata(	  ByVal sTab As String			'Name of table to read the tli from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tli from
+								, tli As T_LAYER_INFO		'The tli to read the metadata into
+								)
+Declare Sub tliRemoveSingleFromMetadata(  ByVal sTab As String			'Name of table to remove the tli from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to remove the tli from
+								)

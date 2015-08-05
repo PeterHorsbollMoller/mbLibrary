@@ -1,0 +1,77 @@
+'*******************************************************************************************************************
+'Requires MapInfo Pro 4.0
+'*******************************************************************************************************************
+'	H I S T O R Y
+'*******************************************************************************************************************
+'	07-12-2011 	Peter Møller Added:
+'					- Function STLBrush2Text(...) As String
+'					- Function STLText2Brush(...) As Brush
+'					- Function STLPen2Text(...) As String
+'					- Function STLText2Pen(...) As Pen
+'	18-01-2012 	Peter Møller added:
+'					- Function STLFont2Text(...) As String
+'					- Function STLText2Font(...) As Font
+'	23-09-2014	Peter Møller added:
+'					- Function STLChangeSymbolSymbolCode(...) As Symbol
+'	20-10-2014 	Peter Møller added:
+'					- Function STLChangeBrushPattern(...) As Brush
+'*******************************************************************************************************************
+
+Declare Function STLAlterClosedObject(	  ByVal oObj As Object	'Closed object whoes style to change
+								, ByVal penNew As Pen	'New Pen style to assign
+								, ByVal brsNew As Brush	'New Brush style to assign
+								) As Object			'Return the same object with a different style
+Declare Function STLAlterPen(		  ByVal oObj As Object	'Object whoes style to change
+							, ByVal penNew As Pen	'New Pen style to assign
+							) As Object			'Return the same object with a different style
+Declare Function STLAlterBrush(	  ByVal oObj As Object	'Object whoes style to change
+							, ByVal brsNew As Brush	'New Brush style to assign
+							) As Object			'Return the same object with a different style
+Declare Function STLAlterSymbol(	  ByVal oObj As Object	'Object whoes style to change
+							, ByVal symNew As Symbol	'New Symbol style to assign
+							) As Object			'Return the same object with a different style
+Declare Function STLAlterFont(  	ByVal oObj As Object	'Object whoes style to change
+							, ByVal fntNew As Font	'New Font style to assign
+							) As Object			'Return the same object with a different style
+
+Declare Function STLObjectHasPen(	  ByVal oObj As Object	'Object to check for style
+							) As Logical			'Returns true if oObj has a Pen style
+Declare Function STLObjectHasBrush(  ByVal oObj As Object	'Object to check for style
+							) As Logical			'Returns true if oObj has a Brush style
+Declare Function STLObjectHasSymbol( ByVal oObj As Object	'Object to check for style
+							) As Logical			'Returns true if oObj has a Symbol style
+Declare Function STLObjectHasFont(	  ByVal oObj As Object	'Object to check for style
+							) As Logical			'Returns true if oObj has a Font style
+
+Declare Function STLChangeSymbolColour(	  ByVal symNow As Symbol		'Symbol to change the colour of
+								, ByVal nColourNew As Integer	'Colour to set on the Symbol
+								) As Symbol				'Symbol with the new colour
+Declare Function STLChangeSymbolSymbolCode(	  ByVal symNow As Symbol			'Symbol to change the colour of
+									, ByVal nSymbolCodeNew As Integer	'Colour to set on the Symbol
+									) As Symbol					'Symbol with the new symbol
+Declare Function STLChangePenColour( ByVal penNow As Pen			'Pen to change the colour of
+							, ByVal nColourNew As Integer		'Colour to set on the Pen
+							) As Pen						'Pen with the new colour
+Declare Function STLChangeBrushFGColour(  ByVal brsNow As Brush		'Brush to change the colour of
+								, ByVal nColourNew As Integer	'Colour to set on the Brush, foreground colour
+								) As Brush				'Brush with the new colour
+Declare Function STLChangeBrushPattern(  ByVal brsNow As Brush			'Brush to change the pattern of
+								, ByVal nPatternNew As Integer	'Pattern to set on the Brush
+								) As Brush					'Brush with the new pattern
+
+Declare Function STLSymbol2Text(	  ByVal symCur As Symbol	'Convert the Symbol to a standard text
+							) As String				'Returns a Text illustrating the Symbol
+Declare Function STLText2Symbol(	  ByVal sSymbol As String	'Convert a standard text to a Symbol
+							) As Symbol				'Return the Symbol from the text
+Declare Function STLBrush2Text(	  ByVal brsCur As Brush	'Convert the Brush to a standard text
+							) As String				'Returns a Text illustrating the Brush
+Declare Function STLText2Brush(	  ByVal sBrush As String	'Convert a standard text to a Brush
+							) As Brush				'Return the Brush from the text
+Declare Function STLPen2Text(		  ByVal penCur As Pen			'Convert the Pen to a standard text
+							) As String				'Returns a Text illustrating the Pen
+Declare Function STLText2Pen(		  ByVal sPen As String		'Convert a standard text to a Pen
+							) As Pen					'Return the Pen from the text
+Declare Function STLFont2Text(	  ByVal fntCur As Font	'Convert the Font to a standard text
+							) As String				'Returns a Text illustrating the Font
+Declare Function STLText2Font(	  ByVal sFont As String	'Convert a standard text to a Font
+							) As Font					'Return the Font from the text

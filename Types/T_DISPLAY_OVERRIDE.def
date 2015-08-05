@@ -1,0 +1,74 @@
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    T _ L A Y E R _  S E T T I N G S
+'**********************************************************************************************************************
+'	18-01-2012 	- Created first version of this module for Hack day January 2012
+'	25-01-2012 	- Added
+'					- Sub tdoWriteToMetadata(...)
+'					- Sub tdoWriteSingleToMetadata(...)
+'					- Sub tdoReadFromMetadata(...)
+'					- Sub tdoReadSingleFromMetadata(...)
+'					- Sub tdoRemoveSingleFromMetadata(...)
+'	14-02-2012 	- Please note that the T_DISPLAY_OVERRIDE and T_LABEL_OVERRIDE types are not working correctly
+'					MapBasic does not expose a way to figure out whether an override is active or not
+'**********************************************************************************************************************
+
+Type T_DISPLAY_OVERRIDE
+	fMinZoom			As Float
+	fMaxZoom			As Float
+	sZoomUnits		As String
+	bShowLineDirection	As Logical
+	bShowNodes		As Logical
+	bShowCentroids		As Logical
+	nAlpha			As Integer
+	penOverrideLine()	As Pen
+	penOverrideBorder()	As Pen
+	brsOverride()		As Brush
+	symOverride()		As Symbol
+	fntOverride()		As Font
+End Type
+
+Declare Sub tdoCopy(  tdoFrom As T_DISPLAY_OVERRIDE	'Source T_DISPLAY_OVERRIDE
+				, tdoTo As T_DISPLAY_OVERRIDE)	'Target T_DISPLAY_OVERRIDE
+
+Declare Sub tdoReset(		tdo As T_DISPLAY_OVERRIDE	'T_DISPLAY_OVERRIDE to reset
+					)
+Declare Function tdoToString(		tdo As T_DISPLAY_OVERRIDE	'Convert a T_DISPLAY_OVERRIDE to a string
+							) As String			'Returns a string describing the layer
+Declare Function tdoFromString( tdo As T_DISPLAY_OVERRIDE	'tdo to be set with values from the string
+						, ByVal sLayerInfo As String	'a string version of the tdo
+						) As Logical				'returns true if the tils was set using the string
+
+Declare Function tdoGetDescription(	  tdo As T_DISPLAY_OVERRIDE	'The T_DISPLAY_OVERRIDE to get a description for
+							) As String					'Returns a short string representing the T_DISPLAY_OVERRIDE
+
+Declare Sub tdoGetInfo(	  ByVal nMID As Integer		'The Map Window with the layer
+					, ByVal nLyrID As Integer	'The layer to query
+					, tdo() As T_DISPLAY_OVERRIDE	'The T_DISPLAY_OVERRIDE's to store information about the layer
+					)
+Declare Function tdoGetSetMapStatement(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+								, ByVal nLyrID As Integer		'LayerID to apply the settings to
+								, tdo() As T_DISPLAY_OVERRIDE		'The T_DISPLAY_OVERRIDE's to store information about the layer
+								) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Declare Sub tdoWriteToMetadata(		  ByVal sTab As String			'Name of table to write the tdo's to
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tdo's to
+								, tdo() As T_DISPLAY_OVERRIDE		'The tdo's to write to the metadata
+								)
+Declare Sub tdoWriteSingleToMetadata(	  ByVal sTab As String			'Name of table to write the tdo to
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tdo to
+								, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to write the tdo to
+								, tdo As T_DISPLAY_OVERRIDE		'The tdo to write to the metadata
+								)
+Declare Sub tdoReadFromMetadata(		  ByVal sTab As String			'Name of table to read the tdo's from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tdo's from
+								, tdo() As T_DISPLAY_OVERRIDE		'The tdo's to read the metadata into
+								)
+Declare Sub tdoReadSingleFromMetadata(	  ByVal sTab As String			'Name of table to read the tdo from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tdo from
+								, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to read the tdo from
+								, tdo As T_DISPLAY_OVERRIDE		'The tdo to read the metadata into
+								)
+Declare Sub tdoRemoveSingleFromMetadata(  ByVal sTab As String			'Name of table to remove the tdo from
+								, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to remove the tdo from
+								, ByVal nOverrideItem As Integer	'Overide Item No in the metadata to remove
+								)

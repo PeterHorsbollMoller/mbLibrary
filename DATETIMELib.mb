@@ -1,0 +1,140 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:	DATETIMELib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+
+Include "DATETIMELib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DATEGetISODate(ByVal dDate As Date) As String
+
+OnError GoTo ErrorOccured
+
+	DATEGetISODate = Str$(Year(dDate)) & Format$(Month(dDate), "00") & Format$(Day(dDate), "00")
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DATEGetISODate")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DATEGetDateAsDDMMYYYY(	  ByVal dDate As Date			'Date variable to format
+							, ByVal sSeparator As String		'Separator to use to devide the elements
+							) As String					'String in this form DD-MM-YYYY where "-" is the separator
+
+OnError GoTo ErrorOccured
+
+	DATEGetDateAsDDMMYYYY = Format$(Day(dDate), "00") & sSeparator & Format$(Month(dDate), "00") & sSeparator & Format$(Year(dDate), "0000")
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DATEGetDateAsDDMMYYYY")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DATEGetDateAsYYYYMMDD(	  ByVal dDate As Date			'Date variable to format
+							, ByVal sSeparator As String		'Separator to use to devide the elements
+							) As String					'String in this form YYYY-MM-DD where "-" is the separator
+
+OnError GoTo ErrorOccured
+
+	DATEGetDateAsYYYYMMDD = Format$(Year(dDate), "0000") & sSeparator & Format$(Month(dDate), "00") & sSeparator & Format$(Day(dDate), "00")
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DATEGetDateAsDDMMYYYY")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DATEGetTimeAsHHMMSS(	  ByVal tTime As Time		'Time variable to format
+						, ByVal sSeparator As String	'Separator to use to devide the elements
+						) As String
+
+OnError GoTo ErrorOccured
+
+	DATEGetTimeAsHHMMSS = Format$(Hour(tTime), "00") & sSeparator & Format$(Minute(tTime), "00") & sSeparator & Format$(Second(tTime), "00")
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DATEGetTimeAsHHMMSS")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DATEGetAgeInYears(	ByVal dBirthDate As Date		'Date of Birth or creation
+					) As Integer					'Full number of years since birth
+
+Dim		dNow As Date,
+		nAge As Integer
+
+OnError GoTo ErrorOccured
+
+	dNow = CurDate()
+
+	nAge = (Year(dNow) - Year(dBirthDate)) - 1
+	If Month(dNow) > Month(dBirthDate) Then
+		 	nAge 	= nAge + 1
+	Elseif Month(dNow) = Month(dBirthDate) Then
+		If Day(dNow) >= Day(dBirthDate) Then
+		 	nAge 	= nAge + 1
+		End if
+	End If
+
+	DATEGetAgeInYears	= nAge
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DATEGetAgeInYears")
+	Call ERRShow()
+
+End Function

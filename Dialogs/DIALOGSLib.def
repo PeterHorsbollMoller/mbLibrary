@@ -1,0 +1,19 @@
+Declare Method DLGNote						'Like the MapBasic Note statement this Method DLGNote displays
+	Class "DIALOGSLib.NewDialogs"			'a simple message in a dialog box, with one important difference:
+	Lib "DIALOGSLib.dll"					'You can influence the caption (i.e. the title) of the dialog box
+		(ByVal sNotification As String,		'sNotification is an expression to be displayed in a dialog box
+		ByVal sCaption As String)			'sCaption is an expression (e.g. your app name) to be used as caption in the dialog box
+
+Declare Method DLGAsk						'Like the MapBasic Ask() function this Method DLGAsk displays a dialog
+	Class "DIALOGSLib.NewDialogs"			'box, asking the user a yes or no question, with one important difference:
+	Lib "DIALOGSLib.dll"					'You can influence the caption (i.e. the title) of the dialog box
+		(ByVal sQuestion As String,			'sQuestion is a string to appear as a prompt in the dialog box
+		ByVal sCaption As String)			'sCaption is an expression (e.g. your app name) to be used as caption in the dialog box
+	As Logical								'The dialog shows a Yes (=TRUE) and a No (=FALSE) button
+	
+Declare Method DLGWarn						'Like the MapBasic Ask() function this Method DLGWarn displays a dialog
+	Class "DIALOGSLib.NewDialogs"			'box, giving the user an OK or Cancel option, with one important difference:
+	Lib "DIALOGSLib.dll"					'You can influence the caption (i.e. the title) of the dialog box
+		(ByVal sWarning As String,			'sWarning is a string to appear as a prompt in the dialog box
+		ByVal sCaption As String)			'sCaption is an expression (e.g. your app name) to be used as caption in the dialog box
+	As Logical								'The dialog shows an OK (=TRUE) and a Cancel (=FALSE) button

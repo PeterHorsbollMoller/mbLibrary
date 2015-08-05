@@ -1,0 +1,574 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "EXCELLib.def"
+Include "FILELib.def"
+
+'Include "WINAPI.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sExcelFile	: Name of Excel file to open into MapInfo Pro
+'	sTabFile	: Name of tab file to "register it into to"
+'			: if "", it will use the name 'RegisteredExcelFile' and store it in the temp folder
+'			: if only a name of a table, this name will be used and the file be stored in the temp folder
+'			: other wise this name will be used
+'Return value:
+'	If the Excel was registered and opened, it will return the name of the table
+'	Otherwise it will return an empty string
+'**********************************************************************************************''
+Function EXCELOpen(ByVal sExcelFile As String, ByVal sTabFile As String) As String
+
+Dim	sCmd, sTab, sRange As String,
+	nCols As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELOpen = ""
+
+	If NOT FileExists(sExcelFile) Then
+		Note "This Excel file does not exist: " & sExcelFile
+		Exit Function
+	End If
+
+	If sTabFile = "" Then
+		sTabFile = PathToDirectory$(TempFileName$("")) & "RegisteredExcelFile.tab"
+	ElseIf sTabFile = PathToTableName$(sTabFile) Then
+		sTabFile = PathToDirectory$(TempFileName$("")) & sTabFile & ".tab"
+	End If
+	sTab = PathToTableName$(sTabFile)
+
+	sCmd	= "Register Table """ & sExcelFile & """"
+			& " Type XLS"
+			& " Titles"
+			& " Into """ & sTabFile & """"
+	Call DEBUGPrint("sCmd: " & sCmd)
+	Run Command sCmd
+	Open Table sTabFile
+
+	nCols		= TableInfo(sTab, TAB_INFO_NCOLS) - 1
+	sRange	= "A" + Str$(2)+":"+Left$(chr$(64 + nCols\26),int(nCols > 25)) + Chr$(65 + nCols mod 26) + TableInfo(sTab, TAB_INFO_NROWS)
+
+	Close Table sTab
+
+	sCmd	= "Register Table """ & sExcelFile & """"
+			& " Type XLS"
+			& " Titles"
+			& " Range """ & sRange & """"
+			'Interactive
+			& " Into """ & sTabFile & """"
+	Call DEBUGPrint("sCmd: " & sCmd)
+	Run Command sCmd
+	Open Table sTabFile
+
+EXCELOpen = sTab
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELOpen")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sExcelFile	: Name of Excel file to open into MapInfo Pro
+'	sTabFile	: Name of tab file to "register it into to"
+'			: if "", it will use the name 'RegisteredExcelFile' and store it in the temp folder
+'			: if only a name of a table, this name will be used and the file be stored in the temp folder
+'			: other wise this name will be used
+'Return value:
+'	If the Excel was registered and opened, it will return the name of the table
+'	Otherwise it will return an empty string
+'**********************************************************************************************''
+Function EXCELOpenNoTitles(ByVal sExcelFile As String, ByVal sTabFile As String) As String
+
+Dim	sCmd, sTab, sRange As String,
+	nCols As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELOpenNoTitles = ""
+
+	If NOT FileExists(sExcelFile) Then
+		Note "This Excel file does not exist: " & sExcelFile
+		Exit Function
+	End If
+
+	If sTabFile = "" Then
+		sTabFile = PathToDirectory$(TempFileName$("")) & "RegisteredExcelFile.tab"
+	ElseIf sTabFile = PathToTableName$(sTabFile) Then
+		sTabFile = PathToDirectory$(TempFileName$("")) & sTabFile & ".tab"
+	End If
+	sTab = PathToTableName$(sTabFile)
+
+	sCmd	= "Register Table """ & sExcelFile & """"
+			& " Type XLS"
+		'	& " Titles"
+			& " Into """ & sTabFile & """"
+	Call DEBUGPrint("sCmd: " & sCmd)
+	Run Command sCmd
+	Open Table sTabFile
+
+	nCols	= TableInfo(sTab, TAB_INFO_NCOLS) - 1
+	sRange	= "A" + Str$(2)+":"+Left$(chr$(64 + nCols\26),int(nCols > 25)) + Chr$(65 + nCols mod 26) + TableInfo(sTab, TAB_INFO_NROWS)
+
+	Close Table sTab
+
+	sCmd	= "Register Table """ & sExcelFile & """"
+			& " Type XLS"
+		'	& " Titles"
+			& " Range """ & sRange & """"
+			'Interactive
+			& " Into """ & sTabFile & """"
+	Call DEBUGPrint("sCmd: " & sCmd)
+	Run Command sCmd
+	Open Table sTabFile
+
+EXCELOpenNoTitles = sTab
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELOpenNoTitles")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sExcelFile	: Name of Excel file to open into MapInfo Pro
+'	sTabFile	: Name of tab file to "register it into to"
+'			: if "", it will use the name 'RegisteredExcelFile' and store it in the temp folder
+'			: if only a name of a table, this name will be used and the file be stored in the temp folder
+'			: other wise this name will be used
+'	sSheetName	: Name of Spreadsheet to open
+'Return value:
+'	If the Excel was registered and opened, it will return the name of the table
+'	Otherwise it will return an empty string
+'**********************************************************************************************''
+Function EXCELOpenInclSheetName(ByVal sExcelFile As String, ByVal sTabFile As String, ByVal sSheetName As String) As String
+
+Dim	sCmd, sTab, sRange As String,
+	nCols As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELOpenInclSheetName = ""
+
+	If NOT FileExists(sExcelFile) Then
+		Note "This Excel file does not exist: " & sExcelFile
+		Exit Function
+	End If
+
+	If sTabFile = "" Then
+		sTabFile = PathToDirectory$(TempFileName$("")) & "RegisteredExcelFile.tab"
+	ElseIf sTabFile = PathToTableName$(sTabFile) Then
+		sTabFile = PathToDirectory$(TempFileName$("")) & sTabFile & ".tab"
+	End If
+	sTab = PathToTableName$(sTabFile)
+
+	sCmd	= "Register Table """ & sExcelFile & """"
+			& " Type XLS"
+			& " Titles"
+			& " Range """ & sSheetName & """"
+			'Interactive
+			& " Into """ & sTabFile & """"
+	Call DEBUGPrint("sCmd: " & sCmd)
+	Run Command sCmd
+	Open Table sTabFile
+
+	nCols		= TableInfo(sTab, TAB_INFO_NCOLS) - 1
+	sRange	= "A" + Str$(2)+":"+Left$(chr$(64 + nCols\26),int(nCols > 25)) + Chr$(65 + nCols mod 26) + TableInfo(sTab, TAB_INFO_NROWS)
+
+	Close Table sTab
+
+	sCmd	= "Register Table """ & sExcelFile & """"
+			& " Type XLS"
+			& " Titles"
+			& " Range """ & sSheetName & "!" & sRange & """"
+			'Interactive
+			& " Into """ & sTabFile & """"
+	Call DEBUGPrint("sCmd: " & sCmd)
+	Run Command sCmd
+	Open Table sTabFile
+
+EXCELOpenInclSheetName = sTab
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELOpenInclSheetName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELOpenFile(	ByVal sFile As String	'The file to open
+						) As Logical		'Return true if the file was opened in Excel
+
+OnError GoTo ErrorOccured
+
+EXCELOpenFile = FALSE
+
+	Call DEBUGPrint("Trying to open file: " & sFile)
+	Call FILELaunch(sFile)
+
+	Call DEBUGPrint("Testing access to file in Excel")
+	If EXCELIsFileOpen(sFile) Then
+		EXCELOpenFile = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELOpenFile: File: " & sFile)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELIsRunning() As Logical
+
+Dim	nErr, nChannel As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELIsRunning = FALSE
+
+	nChannel = EXCELDDEOpenChannelNoWait("System")
+	If nChannel <> 0 Then
+		Call EXCELDDECloseChannel(nChannel)
+
+		EXCELIsRunning = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELIsRunning")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELIsFileOpen(ByVal sFile As String) As Logical
+
+Dim	nChannel As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELIsFileOpen = FALSE
+
+	If EXCELIsRunning() Then
+		nChannel = EXCELDDEOpenChannelNoWait(sFile)
+		If nChannel <> 0 Then
+			Call EXCELDDECloseChannel(nChannel)
+
+			EXCELIsFileOpen = TRUE
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELIsFileOpen: File: " & sFile)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELIsChannelToSheetValid(	  ByVal nChannel As Integer	'The Channel Number to test
+								) As Logical				'Returns true if the Channel to Excel still is usable
+
+Dim	sValue As String
+
+OnError GoTo ErrorOccured
+
+EXCELIsChannelToSheetValid = FALSE
+
+	If nChannel <> 0 Then
+		OnError GoTo ErrorChannelNotValid
+		sValue = DDERequest$(nChannel, "R1C1")
+
+		OnError GoTo ErrorOccured
+		EXCELIsChannelToSheetValid = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorChannelNotValid:
+	Call ERRCreate(Err(), Error$(), "EXCELIsChannelToSheetValid: Channel: " & nChannel)
+	If DEBUGIsEnabled() Then
+		Call ERRPrint()
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELIsChannelToSheetValid: Channel: " & nChannel)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELDDEOpenChannel(	ByVal sTopic As String	'Can be an Excel file or a worksheet
+						) As Integer			'Return the Channel No
+
+Dim	nTime, nNumAttempts, nChannel As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELDDEOpenChannel = 0
+
+	Call DEBUGPrint("EXCELDDEOpenChannel to :" & sTopic)
+	nNumAttempts	= 1
+'-------------------------
+OpeningChannel:
+	OnError GoTo ErrorOpeningChannel
+	nChannel	= DDEInitiate("Excel", sTopic)
+
+	OnError GoTo ErrorOccured
+
+'	Call DEBUGPrint("   nChannel=" & nChannel)
+	EXCELDDEOpenChannel = nChannel
+
+	Exit Function
+'-------------------------
+ErrorOpeningChannel:
+	Call DEBUGPrint("   EXCELDDEOpenChannel:" & Err() & ": " & Error$())
+	If nNumAttempts > 3 Then
+		Exit Function
+	End If
+
+	Call DEBUGPrint("   Attempt " & nNumAttempts)
+	nTime = Timer()
+'	Call DEBUGPrint("   Waiting 2 secs.")
+	Do Until (Timer() > (nTime + 2))
+
+	Loop
+	nNumAttempts	= nNumAttempts + 1
+
+	Resume OpeningChannel
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELDDEOpenChannel: Topic: " & sTopic)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELDDEOpenChannelNoWait(	ByVal sTopic As String	'Can be an Excel file or a worksheet
+								) As Integer			'Return the Channel No
+
+Dim	nChannel As Integer
+
+OnError GoTo ErrorOccured
+
+EXCELDDEOpenChannelNoWait = 0
+
+	Call DEBUGPrint("EXCELDDEOpenChannelNoWait to :" & sTopic)
+'-------------------------
+OpeningChannel:
+	OnError GoTo ErrorOpeningChannel
+	nChannel	= DDEInitiate("Excel", sTopic)
+
+	OnError GoTo ErrorOccured
+
+'	Call DEBUGPrint("   nChannel=" & nChannel)
+	EXCELDDEOpenChannelNoWait = nChannel
+
+	Exit Function
+'-------------------------
+ErrorOpeningChannel:
+	Call ERRCreate(Err(), Error$(), "EXCELDDEOpenChannelNoWait: Topic: " & sTopic)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELDDEOpenChannelNoWait: Topic: " & sTopic)
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub EXCELDDECloseChannel(	ByVal nChannel As Integer	'The Channel to close
+						)
+
+OnError GoTo ErrorOccured
+
+	Call DEBUGPrint("   EXCELDDECloseChannel: " & nChannel)
+	If nChannel > 0 Then
+		DDETerminate nChannel
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELDDECloseChannel")
+'	Call ERRPrint()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub EXCELDDEInsertValue(	  ByVal nChannel As Integer	'The Channel to use
+					, ByVal sRow As String		'The Row to insert the value into
+					, ByVal sColumn As String	'The Column to insert the value into
+					, ByVal sValue As String		'The value to insert into the cell
+					)
+
+OnError GoTo ErrorOccured
+
+'	Call DEBUGPrint("Sending to Excel on Channel " & nChannel & " Row: " & sRow & " Column: " & sColumn & " Trying to write: " & sValue)
+	DDEPoke nChannel, "R" & sRow & "C" & sColumn, sValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELDDEInsertValue: Channel:" & nChannel & ", Cell: R" & sRow & "C" & sColumn & ", Value: " & sValue)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function EXCELDDEReadValue(	  ByVal nChannel As Integer	'The Channel to use
+						, ByVal sRow As String		'The Row to read the value from
+						, ByVal sColumn As String	'The Column to read the value from
+						) As String				'returns the value read from the cell
+
+OnError GoTo ErrorOccured
+
+	EXCELDDEReadValue = DDERequest$(nChannel, "R" & sRow & "C" & sColumn)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELDDEReadValue: Channel:" & nChannel & ", Cell: R" & sRow & "C" & sColumn)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub EXCELDDECommitWork(	  ByVal sFile As String		'The file to commit changes in
+					)
+
+Dim	nChannel As Integer
+
+OnError GoTo ErrorOccured
+
+	nChannel = EXCELDDEOpenChannel(sFile)
+	If nChannel <> 0 Then
+		DDEExecute nChannel, "^s"
+		Call EXCELDDECloseChannel(nChannel)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELDDECommitWork: File: " & sFile)
+	Call ERRShow()
+
+End Sub
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub EXCELDDEExecuteMacro(	  ByVal sFile As String		'The file to run the macro within
+						, ByVal sMacro As String		'The name of the macro to run
+						)
+Dim	nChannel As Integer
+
+OnError GoTo ErrorOccured
+
+	nChannel = EXCELDDEOpenChannel(sFile)		'"System")
+	If nChannel <> 0 Then
+		DDEExecute nChannel, "[Run(" & eye & sMacro & eye & ")]"
+
+		Call EXCELDDECloseChannel(nChannel)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	If Err() = 699 Then
+	'	Print ERR_ERRORMSG & lf & Err() & " " & Error$()
+		Call EXCELDDECloseChannel(nChannel)
+	Else
+		Call ERRCreate(Err(), Error$(), "EXCELDDEExecuteMacro")
+		Call ERRShow()
+	End If
+
+End Sub
+

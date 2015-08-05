@@ -1,0 +1,398 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "Types\T_LAYER_SETTINGS.def"
+Include "Types\T_LABEL_SETTINGS.def"
+Include "Types\T_LAYER_INFO.def"
+Include "Types\T_GROUP_LAYER_INFO.def"
+
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+
+Include "GroupLayerLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function GLYRGetGroupLayerList(ByVal nMID As Integer, arrGroupLayers() As T_GROUP_LAYER_INFO) As Integer
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+GLYRGetGroupLayerList = 0
+
+	Redim arrGroupLayers(MapperInfo(nMID, MAPPER_INFO_GROUPLAYERS) + 1)
+
+	'**reading from the top level (the map itself)
+	Call tgliGetInfo(nMID, 0, arrGroupLayers(1))
+
+	For i = 1 To MapperInfo(nMID, MAPPER_INFO_GROUPLAYERS)
+		Call tgliGetInfo(nMID, i, arrGroupLayers(i + 1))
+	Next
+
+GLYRGetGroupLayerList = Ubound(arrGroupLayers)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRGetGroupLayerList")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function GLYRGetGroupLayersListInGroupLayer(ByVal nMID As Integer, ByVal nGroupLayerID As Integer, ByVal bTopLevelOnly As Logical, arrGroupLayers() As T_GROUP_LAYER_INFO) As Integer
+
+Dim 	i, llOffset, ll, nNumLayers, nCount, nSubLayers As Integer
+
+OnError GoTo ErrorOccured
+
+GLYRGetGroupLayersListInGroupLayer = 0
+
+	llOffset		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+	nNumLayers		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_TOPLEVEL_LAYERS)
+
+   	For i = 1 To nNumLayers
+		ll = llOffset + i
+		If LayerListInfo(nMID, ll, LAYERLIST_INFO_TYPE ) = LAYERLIST_INFO_TYPE_GROUP Then
+
+			nCount = Ubound(arrGroupLayers) + 1
+			Redim arrGroupLayers(nCount)
+			Call tgliGetInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), arrGroupLayers(nCount))
+
+			If NOT bTopLevelOnly Then
+				nSubLayers = nSubLayers + GLYRGetGroupLayersListInGroupLayer(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), bTopLevelOnly, arrGroupLayers)
+			End If
+		End If
+	Next
+
+	'Call DEBUGPrint("GLYRGetLayersListInGroupLayer: Found " & Ubound(arrGroupLayers) & " layers, off these " & nSubLayers & " in sub grouplayers")
+
+GLYRGetGroupLayersListInGroupLayer = Ubound(arrGroupLayers)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRGetGroupLayersListInGroupLayer")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function GLYRGetLayersListInGroupLayer(ByVal nMID As Integer, ByVal nGroupLayerID As Integer, ByVal bTopLevelOnly As Logical, arrLayers() As T_LAYER_INFO) As Integer
+
+Dim 	i, llOffset, ll, nNumLayers, nNumLayer, nSubLayers, nLayerID As Integer
+
+OnError GoTo ErrorOccured
+
+GLYRGetLayersListInGroupLayer = 0
+
+	llOffset		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+	If llOffset = -1 Then
+		llOffset = 0
+	End If
+	nNumLayers		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_TOPLEVEL_LAYERS)
+
+	Call DEBUGPrint("GLYRGetLayersListInGroupLayer: Window: " & WindowInfo(nMID, WIN_INFO_NAME) & ", GroupLayerID: " & nGroupLayerID)
+   	For i = 1 To nNumLayers
+		ll = llOffset + i
+		Call DEBUGPrint("   " & ll & ": " & LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME))
+		If LayerListInfo(nMID, ll, LAYERLIST_INFO_TYPE ) = LAYERLIST_INFO_TYPE_GROUP Then
+			If NOT bTopLevelOnly Then
+				nSubLayers = nSubLayers + GLYRGetLayersListInGroupLayer(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), bTopLevelOnly, arrLayers)
+			End If
+		Else
+			nLayerID		= nLayerID + 1
+			nNumLayer		= Ubound(arrLayers) + 1
+			Redim arrLayers(nNumLayer)
+			Call tliGetInfo(nMID, nLayerID, arrLayers(nNumLayer))
+		End If
+	Next
+
+	Call DEBUGPrint("GLYRGetLayersListInGroupLayer: Found " & Ubound(arrLayers) & " layers, off these " & nSubLayers & " in sub grouplayers")
+
+GLYRGetLayersListInGroupLayer = Ubound(arrLayers)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRGetLayersListInGroupLayer")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'Return value:
+'	GroupLayerID of the new GroupLayer
+'**********************************************************************************************''
+Function GLYRCreateGroupLayer(ByVal nMID As Integer, ByVal sGroupLayer As String, ByVal sDestinationGroupLayer As String, arrLayers() As T_LAYER_INFO) As Integer
+
+Dim	arrLayerNames() As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+	Redim arrLayerNames(Ubound(arrLayers))
+	For i = 1 To Ubound(arrLayers)
+		arrLayerNames(i) = arrLayers(i).sName
+	Next
+
+	GLYRCreateGroupLayer	= GLYRCreateGroupLayerFromLayerNames(nMID, sGroupLayer, sDestinationGroupLayer, arrLayerNames)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRCreateGroupLayer: " & sCmd)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'Return value:
+'	GroupLayerID of the new GroupLayer
+'**********************************************************************************************''
+Function GLYRCreateGroupLayerFromLayerNames(ByVal nMID As Integer, ByVal sGroupLayer As String, ByVal sDestinationGroupLayer As String, arrLayerNames() As String) As Integer
+
+Dim	sCmd, sLayers As String,
+	i, nDestinationGroupLayerID As Integer
+
+OnError GoTo ErrorOccured
+
+	If Ubound(arrLayerNames) > 0 Then
+		sLayers = arrLayerNames(1)
+		For i = 2 To Ubound(arrLayerNames)
+			sLayers = sLayers & ", " & arrLayerNames(i)
+		Next
+	End If
+
+	If sLayers = "" Then
+		sCmd = "Add Map Window " & nMID & " GroupLayer(" & eye & sGroupLayer & eye & ")"
+	Else
+		sCmd = "Add Map Window " & nMID & " GroupLayer(" & eye & sGroupLayer & eye & "," & sLayers & ")"
+	End If
+	If sDestinationGroupLayer <> "" Then
+		If Val(sDestinationGroupLayer) = 0 AND sDestinationGroupLayer <> "0" Then
+			'**Assuming the sDestinationGroupLayer is a Name
+			nDestinationGroupLayerID	= GLYRGetGroupLayerID(nMID, 0, sDestinationGroupLayer, FALSE)
+			If nDestinationGroupLayerID = -1 Then
+				'**Destination Grouplayer not found, using top level/root level
+				nDestinationGroupLayerID = 0
+			Else
+				sCmd = sCmd & " DestGroupLayer " & eye & sDestinationGroupLayer & eye
+			End If
+		ElseIf Val(sDestinationGroupLayer) = 0 Then
+			'**Assuming the sDestinationGroupLayer is 0
+			sCmd = sCmd
+			nDestinationGroupLayerID	= 0
+		Else
+			'**Assuming the sDestinationGroupLayer is an ID
+			sCmd = sCmd & " DestGroupLayer " & sDestinationGroupLayer
+			nDestinationGroupLayerID	= Val(sDestinationGroupLayer)
+		End If
+	End If
+
+	Call DEBUGPrint("GLYRCreateGroupLayerFromLayerNames: " & sCmd)
+	Run Command sCmd
+
+	GLYRCreateGroupLayerFromLayerNames	= GLYRGetGroupLayerID(nMID, nDestinationGroupLayerID, sGroupLayer, TRUE)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRCreateGroupLayerFromLayerNames: " & sCmd)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function GLYRGetGroupLayerID(ByVal nMID As Integer, ByVal nGroupLayerID As Integer, ByVal sGroupLayer As String, ByVal bTopLevelOnly As Logical) As Integer
+
+Dim 	i, llOffset, ll, nNumLayers, nSubGroupLayer, nFoundGroupLayerID As Integer
+
+OnError GoTo ErrorOccured
+
+GLYRGetGroupLayerID = -1
+
+	If nGroupLayerID = 0 Then
+		llOffset		= 0
+		nNumLayers	= GroupLayerInfo(nMID, 0, GROUPLAYER_INFO_TOPLEVEL_LAYERS)
+	Else
+		llOffset		= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+		nNumLayers	= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_TOPLEVEL_LAYERS)
+	End If
+
+   	For i = 1 To nNumLayers
+		ll = llOffset + i
+		Call DEBUGPrint(i & " " & ll & " " & LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME))
+		If LayerListInfo(nMID, ll, LAYERLIST_INFO_TYPE) = LAYERLIST_INFO_TYPE_GROUP Then
+
+			Call DEBUGPrint("GLYRGetGroupLayerID: Comparing '" & LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME) & "' with '" & sGroupLayer & "'")
+			If LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME) = sGroupLayer Then
+				Call DEBUGPrint("GLYRGetGroupLayerID: Found in top level")
+				GLYRGetGroupLayerID = LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID)
+				Exit Function
+			End If
+
+			If NOT bTopLevelOnly Then
+				Call DEBUGPrint("   Searching in sub group layer: " & LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID))
+				nFoundGroupLayerID	= GLYRGetGroupLayerID(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), sGroupLayer, bTopLevelOnly)
+				If nFoundGroupLayerID > 0 Then
+					Call DEBUGPrint("GLYRGetGroupLayerID: Found in sub level")
+					GLYRGetGroupLayerID = nFoundGroupLayerID
+					Exit Function
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRGetGroupLayerID: nMID:" & nMID & ", nGroupLayerID: " & nGroupLayerID & ", sGroupLayer: " & sGroupLayer )
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function GLYRGetLayerListID(ByVal nMID As Integer, ByVal nGroupLayerID As Integer, ByVal sGroupLayer As String, ByVal bTopLevelOnly As Logical) As Integer
+
+Dim	nLayer, ll, llOffset, nFoundGroupLayerID As Integer
+
+GLYRGetLayerListID = -1
+
+	llOffset	= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+
+	'Call DEBUGPrint("GLYRGetLayerListID: NUm Layers: " & GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_ALL_LAYERS))
+	For nLayer = 1 To GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_ALL_LAYERS)
+		ll = llOffset + nLayer
+		'Call DEBUGPrint("   " & ll & ": " & LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME))
+
+		If LayerListInfo(nMID, ll, LAYERLIST_INFO_TYPE) = LAYERLIST_INFO_TYPE_GROUP Then
+			If GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_NAME) = sGroupLayer Then
+				'Call DEBUGPrint("   " & nLayer & ": " & GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_NAME))
+
+				If GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_PARENT_GROUP_ID) = nGroupLayerID Then
+					GLYRGetLayerListID = ll
+					'Call DEBUGPrint("Layer " & sGroupLayer & " found in Layer Group " & nGroupLayerID)
+					Exit Function
+				Else
+					If NOT bTopLevelOnly Then
+						GLYRGetLayerListID = ll
+						'Call DEBUGPrint("Layer " & sGroupLayer & " found in a sub group Layer Group " & nGroupLayerID)
+						Exit Function
+					End If
+				End If
+			End If
+		Else
+			'Call DEBUGPrint("   ignoring layer " & nLayer)
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRGetLayerListID: nMID:" & nMID & ", nGroupLayerID: " & nGroupLayerID & ", sGroupLayer: " & sGroupLayer )
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function GLYRGetPositionInGroupLayer(	  ByVal nMID As Integer			'MapWindow to search
+								, ByVal nGroupLayerID As Integer	'Group Layer ID to search, use 0 as top level
+								, ByVal sGroupLayer As String		'GroupLayer Name to find
+								) As Integer					'Returns the position within this group layer, return -1 if not found
+															'If you want to use to insert a layer, use (Position - 1) if you insert into the top level
+
+Dim	nLayer, ll, llOffset, nCount As Integer
+
+OnError GoTo ErrorOccured
+
+GLYRGetPositionInGroupLayer = -1
+
+	llOffset	= GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_LAYERLIST_ID)
+
+	For nLayer = 1 To GroupLayerInfo(nMID, nGroupLayerID, GROUPLAYER_INFO_ALL_LAYERS)
+		ll = llOffset + nLayer
+		'Call DEBUGPrint("   " & ll & ": " & LayerListInfo(nMID, ll, LAYERLIST_INFO_NAME))
+
+		If LayerListInfo(nMID, ll, LAYERLIST_INFO_TYPE) = LAYERLIST_INFO_TYPE_GROUP Then
+			If GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_PARENT_GROUP_ID) = nGroupLayerID Then
+				nCount = nCount + 1
+				'Call DEBUGPrint("   " & nLayer & ": " & GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_NAME))
+
+				If GroupLayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_GROUPLAYER_ID), GROUPLAYER_INFO_NAME) = sGroupLayer Then
+					'Call DEBUGPrint("   GroupLayer " & sGroupLayer & " found at position " & nCount & " in Layer Group " & nGroupLayerID)
+					GLYRGetPositionInGroupLayer = nCount
+					Exit Function
+				End If
+			End If
+		Else
+			If LayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_LAYER_ID), LAYER_INFO_PARENT_GROUP_ID) = nGroupLayerID Then
+				nCount = nCount + 1
+				'Call DEBUGPrint("   ignoring " & nCount & ": " & LayerInfo(nMID, LayerListInfo(nMID, ll, LAYERLIST_INFO_LAYER_ID), LAYER_INFO_NAME))
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "GLYRGetPositionInGroupLayer")
+	Call ERRShow()
+
+End Function

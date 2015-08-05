@@ -1,0 +1,249 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Software
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "..\MapBasic.def"
+Include "..\Icons.def"
+Include "..\Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\ARRAYLib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\TABLELib.def"
+
+Include "DLGSelectTable.def"
+
+Define	CTRL_LST_TABLES		100
+Define	CTRL_CMD_OPEN_TABLES	200
+Define	CTRL_CMD_OK			1000
+
+Declare Sub DLGST_OnLoad
+Declare Sub DLGST_OKClicked
+Declare Sub DLGST_TableListClicked
+Declare Sub DLGST_LoadTableList
+Declare Sub DLGST_OpenTablesClicked
+
+Dim	msTableName, msDefaultTableName As String,
+	mbAllowUserToOpen, mbUserDoubleClickedOnTable, mbInitiatingDialog As Logical,
+	marrTableNames() As String,
+	mnTypesToUse As Integer
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSelectTable(	  ByVal nTypesToUse As Integer
+					, ByVal sTitle As String
+					, ByVal sTitleList As String
+					, ByVal sOpenButtonTitle As String
+					, ByVal bAllowUserToOpen As Logical
+					, ByVal sDefaultTableName As String
+					) As String
+
+OnError GoTo ErrorOccured
+
+DLGSelectTable = ""
+
+	mbAllowUserToOpen			= bAllowUserToOpen
+	mnTypesToUse				= nTypesToUse
+	msTableName				= ""
+	msDefaultTableName			= sDefaultTableName
+	mbUserDoubleClickedOnTable	= FALSE
+
+	Dialog
+		Title sTitle
+		Calling DLGST_OnLoad
+
+		Control StaticText		Position 5,5
+			Title sTitleList
+		Control Listbox		Position 5,15		ID CTRL_LST_TABLES
+			Width 150	Height 120
+			Calling DLGST_TableListClicked
+
+		Control OKButton		Position 170,15	ID CTRL_CMD_OK
+			Width 40
+			Calling DLGST_OKClicked
+		Control CancelButton	Position 170,30
+			Width 40
+
+		Control Button			Position 170,55	ID CTRL_CMD_OPEN_TABLES
+			Title sOpenButtonTitle
+			Calling DLGST_OpenTablesClicked
+			Width 40
+
+	If not CommandInfo(CMD_INFO_DLG_OK) Then
+		If NOT mbUserDoubleClickedOnTable Then
+			Exit Function
+		End If
+	End If
+
+	DLGSelectTable = msTableName
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSelectTable")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGST_OnLoad
+
+Dim	nTable As Integer
+
+OnError GoTo ErrorOccured
+
+	mbInitiatingDialog	= TRUE
+
+	If mbAllowUserToOpen Then
+		Alter Control CTRL_CMD_OPEN_TABLES	Show
+		Alter Control CTRL_CMD_OPEN_TABLES	Enable
+	Else
+		Alter Control CTRL_CMD_OPEN_TABLES	Hide
+		Alter Control CTRL_CMD_OPEN_TABLES	Disable
+	End If
+
+	Call DLGST_LoadTableList
+
+	If msDefaultTableName > "" Then
+		nTable = ARRAYFindValueString(marrTableNames, msDefaultTableName)
+		If nTable > 0 Then
+			Alter Control CTRL_LST_TABLES	Value nTable
+			Call DLGST_TableListClicked
+		End If
+	End If
+
+	mbInitiatingDialog = FALSE
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGST_OnLoad")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGST_OKClicked
+
+Dim	nTab As Integer
+
+OnError GoTo ErrorOccured
+
+	nTab	= ReadControlValue(CTRL_LST_TABLES)
+	If nTab = 0 Then
+		Dialog Preserve
+		Exit Sub
+	End If
+
+	msTableName	= marrTableNames(nTab)
+	Dialog Remove
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGST_OKClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGST_LoadTableList
+
+OnError GoTo ErrorOccured
+
+	Redim marrTableNames(0)
+	If TABGetListOfNames(mnTypesToUse, marrTableNames()) Then
+
+	End If
+
+	Alter Control CTRL_LST_TABLES	Title From Variable marrTableNames
+	Call DLGST_TableListClicked
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGST_LoadTableList")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGST_TableListClicked
+
+Dim	nTab As Integer
+
+OnError GoTo ErrorOccured
+
+	nTab	= ReadControlValue(CTRL_LST_TABLES)
+	If nTab = 0 Then
+		Alter Control CTRL_CMD_OK	Disable
+	Else
+		Alter Control CTRL_CMD_OK	Enable
+	End If
+
+	If NOT mbInitiatingDialog Then
+		If CommandInfo(CMD_INFO_DLG_DBL) Then
+			mbUserDoubleClickedOnTable = TRUE
+			Call DLGST_OKClicked
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGST_TableListClicked")
+	Call ERRShow()
+
+End Sub
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGST_OpenTablesClicked
+
+OnError GoTo ErrorOccured
+
+	Run Menu Command M_FILE_OPEN
+	Call DLGST_LoadTableList
+
+	If Ubound(marrTableNames) > 0 Then
+		Alter Control CTRL_LST_TABLES	Value Ubound(marrTableNames)
+		Call DLGST_TableListClicked
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGST_OpenTablesClicked")
+	Call ERRShow()
+
+End Sub
+

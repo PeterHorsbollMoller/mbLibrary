@@ -1,0 +1,36 @@
+'**Requires MapInfo Pro 9.5
+
+'[sectionname]
+'keyname=value
+
+Declare Method CONFIGReadKey
+	Class "ConfigFile.Configuration"  Lib "ConfigFile.dll" Alias ReadKey
+	(	  ByVal sFile As String		'File to read the value from
+		, ByVal sSection As String	'Section (without []) to read the value from
+		, ByVal sKey As String		'Key to read value from
+		) As String				'Returns the value read from the key specified, or "" if key wasn't found
+Declare Method CONFIGReadKeyInt
+	Class "ConfigFile.Configuration"  Lib "ConfigFile.dll" Alias ReadKeyInt
+	(	  ByVal sFile As String		'File to read configuration from
+		, ByVal sSection As String	'Section (without []) to read configuration from
+		, ByVal sKey As String		'Key to read value from
+		) As Integer			'Returns the value read from the key specified, or 0 if key wasn't found
+
+Declare Method CONFIGWriteKey
+	Class "ConfigFile.Configuration"  Lib "ConfigFile.dll" Alias WriteKey
+	(	  ByVal sFile As String		'File to write configuration to
+		, ByVal sSection As String	'Section (without []) to write the value to
+		, ByVal sKey As String		'Key to write the value to
+		, ByVal sValue As String	'value to write to the key above
+		)
+Declare Method CONFIGDeleteKey
+	Class "ConfigFile.Configuration"  Lib "ConfigFile.dll" Alias DeleteKey
+	(	  ByVal sFile As String		'File to delete the key from
+		, ByVal sSection As String	'Section (without []) to delete the key from
+		, ByVal sKey As String		'Key to delete
+		)
+Declare Method CONFIGDeleteSection
+	Class "ConfigFile.Configuration"  Lib "ConfigFile.dll" Alias DeleteSection
+	(	  ByVal sFile As String		'File to delete the section from
+		, ByVal sSection As String	'Section (without []) to delete
+		)

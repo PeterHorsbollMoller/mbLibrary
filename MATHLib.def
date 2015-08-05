@@ -1,0 +1,42 @@
+'Math
+
+'In Euclid's world, if your starting point is O and the other endpoints
+'of your two lines are points A and B, then determine the midpoint of the
+'line AB, and call it C. The line you seek is OC.
+
+'C can be found like so:
+'Cx = (Ax + Bx) / 2
+'Cy = (Ay + By) / 2
+
+'Watch out for the end cases where C = O and A = B.
+'-------------------------------------------------------------------------------
+'Don't suppose either of you know, if I have the starting point and I
+'have the slope of the line and I want to extend the line say 100m then
+'how do I go about calculating the end point coords?
+
+'Referring to the points named in my previous response, if L is the
+'distance from O to C, and P is your new point, then:
+
+'Lx (L+100m) = (Ox - Cx) / (Ox - Px)
+'Ly (L+100m) = (Oy - Cy)  / (Oy - Py)
+
+'Requires MapInfo Pro 4.0
+
+Declare Function MATHGetDirection(	  tStart As T_MI_POINT	'Starting point, using the T_MI_POINT type
+						, tEnd As T_MI_POINT	'Ending point, using the T_MI_POINT type
+						) As Float			'Return the direction of the line, East = 0, counter clockwise
+Declare Function MATHGetValidDirection(	  ByVal fDirection As Float	'The direction to validate
+							) As Float				'Returns a direction between 0 and 360
+
+Declare Function MATHOffsetX(	  ByVal fX As Float		'X value to offset
+					, ByVal fDistance As Float	'Distance to move the X value
+					, ByVal fDirection As Float	'Direction to move the X value
+					) As Float				'New X value moved using the values above
+Declare Function MATHOffsetY(	  ByVal fY As Float		'Y value to offset
+					, ByVal fDistance As Float	'Distance to move the Y value
+					, ByVal fDirection As Float	'Direction to move the Y value
+					) As Float				'New Y value moved using the values above
+
+Declare Function MATHIsBitOn(	  ByVal nBit As Integer		'Bit to check for
+					, ByVal nBitSum As Integer	'BitSum to check the existence within
+					) As Logical			'Returns true if the nBit was found set/found in nBitSum

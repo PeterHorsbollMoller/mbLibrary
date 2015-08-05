@@ -1,0 +1,613 @@
+'============================================================================
+' MapInfo version 12.5 - Menu Item Definitions
+'----------------------------------------------------------------------------
+' This file contains defines useful when programming in the MapBasic
+' language.  The definitions in this file describe the standard MapInfo
+' functionality available via the "Run Menu Command" MapBasic statement.
+'----------------------------------------------------------------------------
+' The defines in this file are organized to match the sequence of
+' declarations in the MAPINFOW.MNU file, which in turn reflects the
+' organization of the MapInfo menus and buttonpads.
+'============================================================================
+
+'----------------------------------------------------------------------------
+' File menu
+'----------------------------------------------------------------------------
+Define M_FILE_NEW                              101
+Define M_FILE_OPEN                             102
+Define M_FILE_OPEN_WMS                         118
+Define M_FILE_OPEN_WFS                         119
+Define M_FILE_OPEN_ODBC_CONN                   125
+Define M_FILE_OPEN_UNIVERSAL_DATA              126
+Define M_FILE_OPEN_BING_AERIAL                 128
+Define M_FILE_OPEN_BING_HYBRID                 129
+Define M_FILE_OPEN_BING_ROADS                  130
+'NOTE: M_FILE_OPEN_OSM_ROADS  was deprecated in 12.0
+'Define M_FILE_OPEN_OSM_ROADS                  131
+Define M_FILE_OPEN_LASTDLG                     132
+Define M_FILE_CLOSE                            103
+Define M_FILE_CLOSE_ALL                        104
+Define M_FILE_CLOSE_ODBC                       124
+Define M_FILE_SAVE                             105
+Define M_FILE_SAVE_COPY_AS                     106
+Define M_FILE_SAVE_QUERY                       117
+Define M_FILE_SAVE_WORKSPACE                   109
+Define M_FILE_SAVE_WINDOW_AS                   609
+Define M_FILE_REVERT                           107
+Define M_FILE_PAGE_SETUP                       111
+Define M_FILE_PRINT                            112
+Define M_FILE_PRINT_TO_PDF                     127
+Define M_FILE_EXIT                             113
+
+'----------------------------------------------------------------------------
+' Edit menu
+'----------------------------------------------------------------------------
+Define M_EDIT_UNDO                             201
+Define M_EDIT_CUT                              202
+Define M_EDIT_COPY                             203
+Define M_EDIT_PASTE                            204
+Define M_EDIT_CLEAR                            205
+Define M_EDIT_CLEAROBJ                         206
+Define M_EDIT_RESHAPE                          1601
+Define M_EDIT_NEW_ROW                          702
+Define M_EDIT_GETINFO                          207
+
+'----------------------------------------------------------------------------
+' Tools menu
+'----------------------------------------------------------------------------
+Define M_TOOLS_CRYSTAL_REPORTS_NEW             1802
+Define M_TOOLS_CRYSTAL_REPORTS_OPEN            1803
+Define M_TOOLS_RUN                             110
+Define M_MBTOOL_GET_MB_UTILITIES               1811
+Define M_TOOLS_TOOL_MANAGER                    1801
+
+'----------------------------------------------------------------------------
+' Objects menu
+'----------------------------------------------------------------------------
+Define M_OBJECTS_SET_TARGET                    1610
+Define M_OBJECTS_CLEAR_TARGET                  1611
+Define M_OBJECTS_COMBINE                       1605
+Define M_OBJECTS_DISAGG                        1621
+Define M_OBJECTS_BUFFER                        1606
+Define M_OBJECTS_CONVEX_HULL                   1616
+Define M_OBJECTS_ENCLOSE                       1617
+Define M_OBJECTS_VORONOI                       1622
+Define M_OBJECTS_DRIVE_REGION                  1627
+Define M_OBJECTS_SPLIT                         1612
+Define M_OBJECTS_ERASE                         1613
+Define M_OBJECTS_ERASE_OUT                     1614
+Define M_OBJECTS_POLYLINE_SPLIT                1623
+Define M_OBJECTS_POLYLINE_SPLIT_AT_NODE        1626
+Define M_OBJECTS_OVERLAY                       1615
+Define M_OBJECTS_CHECK_REGIONS                 1618
+Define M_OBJECTS_CLEAN                         1619
+Define M_OBJECTS_SNAP                          1620
+Define M_OBJECTS_OFFSET                        1624
+Define M_OBJECTS_ROTATE                        1625
+Define M_OBJECTS_SMOOTH                        1602
+Define M_OBJECTS_UNSMOOTH                      1603
+Define M_OBJECTS_CVT_PGON                      1607
+Define M_OBJECTS_CVT_PLINE                     1604
+
+'----------------------------------------------------------------------------
+' Query menu
+'----------------------------------------------------------------------------
+Define M_QUERY_SELECT                          301
+Define M_QUERY_SQLQUERY                        302
+Define M_QUERY_SELECTALL                       303
+Define M_QUERY_INVERTSELECT                    311
+Define M_QUERY_UNSELECT                        304
+Define M_QUERY_FIND                            305
+Define M_QUERY_FIND_SELECTION_CURRENT_MAP      312
+Define M_QUERY_FIND_SELECTION                  306
+Define M_QUERY_FIND_ADDRESS                    313
+Define M_QUERY_CALC_STATISTICS                 309
+
+'----------------------------------------------------------------------------
+' Table, Maintenance, and Raster menus
+'----------------------------------------------------------------------------
+Define M_TABLE_UPDATE_COLUMN                   405
+Define M_TABLE_APPEND                          411
+Define M_TABLE_GEOCODE                         407
+Define M_TABLE_WEB_GEOCODE                     424
+Define M_TABLE_CREATE_POINTS                   408
+Define M_TABLE_MERGE_USING_COLUMN              406
+Define M_TABLE_BUFFER                          419
+Define M_TABLE_VORONOI                         420
+Define M_TABLE_DRIVE_REGION                    425
+Define M_TABLE_IMPORT                          401
+Define M_TABLE_EXPORT                          402
+
+Define M_TABLE_MODIFY_STRUCTURE                404
+Define M_TABLE_DELETE                          409
+Define M_TABLE_RENAME                          410
+Define M_TABLE_PACK                            403
+Define M_TABLE_MAKEMAPPABLE                    415
+Define M_TABLE_CHANGESYMBOL                    418
+Define M_TABLE_UNLINK                          416
+Define M_TABLE_REFRESH                         417
+
+Define M_ORACLE_CREATE_WORKSPACE               1804
+Define M_ORACLE_DELETE_WORKSPACE               1805
+Define M_ORACLE_VERSION_ENABLE_ON              1806
+Define M_ORACLE_VERSION_ENABLE_OFF             1807
+Define M_ORACLE_MERGE_PARENT                   1808
+Define M_ORACLE_REFRESH_FROM_PARENT            1809
+
+Define M_TABLE_RASTER_STYLE                    414
+Define M_TABLE_RASTER_REG                      413
+Define M_TOOLS_RASTER_REG                      1730
+
+Define M_TABLE_WMS_PROPS                       421
+Define M_TABLE_WFS_REFRESH                     422
+Define M_TABLE_WFS_PROPS                       423
+Define M_TABLE_UNIVERSAL_DATA_REFRESH          426
+
+'----------------------------------------------------------------------------
+' Options and Preferences menus
+'----------------------------------------------------------------------------
+Define M_FORMAT_PICK_LINE                      501
+Define M_FORMAT_PICK_FILL                      502
+Define M_FORMAT_PICK_SYMBOL                    503
+Define M_FORMAT_PICK_FONT                      504
+Define M_WINDOW_BUTTONPAD                      605
+Define M_WINDOW_LEGEND                         606
+Define M_WINDOW_STATISTICS                     607
+Define M_WINDOW_MAPBASIC                       608
+Define M_WINDOW_STATUSBAR                      616
+Define M_FORMAT_CUSTOM_COLORS                  617
+Define M_EDIT_PREFERENCES                      208
+
+Define M_EDIT_PREFERENCES_SYSTEM               210
+Define M_EDIT_PREFERENCES_MAP                  212
+Define M_EDIT_PREFERENCES_LEGEND               215
+Define M_EDIT_PREFERENCES_FILE                 211
+Define M_EDIT_PREFERENCES_COUNTRY              213
+Define M_EDIT_PREFERENCES_PATH                 214
+Define M_EDIT_PREFERENCES_OUTPUT               216
+Define M_EDIT_PREFERENCES_PRINTER              217
+Define M_EDIT_PREFERENCES_STYLES               218
+Define M_EDIT_PREFERENCES_IMAGE_PROC           219
+Define M_EDIT_PREFERENCES_WEBSERVICES          220
+Define M_EDIT_PREFERENCES_LAYOUT               221
+Define M_EDIT_PREFERENCES_BROWSER              222
+Define M_EDIT_PREFERENCES_NOTIFICATIONS        223
+Define M_EDIT_PREFERENCES_PERFORMANCE          224
+Define M_EDIT_PREFERENCES_WORKSPACE            225
+Define M_EDIT_PREFERENCES_MAPBASIC             226
+Define M_EDIT_PREFERENCES_EXPLORER             227
+Define M_EDIT_PREFERENCES_WINDOWSTATE          228
+Define M_EDIT_PREFERENCES_TASKMANAGER          229
+Define M_EDIT_PREFERENCES_WINDOWLIST           230
+Define M_EDIT_PREFERENCE_RESETEXPLORERHEIGHTS  231
+Define M_EDIT_PREFERENCE_SAVERIBBONSTATE       232
+Define M_EDIT_PREFERENCE_DELETERIBBONSTATE     233
+Define M_EDIT_PREFERENCE_SAVETOOLWINDOWSTATE   234
+Define M_EDIT_PREFERENCE_DELETETOOLWINDOWSTATE 235
+
+'----------------------------------------------------------------------------
+' Window menu
+'----------------------------------------------------------------------------
+Define M_WINDOW_BROWSE                         601
+Define M_WINDOW_MAP                            602
+Define M_WINDOW_GRAPH                          603
+Define M_WINDOW_LAYOUT                         604
+Define M_WINDOW_LAYOUT_DESIGNER                620
+Define M_WINDOW_REDISTRICT                     615
+Define M_WINDOW_REDRAW                         610
+Define M_WINDOW_TILE                           611
+Define M_WINDOW_CASCADE                        612
+Define M_WINDOW_ARRANGEICONS                   613
+Define M_WINDOW_MORE                           614
+Define M_WINDOW_FIRST                          625
+' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+' Note: the 2nd through 75th windows can be accessed as (M_WINDOW_FIRST+i-1)
+' - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+'----------------------------------------------------------------------------
+' Help menu
+'----------------------------------------------------------------------------
+Define M_HELP_CONTEXTSENSITIVE                 1201
+Define M_HELP_CONTENTS                         1202
+
+Define M_HELP_SEARCH                           1203
+Define M_HELP_MAPINFO_3DGRAPH_HELP             1214
+Define M_HELP_MAPINFO_WWW                      1210
+' NOTE: M_HELP_MAPINFO_CONNECT_SERVICES was deprecated in 12.0
+' Define M_HELP_MAPINFO_CONNECT_SERVICES         1215
+Define M_HELP_MAPINFO_WWW_TUTORIAL             1213
+Define M_HELP_MAPINFO_WWW_STORE                1211
+Define M_HELP_CONNECT_MIFORUM                  1209
+Define M_HELP_CHECK_FOR_UPDATE                 1212
+Define M_HELP_MAPINFO_PRODUCT_FEEDBACK         1219
+Define M_HELP_BING_TERMS_OF_USE                1220
+Define M_HELP_MAPINFO_NEWSFEED                 1221
+
+Define M_HELP_MAPINFO_RETURN_LICENSE           1216
+Define M_HELP_MAPINFO_BORROW_LICENSE           1217
+Define M_HELP_MAPINFO_RETURN_BORROWED_LICENSE  1218
+Define M_HELP_USER_BING_KEY                    1222
+
+Define M_HELP_ABOUT                            1205
+
+Define M_HELP_USE_HELP                         1204
+Define M_HELP_HELPMODE                         1206
+Define M_HELP_TECHSUPPORT                      1208
+
+'----------------------------------------------------------------------------
+' Browse menu
+'----------------------------------------------------------------------------
+Define M_BROWSE_PICK_FIELDS                    704
+Define M_BROWSE_OPTIONS                        703
+Define M_BROWSE_SORT                           710
+Define M_BROWSE_TOOLBAR                        711
+Define M_BROWSE_HOTLINK_OPTIONS                714
+
+' Browse window context menu
+Define M_BROWSE_SORT_ASCENDING                 2702
+Define M_BROWSE_SORT_DESCENDING                2703
+Define M_BROWSE_FILTER                         2704
+Define M_BROWSE_CLEAR_FILTER                   2705
+
+' Browse window Sort/Filter menu (via toolbar)
+Define M_BROWSE_REAPPLY_SORT_FILTERS           2709
+Define M_BROWSE_TOGGLE_SORT_FILTERS            2706
+Define M_BROWSE_CLEAR_SORT_FILTERS             2710
+Define M_BROWSE_CLEAR_FILTERS                  2707
+Define M_BROWSE_CLEAR_SORT                     2701
+Define M_BROWSE_CREATE_QUERY                   2711
+
+' Browse window Selection menu (via toolbar)
+Define M_BROWSE_SELECT_ALL_IN_BROWSER          2708
+
+'----------------------------------------------------------------------------
+' Map menu
+'----------------------------------------------------------------------------
+' Open Layer Control in a window:
+Define M_MAP_LAYER_CONTROL                     822
+' Open Layer Control in a dialog box:
+Define M_MAP_LAYER_CONTROL_DIALOG              801
+Define M_MAP_CREATE_3DMAP                      817
+Define M_MAP_CREATE_PRISMMAP                   818
+Define M_MAP_THEMATIC                          307
+Define M_MAP_MODIFY_THEMATIC                   308
+Define M_MAP_CREATE_LEGEND                     816
+Define M_MAP_CREATE_SCALEBAR                   824
+Define M_MAP_CHANGE_VIEW                       805
+Define M_MAP_CLONE_MAPPER                      811
+Define M_MAP_PREVIOUS                          806
+Define M_MAP_ENTIRE_LAYER                      807
+Define M_MAP_CLEAR_CUSTOM_LABELS               814
+Define M_MAP_SAVE_COSMETIC                     809
+Define M_MAP_CLEAR_COSMETIC                    810
+Define M_MAP_SET_CLIP_REGION                   812
+Define M_MAP_CLIP_REGION_ONOFF                 813
+Define M_MAP_SETUPDIGITIZER                    803
+Define M_MAP_OPTIONS                           802
+Define M_MAP_MOVE_MAP_TO                       825
+Define M_MAP_CREATE_LEGEND_PREF                826
+Define M_MAP_CREATE_LEGEND_DESIGNER            827
+Define M_VIEW_ZOOM_TO_TILESERVER_LAYER         828
+Define M_VIEW_WORKSPACE_EXPLORER               829
+Define M_VIEW_WINDOW_LIST                      830
+Define M_VIEW_TOOL_MANAGER                     831
+Define M_VIEW_TASK_MANAGER                     832
+Define M_VIEW_CONNECTION_LIST                  833
+Define M_VIEW_INFO_WINDOW                      834
+Define M_VIEW_MESSAGE_WINDOW                   835
+Define M_VIEW_STATISTICS_WINDOW                836
+Define M_VIEW_RULER_WINDOW                     837
+Define M_VIEW_LOCK_SCALE                       838
+Define M_VIEW_SELECTABLE_LABELS                839
+Define M_VIEW_ENTIRE_MAP                       840
+Define M_VIEW_ZOOM_TO_SELECTED_OBJECTS         841
+Define M_VIEW_SNAP_TO_NODE                     842
+Define M_VIEW_SUSPEND_REDRAW                   843
+Define M_VIEW_LEGEND_WINDOW                    844
+
+' Map window context menu
+Define M_MAP_AUTOSCROLL_ONOFF                  815
+Define M_MAP_VIEW_ENTIRE_SELECTION             819
+Define M_MAP_SELECT_ALL_FROM_SELECTION         820
+Define M_MAP_MAKE_SELECTION_EDITABLE           821
+
+'----------------------------------------------------------------------------
+' Layout menu
+'----------------------------------------------------------------------------
+Define M_LAYOUT_CHANGE_VIEW                    902
+Define M_LAYOUT_ACTUAL                         903
+Define M_LAYOUT_ENTIRE                         904
+Define M_LAYOUT_PREVIOUS                       905
+Define M_LAYOUT_BRING2FRONT                    906
+Define M_LAYOUT_SEND2BACK                      907
+Define M_LAYOUT_ALIGN                          908
+Define M_LAYOUT_DROPSHADOWS                    909
+Define M_LAYOUT_DISPLAYOPTIONS                 901
+Define M_LAYOUT_AUTOSCROLL_ONOFF               910
+Define M_LAYOUT_ALIGN_LEFT                     911
+Define M_LAYOUT_ALIGN_RIGHT                    912
+Define M_LAYOUT_ALIGN_TOP                      913
+Define M_LAYOUT_ALIGN_BOTTOM                   914
+
+'----------------------------------------------------------------------------
+' Layout Designer menu
+'----------------------------------------------------------------------------
+Define M_LAYOUT_NEW_MAP                       2901
+Define M_LAYOUT_NEW_BROWSER                   2902
+
+'----------------------------------------------------------------------------
+' Graph menu
+'----------------------------------------------------------------------------
+Define M_GRAPH_TYPE                            1001
+Define M_GRAPH_LABEL_AXIS                      1002
+Define M_GRAPH_VALUE_AXIS                      1003
+Define M_GRAPH_SERIES                          1004
+
+'----------------------------------------------------------------------------
+' New Graph menu
+'----------------------------------------------------------------------------
+Define M_GRAPH_FORMATING                       2007
+Define M_GRAPH_GENERAL_OPTIONS                 2002
+Define M_GRAPH_SERIES_OPTIONS                  2003
+Define M_GRAPH_GRID_SCALES                     2004
+Define M_GRAPH_TITLES                          2005
+Define M_GRAPH_3D_VIEWING_ANGLE                2006
+Define M_GRAPH_SAVE_AS_TEMPLATE                2008
+
+'----------------------------------------------------------------------------
+' MapBasic menu
+'----------------------------------------------------------------------------
+Define M_MAPBASIC_CLEAR                        1101
+Define M_MAPBASIC_SAVECONTENTS                 1102
+
+'----------------------------------------------------------------------------
+' Redistrict menu
+'----------------------------------------------------------------------------
+Define M_REDISTRICT_ASSIGN                     705
+Define M_REDISTRICT_TARGET                     706
+Define M_REDISTRICT_ADD                        707
+Define M_REDISTRICT_DELETE                     708
+Define M_REDISTRICT_OPTIONS                    709
+
+'----------------------------------------------------------------------------
+' Legend menu
+'----------------------------------------------------------------------------
+Define M_LEGEND_ADD_FRAMES                     1903
+Define M_LEGEND_REFRESH                        1902
+Define M_LEGEND_PROPERTIES                     1901
+Define M_LEGEND_DELETE                         1904
+
+'----------------------------------------------------------------------------
+' 3DMap menu
+'----------------------------------------------------------------------------
+Define M_3DMAP_REFRESH_GRID_TEXTURE            2103
+Define M_3DMAP_CLONE_VIEW                      2105
+Define M_3DMAP_PREVIOUS_VIEW                   2106
+Define M_3DMAP_VIEW_ENTIRE_GRID                2101
+Define M_3DMAP_VIEWPOINT_CONTROL               2107
+Define M_3DMAP_WIREFRAME                       2104
+Define M_3DMAP_PROPERTIES                      2102
+
+'----------------------------------------------------------------------------
+' Main Buttonpad
+'----------------------------------------------------------------------------
+Define M_TOOLS_SELECTOR                        1701
+Define M_TOOLS_SEARCH_RECT                     1722
+Define M_TOOLS_SEARCH_RADIUS                   1703
+Define M_TOOLS_SEARCH_BOUNDARY                 1704
+Define M_TOOLS_EXPAND                          1705
+Define M_TOOLS_SHRINK                          1706
+Define M_TOOLS_RECENTER                        1702
+Define M_TOOLS_PNT_QUERY                       1707
+Define M_TOOLS_HOTLINK                         1736
+Define M_TOOLS_LABELER                         1708
+Define M_TOOLS_DRAGWINDOW                      1734
+Define M_TOOLS_RULER                           1710
+
+'----------------------------------------------------------------------------
+' Drawing Buttonpad
+'----------------------------------------------------------------------------
+Define M_TOOLS_POINT                           1711
+Define M_TOOLS_LINE                            1712
+Define M_TOOLS_POLYLINE                        1713
+Define M_TOOLS_ARC                             1716
+Define M_TOOLS_POLYGON                         1714
+Define M_TOOLS_ELLIPSE                         1715
+Define M_TOOLS_RECTANGLE                       1717
+Define M_TOOLS_ROUNDEDRECT                     1718
+Define M_TOOLS_TEXT                            1709
+Define M_TOOLS_FRAME                           1719
+Define M_TOOLS_ADD_NODE                        1723
+
+'----------------------------------------------------------------------------
+' DBMS Buttonpad
+'  -- most DBMS buttons defined under M_TABLE_{...} except for this one:
+'----------------------------------------------------------------------------
+Define M_DBMS_OPEN_ODBC                        116
+
+'----------------------------------------------------------------------------
+' Adornment context menu items
+'----------------------------------------------------------------------------
+Define M_ADORNMENT_PROPERTIES                  2401
+Define M_ADORNMENT_REMOVE                      2402
+
+'----------------------------------------------------------------------------
+' Layer Control menuitems
+'----------------------------------------------------------------------------
+Define M_LC_VIEW_ENTIRE                        2501
+Define M_LC_LAYER_PROPERTIES                   2502
+Define M_LC_LABEL_FONT                         2503
+Define M_LC_OTHERS_NO_SELECT                   2504
+Define M_LC_RENAME_MAP                         2505
+Define M_LC_MAP_OPTIONS                        2506
+Define M_LC_ADD_GROUP                          2507
+Define M_LC_RENAME_GROUP                       2508
+Define M_LC_UNGROUP                            2509
+Define M_LC_ADDLAYERS                          2510
+Define M_LC_ADD_STYLE_OVERRIDE                 2511
+Define M_LC_ADD_LABEL_OVERRIDE                 2512
+Define M_LC_DISPLAY_OVERRIDE_PROP              2513
+Define M_LC_LABEL_OVERRIDE_PROP                2514
+Define M_LC_SPLIT_OVERRIDE                     2515
+Define M_LC_REMOVE_OVERRIDE                    2516
+Define M_LC_BROWSE_TABLE                       2517
+Define M_LC_VIEW_META_DATA                     2518
+Define M_LC_ADD_TO_LIBRARY                     2519
+Define M_LC_ZOOM_TO_TILESERVER                 2520
+Define M_LC_CLEAR_CUSTOM_LABELS                2521
+Define M_LC_LABEL_PRIORITIES                   2522
+Define M_LC_SELECT_ALL_FROM_LAYER              2523
+
+'----------------------------------------------------------------------------
+' Table List Window context menu items
+'----------------------------------------------------------------------------
+Define M_TLV_SELECT_ALL_FROM_TABLE             2601
+Define M_TLV_BROWSE_TABLE                      2602
+Define M_TLV_OPEN_NEW_MAP                      2603
+Define M_TLV_EXPORT_TABLE                      2604
+Define M_TLV_REFRESH_TABLE                     2605
+Define M_TLV_TABLE_STRUCTURE                   2606
+Define M_TLV_CREATE_POINTS                     2607
+Define M_TLV_UPDATE_COLUMN                     2608
+Define M_TLV_CLOSE_TABLE                       2609
+Define M_TLV_VIEW_META_DATA                    2610
+Define M_TLV_ADD_TO_LIBRARY                    2611
+Define M_TLV_COMPARE_STRUCTURE                 2612
+
+'----------------------------------------------------------------------------
+' Legend Designer menu items
+'----------------------------------------------------------------------------
+Define M_LEGEND_DESIGNER_HIDE_GUIDELINES       2801
+Define M_LEGEND_DESIGNER_REMOVE_GUIDELINES     2802
+Define M_LEGEND_DESIGNER_REMOVE_FRAMES         2803
+Define M_LEGEND_DESIGNER_PROPERTIES            2804
+Define M_LEGEND_DESIGNER_REFRESH               2805
+Define M_LEGEND_DESIGNER_ADD_FRAMES            2806
+Define M_LEGEND_DESIGNER_ADD_TEXTFRAME         2807
+Define M_LEGEND_DESIGNER_MODIFY_THEME          2808
+Define M_LEGEND_DESIGNER_TOGGLE_GRID           2809
+Define M_LEGEND_DESIGNER_SNAP_TO_GRID          2810
+Define M_LEGEND_DESIGNER_HORIZ_GUIDELINE       2811
+Define M_LEGEND_DESIGNER_VERT_GUIDELINE        2812
+Define M_LEGEND_DESIGNER_SNAP_TOP              2813
+Define M_LEGEND_DESIGNER_SNAP_BOTTOM           2814
+Define M_LEGEND_DESIGNER_SNAP_LEFT             2815
+Define M_LEGEND_DESIGNER_SNAP_RIGHT            2816
+Define M_LEGEND_DESIGNER_QUICK_REFRESH         2817
+
+'----------------------------------------------------------------------------
+' Menu and ButtonPad items that do not appear in the standard menus
+'----------------------------------------------------------------------------
+Define M_TOOLS_MAPBASIC                        1720
+Define M_TOOLS_SEARCH_POLYGON                  1733
+
+'----------------------------------------------------------------------------
+' Constants whose names have changed: these are left for backward
+' compatibility with existing programs.  Recommended action is to use
+' the new name as indicated.  Note that there might be some functional
+' difference between the old functionality and the current functionality.
+'----------------------------------------------------------------------------
+Define M_ANALYZE_CUSTOMIZE_LEGEND              M_MAP_MODIFY_THEMATIC
+Define M_ANALYZE_SHADE                         M_MAP_THEMATIC
+Define M_BROWSE_GRID                           M_BROWSE_OPTIONS
+Define M_BROWSE_NEW_RECORD                     M_EDIT_NEW_ROW
+Define M_FILE_ABOUT                            M_HELP_ABOUT
+Define M_FILE_HELP                             M_HELP_CONTENTS
+Define M_FILE_PRINT_SETUP                      M_FILE_PAGE_SETUP
+Define M_LAYOUT_LAYOUT_SIZE                    M_LAYOUT_CHANGE_VIEW
+Define M_MAP_SETUNITS                          M_MAP_OPTIONS
+Define M_OBJECTS_BREAKPOLY                     M_OBJECTS_CVT_PLINE
+Define M_OBJECTS_MERGE                         M_OBJECTS_COMBINE
+Define M_OBJECTS_RESHAPE                       M_EDIT_RESHAPE
+Define M_WINDOW_EXPORT_WINDOW                  M_FILE_SAVE_WINDOW_AS
+Define M_WINDOW_TOOL_PALETTE                   M_WINDOW_BUTTONPAD
+Define M_FILE_RUN                              M_TOOLS_RUN
+Define M_FILE_OPEN_ODBC                        M_DBMS_OPEN_ODBC
+Define M_ANALYZE_SELECT                        M_QUERY_SELECT
+Define M_ANALYZE_SQLQUERY                      M_QUERY_SQLQUERY
+Define M_ANALYZE_SELECTALL                     M_QUERY_SELECTALL
+Define M_ANALYZE_INVERTSELECT                  M_QUERY_INVERTSELECT
+Define M_ANALYZE_UNSELECT                      M_QUERY_UNSELECT
+Define M_ANALYZE_FIND                          M_QUERY_FIND
+Define M_ANALYZE_FIND_SELECTION                M_QUERY_FIND_SELECTION
+Define M_ANALYZE_CALC_STATISTICS               M_QUERY_CALC_STATISTICS
+
+'----------------------------------------------------------------------------
+' Obsolete menu items that are not used in the current version of MapInfo
+'----------------------------------------------------------------------------
+Define M_BROWSE_EDIT                           701   'OBSOLETE - DOES NOTHING
+Define M_MAP_AUTOLABEL                         804   'OBSOLETE - DOES NOTHING
+Define M_MAP_PROJECTION                        808   'SAME AS M_MAP_OPTIONS
+Define M_FILE_ADD_WORKSPACE                    108   'PART OF M_FILE_OPEN
+Define M_SENDMAIL_CURRENTWINDOW                114   'NO LONGER IN MENU SYSTEM
+Define M_SENDMAIL_WORKSPACE                    115   'NO LONGER IN MENU SYSTEM
+
+'----------------------------------------------------------------------------
+' Menu defines - these represent the predefined menus like File, and can
+' be used in the Alter Menu command.  These defines cannot be used in a
+' "Run Menu Command" statement.
+'----------------------------------------------------------------------------
+Define M_FILE                                    1
+Define M_EDIT                                    2
+Define M_SEARCH                                  3
+Define M_QUERY                                   3
+Define M_PGM                                     4
+Define M_TOOLS                                   4
+Define M_OPTIONS                                 5
+Define M_WINDOW                                  6
+Define M_HELP                                    7
+Define M_BROWSE                                  8
+Define M_MAP                                     9
+Define M_LAYOUT                                 10
+Define M_MAPBASIC                               12
+Define M_REDISTRICT                             13
+Define M_OBJECTS                                14
+Define M_TABLE                                  15
+Define M_SHORTCUT_DFLT                          16
+Define M_SHORTCUT_MAPPER                        17
+Define M_SHORTCUT_BROWSER                       18
+Define M_SHORTCUT_LAYOUT                        19
+Define M_SHORTCUT_CMD                           21
+Define M_SHORTCUT_REDISTRICTER                  22
+Define M_SHORTCUT_LEGEND                        23
+Define M_SHORTCUT_GRAPHTDG                      24
+Define M_SHORTCUT_3DMAP                         25
+Define M_SHORTCUT_MSG_WIN                       26
+Define M_SHORTCUT_STAT_WIN                      27
+Define M_3DMAP                                  28
+Define M_GRAPHTDG                               29
+Define M_LEGEND                                 31
+Define M_SHORTCUT_ADORNMENT                     32
+Define M_SHORTCUT_LC_LAYERS                     33
+Define M_SHORTCUT_LC_MAPS                       34
+Define M_SHORTCUT_LC_GROUPS                     35
+Define M_SHORTCUT_TABLEADORNMENT                36
+Define M_SHORTCUT_TLV_TABLES                    37
+Define M_SHORTCUT_LC_OVERRIDES                  38
+Define M_OPEN_WEBSERVICE                        39
+Define M_FIND_SELECTION                         40
+Define M_ORACLE_TOOLS                           41
+Define M_TAB_MAINTENANCE                        42
+Define M_TAB_RASTER                             43
+Define M_LICENSING                              44
+Define M_TILESERVER                             45
+Define M_SHORTCUT_BROWSER_SORTFILTER            47
+Define M_SHORTCUT_BROWSER_SELECT                48
+Define M_LEGEND_DESIGNER                        49
+Define M_SHORTCUT_LEGEND_DESIGNER               50
+Define M_LAYOUT_DESIGNER                        51
+
+'----------------------------------------------------------------------------
+' Buttonpad defines - these represent the predefined toolbars, and can
+' be used in the Alter ButtonPad command.
+'----------------------------------------------------------------------------
+Define TB_MAIN                                   1
+Define TB_DRAWING                                2
+Define TB_TOOLS                                  3
+Define TB_STANDARD                               4
+Define TB_ODBC                                   5
+Define TB_WEB_SVCS                               6
+
+'============================================================================
+' end of MENU.DEF
+'============================================================================

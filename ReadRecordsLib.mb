@@ -1,0 +1,184 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:	ReadRecordsLib.mb
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "ReadRecordsLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetValuesAsString(	  ByVal sTab As String		'Table to read the reocrds from
+						, ByVal sCol As String		'Column to read the values from
+						, ByVal sOrderBy As String	'Column to order the values by, if "" the values will be read as they are
+						, ByVal sGroupBy As String	'Column to group the values by, if "" the records will not be grouped and can be non unique
+						, arrValues() As String		'Array to insert the values into - note the array will not be reset, but values will be added
+						) As Integer				'Will return the number of values that was read
+
+Dim	sCmd As String,
+	nCount, nRecords As Integer
+
+OnError GoTo ErrorOccured
+
+RRGetValuesAsString = 0
+
+	Do Case ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+		'**Dealing with Char columns
+		Case COL_TYPE_CHAR
+			sCmd	= "Select " & sCol & ", " & sCol & " " & eye & "VALUES" & eye
+		'**Dealing iwth numerical columns
+		Case COL_TYPE_SMALLINT, COL_TYPE_INTEGER, COL_TYPE_FLOAT, COL_TYPE_DECIMAL
+			sCmd	= "Select " & sCol & ", FormatNumber$(" & sCol & ") " & eye & "VALUES" & eye
+		'**Dealing with date, time and datetime columns
+		Case COL_TYPE_DATE, COL_TYPE_DATETIME, COL_TYPE_TIME, COL_TYPE_LOGICAL
+			sCmd	= "Select " & sCol & ", Str$(" & sCol & ") " & eye & "VALUES" & eye
+		'**Dealing with logical columns
+	End Case
+
+	sCmd	= sCmd & " From " & sTab
+	If sOrderBy <> "" Then
+		sCmd	= sCmd & " Order By " & sOrderBy
+	End If
+	If sGroupBy <> "" Then
+		sCmd	= sCmd & " Group By " & sGroupBy
+	End If
+
+	sCmd	= sCmd & " Into __RR__VALUES NoSelect"
+
+'	Call DEBUGPrint("RRGetValuesAsString: " & sCmd)
+	Run Command sCmd
+
+	nRecords	= TableInfo("__RR__VALUES", TAB_INFO_NROWS)
+	If nRecords > 0 Then
+		nCount = Ubound(arrValues)
+		If (nCount + nRecords) > 32767 Then
+			nRecords	= 32767 - nCount
+		End If
+		Redim arrValues(nCount + nRecords)
+
+		Fetch First From __RR__VALUES
+		Do Until EOT(__RR__VALUES)
+			nCount			= nCount + 1
+			arrValues(nCount)	= __RR__VALUES.VALUES
+
+			If nCount = 32767 Then
+				Print "Only " & nRecords & " out of " & TableInfo("__RR__VALUES", TAB_INFO_NROWS)  & " records were read into the array due to size limitation"
+				Exit Do
+			End If
+			Fetch Next From __RR__VALUES
+		Loop
+
+		RRGetValuesAsString = nRecords
+	End If
+
+	Close Table __RR__VALUES
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetValuesAsString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetValuesAsInteger(  ByVal sTab As String		'Table to read the reocrds from
+						, ByVal sCol As String		'Column to read the values from
+						, ByVal sOrderBy As String	'Column to order the values by, if "" the values will be read as they are
+						, ByVal sGroupBy As String	'Column to group the values by, if "" the records will not be grouped and can be non unique
+						, arrValues() As Integer		'Array to insert the values into - note the array will not be reset, but values will be added
+						) As Integer				'Will return the number of values that was read
+
+Dim	sCmd As String,
+	nCount, nRecords As Integer
+
+OnError GoTo ErrorOccured
+
+RRGetValuesAsInteger = 0
+
+	Do Case ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+		'**Dealing with Char columns
+		Case COL_TYPE_CHAR
+			sCmd	= "Select " & sCol & ", Val(" & sCol & ") " & eye & "VALUES" & eye
+
+		'**Dealing with numerical columns, SmallInt and Integer
+		Case COL_TYPE_SMALLINT, COL_TYPE_INTEGER
+			sCmd	= "Select " & sCol & ", " & sCol & " " & eye & "VALUES" & eye
+
+		'**Dealing with numerical columns, Float and Decimal
+		Case COL_TYPE_FLOAT, COL_TYPE_DECIMAL
+			sCmd	= "Select " & sCol & ", Round(" & sCol & ", 1) " & eye & "VALUES" & eye
+
+		'**Dealing with date, time and datetime columns
+		Case COL_TYPE_DATE, COL_TYPE_DATETIME, COL_TYPE_TIME, COL_TYPE_LOGICAL
+			sCmd	= "Select " & sCol & ", Val(" & sCol & ") " & eye & "VALUES" & eye
+
+	End Case
+
+	sCmd	= sCmd & " From " & sTab
+	If sOrderBy <> "" Then
+		sCmd	= sCmd & " Order By " & sOrderBy
+	End If
+	If sGroupBy <> "" Then
+		sCmd	= sCmd & " Group By " & sGroupBy
+	End If
+
+	sCmd	= sCmd & " Into __RR__VALUES NoSelect"
+
+'	Call DEBUGPrint("RRGetValuesAsInteger: " & sCmd)
+	Run Command sCmd
+
+	nRecords	= TableInfo("__RR__VALUES", TAB_INFO_NROWS)
+	If nRecords > 0 Then
+		nCount = Ubound(arrValues)
+		If (nCount + nRecords) > 32767 Then
+			nRecords	= 32767 - nCount
+		End If
+		Redim arrValues(nCount + nRecords)
+
+		Fetch First From __RR__VALUES
+		Do Until EOT(__RR__VALUES)
+			nCount			= nCount + 1
+			arrValues(nCount)	= __RR__VALUES.VALUES
+
+			If nCount = 32767 Then
+				Print "Only " & nRecords & " out of " & TableInfo("__RR__VALUES", TAB_INFO_NROWS)  & " records were read into the array due to size limitation"
+				Exit Do
+			End If
+			Fetch Next From __RR__VALUES
+		Loop
+
+		RRGetValuesAsInteger = nRecords
+	End If
+
+	Close Table __RR__VALUES
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetValuesAsInteger: sCmd: " & sCmd)
+	Call ERRShow()
+
+End Function

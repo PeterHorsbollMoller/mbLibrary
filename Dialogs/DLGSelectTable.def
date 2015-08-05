@@ -1,0 +1,7 @@
+Declare Function DLGSelectTable(	  ByVal nTypesToUse As Integer
+							, ByVal sTitle As String
+							, ByVal sTitleList As String
+							, ByVal sOpenButtonTitle As String
+							, ByVal bAllowUserToOpen As Logical
+							, ByVal sDefaultTableName As String
+							) As String

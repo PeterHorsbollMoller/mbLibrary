@@ -1,0 +1,27 @@
+'Requires MapInfo Pro 9.5
+
+Type T_MI_LINE
+	StartPoint	As T_MI_POINT
+	EndPoint	As T_MI_POINT
+End Type
+
+Declare Sub tmilCopy(	  tmilFrom As T_MI_LINE		'Input T_MI_LINE
+				, tmilTo As T_MI_LINE		'Output T_MI_LINE
+				)
+Declare Sub tmilOffset(   tmil As T_MI_LINE		'T_MI_LINE to offset - this will be changed
+				, ByVal fDistance As Float	'Distance to offset the T_MI_LINE
+				, ByVal fDirection As Float	'Direction to offset the T_MI_LINE
+				)
+
+Declare Function tmilAreIdentical(	  tmil1 As T_MI_LINE	'first T_MI_LINE to compare
+						, tmil2 As T_MI_LINE	'second T_MI_LINE to compare
+						) As Logical
+
+Declare Function tmilToLine(	  tmil As T_MI_LINE	'Creates a line using the coordinates of the T_MI_LINE
+					) As Object			'Returns a line with the current style
+Declare Function tmilToLineWithStyle(	  tmil As T_MI_LINE	'Creates a line using the coordinates of the T_MI_LINE
+							, ByVal penUse As Pen	'Pen to use for the line to create
+							) As Object			'Returns a line with the style given
+
+
+

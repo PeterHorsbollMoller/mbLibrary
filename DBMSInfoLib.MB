@@ -1,0 +1,403 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:	DBMSINfoLib.mb
+'**
+'**	Parts in this module has been "stolen" from the "SQLUtil.mb" module that
+'**  can be found in the MapBasic Samples that comes with MapBasic
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+
+Include "DBMSInfoLib.def"
+
+Declare Function DBIServerNameDialog() As String
+Declare Function DBIIsOCI(ByVal nConnection As Integer) As Logical
+
+'****************************************************************************
+'* Run all SQL Statements in the given file in a single transaction
+'* ON THE CURRENT CONNECTION
+'****************************************************************************
+Sub DBIRunSQLFile(ByVal nConnection As Integer, ByVal sFile As String)
+
+Dim	n, nODBCHdbc, nStmt As Integer,
+	sSQLString As String
+
+OnError GoTo ErrorOccured
+
+	Call DEBUGPrint("Run SQL in file " + sFile)
+	nODBCHdbc		= Server_GetODBCHConn(nConnection)
+
+	Open File sFile For Input As #6
+	n			= 0
+	sSQLString	= ""
+
+	Line Input #6, sSQLString
+
+	Server nODBCHdbc BEGIN TRANSACTION
+	While not EOF(6) and sSQLString <> ""
+		n = n + 1
+		Call DEBUGPrint("REC " + n + " >" + sSQLString + "<")
+
+		OnError GoTo ExecuteError
+		nStmt = Server_Execute(nConnection, sSQLString)
+		SERVER nStmt CLOSE
+
+		Line Input #6, sSQLString
+	Wend
+
+	Server nODBCHdbc COMMIT
+
+	Note "SQL file processing Ended successfully!; " + n + " records processed"
+
+	GOTO ALLDONE
+
+ExecuteError:
+	Call ERRCreate(Err(), Error$(), "DBIRunSQLFile: Error processing record #" + n + ";")
+	Call ERRShow()
+
+	Close File #6
+	Server nODBCHdbc ROLLBACK
+	resume ALLDONE
+
+OpenError:
+  Note "Error opening file: "+ sFile
+  resume ALLDONE
+
+ALLDONE:
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIRunSQLFile")
+	Call ERRShow()
+
+End Sub
+
+'*******************************************************
+'uses dll functions to determine which user is connected
+'*******************************************************
+Function DBIGetSQLUserid(ByVal nConnection As Integer) As String
+
+Dim	SQLUserId As String,
+  	nODBCHdbc As Integer
+
+OnError GoTo ErrorOccured
+
+'	Call DEBUGPrint("DBIGetSQLUserid")
+	nODBCHdbc = Server_GetODBCHConn(nConnection)
+
+	SQLUserId = Space$(40)
+	SQLUserId = Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_SQL_USER_ID)
+
+	DBIGetSQLUserid = SQLUserId
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+    ' Failed to get database userid
+	Call DEBUGPrint("Error: " + Error$())
+	Call ERRCreate(Err(), Error$(), "DBIGetSQLUserid")
+
+End Function
+
+'*******************************************************
+'uses dll functions to determine which database is connected
+'*************************************************************
+Function DBIGetSQLDatabaseType(ByVal nConnection As Integer) As Integer
+
+Dim	nODBCHdbc, nDBType As Integer,
+	sDBName, sDSNName As String
+
+OnError GoTo ErrorOccured
+
+'	Call DEBUGPrint("DBIGetSQLDatabaseType")
+	' Get the database and datasource names
+	sDBName	= DBIGetDBName(nConnection)
+	sDSNName	= DBIGetDSNName(nConnection)
+
+    ' set a define for the onw you are connected to
+	Do Case UCase$(sDBName)
+		Case "ORACLE", "ORACLE 8", "ORACLE8", "ORACLE_SPATIAL", "ORACLE SDO SERVER"
+			nDBType = DATA_SOURCE_ORACLE
+		Case "ACCESS"
+			nDBType = DATA_SOURCE_MSACCESS
+		Case "EXCEL SPREADSHEET"
+			nDBType = DATA_SOURCE_EXCEL4
+		Case "EXCEL"
+			nDBType = DATA_SOURCE_EXCEL5
+		Case "DBASE IV","DBASE4","DBASE V"
+			nDBType = DATA_SOURCE_DBASE
+	    Case "TEXT"
+			nDBType = DATA_SOURCE_TEXT
+		Case "AUTOMETRIC SQS SERVER"
+			nDBType = DATA_SOURCE_SQS
+		Case "SQL SERVER"
+			OnError Goto SQSSYBASEFailure
+			nODBCHdbc =  Server_Execute(nConnection, "Set Spatial Format MI")
+'			Call DEBUGPrint("Sybase nODBCHdbc = " + nODBCHdbc)
+
+			If nODBCHdbc <> 0 Then
+				sDBName = "Autometric SQS Server"
+				nDBType = DATA_SOURCE_SQS
+			Else
+				nDBType = DATA_SOURCE_SYBASE
+			End If
+			Server nODBCHdbc Close
+			OnError GoTo ErrorOccured
+		Case "GUPTA", "SQLBASE"
+			nDBType = DATA_SOURCE_SQLBASE
+		Case "INFORMIX"
+			nDBType = DATA_SOURCE_INFORMIX
+		Case "INGRES"
+			nDBType = DATA_SOURCE_INGRES
+		Case "DB2/2", "DB2", "DB2/6000", "DB2_US"
+			nDBType = DATA_SOURCE_DB2
+		Case "MICROSOFT SQL SERVER"
+			nDBType = DATA_SOURCE_SQLSERVER
+		Case "SQL SERVER SW"
+			nDBType = DATA_SOURCE_SQLSERVER_SW
+		Case	"SPATIALWARE/ORACLE"
+			nDBType = DATA_SOURCE_SPATIALWARE
+		Case "IUS"
+			   nDBType = DATA_SOURCE_IUS
+		Case ELSE
+			NOTE "We are unable to match your ODBC driver in the DBIGetSQLDatabaseType function."
+			     + "Your driver is " + sDBName + "."
+			     + "If you have MapBasic you may adjust the function to support your driver."
+			nDBType = 0
+	End CASE
+
+'	Call DEBUGPrint("sDBName = " + sDBName & " - nDBType = " + nDBType)
+	DBIGetSQLDatabaseType = nDBType
+
+	Exit Function
+'-------------------------
+SQSSYBASEFailure:
+	Resume Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIGetSQLDatabaseType")
+	Call ERRShow()
+
+End Function
+
+'*******************************************************
+' Call the ODBC SQLGetInfo function to get the ServerName
+'*******************************************************
+Function DBIGetServerName(ByVal nConnection As Integer) As String
+
+Dim	ServerName, sValue As String,
+	snOutlen, nResult As SmallInt
+
+OnError GoTo ErrorOccured
+
+	ServerName = Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_DS_NAME)
+	Call DEBUGPrint("ServerName=" + ServerName)
+
+'	sValue = Space$(254)
+'	nResult = SQLGetInfo(nConnection, SQL_SERVER_NAME, sValue, 254, snOutlen)
+'	DBIGetServerName = RTrim$(LTrim$(sValue))
+
+	DBIGetServerName = ServerName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIGetServerName")
+	Call ERRShow()
+
+End Function
+
+'*******************************************************
+' Call the ODBC SQLGetInfo function to get the Database
+'*******************************************************
+Function DBIGetDBName(ByVal nConnection As Integer) As String
+
+Dim	sDBName As String
+
+OnError GoTo ErrorOccured
+
+	sDBName		= Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_DB_NAME)
+'	Call DEBUGPrint("sDBName=" + sDBName)
+	DBIGetDBName = sDBName
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIGetDBName")
+	Call ERRShow()
+
+End Function
+
+
+'*******************************************************
+' Call the ODBC SQLGetInfo function to get the DataSource Name
+'*******************************************************
+Function DBIGetDSNName(ByVal nConnection As Integer) As String
+
+Dim	sDNSName As String
+
+OnError GoTo ErrorOccured
+
+	sDNSName = Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_DS_NAME)
+'	Call DEBUGPrint("sDNSName=" + sDNSName)
+	DBIGetDSNName= UCase$(sDNSName)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIGetDSNName")
+	Call ERRShow()
+
+End Function
+
+'*******************************************************
+' Call the ODBC SQLGetInfo functionm to get the Identifier quote
+' character for the connected database.
+'  This character is used around table and column names.
+'  The Identifier quote character is required around table and column names
+' that contain Mixed case, imbebded blanks, or DBCS characters.
+'*************************************************************
+Function DBIGetQuoteChar(ByVal nConnection As Integer) As String
+
+Dim	sQuoteChar As String
+
+OnError GoTo ErrorOccured
+
+'	Call DEBUGPrint("DBIGetQuoteChar")
+	sQuoteChar	= ""
+	sQuoteChar	= Space$(3)
+	sQuoteChar	= Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_QUOTE_CHAR)
+	sQuoteChar	= RTrim$(sQuoteChar)
+
+'	Call DEBUGPrint("sQuoteChar=" + sQuoteChar)
+	DBIGetQuoteChar=sQuoteChar
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIGetQuoteChar")
+	Call ERRShow()
+
+End Function
+
+'****************************************************************************
+'**  ServerNameDialog()  **********************************************
+'* Dialog for getting the server name
+'****************************************************************************
+Function DBIServerNameDialog() As String
+
+Dim ServerSelection As String
+
+OnError GoTo ErrorOccured
+
+	DIALOG
+		Title "Specify Server Name"
+		Control StaticText
+			Title "Server Name:"
+
+		Control EditText	Position 50,5	Width 120	Height 12
+			Into ServerSelection
+		Control OKButton
+		Control CancelButton
+
+    If CommandInfo(CMD_INFO_DLG_OK) Then
+    ' ... then the user clicked OK.
+		' Set result value
+		DBIServerNameDialog = ServerSelection
+    End If
+
+	'TODO - what about hitting cancel. What is the value set to??
+    ' Set result value
+    DBIServerNameDialog = ServerSelection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIServerNameDialog")
+	Call ERRShow()
+
+End Function
+
+'****************************************************************************
+Function DBIIsOCI(ByVal nConnection As  Integer) As Logical
+
+Dim	sDriverName As String
+
+OnError GoTo ErrorOccured
+
+	sDriverName = UCase$(Server_ConnectInfo(nConnection, SRV_CONNECT_INFO_DRIVER_NAME))
+	If sDriverName = "ORAINET" Then
+		DBIIsOCI = TRUE
+	Else
+		DBIIsOCI = FALSE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIIsOCI")
+	Call ERRShow()
+
+End Function
+
+
+'****************************************************************************
+Function DBITableExists(ByVal nConnection As Integer, ByVal sSRVTableName As String) As Logical
+
+Dim	sSQLString As String,
+	nStmnt As Integer
+
+OnError GoTo ErrorOccured
+
+	DBITableExists = FALSE
+	sSQLString	= "SELECT 1 FROM " & sSRVTableName & " WHERE 1 = 0"
+
+	nStmnt = Server_Execute(nConnection, sSQLString)
+ 	If (nStmnt >= 1) Then
+		Server nStmnt Close
+		DBITableExists = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBITableExists")
+
+End Function
+
+'****************************************************************************
+Function DBIDBMSIsInstalled(ByVal bShowMsg As Logical) As Logical
+
+OnError GoTo ErrorOccured
+
+	If Server_NumDrivers() = 0 Then
+		DBIDBMSIsInstalled = FALSE
+		If bShowMsg = TRUE Then
+			Note "You must run the MapInfo DBMS installer before you can use this tool."
+		End If
+	Else
+		DBIDBMSIsInstalled = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DBIDBMSIsInstalled")
+	Call ERRShow()
+
+End Function
+
+

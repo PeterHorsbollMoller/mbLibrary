@@ -1,0 +1,517 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "..\..\Library\Defaults.def"
+
+'-------------------------------------
+Include "..\..\Library\DEBUGLib.def"
+Include "..\..\Library\ERRORLib.def"
+Include "..\..\Library\STRINGLib.def"
+Include "..\..\Library\STYLELib.def"
+
+Include "T_DISPLAY_OVERRIDE.def"
+Include "T_LABEL_OVERRIDE.def"
+Include "T_LAYER_SETTINGS.def"
+Include "T_LABEL_SETTINGS.def"
+Include "T_LAYER_INFO.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tliCopy(tliFrom As T_LAYER_INFO, tliTo As T_LAYER_INFO)
+
+Dim	i, nOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+	tliTo.nID			= tliFrom.nID
+	tliTo.nMID		= tliFrom.nMID
+	tliTo.sName		= tliFrom.sName
+	tliTo.nType		= tliFrom.nType
+	tliTo.nParentID	= tliFrom.nParentID
+	tliTo.nLayerListID	= tliFrom.nLayerListID
+
+	Call tlsCopy(tliFrom.tlsLyrSettings, tliTo.tlsLyrSettings)
+	Call tlbsCopy(tliFrom.tlbsLblSettings, tliTo.tlbsLblSettings)
+
+'	nOverrides	= Ubound(tliFrom.arrDisplayOverrides)
+'	Redim tliTo.arrDisplayOverrides(nOverrides)
+'	For i = 1 To nOverrides
+'		Call tdoCopy(tliFrom.arrDisplayOverrides(), tliTo.arrDisplayOverrides())
+'	Next
+
+'	nOverrides	= Ubound(tliFrom.arrLabelOverrides)
+'	Redim tliTo.arrLabelOverrides(nOverrides)
+'	For i = 1 To nOverrides
+'		Call tloCopy(tliFrom.arrLabelOverrides(), tliTo.arrLabelOverrides())
+'	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tliToString(tli As T_LAYER_INFO) As String
+
+Dim	sText As String
+
+OnError GoTo ErrorOccured
+
+	sText	= "Layer " & tliGetDescription(tli) & " LayerList#: " & tli.nLayerListID & " Type: " & tli.nType
+	If tli.nParentID > 0 Then
+		sText	= sText & lf & "    Child to: GroupLayer " & GroupLayerInfo(tli.nMID, tli.nParentID, GROUPLAYER_INFO_NAME) & " (ID: " & tli.nParentID & ")"
+	End If
+
+	tliToString = sText
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tliGetDescription(tli As T_LAYER_INFO) As String
+
+OnError GoTo ErrorOccured
+
+	tliGetDescription = eye & tli.sName & eye & " (ID: " & tli.nID & ")"
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliGetDescription")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tliGetInfo(ByVal nMID As Integer, ByVal nLyrID As Integer, tli As T_LAYER_INFO)
+
+Dim	i, nOverrides As Integer
+
+OnError GoTo ErrorOccured
+
+'Define LAYER_INFO_NAME                          1
+'Define LAYER_INFO_EDITABLE                      2	bEditable				'T_LAYER_SETTINGS
+'Define LAYER_INFO_SELECTABLE                    3	bSelectable			'T_LAYER_SETTINGS
+'Define LAYER_INFO_ZOOM_LAYERED                  4	bZoomLayered			'T_LAYER_SETTINGS
+'Define LAYER_INFO_ZOOM_MIN                      5	fMinZoom				'T_LAYER_SETTINGS
+'Define LAYER_INFO_ZOOM_MAX                      6	fMaxZoom				'T_LAYER_SETTINGS
+'Define LAYER_INFO_DISPLAY                       9	nDisplay				'T_LAYER_SETTINGS
+'Define LAYER_INFO_OVR_LINE                      10	penOverrideLine		'T_LAYER_SETTINGS
+'Define LAYER_INFO_OVR_PEN                       11	penOverride			'T_LAYER_SETTINGS
+'Define LAYER_INFO_OVR_BRUSH                     12	brsOverride			'T_LAYER_SETTINGS
+'Define LAYER_INFO_OVR_SYMBOL                    13	symOverride			'T_LAYER_SETTINGS
+'Define LAYER_INFO_OVR_FONT                      14	fntOverride			'T_LAYER_SETTINGS
+'Define LAYER_INFO_ARROWS                        21	bShowLineDirection		'T_LAYER_SETTINGS
+'Define LAYER_INFO_NODES                         22	bShowNodes			'T_LAYER_SETTINGS
+'Define LAYER_INFO_CENTROIDS                     23	bShowCentroids			'T_LAYER_SETTINGS
+'Define LAYER_INFO_LAYER_ALPHA                   39	nAlpha				'T_LAYER_SETTINGS
+'Define LAYER_INFO_LAYER_TRANSLUCENCY            40	nTranslucency			'T_LAYER_SETTINGS
+
+'Define LAYER_INFO_LBL_EXPR                      15	sExpression		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_LT                        16	nLineType			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_FONT                      18	fntLabel			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_PARALLEL                  19	bParallel			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_POS                       20	nPosition			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_VISIBILITY                25	nVisibility		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ZOOM_MIN                  26	fMinZoom			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ZOOM_MAX                  27	fMaxZoom			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTODISPLAY               28	bAutoDisplay		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_OVERLAP                   29	bAllowOverlap		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_DUPLICATES                30	bAllowDuplicates	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_OFFSET                    31	nOffset			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_MAX                       32	nMaxNumber		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_PARTIALSEGS               33	bPartialSegments	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ORIENTATION               38	nOrientation		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LABEL_ALPHA                   41	nAlpha			'T_LABEL_SETTINGS
+
+'Define LAYER_INFO_HOTLINK_EXPR                  34
+'Define LAYER_INFO_HOTLINK_MODE                  35
+'Define LAYER_INFO_HOTLINK_RELATIVE              36
+'Define LAYER_INFO_HOTLINK_COUNT                 37
+
+
+'Define LAYER_INFO_LAYERLIST_ID                  42
+'Define LAYER_INFO_PARENT_GROUP_ID               43
+
+	tli.nMID			= nMID
+	tli.nID			= nLyrID
+	tli.sName			= LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	tli.nType			= LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+	tli.nParentID		= LayerInfo(nMID, nLyrID, LAYER_INFO_PARENT_GROUP_ID)
+	tli.nLayerListID	= LayerInfo(nMID, nLyrID, LAYER_INFO_LAYERLIST_ID)
+
+	'**Basic layer information
+	Call tlsGetInfo(nMID, nLyrID, tli.tlsLyrSettings)
+
+	'**Display Override information
+'''	Call tdoGetInfo(nMID, nLyrID, tli.arrDisplayOverrides())
+
+	'**Basic Label information
+	Call tlbsGetInfo(nMID, nLyrID, tli.tlbsLblSettings)
+
+	'**Label Override information
+'''	Call tloGetInfo(nMID, nLyrID, tli.arrLabelOverrides())
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliGetInfo")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tliApplyInfo(	  ByVal nMID As Integer		'The Map Window with the layer
+					, ByVal nLyrID As Integer	'The layer to apply the setting on
+					, tli As T_LAYER_INFO		'The T_LAYER_INFO holding the settings to apply
+					) As Logical				'Returns true if the settings were set on the layer
+
+Dim	sCmd As String
+
+OnError GoTo ErrorOccured
+
+tliApplyInfo = FALSE
+
+	Set Distance Units MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
+	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+
+	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+	sCmd		= sCmd & lf & tlsGetSetMapStatement(nMID, nLyrID, tli.tlsLyrSettings)
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 2: " & sCmd)
+	Run Command sCmd
+
+	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+	sCmd		= sCmd & lf & tlbsGetSetMapStatement(nMID, nLyrID, tli.tlbsLblSettings)
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 3: " & sCmd)
+	Run Command sCmd
+
+'	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+'	sCmd		= sCmd & lf & tdoGetSetMapStatement(nMID, nLyrID, tli.arrDisplayOverrides())
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 4: " & sCmd)
+'	Run Command sCmd
+
+'	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+'	sCmd		= sCmd & lf & tloGetSetMapStatement(nMID, nLyrID, tli.arrLabelOverrides())
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 5: " & sCmd)
+'	Run Command sCmd
+
+tliApplyInfo = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliApplyInfo")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tliWriteSingleToMetadata(	  ByVal sTab As String			'Name of table to write the tli to
+						, ByVal sName As String			'Name to store the tli as in the metadata
+						, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to write the tli to
+						, tli As T_LAYER_INFO			'The tli to write to the metadata
+						)
+
+Dim	nNumStyles, nStyle As Integer
+
+OnError GoTo ErrorOccured
+
+	'---------------------------------------------------------------------------
+	'**Layer Settings
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem To "DEFAULT"
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\EDITABLE" To Str$(tli.tlsLyrSettings.bEditable)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\SELECTABLE" To Str$(tli.tlsLyrSettings.bSelectable)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\ZOOMLAYERED" To Str$(tli.tlsLyrSettings.bZoomLayered)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\ZOOM_MIN" To Str$(tli.tlsLyrSettings.fMinZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\ZOOM_MAX" To Str$(tli.tlsLyrSettings.fMaxZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\ZOOM_UNITS" To tli.tlsLyrSettings.sZoomUnits
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY" To Str$(tli.tlsLyrSettings.nDisplay)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\SHOW_LINEDIRECTION" To Str$(tli.tlsLyrSettings.bShowLineDirection)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\SHOW_NODES" To Str$(tli.tlsLyrSettings.bShowNodes)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\SHOW_CENTROIDS" To Str$(tli.tlsLyrSettings.bShowCentroids)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\ALPHA" To Str$(tli.tlsLyrSettings.nAlpha)
+
+	'---------------------------------------------------------------------------
+	'**Global styles
+	nNumStyles = Ubound(tli.tlsLyrSettings.penOverrideLine)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\LINE\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\LINE\" & nStyle To STLPen2Text(tli.tlsLyrSettings.penOverrideLine(nStyle))
+	Next
+
+	nNumStyles = Ubound(tli.tlsLyrSettings.penOverrideBorder)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\PEN\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\PEN\" & nStyle To STLPen2Text(tli.tlsLyrSettings.penOverrideBorder(nStyle))
+	Next
+
+	nNumStyles = Ubound(tli.tlsLyrSettings.brsOverride)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\BRUSH\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\BRUSH\" & nStyle To STLBrush2Text(tli.tlsLyrSettings.brsOverride(nStyle))
+	Next
+
+	nNumStyles = Ubound(tli.tlsLyrSettings.symOverride)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\SYMBOL\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\SYMBOL\" & nStyle To STLSymbol2Text(tli.tlsLyrSettings.symOverride(nStyle))
+	Next
+
+	nNumStyles = Ubound(tli.tlsLyrSettings.fntOverride)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\FONT\" To Str$(nNumStyles)
+	For nStyle = 1 To nNumStyles
+		Metadata Table sTab
+			SetKey "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\FONT\" & nStyle To STLFont2Text(tli.tlsLyrSettings.fntOverride(nStyle))
+	Next
+
+	'---------------------------------------------------------------------------
+	'**Label Settings
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_AUTODISPLAY" To Str$(tli.tlbsLblSettings.bAutoDisplay)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_VISIBILITY" To Str$(tli.tlbsLblSettings.nVisibility)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ZOOM_MIN" To Str$(tli.tlbsLblSettings.fMinZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ZOOM_MAX" To Str$(tli.tlbsLblSettings.fMaxZoom)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ZOOM_UNITS" To tli.tlbsLblSettings.sZoomUnits
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_EXPRESSION" To tli.tlbsLblSettings.sExpression
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_LINETYPE" To Str$(tli.tlbsLblSettings.nLineType)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_FONT" To STLFont2Text(tli.tlbsLblSettings.fntLabel)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_POSITION" To Str$(tli.tlbsLblSettings.nPosition)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OFFSET" To Str$(tli.tlbsLblSettings.nOffset)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERLAP" To Str$(tli.tlbsLblSettings.bAllowOverlap)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_DUPLICATES" To Str$(tli.tlbsLblSettings.bAllowDuplicates)
+
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_MAX" To Str$(tli.tlbsLblSettings.nMaxNumber)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_PARTIALSEGMENTS" To Str$(tli.tlbsLblSettings.bPartialSegments)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ORIENTATION" To Str$(tli.tlbsLblSettings.nOrientation)
+	Metadata Table sTab
+		SetKey "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ALPHA" To Str$(tli.tlbsLblSettings.nAlpha)
+
+	'---------------------------------------------------------------------------
+	'**Display Override Settings
+'	Call tdoWriteToMetadata(sTab, nLayerInfoItem, tli.arrDisplayOverrides)
+
+	'---------------------------------------------------------------------------
+	'**Label Override Settings
+'	Call tloWriteToMetadata(sTab, nLayerInfoItem, tli.arrLabelOverrides)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliWriteSingleToMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tliReadSingleFromMetadata(	  ByVal sTab As String			'Name of table to read the tli from
+							, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to read the tli from
+							, tli As T_LAYER_INFO		'The tli to read the metadata into
+							)
+
+Dim	nNumStyles, nStyle As Integer
+
+OnError GoTo ErrorOccured
+
+	'-------------------------------------------------
+	'**Layer Settings
+	tli.tlsLyrSettings.bEditable			= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\EDITABLE") = "T")
+	tli.tlsLyrSettings.bSelectable		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\SELECTABLE") = "T")
+
+	tli.tlsLyrSettings.bZoomLayered		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\ZOOMLAYERED") = "T")
+	tli.tlsLyrSettings.fMinZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\ZOOM_MIN"))
+	tli.tlsLyrSettings.fMaxZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\ZOOM_MAX"))
+	tli.tlsLyrSettings.sZoomUnits			= GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\ZOOM_UNITS")
+
+	tli.tlsLyrSettings.nDisplay			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\DISPLAY"))
+
+	tli.tlsLyrSettings.bShowLineDirection	= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\SHOW_LINEDIRECTION") = "T")
+	tli.tlsLyrSettings.bShowNodes			= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\SHOW_NODES") = "T")
+	tli.tlsLyrSettings.bShowCentroids		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\SHOW_CENTROIDS") = "T")
+
+	tli.tlsLyrSettings.nAlpha			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\ALPHA"))
+
+	'-------------------------------------------------
+	'**Global Overides
+	nNumStyles		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\LINE"))
+	Redim tli.tlsLyrSettings.penOverrideLine(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tli.tlsLyrSettings.penOverrideLine(nStyle) = STLText2Pen(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\LINE\" & nStyle))
+	Next
+
+	nNumStyles		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\PEN"))
+	Redim tli.tlsLyrSettings.penOverrideBorder(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tli.tlsLyrSettings.penOverrideBorder(nStyle) = STLText2Pen(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\PEN\" & nStyle))
+	Next
+
+	nNumStyles		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\BRUSH"))
+	Redim tli.tlsLyrSettings.brsOverride(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tli.tlsLyrSettings.brsOverride(nStyle) = STLText2Brush(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\BRUSH\" & nStyle))
+	Next
+
+	nNumStyles		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\SYMBOL"))
+	Redim tli.tlsLyrSettings.symOverride(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tli.tlsLyrSettings.symOverride(nStyle) = STLText2Symbol(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\SYMBOL\" & nStyle))
+	Next
+
+	nNumStyles		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\FONT"))
+	Redim tli.tlsLyrSettings.fntOverride(nNumStyles)
+	For nStyle = 1 to nNumStyles
+		tli.tlsLyrSettings.fntOverride(nStyle) = STLText2Font(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\OVERRIDES\FONT\" & nStyle))
+	Next
+
+	'-------------------------------------------------
+	'**Label settings
+	tli.tlbsLblSettings.bAutoDisplay		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_AUTODISPLAY") = "T")
+	tli.tlbsLblSettings.nVisibility		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_VISIBILITY"))
+	tli.tlbsLblSettings.fMinZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ZOOM_MIN"))
+	tli.tlbsLblSettings.fMaxZoom			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ZOOM_MAX"))
+	tli.tlbsLblSettings.sZoomUnits		= GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ZOOM_UNITS")
+
+	tli.tlbsLblSettings.sExpression		= GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_EXPRESSION")
+
+	tli.tlbsLblSettings.nLineType			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_LINETYPE"))
+	tli.tlbsLblSettings.fntLabel			= STLText2Font(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_FONT"))
+	tli.tlbsLblSettings.nPosition			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_POSITION"))
+	tli.tlbsLblSettings.nOffset			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OFFSET"))
+
+	tli.tlbsLblSettings.bAllowOverlap		= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_OVERLAP") = "T")
+	tli.tlbsLblSettings.bAllowDuplicates	= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_DUPLICATES") = "T")
+
+	tli.tlbsLblSettings.nMaxNumber		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_MAX"))
+	tli.tlbsLblSettings.bPartialSegments	= (GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_PARTIALSEGMENTS") = "T")
+	tli.tlbsLblSettings.nOrientation		= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ORIENTATION"))
+	tli.tlbsLblSettings.nAlpha			= Val(GetMetadata$(sTab, "\LAYER_INFO\" & nLayerInfoItem & "\LABEL_ALPHA"))
+
+	'-------------------------------------------------
+	'**Display Overrides
+'	Call tdoReadFromMetadata(sTab, nLayerInfoItem, tli.arrDisplayOverrides)
+	'-------------------------------------------------
+	'**Label Overrides
+'	Call tloReadFromMetadata(sTab, nLayerInfoItem, tli.arrLabelOverrides)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliReadSingleFromMetadata")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'**********************************************************************************************''
+Sub tliRemoveSingleFromMetadata(	  ByVal sTab As String			'Name of table to remove the tli from
+							, ByVal nLayerInfoItem As Integer	'LayerInfo Item No in the metadata to remove the tli from
+							)
+OnError GoTo ErrorOccured
+
+	Metadata Table sTab
+		DropKey "\LAYER_INFO\" & nLayerInfoItem
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tliRemoveSingleFromMetadata")
+	Call ERRShow()
+
+End Sub
+

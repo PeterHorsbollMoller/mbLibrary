@@ -1,0 +1,279 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+Define TOOLBAR_STATE_FLOATING		0
+Define TOOLBAR_STATE_DOCKED		10
+Define TOOLBAR_STATE_DOCKED_LEFT	1
+Define TOOLBAR_STATE_DOCKED_RIGHT	3
+Define TOOLBAR_STATE_DOCKED_TOP	2
+Define TOOLBAR_STATE_DOCKED_BOTTOM	4
+
+'Supported from 10.5
+'BTNPAD_INFO_DOCK_NONE (0)
+'BTNPAD_INFO_DOCK_LEFT (1)
+'BTNPAD_INFO_DOCK_TOP (2)
+'BTNPAD_INFO_DOCK_RIGHT (3)
+'BTNPAD_INFO_DOCK_BOTTOM (4)
+
+'-------------------------------------
+Include "..\..\Library\MapBasic.def"
+Include "..\..\Library\Icons.def"
+Include "..\..\Library\Menu.def"
+'**default constants...
+Include "..\..\Library\Defaults.def"
+
+'-------------------------------------
+Include "..\..\Library\DEBUGLib.def"
+Include "..\..\Library\ERRORLib.def"
+Include "..\..\Library\STRINGLib.def"
+Include "..\..\Library\TABLELib.def"
+
+Include "T_MI_POINT.def"
+Include "T_TOOLBAR.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ttbCopy( ttbFrom As T_TOOLBAR, ttbTo As T_TOOLBAR)
+
+OnError GoTo ErrorOccured
+
+	ttbTo.nWID		= ttbFrom.nWID
+	ttbTo.sName 	= ttbFrom.sName
+	ttbTo.nState 	= ttbFrom.nState
+	Call tmipCopy(ttbFrom.pPosition, ttbTo.pPosition)
+	ttbTo.nWidth 	= ttbFrom.nWidth
+	ttbTo.bHidden	= ttbFrom.bHidden
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ttbCopy")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ttbAreIdentical( tmip1 As T_TOOLBAR, tmip2 As T_TOOLBAR) As Logical
+
+OnError GoTo ErrorOccured
+
+ttbAreIdentical = FALSE
+
+	If ttbTo.nWID <> ttbFrom.nWID Then
+		Exit Function
+	ElseIf ttbTo.sName <> ttbFrom.sName Then
+		Exit Function
+	ElseIf ttbTo.nState <> ttbFrom.nState Then
+		Exit Function
+	ElseIf NOT tmipAreIdentical( tmip1.pPosition, tmip2.pPosition) Then
+		Exit Function
+	ElseIf ttbTo.nWidth <> ttbFrom.nWidth Then
+		Exit Function
+	ElseIf ttbTo.bHidden <> ttbFrom.bHidden Then
+		Exit Function
+	End If
+
+ttbAreIdentical = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ttbAreIdentical")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ttbFromString(ttbA As T_TOOLBAR, ByVal sToolbar As String)
+
+Dim	arrItems() As String,
+	nItems As Integer
+
+OnError GoTo ErrorOccured
+
+	nItems = STRINGSplit(sToolbar, ",", arrItems())
+
+	Do Case nItems
+		Case 6
+			ttbA.nWID		= -1
+			ttbA.sName 		= arrItems(1)
+			ttbA.nState 	= Val(arrItems(2))
+			ttbA.nWidth 	= Val(arrItems(3)) '+ 1
+			ttbA.bHidden 	= (arrItems(1) = "4")
+			ttbA.pPosition.fX	= Val(arrItems(5))
+			ttbA.pPosition.fY	= Val(arrItems(6))
+		Case Else
+			ttbA.nWID		= -1
+			ttbA.sName 		= ""
+			ttbA.nState 	= TOOLBAR_STATE_FLOATING
+			ttbA.nWidth 	= 5
+			ttbA.bHidden 	= FALSE
+			ttbA.pPosition.fX	= 5
+			ttbA.pPosition.fY	= 5
+	End Case
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ttbFromString")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function ttbToString(ttbA As T_TOOLBAR) As String
+
+Dim	sToolbar As String
+
+OnError GoTo ErrorOccured
+
+	sToolbar = ttbA.sName
+	sToolbar = sToolbar & "," & Str$(ttbA.nState)
+	sToolbar = sToolbar & "," & Str$(ttbA.nWidth)
+	If ttbA.bHidden Then
+		sToolbar = sToolbar & ",1"
+	Else
+		sToolbar = sToolbar & ",0"
+	End If
+	sToolbar = sToolbar & "," & Str$(ttbA.pPosition.fX)
+	sToolbar = sToolbar & "," & Str$(ttbA.pPosition.fY)
+
+	ttbToString = sToolbar
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ttbToString")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ttbSetOnToolbar(ByVal sToolbarName As String, ttbA As T_TOOLBAR)
+
+OnError GoTo ErrorOccured
+
+	If sToolbarName = "" Then
+		sToolbarName = ttbA.sName
+		If sToolbarName = "" Then
+			'**Ignoring settings, no name given
+			Exit Sub
+		End If
+	End If
+
+	If ttbA.nState = TOOLBAR_STATE_FLOATING Then
+		Alter ButtonPad sToolbarName
+			Width ttbA.nWidth
+			Position (ttbA.pPosition.fX, ttbA.pPosition.fY) Units "cm"
+			Float
+	Else
+		If SystemInfo(SYS_INFO_MIVERSION) < 1050 Then
+			Alter ButtonPad sToolbarName
+				Width ttbA.nWidth
+				ToolbarPosition ( ttbA.pPosition.fX, ttbA.pPosition.fY)
+				Fixed
+		Else
+			Do Case ttbA.nState
+				Case TOOLBAR_STATE_DOCKED_LEFT
+					Alter ButtonPad sToolbarName
+						Width ttbA.nWidth
+						ToolbarPosition ( ttbA.pPosition.fY, ttbA.pPosition.fX)
+						Left
+				Case TOOLBAR_STATE_DOCKED_RIGHT
+					Alter ButtonPad sToolbarName
+						Width ttbA.nWidth
+						ToolbarPosition ( ttbA.pPosition.fY, ttbA.pPosition.fX)
+						Right
+				Case TOOLBAR_STATE_DOCKED_TOP
+					Alter ButtonPad sToolbarName
+						Width ttbA.nWidth
+						ToolbarPosition ( ttbA.pPosition.fY, ttbA.pPosition.fX)
+						Top
+				Case TOOLBAR_STATE_DOCKED_BOTTOM
+					Alter ButtonPad sToolbarName
+						Width ttbA.nWidth
+						ToolbarPosition ( ttbA.pPosition.fY, ttbA.pPosition.fX)
+						Bottom
+			End Case
+		End If
+	End If
+
+	If ttbA.bHidden Then
+		Alter ButtonPad sToolbarName
+			Hide
+	Else
+		Alter ButtonPad sToolbarName
+			Show
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ttbSetOnToolbar")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ttbGetFromToolbar(ByVal sToolbarName As String, ttbA As T_TOOLBAR)
+
+OnError GoTo ErrorOccured
+
+	Set Paper Units "cm"
+
+	ttbA.nWID		= ButtonPadInfo(sToolbarName, BTNPAD_INFO_WINID)
+	ttbA.sName 		= sToolbarName
+
+	If ButtonPadInfo(sToolbarName, BTNPAD_INFO_FLOATING) Then
+		ttbA.nState = TOOLBAR_STATE_FLOATING
+	Else
+		If SystemInfo(SYS_INFO_MIVERSION) < 1050 Then
+			ttbA.nState = TOOLBAR_STATE_DOCKED
+		Else
+			ttbA.nState = ButtonPadInfo(sToolbarName, BTNPAD_INFO_DOCK_POSITION)
+		End If
+	End If
+
+	ttbA.nWidth 	= ButtonPadInfo(sToolbarName, BTNPAD_INFO_WIDTH)
+	ttbA.bHidden 	= NOT WindowInfo(ttbA.nWID, WIN_INFO_OPEN)
+	ttbA.pPosition.fX	= ButtonPadInfo(sToolbarName, BTNPAD_INFO_X)
+	ttbA.pPosition.fY	= ButtonPadInfo(sToolbarName, BTNPAD_INFO_Y)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ttbGetFromToolbar")
+	Call ERRShow()
+
+End Sub
+

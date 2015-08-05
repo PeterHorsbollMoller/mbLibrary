@@ -1,0 +1,50 @@
+'**Requires MapInfo Pro 4.0
+
+DEFINE DEBUG_ALL	100
+DEFINE DEBUG_TRACE	200
+DEFINE DEBUG_DEBUG	300
+DEFINE DEBUG_INFO	400
+DEFINE DEBUG_WARN	500
+DEFINE DEBUG_ERROR	600
+DEFINE DEBUG_FATAL	700
+DEFINE DEBUG_OFF	800
+
+'Is been used by the ProgramInfo module
+
+Declare Sub DEBUGEnableByFile(  ByVal sFile As String		'Name of file to exist to enable debug state
+					)
+Declare Sub DEBUGEnable(	  ByVal bValue As Logical	'Value (true/false) to set the debug state to
+					)
+
+Declare Function DEBUGIsEnabled() As Logical			'Returns true if Debug is enabled
+
+Declare Sub DEBUGLevelPrint(	ByVal iDebugLevel As Integer,	'Defined variable that maps to value for debug level
+								ByVal iDefaultLevel As Integer,	'Defined variable that maps to default value for debug level
+								ByVal sMessage As String		'Message to print to the message window - and write to debug file.
+				)
+
+Declare Function DEBUGGetLevelDescription(	ByVal iDebugLevel As Integer	'Map defined variable that to description string value for debug level
+				) As String
+
+Declare Function DEBUGGetLevelValue(	ByVal sDebugLevel As String	'Map string variable to integer value for debug level
+				) As Integer
+				
+Declare Sub DEBUGPrint(	  ByVal sMessage As String		'Message to print to the message window - and write to debug file.
+				)
+Declare Sub DEBUGNote(
+				ByVal sMessage As String		'Message to show in messagebox - and write to debug file.
+				)
+
+'Note this function is automatically called from DEBUGPrint() and DEBUGNote()
+Declare Sub DEBUGWriteToFile(
+					ByVal sMessage As String	'Message to write to debug file.
+					)
+
+Declare Sub DEBUGAddDateToDebugLines(
+					ByVal bAddToMessageWindow As Logical, 
+					ByVal bAddToFile As Logical, 
+					ByVal bAddSeparatorToIsoDate As Logical, 
+					ByVal sIsoDateSeparator As String
+					)
+					
+Declare Function createDebugDate(ByVal bAddDate As Logical) As String

@@ -1,0 +1,208 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "Types\T_MI_POINT.def"
+
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+
+Include "MATHLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	:
+'Return value: Float
+'Calculating the direction from tStart to tEnd
+'	in 360 degrees
+'	with east as the starting angle
+'	and counter clockwise
+'**********************************************************************************************''
+Function MATHGetDirection(tStart As T_MI_POINT, tEnd As T_MI_POINT) As Float
+
+Dim	fDirection As Float
+
+OnError GoTo ErrorOccured
+
+MATHGetDirection = 0
+
+	'//Checking for vertical dirction
+	If (tEnd.fX - tStart.fX) = 0 Then
+		'//not allowed to divide by zero...
+		If tEnd.fY > tStart.fY Then
+			'//tEnd is north of tStart...
+			MATHGetDirection	= 90	'degrees
+		Else
+			'//tEnd is south of tStart...
+			MATHGetDirection	= 270	'degrees
+		End If
+		Exit Function
+	End If
+
+	'//Checking for horisontal dirction
+	If (tEnd.fY = tStart.fY) Then
+		If (tEnd.fX < tStart.fX) Then
+			'//tEnd is west of tStart...
+			MATHGetDirection = 180	'degrees
+		ElseIf (tEnd.fX > tStart.fX) And (tEnd.fY = tStart.fY) Then
+			'//tEnd is east of tStart...
+			MATHGetDirection = 0	'degrees
+		End If
+		Exit Function
+	End If
+
+	fDirection = Atn((tEnd.fY - tStart.fY) / (tEnd.fX - tStart.fX)) * RAD_2_DEG	'//Converting from RAD to Degrees
+
+	If (tEnd.fX < tStart.fX) And (tEnd.fY > tStart.fY) Then
+		'//tEnd is northwest of tStart
+		fDirection = fDirection + 180	'degrees
+	ElseIf (tEnd.fX < tStart.fX) And (tEnd.fY < tStart.fY) Then
+		'//tEnd is southwest of tStart
+		fDirection = fDirection + 180	'degrees
+	End If
+
+	MATHGetDirection = MATHGetValidDirection(fDirection)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHGetDirection")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	fDirection : a direction in 360 degrees
+'Return value:
+'	a directions between 0 and 360 degrees
+'**********************************************************************************************''
+Function MATHGetValidDirection(ByVal fDirection As Float) As Float
+
+OnError GoTo ErrorOccured
+
+MATHGetValidDirection = fDirection
+
+	'//fDirection should be less than or equal to 360 degress
+	Do Until fDirection <= 360
+		fDirection = fDirection - 360	'//degrees
+	Loop
+	'//fDirection should be more than or equal to 0 degress
+	Do Until fDirection >= 0
+		fDirection = fDirection + 360	'//degrees
+	Loop
+
+MATHGetValidDirection = fDirection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHGetValidDirection")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	fX : X-coordinate to offset
+'	fDistance: Distance to move fX, same unit as fX
+'	fDirection: Direction to move fX in 360 degrees
+'Return value:
+'	x-coordinate offset using the given parameters
+'**********************************************************************************************''
+Function MATHOffsetX(ByVal fX As Float, ByVal fDistance As Float, ByVal fDirection As Float) As Float
+
+OnError GoTo ErrorOccured
+
+	MATHOffsetX = fX + ((Cos(fDirection * DEG_2_RAD)) * fDistance)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHOffsetX")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	fY : Y-coordinate to offset
+'	fDistance: Distance to move fY, same unit as fX
+'	fDirection: Direction to move fY in 360 degrees
+'Return value:
+'	y-coordinate offset using the given parameters
+'**********************************************************************************************''
+Function MATHOffsetY(ByVal fY As Float, ByVal fDistance As Float, ByVal fDirection As Float) As Float
+
+OnError GoTo ErrorOccured
+
+	MATHOffsetY = fY + ((Sin(fDirection * DEG_2_RAD)) * fDistance)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHOffsetX")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	nBit 		: The bit to check for
+'	nBitSum	: The sum of bits to see if nBit is On
+'Return value:
+'	TRUE		: The bit nBit is set
+'	FALSE		: The bit nBit is not set
+'**********************************************************************************************''
+Function MATHIsBitOn(ByVal nBit As Integer, ByVal nBitSum As Integer) As Logical
+
+Dim	nCurBit As Integer
+
+OnError GoTo ErrorOccured
+
+MATHIsBitOn = FALSE
+
+	nCurBit	= 64
+	'**Finding the maximum bit that can be set in the nBitSum
+	Do While (nCurBit < nBitSum)
+		nCurBit = nCurBit * 2
+	Loop
+
+	Do While (nCurBit >= nBit)
+		If (nBitSum >= nCurBit) Then
+			If nCurBit = nBit Then
+				MATHIsBitOn = TRUE
+				Exit Function
+			End If
+
+			nBitSum = nBitSum - nCurBit
+		End If
+		'**One has been tested once, so we are done
+		If nCurBit = 1 Then
+			Exit Function
+		End If
+
+		nCurBit = (nCurBit / 2)
+	Loop
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHIsBitOn")
+	Call ERRShow()
+
+End Function

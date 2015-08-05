@@ -1,0 +1,13 @@
+Define	eye	Chr$(34)
+Define	lf	Chr$(10)
+Define	ff	Chr$(12)
+Define	cr	Chr$(13)
+Define	sp	Chr$(32)
+
+DEFINE	CHR_COMMA	","
+DEFINE	ESC_COMMA	"ESC_COMMA"
+DEFINE	CHR_EQUALS	"="
+DEFINE	ESC_EQUALS	"ESC_EQUALS"
+
+DEFINE	ELM_SEP		","
+DEFINE	ARG_SEP 	":"

@@ -1,0 +1,19 @@
+'Requires MapInfo Pro 4.0
+
+Type T_ERROR
+	nNo			As Integer
+	sText			As String
+	sDescription	As String
+	dDate			As Date
+	sTime			As String
+	sUser			As String
+	sComputer		As String
+End Type
+
+Declare Sub terrCopy(	  terrFrom As T_ERROR		'Error type to copy values from
+				, terrTo As T_ERROR		'Error type to copy values to
+				)
+Declare Sub terrReset(	  tError As T_ERROR		'Error to reset
+				)
+Declare Function terrToString( tError As T_ERROR	'Error to convert to a string
+					) As String
