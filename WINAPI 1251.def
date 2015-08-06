@@ -23,6 +23,9 @@ Define ERROR_NO_ASSOCIATION 		31
 Define MAX_PATH				260
 Define INVALID_HANDLE_VALUE 		-1
 
+Define NORMAL_PRIORITY_CLASS		&H20
+Define INFINITE				-1
+
 Define DRIVE_UNKNOWN  0
 Define DRIVE_ABSENT  1
 Define DRIVE_REMOVABLE  2
@@ -80,6 +83,34 @@ Type WIN32_FIND_DATA
 	dwReserved1		As Integer
 	cFileName			As String * MAX_PATH
 	cAlternate		As String * 14
+End Type
+
+Type STARTUPINFO
+	cb				As Integer
+	lpReserved		As String
+	lpDesktop			As String
+	lpTitle			As String
+	dwX				As Integer
+	dwY				As Integer
+	dwXSize			As Integer
+	dwYSize			As Integer
+	dwXCountChars		As Integer
+	dwYCountChars		As Integer
+	dwFillAttribute	As Integer
+	dwFlags			As Integer
+	wShowWindow		As SmallInt
+	cbReserved2		As SmallInt
+	lpReserved2		As Integer
+	hStdInput			As Integer
+	hStdOutput		As Integer
+	hStdError			As Integer
+End Type
+
+Type PROCESS_INFORMATION
+	hProcess		As Integer
+	hThread		As Integer
+	dwProcessID	As Integer
+	dwThreadID	As Integer
 End Type
 
 '**Similar to the build in Timer() MapBasic function, but will give you miliseconds in stead of seconds
@@ -145,6 +176,11 @@ Declare Function WAPICreateDirectoryEx Lib "shell32.dll" Alias "SHCreateDirector
 		) As Integer
 'http://msdn.microsoft.com/en-us/library/bb762131(VS.85).aspx
 '**err = WAPICreateDirectoryEx(0,"c:\test\test1\test2",0)
+
+'**Set Current Directory to the path given
+Declare Function SetCurrentDirectoryA Lib "Kernel32.dll" (	  sDir As String
+												) As SmallInt
+
 
 Declare Function WAPIFindFirstFile Lib "kernel32" Alias "FindFirstFileA"
 		( ByVal lpFileName As String
@@ -240,3 +276,22 @@ Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA"
 
 Declare Function WAPIGetDriveType Lib "kernel32" Alias "GetDriveTypeA" (	ByVal sDrive As String	'A drive in this form: "A:"
 															) As Integer			'Returns one of the DRIVE_  defines
+
+Declare Function CloseHandle Lib "kernel32" (  hObject As Integer
+									) As SmallInt
+
+Declare Function WaitForSingleObject Lib "kernel32" (	  ByVal hHandle As Integer
+											, ByVal dwMilliseconds As Integer
+											) As Integer
+
+Declare Function CreateProcessA Lib "kernel32"(	  ByVal lpApplicationName As Integer
+										, ByVal lpCommandLine As String
+										, ByVal lpProcessAttributes As Integer
+										, ByVal lpThreadAttributes As Integer
+										, ByVal bInheritHandles As Integer
+										, ByVal dwCreationFlags As Integer
+										, ByVal lpEnvironment As Integer
+										, ByVal lpCurrentDirectory As Integer
+										, lpStartupInfo As STARTUPINFO
+										,lpProcessInformation As PROCESS_INFORMATION
+										) As Integer
