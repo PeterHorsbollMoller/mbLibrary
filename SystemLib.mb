@@ -173,3 +173,40 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function SYSExecuteAndWait(	  ByVal sCmdLine As String
+						) As Integer
+
+Dim	nRetVal As Integer,
+	NameOfProc as PROCESS_INFORMATION,
+	NameStart as STARTUPINFO
+
+OnError GoTo ErrorOccured
+
+SYSExecuteAndWait = TRUE
+
+	NameStart.cb			= 256
+	NameStart.dwFlags		= 1
+	NameStart.wShowWindow	= 0
+	nRetVal = CreateProcessA(0, sCmdLine, 0, 0, 1, NORMAL_PRIORITY_CLASS, 0, 0, NameStart, NameOfProc)
+
+	nRetVal = NameOfProc.hProcess
+	nRetVal = WaitForSingleObject(NameOfProc.hProcess, INFINITE)
+	nRetVal = CloseHandle(NameOfProc.hProcess)
+
+	SYSExecuteAndWait = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "SYSExecuteAndWait")
+	Call ERRPrint()
+
+End Function

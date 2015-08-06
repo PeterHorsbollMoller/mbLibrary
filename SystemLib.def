@@ -8,6 +8,8 @@
 '					- Method SYSGetProductInfo As String
 '03-12-2012 11:49:28	Peter Møller added this function
 '					- SYSFindExecutable(...) As String
+'06-08-2015 14:45:00	Peter Møller added this function
+'					- SYSExecuteAndWait(...) As Integer
 '*******************************************************************************
 
 Declare Function SYSGetUserName() As String
@@ -31,3 +33,6 @@ Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLi
 
 Declare Function SYSFindTextEditor() As String
 Declare Function SYSFindExecutable(ByVal sDocument As String) As String
+
+Declare Function SYSExecuteAndWait(	  ByVal sCmdLine As String
+								) As Integer
