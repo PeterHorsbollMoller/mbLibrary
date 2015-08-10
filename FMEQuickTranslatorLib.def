@@ -1,0 +1,3 @@
+Declare Function FMEQTExportToDWG(	  ByVal sInputFile As String
+							, ByVal sOutputFile As String
+							) As Logical

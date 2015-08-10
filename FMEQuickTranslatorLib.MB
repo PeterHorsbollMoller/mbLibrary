@@ -1,0 +1,234 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "FILELib.def"
+Include "SYSTEMLib.def"
+Include "TABLELib.def"
+Include "WINAPI.def"
+
+Include "FMEQuickTranslatorLib.def"
+
+Declare Function FMEQTSetFMEQTDirectory() As Logical
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FMEQTExportToDWG(	  ByVal sInputFile As String
+						, ByVal sOutputFile As String
+						) As Logical
+
+OnError GoTo ErrorOccured
+
+Dim	sInputFormat, sDestFormat, sExtension, sBaseName, sFullBaseName As String,
+	sMappingFile As String,
+	sLogFileName, sLogFileOut, sLogAppend As String,
+	sDestAttr, sDestATTRKIND, sDestReleaseVer As String,
+	sCmd, sCmdExe As String
+
+FMEQTExportToDWG = FALSE
+
+'	If NOT FMEQTSetFMEQTDirectory() Then
+'		Note "Setting Current Directory to the FME Quick Translator folder failed!"
+'		Exit Function
+'	End If
+
+	'Sets input format to MAPINFO TAB.  If MIF\MID is needed, use "MIF"
+	sInputFormat		= "MAPINFO"
+	'Sets output format to AutoCAD DWG.  If DXF is needed set this to "DXF"
+	sDestFormat		= "ACAD"	'"DWG"
+	'This is name of semantic control file used by IMUT.exe
+	sMappingFile		= FILEWindowsTempFolder() & "MappingFile.fme"
+	'Generates a logfile
+	sLogFileOut		= "YES"
+	'Specify logfile name
+	sLogFileName		= FILEWindowsTempFolder() & "MUTlog.txt"
+	'Append logfiles together - default is typically No
+	sLogAppend		= "NO"
+
+	'Handling of Autocad attributes
+	sDestAttr			= "autocad_attributes"
+	'Handling of Extended Entities
+	sDestATTRKIND		= "extended_entity_data"
+
+	'**NOTE:
+	'AutoCAD Release Version parameter may be any of these:
+	'Release11
+	'Release12
+	'Release13
+	'Release14
+	'Release2000		*Same format as Release2002
+	'Release2004		*Same format as Release2005
+	sDestReleaseVer	= "Release2004"
+
+	'Sets Input extension to TAB format.  If Input is MIF\MID, then use "MIF"
+	sExtension		= "TAB"
+	'Sets BaseName to InputFileName - can be whatever you want.
+	sBaseName			= PathToFileName$(sInputFile)
+	'Sets Full Name to BaseName - again, can be whatever you want.
+	sFullBaseName		= sBaseName
+
+	'Translation is two stage process:
+	'(1) Generate Semantic mapping\Control file
+	'(2) Run Mapping file through translator (IMUT.exe)
+
+	'To Generate the mapping file:
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+		sCmdExe = Chr$(34) & ProgramDirectory$()+ "UT\fme.exe" & Chr$(34)
+	Else
+		sCmdExe = Chr$(34) & ProgramDirectory$()+ "UT\IMUT.exe" & Chr$(34)
+	End If
+
+	If FileExists(FILEWindowsTempFolder() & "__UT__.bat") Then
+		Kill FILEWindowsTempFolder() & "__UT__.bat"
+	End If
+	Open File FILEWindowsTempFolder() & "__UT__.bat"
+		For Append
+		As 234
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+
+	Print #234, sCmdExe
+		+ " CFGenerate"
+		+ " " + sInputFormat + " " + sDestFormat
+		+ " " + chr$(34) + sInputFile + chr$(34)
+		+ " " + chr$(34) + sMappingFile + chr$(34)
+		+ " LOG_STANDARDOUT " + sLogFileOut
+		+ " LOG_FILENAME " + Chr$(34) + sLogFileName + chr$(34)
+		+ " LOG_APPEND " + chr$(34) + sLogAppend + chr$(34)
+		+ " --Dest_ATTR " + chr$(34) + sDestAttr + chr$(34)
+		+ " --Dest_ATTRKIND " + chr$(34) + sDestATTRKIND + chr$(34)
+		+ " --Dest_REL " + chr$(34) + sDestReleaseVer + chr$(34)
+	Print #234, sCmdExe
+		 + " " + chr$(34) + sMappingFile + chr$(34)
+		 + " SourceDataset " + chr$(34) + sInputFile + chr$(34)
+		 + " --DestDataset " + Chr$(34) + sOutputFile + chr$(34)
+		 + " --_ATTRKIND " + sDestATTRKIND
+		 + " --_REL " + sDestReleaseVer
+		 + " --_EXTENSION " + sExtension
+		 + " --_BASENAME " + sBaseName
+		 + " --_FULLBASENAME " + sFullBaseName
+		 + " LOG_STANDARDOUT " + sLogFileOut
+		 + " LOG_FILENAME " + Chr$(34) + sLogFileName + chr$(34)
+'	Print #234, "Pause"
+	Close File #234
+
+	Run Program FILEWindowsTempFolder() & "__UT__.bat"
+'	If SYSExecuteAndWait(FILEWindowsTempFolder() & "__UT__.bat") Then
+'	End If
+
+	Call Sleep(4000)
+
+'	If NOT FileExists(sOutputFile) Then
+'		Note "Export to DWG failed. Check the log-file for potential errors!"
+'		Call FILELaunch(sLogFileName)
+'	End If
+
+'	sCmd = sCmdExe
+'		+ " CFGenerate"
+'		+ " " + sInputFormat + " " + sDestFormat
+'		+ " " + chr$(34) + sInputFile + chr$(34)
+'		+ " " + chr$(34) + sMappingFile + chr$(34)
+'		+ " LOG_STANDARDOUT " + sLogFileOut
+'		+ " LOG_FILENAME " + Chr$(34) + sLogFileName + chr$(34)
+'		+ " LOG_APPEND " + chr$(34) + sLogAppend + chr$(34)
+'		+ " --Dest_ATTR " + chr$(34) + sDestAttr + chr$(34)
+'		+ " --Dest_ATTRKIND " + chr$(34) + sDestATTRKIND + chr$(34)
+'		+ " --Dest_REL " + chr$(34) + sDestReleaseVer + chr$(34)
+'
+'	Call DEBUGPrint("CFGenerate: " & sCmd)
+'	If SYSExecuteAndWait(sCmd) Then
+'
+'	Else
+'		Print "Execute & Wait failed during semantic mapping file creation"
+'		Exit Function
+'	End If
+'
+'	Note "CFGenerate Done!"
+'
+'	'Check to see if Semantic Mapping file was created before running translation
+'	if FileExists(sMappingFile) then
+'		'Now create the String command to run Semantic Mapping file through IMUT in second stage:
+'		sCmd = sCmdExe
+'			 + " " + chr$(34) + sMappingFile + chr$(34)
+'			 + " SourceDataset " + chr$(34) + sInputFile + chr$(34)
+'			 + " --DestDataset " + Chr$(34) + sOutputFile + chr$(34)
+'			 + " --_ATTRKIND " + sDestATTRKIND
+'			 + " --_REL " + sDestReleaseVer
+'			 + " --_EXTENSION " + sExtension
+'			 + " --_BASENAME " + sBaseName
+'			 + " --_FULLBASENAME " + sFullBaseName
+'			 + " LOG_STANDARDOUT " + sLogFileOut
+'			 + " LOG_FILENAME " + Chr$(34) + sLogFileName + chr$(34)
+'
+'		Call DEBUGPrint("Transform: " & sCmd)
+'		If SYSExecuteAndWait(sCmd) Then
+'
+'		Else
+'			Print "Execute & Wait failed during Actual Translation"
+'			Exit Function
+'		End If
+'	Else
+'		Print "Mapping file could not be found: " & sMappingFile
+'		Exit Function
+'	End If
+
+	FMEQTExportToDWG = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FMEQTExportToDWG")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FMEQTSetFMEQTDirectory() As Logical
+
+Dim	nReturnVal As Integer
+
+OnError GoTo ErrorOccured
+
+Dim	sPath As String
+
+FMEQTSetFMEQTDirectory = FALSE
+
+	sPath		= ProgramDirectory$()+ "UT\"
+	nReturnVal	= SetCurrentDirectoryA(sPath)
+	If Not nReturnVal Then
+		Print "Set UT Directory FAILED! Path sent was: " + sPath
+		Exit Function
+	End If
+
+	FMEQTSetFMEQTDirectory = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FMEQTSetFMEQTDirectory")
+	Call ERRShow()
+
+End Function
