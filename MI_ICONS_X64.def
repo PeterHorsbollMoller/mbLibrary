@@ -990,7 +990,7 @@ Define MI_IMG_APP_BINGTERMS                           "pack://application:,,,/Ma
 Define MI_IMG_APP_BORROWLICENSE_64                    "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/borrowLicense_64x64.png"
 Define MI_IMG_APP_CHECKNEWS                           "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/checkNews.png"
 Define MI_IMG_APP_CHECKUPDATE_64                      "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/checkUpdate_64x64.png"
-Define MI_IMG_APP_E                                   "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/exit_64x64.png"
+Define MI_IMG_APP_EXIT_64                             "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/exit_64x64.png"
 Define MI_IMG_APP_HELP_64                             "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/help_64x64.png"
 Define MI_IMG_APP_OPTIONS_64                          "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/options_64x64.png"
 Define MI_IMG_APP_PRODUCTS_64                         "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/products_64x64.png"
