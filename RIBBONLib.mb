@@ -13,6 +13,7 @@ Include "Menu.def"
 Include "IMapInfoPro.def"
 '**default constants...
 Include "Defaults.def"
+Include "RibbonElements.def"
 
 '-------------------------------------
 Include "ARRAYLib.def"
@@ -21,12 +22,19 @@ Include "ERRORLib.def"
 Include "RIBBONLib.def"
 
 Declare Sub RBNInitiate
+Declare Sub RBInitialControlArrays
+Declare Function RBNGetImageStringFromControlName(ByVal sControlName As String) As String
+Declare Function RBNGetCommandIDFromControlName(ByVal sControlName As String) As String
+Declare Function RBNGetImageStringFromTabAndGroup(  ByVal sRbnTabName As String
+										, ByVal sRbnGroupName As String
+										) As String
 Declare Function RBNAddElement(	  ByVal sTabName As String
 							, ByVal sGroupName As String
 							, ByVal sSplitButtonName As String
 							, ByVal sSplitButtonGroupName As String
 							, ByVal sControlName As String
 							, ByVal nControlType As Integer
+							, ByVal nParentControlType As Integer
 							) As Integer
 Declare Function RBNRemoveElement(	  ByVal sTabName As String
 							, ByVal sGroupName As String
@@ -62,10 +70,12 @@ Dim	theMapInfoApplication As This,
 	theNotification As This,
 	mbHasBeenInitiated As Logical
 
+Dim	marrControlName(), marrImageName(), marrCommandID() As String
+
 '**These variables keep track of which controls have been added where
 Dim	marrControls() As This,
 	marrTabNames(), marrGroupNames(), marrSplitButtonNames(), marrSplitButtonGroupNames(), marrControlNames() As String,
-	marrControlTypes() As Integer,
+	marrControlTypes(), marrParentControlTypes() As Integer,
 	mnNumElements As Integer
 
 '**These variables keep track of which events have been subscribed
@@ -109,6 +119,15 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 	'--------------------------------
 	Call RBNInitiate
 
+	If FileExists(ApplicationDirectory$() & "Ribbon Elements.txt") Then
+		Kill ApplicationDirectory$() & "Ribbon Elements.txt"
+	End If
+
+	Open File ApplicationDirectory$() & "Ribbon Elements.txt"
+		For Append
+		As #369
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+
 	nNumTabs = GetRbnTabCollCount(theTabsColl)
 '	Call DEBUGPrint("Number of Tabs " & nNumTabs)
 
@@ -118,7 +137,9 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 		sName	= GetRbnTabName(rbnTabItem)
 		sCaption	= GetRbnTabCaption(rbnTabItem)
 		Call DEBUGPrint("--------------------------------------------------------------")
+		Print #369, "--------------------------------------------------------------"
 		Call DEBUGPrint("Tab " & i & " is named '" & sName & "' but shown as '" & sCaption & "'")
+		Print #369, "Tab " & i & " is named '" & sName & "' but shown as '" & sCaption & "'"
 
 		rbnGroupsColl = GetRbnTabGrps(rbnTabItem)
 		nNumGroups = GetRbnCtrlGrpCollCount(rbnGroupsColl)
@@ -129,7 +150,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 
 			sName	= GetRbnCtrlGrpName(rbnGroupItem)
 			sCaption	= GetRbnCtrlGrpCaption(rbnGroupItem)
-			Call DEBUGPrint("   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'")
+'			Call DEBUGPrint("   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'")
+			Print #369, "   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'"
 
 			rbnControlsColl = GetRbnCtrlGrpCtrls(rbnGroupItem)
 			nNumCntrls = GetMICtrlCollCount(rbnControlsColl)
@@ -141,20 +163,23 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 				nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
 				sName		= GetMICtrlName(rbnControlItem)
 				sCaption		= GetMICtrlCaption(rbnControlItem)
-				Call DEBUGPrint("      Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'				Call DEBUGPrint("      Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+				Print #369, "      Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 
 				Do Case nCntrlType
 					Case ControlType_GalleryControl
 						rbnGalleryGroupsColl = GetRbnGalleryCtrlGrps(rbnControlItem)
 						nNumGalleryGroups 	 = GetMIGalleryGrpCollCount(rbnGalleryGroupsColl)
-						Call DEBUGPrint("      Gallery has " & nNumGalleryGroups & " Groups/controls")
+'						Call DEBUGPrint("      Gallery has " & nNumGalleryGroups & " Groups/controls")
+						Print #369, "      Gallery has " & nNumGalleryGroups & " Groups/controls"
 
 						For l = 0 To (nNumGalleryGroups - 1)
 							rbnGalleryGroupItem		= GetMIGalleryGrpCollItemInt(rbnGalleryGroupsColl, l)
 
 							sName	= GetRbnGalleryGrpName(rbnGalleryGroupItem)
 							sCaption	= GetRbnGalleryGrpCaption(rbnGalleryGroupItem)
-							Call DEBUGPrint("      Gallery Group " & l & " is named '" & sName & "' but shown as '" & sCaption & "'")
+'							Call DEBUGPrint("      Gallery Group " & l & " is named '" & sName & "' but shown as '" & sCaption & "'")
+							Print #369, "      Gallery Group " & l & " is named '" & sName & "' but shown as '" & sCaption & "'"
 
 							rbnGalleryControlsColl	= GetRbnGalleryGrpCtrls(rbnGalleryGroupItem)
 							nNumGalleryCtrls		= GetMICtrlCollCount(rbnGalleryControlsColl)
@@ -165,7 +190,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 								nCntrlType	= GetMICtrlCtrlType(rbnGalleryControlItem)
 								sName		= GetMICtrlName(rbnGalleryControlItem)
 								sCaption		= GetMICtrlCaption(rbnGalleryControlItem)
-								Call DEBUGPrint("         Gallery Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'								Call DEBUGPrint("         Gallery Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+								Print #369, "         Gallery Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 							Next
 						Next
 
@@ -174,7 +200,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 					Case ControlType_SplitButton
 						rbnSplitCtrlControlsColl	= GetRbnSplitCtrlCtrls(rbnControlItem)
 						nNumSplitCtrlCtrls		= GetMICtrlCollCount(rbnSplitCtrlControlsColl)
-						Call DEBUGPrint("      SplitButton has " & nNumSplitCtrlCtrls & " Groups/controls")
+'						Call DEBUGPrint("      SplitButton has " & nNumSplitCtrlCtrls & " Groups/controls")
+						Print #369, "      SplitButton has " & nNumSplitCtrlCtrls & " Groups/controls"
 
 						For l = 0 To (nNumSplitCtrlCtrls - 1)
 							rbnSplitCtrlControlItem	= GetMICtrlCollItemInt(rbnSplitCtrlControlsColl, l)
@@ -182,12 +209,14 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 							nCntrlType	= GetMICtrlCtrlType(rbnSplitCtrlControlItem)
 							sName		= GetMICtrlName(rbnSplitCtrlControlItem)
 							sCaption		= GetMICtrlCaption(rbnSplitCtrlControlItem)
-							Call DEBUGPrint("         SplitButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'							Call DEBUGPrint("         SplitButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+							Print #369, "         SplitButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 
 							If nCntrlType = ControlType_DropDownMenuGroup Then
 								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnSplitCtrlControlItem)
 								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
-								Call DEBUGPrint("            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls")
+'								Call DEBUGPrint("            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls")
+								Print #369, "            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls"
 
 								For m = 0 To (nNumDropDownMenuCtrls - 1)
 									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
@@ -195,7 +224,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
 									sName		= GetMICtrlName(rbnDropDownMenuControlItem)
 									sCaption		= GetMICtrlCaption(rbnDropDownMenuControlItem)
-									Call DEBUGPrint("            DropDownMenu Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'									Call DEBUGPrint("            DropDownMenu Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+									Print #369, "            DropDownMenu Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 								Next
 
 							End If
@@ -204,7 +234,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 					Case ControlType_DropDownButton
 						rbnDropDownCtrlControlsColl	= GetRbnDropDownCtrlCtrls(rbnControlItem)
 						nNumDropDownCtrlCtrls		= GetMICtrlCollCount(rbnDropDownCtrlControlsColl)
-						Call DEBUGPrint("      DropDownButton has " & nNumDropDownCtrlCtrls & " Groups/controls")
+'						Call DEBUGPrint("      DropDownButton has " & nNumDropDownCtrlCtrls & " Groups/controls")
+						Print #369, "      DropDownButton has " & nNumDropDownCtrlCtrls & " Groups/controls"
 
 						For l = 0 To (nNumDropDownCtrlCtrls - 1)
 							rbnDropDownCtrlControlItem	= GetMICtrlCollItemInt(rbnDropDownCtrlControlsColl, l)
@@ -212,12 +243,14 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 							nCntrlType	= GetMICtrlCtrlType(rbnDropDownCtrlControlItem)
 							sName		= GetMICtrlName(rbnDropDownCtrlControlItem)
 							sCaption		= GetMICtrlCaption(rbnDropDownCtrlControlItem)
-							Call DEBUGPrint("         DropDownButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'							Call DEBUGPrint("         DropDownButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+							Print #369, "         DropDownButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 
 							If nCntrlType = ControlType_DropDownMenuGroup Then
 								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnDropDownCtrlControlItem)
 								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
-								Call DEBUGPrint("            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls")
+'								Call DEBUGPrint("            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls")
+								Print #369, "            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls"
 
 								For m = 0 To (nNumDropDownMenuCtrls - 1)
 									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
@@ -225,7 +258,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
 									sName		= GetMICtrlName(rbnDropDownMenuControlItem)
 									sCaption		= GetMICtrlCaption(rbnDropDownMenuControlItem)
-									Call DEBUGPrint("            DropDown Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'									Call DEBUGPrint("            DropDown Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+									Print #369, "            DropDown Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 								Next
 
 							End If
@@ -238,13 +272,15 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 
 	nNumCntrls = GetMICtrlCollCount(theMapMTBControlsColl)
 	Call DEBUGPrint("   Map MiniToolBar: Number of Controls " & nNumCntrls)
+	Print #369, "   Map MiniToolBar: Number of Controls " & nNumCntrls
 	For i = 0 To (nNumCntrls - 1)
 		rbnControlItem	= GetMICtrlCollItemInt(theMapMTBControlsColl, i)
 
 		sName		= GetMICtrlName(rbnControlItem)
 		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
 		sCaption		= GetMICtrlCaption(rbnControlItem)
-		Call DEBUGPrint("      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Call DEBUGPrint("      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+		Print #369, "      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 
 		If nCntrlType = ControlType_StackPanel Then
 			rbnStackPanelControlsColl	= GetIStackPanelCtrls(rbnControlItem)
@@ -256,7 +292,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 				nCntrlType	= GetMICtrlCtrlType(rbnStackPanelControlItem)
 				sName		= GetMICtrlName(rbnStackPanelControlItem)
 				sCaption		= GetMICtrlCaption(rbnStackPanelControlItem)
-				Call DEBUGPrint("         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'				Call DEBUGPrint("         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+				Print #369, "         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 			Next
 		End If
 
@@ -264,15 +301,19 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 
 	rbnStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
 	nNumCntrls 			= GetMICtrlCollCount(rbnStatusbarControlsColl)
-	Call DEBUGPrint("   Statusbar: Number of Controls " & nNumCntrls)
+'	Call DEBUGPrint("   Statusbar: Number of Controls " & nNumCntrls)
+	Print #369, "   Statusbar: Number of Controls " & nNumCntrls
 	For k = 0 To (nNumCntrls - 1)
 		rbnControlItem	= GetMICtrlCollItemInt(rbnStatusbarControlsColl, k)
 
 		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
 		sName		= GetMICtrlName(rbnControlItem)
 		sCaption		= GetMICtrlCaption(rbnControlItem)
-		Call DEBUGPrint("      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Call DEBUGPrint("      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+		Print #369, "      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 	Next
+
+	Close File #369
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
@@ -302,6 +343,1357 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNLoopCreateRibbonStatements
+
+OnError GoTo ErrorOccured
+
+Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumSplitCtrlCtrls, nNumDropDownMenuCtrls, nNumDropDownCtrlCtrls, nNumStackPanelCtrls As Integer,
+	i, j, k, l, m As Integer,
+	sRbnTabName, sRbnGroupName, sName, sCaption, sKeyTip, sGroupName, sItemName, sImageName As String,
+	arrControlNames() As String,
+	nCntrlType, nImageSize As Integer,
+	rbnTabItem As This,
+	rbnGroupsColl As This,
+	rbnGroupItem As This,
+	rbnControlsColl As This,
+	rbnControlItem As This,
+	rbnGalleryGroupsColl As This,
+	rbnGalleryGroupItem As This,
+	rbnGalleryControlsColl As This,
+	rbnGalleryControlItem As This,
+	rbnSplitCtrlControlsColl As This,
+	rbnSplitCtrlControlItem As This,
+	rbnDropDownMenuControlsColl As This,
+	rbnDropDownMenuControlItem As This,
+	rbnDropDownCtrlControlsColl As This,
+	rbnDropDownCtrlControlItem As This,
+	rbnStackPanelControlsColl As This,
+	rbnStackPanelControlItem As This,
+	rbnStatusbarControlsColl As This
+
+	'--------------------------------
+	Call RBNInitiate
+
+	Call RBInitialControlArrays
+
+	If FileExists(ApplicationDirectory$() & "Ribbon Statements.txt") Then
+		Kill ApplicationDirectory$() & "Ribbon Statements.txt"
+	End If
+
+	Open File ApplicationDirectory$() & "Ribbon Statements.txt"
+		For Append
+		As #369
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+
+	nNumTabs = GetRbnTabCollCount(theTabsColl)
+
+	For i = 0 To (nNumTabs - 1)	'**Do note that the collection starts at 0 and not at 1 like normal MapBasic Arrays
+		rbnTabItem = GetRbnTabCollItemInt(theTabsColl, i)
+
+		sRbnTabName	= GetRbnTabName(rbnTabItem)
+		sCaption		= GetRbnTabCaption(rbnTabItem)
+		sKeyTip		= GetRbnTabKeyTip(rbnTabItem)
+		Print #369, "	'**************************************************************"
+		Print #369, "	Call DEBUGPrint(" & eye & sRbnTabName & eye & ")"
+		Call DEBUGPrint("Tab " & i & " is named '" & sRbnTabName & "' but shown as '" & sCaption & "'")
+		Print #369, "	nCtrlIdx	= RBNAddTab(" & eye & sRbnTabName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye & ")"
+'		Print #369, "	If NOT nCtrlIdx > 0 Then"
+'		Print #369, "		Exit Sub"
+'		Print #369, "	End If	'RBNAddTab"
+'		Print #369, ""
+
+		rbnGroupsColl = GetRbnTabGrps(rbnTabItem)
+		nNumGroups = GetRbnCtrlGrpCollCount(rbnGroupsColl)
+'		Call DEBUGPrint("   Number of Tab Groups " & nNumGroups)
+
+		For j = 0 To (nNumGroups - 1)
+			rbnGroupItem = GetRbnCtrlGrpCollItemInt(rbnGroupsColl, j)
+
+			sRbnGroupName	= GetRbnCtrlGrpName(rbnGroupItem)
+			sCaption		= GetRbnCtrlGrpCaption(rbnGroupItem)
+			Print #369, "	'------------------------------"
+			Print #369, "	Call DEBUGPrint(" & eye & "   " & sRbnGroupName & eye & ")"
+'			Call DEBUGPrint("   Tab Group " & j & " is named '" & sRbnGroupName & "' but shown as '" & sCaption & "'")
+			Print #369, "	nCtrlIdx	= RBNTabAddGroup(" & eye & sRbnGroupName & eye & ", " & eye & sCaption & eye & ", " & eye & sRbnTabName & eye & ")"
+'			Print #369, "	If NOT nCtrlIdx > 0 Then"
+'			Print #369, "		Exit Sub"
+'			Print #369, "	End If	'RBNTabAddGroup"
+			Print #369, ""
+
+			rbnControlsColl = GetRbnCtrlGrpCtrls(rbnGroupItem)
+			nNumCntrls = GetMICtrlCollCount(rbnControlsColl)
+'			Call DEBUGPrint("      Number of Controls " & nNumCntrls)
+
+			For k = 0 To (nNumCntrls - 1)
+				rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, k)
+
+				nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+				sName		= GetMICtrlName(rbnControlItem)
+				sCaption		= GetMICtrlCaption(rbnControlItem)
+				sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+				nImageSize	= RBNControlGetSizeThs(rbnControlItem)
+				sImageName	= RBNGetImageStringFromControlName(sName)
+
+				Do Case nCntrlType
+					Case ControlType_RibbonSeparator
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+						Print #369, ""
+
+					Case ControlType_Button, ControlType_ToolButton
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+						Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'						Print #369, "		'Set the button icon"
+						Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'						Print #369, "		'Set Custom MapBasic Handle to the button"
+						Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+						Print #369, ""
+
+						If NOT ARRAYContainsValueString(arrControlNames, sName) AND sItemName Then
+							Call ARRAYAddValueString(arrControlNames, sName)
+						End If
+
+					Case ControlType_GalleryControl
+'						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+'										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+'						Print #369, "		Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+
+						rbnGalleryGroupsColl = GetRbnGalleryCtrlGrps(rbnControlItem)
+						nNumGalleryGroups 	 = GetMIGalleryGrpCollCount(rbnGalleryGroupsColl)
+
+						For l = 0 To (nNumGalleryGroups - 1)
+							rbnGalleryGroupItem		= GetMIGalleryGrpCollItemInt(rbnGalleryGroupsColl, l)
+
+							sGroupName	= GetRbnGalleryGrpName(rbnGalleryGroupItem)
+							sCaption	= GetRbnGalleryGrpCaption(rbnGalleryGroupItem)
+							'Print #369, "		'Create the Gallery Group"
+							'Print #369, "		'Not yet Supported"
+
+							rbnGalleryControlsColl	= GetRbnGalleryGrpCtrls(rbnGalleryGroupItem)
+							nNumGalleryCtrls		= GetMICtrlCollCount(rbnGalleryControlsColl)
+
+							For m = 0 To (nNumGalleryCtrls - 1)
+								rbnGalleryControlItem	= GetMICtrlCollItemInt(rbnGalleryControlsColl, m)
+
+								nCntrlType	= GetMICtrlCtrlType(rbnGalleryControlItem)
+								sItemName		= GetMICtrlName(rbnGalleryControlItem)
+								sCaption		= GetMICtrlCaption(rbnGalleryControlItem)
+								sKeyTip		= GetMICtrlKeyTip(rbnGalleryControlItem)
+								nImageSize	= RBNControlGetSizeThs(rbnGalleryControlItem)
+								sImageName	= RBNGetImageStringFromControlName(sItemName)
+
+								nCntrlType	= ControlType_Button	'Need to change them to a different type as Gallery Items can't be place in a group
+
+'								Print #369, "			'Create the SplitButton Group Controls"
+								Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+														& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+'								Print #369, "			If nCtrlIdx > 0 Then"
+'								Print #369, "				'Create & Set the button tooltip"
+								Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'								Print #369, "				'Set the button icon"
+								Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'								Print #369, "				'Set Custom MapBasic Handle to the button"
+								Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+'								Print #369, "			End If	'RBNSplitButtonGroupAddControl"
+
+								If NOT ARRAYContainsValueString(arrControlNames, sItemName) AND sItemName Then
+									Call ARRAYAddValueString(arrControlNames, sItemName)
+								End If
+							Next
+						Next
+
+						'GetRbnGalleryCtrlMenuItems - not sure how to work with these yet
+						'Right now we just add the controls from the Gallery to the Ribbon Group directly
+						Print #369, ""
+
+					Case ControlType_SplitButton
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+						Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+
+						rbnSplitCtrlControlsColl	= GetRbnSplitCtrlCtrls(rbnControlItem)
+						nNumSplitCtrlCtrls		= GetMICtrlCollCount(rbnSplitCtrlControlsColl)
+
+						For l = 0 To (nNumSplitCtrlCtrls - 1)
+							rbnSplitCtrlControlItem	= GetMICtrlCollItemInt(rbnSplitCtrlControlsColl, l)
+
+							nCntrlType	= GetMICtrlCtrlType(rbnSplitCtrlControlItem)
+							sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+							sGroupName	= GetMICtrlName(rbnSplitCtrlControlItem)
+							sCaption		= GetMICtrlCaption(rbnSplitCtrlControlItem)
+'							Print #369, "		'Create the SplitButton Group"
+							Print #369, "	nCtrlIdx	= RBNSplitButtonAddGroup(" & eye & sGroupName & eye & ", " & eye & sCaption & eye
+												& ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ", " & eye & sName & eye & ")"
+'							Print #369, "		If nCtrlIdx > 0 Then"
+
+							If nCntrlType = ControlType_DropDownMenuGroup Then
+								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnSplitCtrlControlItem)
+								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
+
+								For m = 0 To (nNumDropDownMenuCtrls - 1)
+									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
+
+									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
+									sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+									sItemName		= GetMICtrlName(rbnDropDownMenuControlItem)
+									sCaption		= GetMICtrlCaption(rbnDropDownMenuControlItem)
+									nImageSize	= RBNControlGetSizeThs(rbnDropDownMenuControlItem)
+									sImageName	= RBNGetImageStringFromControlName(sItemName)
+
+'									Print #369, "			'Create the SplitButton Group Controls"
+									Print #369, "	nCtrlIdx	= RBNSplitButtonGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+															& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye
+															& ", " & eye & sName & eye & ", " & eye & sGroupName & eye & ")"
+'									Print #369, "			If nCtrlIdx > 0 Then"
+'									Print #369, "				'Create & Set the button tooltip"
+									Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'									Print #369, "				'Set the button icon"
+									Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'									Print #369, "				'Set Custom MapBasic Handle to the button"
+									Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+'									Print #369, "			End If	'RBNSplitButtonGroupAddControl"
+
+									If NOT ARRAYContainsValueString(arrControlNames, sItemName) AND sItemName Then
+										Call ARRAYAddValueString(arrControlNames, sItemName)
+									End If
+								Next
+
+							End If
+'							Print #369, "		End If	'RBNSplitButtonAddGroup"
+							Print #369, ""
+						Next
+
+					Case ControlType_DropDownButton
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+						Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+
+						rbnDropDownCtrlControlsColl	= GetRbnDropDownCtrlCtrls(rbnControlItem)
+						nNumDropDownCtrlCtrls		= GetMICtrlCollCount(rbnDropDownCtrlControlsColl)
+
+						For l = 0 To (nNumDropDownCtrlCtrls - 1)
+							rbnDropDownCtrlControlItem	= GetMICtrlCollItemInt(rbnDropDownCtrlControlsColl, l)
+
+							nCntrlType	= GetMICtrlCtrlType(rbnDropDownCtrlControlItem)
+							sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+							sGroupName	= GetMICtrlName(rbnDropDownCtrlControlItem)
+							sCaption		= GetMICtrlCaption(rbnDropDownCtrlControlItem)
+							sKeyTip		= GetMICtrlKeyTip(rbnDropDownCtrlControlItem)
+'							Print #369, "		'Create the DropDownButton Group"
+							Print #369, "	nCtrlIdx	= RBNDropDButtonAddGroup(" & eye & sGroupName & eye & ", " & eye & sCaption & eye
+												& ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ", " & eye & sName & eye & ")"
+'							Print #369, "		If nCtrlIdx > 0 Then"
+
+							If nCntrlType = ControlType_DropDownMenuGroup Then
+								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnDropDownCtrlControlItem)
+								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
+
+								For m = 0 To (nNumDropDownMenuCtrls - 1)
+									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
+
+									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
+									sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+									sItemName		= GetMICtrlName(rbnDropDownMenuControlItem)
+									sCaption		= GetMICtrlCaption(rbnDropDownMenuControlItem)
+									sKeyTip		= GetMICtrlKeyTip(rbnDropDownCtrlControlItem)
+									nImageSize	= RBNControlGetSizeThs(rbnDropDownCtrlControlItem)
+									sImageName	= RBNGetImageStringFromControlName(sItemName)
+
+'									Print #369, "			'Create the DropDownButton Group Controls"
+									Print #369, "	nCtrlIdx	= RBNDropDButtonGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+															& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye
+															& ", " & eye & sName & eye & ", " & eye & sGroupName & eye & ")"
+'									Print #369, "			If nCtrlIdx > 0 Then"
+'									Print #369, "				'Create & Set the button tooltip"
+									Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'									Print #369, "				'Set the button icon"
+									Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'									Print #369, "				'Set Custom MapBasic Handle to the button"
+									Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+'									Print #369, "			End If	'RBNDropDButtonGroupAddControl"
+
+									If NOT ARRAYContainsValueString(arrControlNames, sItemName) AND sItemName Then
+										Call ARRAYAddValueString(arrControlNames, sItemName)
+									End If
+								Next
+
+							End If
+'							Print #369, "		End If	'RBNDropDButtonAddGroup"
+							Print #369, ""
+						Next
+
+					Case Else
+						Print #369, "   Print " & eye & "ControlType " & nCntrlType & " understøttes ikke: " & sName & " " & sCaption & eye
+				End Case
+
+'				Print #369, "	End If	'RBNGroupAddControl"
+'				Print #369, ""
+			Next
+		Next
+	Next
+
+'	nNumCntrls = GetMICtrlCollCount(theMapMTBControlsColl)
+'	Call DEBUGPrint("   Map MiniToolBar: Number of Controls " & nNumCntrls)
+'	Print #369, "   Map MiniToolBar: Number of Controls " & nNumCntrls
+'	For i = 0 To (nNumCntrls - 1)
+'		rbnControlItem	= GetMICtrlCollItemInt(theMapMTBControlsColl, i)
+'
+'		sName		= GetMICtrlName(rbnControlItem)
+'		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+'		sCaption		= GetMICtrlCaption(rbnControlItem)
+''		Call DEBUGPrint("      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Print #369, "      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'
+'		If nCntrlType = ControlType_StackPanel Then
+'			rbnStackPanelControlsColl	= GetIStackPanelCtrls(rbnControlItem)
+'			nNumStackPanelCtrls			= GetMICtrlCollCount(rbnStackPanelControlsColl)
+'
+'			For l = 0 To (nNumStackPanelCtrls - 1)
+'				rbnStackPanelControlItem	= GetMICtrlCollItemInt(rbnStackPanelControlsColl, l)
+'
+'				nCntrlType	= GetMICtrlCtrlType(rbnStackPanelControlItem)
+'				sName		= GetMICtrlName(rbnStackPanelControlItem)
+'				sCaption		= GetMICtrlCaption(rbnStackPanelControlItem)
+''				Call DEBUGPrint("         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'				Print #369, "         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'			Next
+'		End If
+'
+'	Next
+
+'	rbnStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
+'	nNumCntrls 			= GetMICtrlCollCount(rbnStatusbarControlsColl)
+''	Call DEBUGPrint("   Statusbar: Number of Controls " & nNumCntrls)
+'	Print #369, "   Statusbar: Number of Controls " & nNumCntrls
+'	For k = 0 To (nNumCntrls - 1)
+'		rbnControlItem	= GetMICtrlCollItemInt(rbnStatusbarControlsColl, k)
+'
+'		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+'		sName		= GetMICtrlName(rbnControlItem)
+'		sCaption		= GetMICtrlCaption(rbnControlItem)
+''		Call DEBUGPrint("      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Print #369, "      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'	Next
+
+	Print #369, "'-----------------------------------------------'"
+	Print #369, "Dim i As Integer"
+	Print #369, "	Redim marrControlName(" & Ubound(arrControlNames) & ")"
+	Print #369, "	Redim marrImageString(" & Ubound(arrControlNames) & ")"
+	Print #369, "	Redim marrCommandID(" & Ubound(arrControlNames) & ")"
+	For i = 1 To Ubound(arrControlNames)
+		Print #369, "	i = i + 1"
+		Print #369, "	marrControlName(i)	= " & eye & arrControlNames(i) & eye
+		Print #369, "	marrImageName(i)	= " & eye & RBNGetImageStringFromControlName(arrControlNames(i)) & eye
+		Print #369, "	marrCommandID(i)	= " & eye & RBNGetCommandIDFromControlName(arrControlNames(i)) & eye
+	Next
+	Close File #369
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnTabItem 				= NULL_PTR
+	rbnGroupsColl				= NULL_PTR
+	rbnGroupItem				= NULL_PTR
+	rbnControlsColl			= NULL_PTR
+	rbnControlItem				= NULL_PTR
+	rbnGalleryGroupsColl		= NULL_PTR
+	rbnGalleryGroupItem			= NULL_PTR
+	rbnGalleryControlsColl		= NULL_PTR
+	rbnGalleryControlItem		= NULL_PTR
+	rbnSplitCtrlControlsColl		= NULL_PTR
+	rbnSplitCtrlControlItem		= NULL_PTR
+	rbnDropDownMenuControlsColl	= NULL_PTR
+	rbnDropDownMenuControlItem	= NULL_PTR
+	rbnDropDownCtrlControlsColl	= NULL_PTR
+	rbnDropDownCtrlControlItem	= NULL_PTR
+	rbnStackPanelControlsColl	= NULL_PTR
+	rbnStackPanelControlItem		= NULL_PTR
+	rbnStatusbarControlsColl		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNLoop")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBInitialControlArrays
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+	Redim marrControlName(230)
+	Redim marrImageName(230)
+	Redim marrCommandID(230)
+	i = i + 1
+	marrControlName(i)	= "FileOpenWorkspaceButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENWORKSPACE_"
+	marrCommandID(i)	= "M_FILE_OPEN"
+	i = i + 1
+	marrControlName(i)	= "FileAddWorkspaceButton"
+	marrImageName(i)	= "MI_IMG_APP_INSERTWORKSPACE_"
+	marrCommandID(i)	= "M_FILE_ADD_WORKSPACE"
+	i = i + 1
+	marrControlName(i)	= "FileOpenTableButton"
+	marrImageName(i)	= "MI_IMG_MAP_OPENTABLE_"
+	marrCommandID(i)	= "M_FILE_OPEN"
+	i = i + 1
+	marrControlName(i)	= "FileImportButton"
+	marrImageName(i)	= "MI_IMG_APP_IMPORT_"
+	marrCommandID(i)	= "M_TABLE_IMPORT"
+	i = i + 1
+	marrControlName(i)	= "FileUniversalDataButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENUNIVERSAL_"
+	marrCommandID(i)	= "M_FILE_OPEN_UNIVERSAL_DATA"
+	i = i + 1
+	marrControlName(i)	= "FileDatabaseTableButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENDBMS_"
+	marrCommandID(i)	= "M_DBMS_OPEN_ODBC"
+	i = i + 1
+	marrControlName(i)	= "RunMapBasicButton"
+	marrImageName(i)	= "MI_IMG_APP_RUNMAPBASIC_"
+	marrCommandID(i)	= "M_TOOLS_RUN"
+	i = i + 1
+	marrControlName(i)	= "AddBasemapAerialButton"
+	marrImageName(i)	= "MI_IMG_MAP_BASEMAPAERIAL_"
+	marrCommandID(i)	= "M_FILE_OPEN_BING_AERIAL"
+	i = i + 1
+	marrControlName(i)	= "AddBasemapRoadsButton"
+	marrImageName(i)	= "MI_IMG_MAP_BASEMAPROADS_"
+	marrCommandID(i)	= "M_FILE_OPEN_BING_ROADS"
+	i = i + 1
+	marrControlName(i)	= "AddBasemapHybridButton"
+	marrImageName(i)	= "MI_IMG_MAP_BASEMAPHYBRID_"
+	marrCommandID(i)	= "M_FILE_OPEN_BING_HYBRID"
+	i = i + 1
+	marrControlName(i)	= "OpenWmsButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENWMS_"
+	marrCommandID(i)	= "M_FILE_OPEN_WMS"
+	i = i + 1
+	marrControlName(i)	= "OpenWfsButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENWFS_"
+	marrCommandID(i)	= "M_FILE_OPEN_WFS"
+	i = i + 1
+	marrControlName(i)	= "SaveWorkspaceButton"
+	marrImageName(i)	= "MI_IMG_APP_SAVEWORKSPACE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SaveWorkspaceAsButton"
+	marrImageName(i)	= "MI_IMG_APP_SAVEWORKSPACEAS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SaveTableButton"
+	marrImageName(i)	= "MI_IMG_TAB_SAVETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SaveCopyAsButton"
+	marrImageName(i)	= "MI_IMG_TAB_SAVECOPYAS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CloseConnectionButton"
+	marrImageName(i)	= "MI_IMG_APP_CLOSECONNECTION_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CloseTableButton"
+	marrImageName(i)	= "MI_IMG_TAB_CLOSETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CloseAllButton"
+	marrImageName(i)	= "MI_IMG_APP_CLOSEALL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CopyButton"
+	marrImageName(i)	= "MI_IMG_MAP_COPY_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PasteButton"
+	marrImageName(i)	= "MI_IMG_MAP_PASTE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CutButton"
+	marrImageName(i)	= "MI_IMG_MAP_CUT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "UndoButton"
+	marrImageName(i)	= "MI_IMG_MAP_UNDO_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PrintButton"
+	marrImageName(i)	= "MI_IMG_APP_PRINT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PdfButton"
+	marrImageName(i)	= "MI_IMG_APP_PRINTTOPDF_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ExportImgButton"
+	marrImageName(i)	= "MI_IMG_WIN_EXPORTIMAGE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PageSetupButton"
+	marrImageName(i)	= "MI_IMG_APP_OPTPRINTERDEFTS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "NewBrowserButton"
+	marrImageName(i)	= "MI_IMG_LAY_NEWBROWSER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableSaveButton"
+	marrImageName(i)	= "MI_IMG_TAB_SAVETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SaveQueryButton"
+	marrImageName(i)	= "MI_IMG_TAB_SAVEQUERY_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableSaveCopyAsButton"
+	marrImageName(i)	= "MI_IMG_TAB_SAVECOPYAS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RevertTableButton"
+	marrImageName(i)	= "MI_IMG_TAB_REVERTTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableCloseButton"
+	marrImageName(i)	= "MI_IMG_TAB_CLOSETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "NewTableButton"
+	marrImageName(i)	= "MI_IMG_TAB_NEWTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ExportButton"
+	marrImageName(i)	= "MI_IMG_TAB_EXPORTTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_SELECT_"
+	marrCommandID(i)	= "M_TOOLS_SELECTOR"
+	i = i + 1
+	marrControlName(i)	= "SqlSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_SQLSELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SelectionInvertSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_INVERT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SelectionClearButton"
+	marrImageName(i)	= "MI_IMG_MAP_CLEAR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "FindSelectionButton"
+	marrImageName(i)	= "MI_IMG_TAB_FINDMAPSELECTION_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "FindAddressButton"
+	marrImageName(i)	= "MI_IMG_MAP_FINDADDRESS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "FindAndMarkButton"
+	marrImageName(i)	= "MI_IMG_MAP_FINDANDMARK_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "UpdateColumnButton"
+	marrImageName(i)	= "MI_IMG_TAB_UPDATECOLUMN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AppendRowButton"
+	marrImageName(i)	= "MI_IMG_TAB_APPENDROWS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddNewRowButton"
+	marrImageName(i)	= "MI_IMG_TAB_ADDNEWROW_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableClearMapObjectsButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "InfoToolButton"
+	marrImageName(i)	= "MI_IMG_MAP_INFOTOOL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "HotLinkButton"
+	marrImageName(i)	= "MI_IMG_TAB_HOTLINK_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "HotLinkOptionsButton"
+	marrImageName(i)	= "MI_IMG_MAP_HOTLINKOPTIONS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PickFieldsButton"
+	marrImageName(i)	= "MI_IMG_TAB_PICKFIELDS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "BrowserFontButton"
+	marrImageName(i)	= "MI_IMG_TAB_BROWSERFONT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ShowGridLinesToggleButton"
+	marrImageName(i)	= "MI_IMG_TAB_SHOWGRIDLINES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "FilterButton"
+	marrImageName(i)	= "MI_IMG_TAB_FILTER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClearFilterButton"
+	marrImageName(i)	= "MI_IMG_TAB_CLEARFILTER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MultiColumnSortButton"
+	marrImageName(i)	= "MI_IMG_TAB_SORTMULTICOLUMN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SortAscendingButton"
+	marrImageName(i)	= "MI_IMG_TAB_SORTASCENDING_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SortDescendingButton"
+	marrImageName(i)	= "MI_IMG_TAB_SORTDESCENDING_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClearSortButton"
+	marrImageName(i)	= "MI_IMG_TAB_CLEARSORTFILTER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClearAllSortButton"
+	marrImageName(i)	= "MI_IMG_TAB_SORTCLEARSORT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ToggleSortButton"
+	marrImageName(i)	= "MI_IMG_TAB_SORT_ONOFF_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ReApplySortButton"
+	marrImageName(i)	= "MI_IMG_TAB_RESORT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddtoMapButton"
+	marrImageName(i)	= "MI_IMG_TAB_ADDTOMAP_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableModifyStructureButton"
+	marrImageName(i)	= "MI_IMG_TAB_MODIFYSTRUCTURE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TablePackButton"
+	marrImageName(i)	= "MI_IMG_TAB_PACKTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableDeleteButton"
+	marrImageName(i)	= "MI_IMG_TAB_DELETETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "TableRenameButton"
+	marrImageName(i)	= "MI_IMG_TAB_RENAMETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DatabaseMakeMappableButton"
+	marrImageName(i)	= "MI_IMG_APP_MAKEDBMSTABMPPBL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DatabaseChangeTableSymbolButton"
+	marrImageName(i)	= "MI_IMG_APP_CHANGEDBMSTABSYM_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DatabaseUnlinkTableButton"
+	marrImageName(i)	= "MI_IMG_APP_UNLINKDBMSTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DatabaseRefreshDbmsTableButton"
+	marrImageName(i)	= "MI_IMG_APP_REFRESHDBMSTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CreateOracleWorkspaceButton"
+	marrImageName(i)	= "MI_IMG_ORA_CREATEORACLEWOR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DeleteOracleWorkspaceButton"
+	marrImageName(i)	= "MI_IMG_ORA_DELETEORACLEWOR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MergeOracleTableButton"
+	marrImageName(i)	= "MI_IMG_ORA_MERGEORACLETABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RefreshOracleTableButton"
+	marrImageName(i)	= "MI_IMG_ORA_REFRESHORACLETAB_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "EnableOracleVersioningButton"
+	marrImageName(i)	= "MI_IMG_ORA_ENABLEORACLEVERS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DisableOracleVersioningButton"
+	marrImageName(i)	= "MI_IMG_ORA_DISABLEORACLEVERS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddToLibraryButton"
+	marrImageName(i)	= "MI_IMG_TAB_ADDTOLIBRARY_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ViewEditMetadataButton"
+	marrImageName(i)	= "MI_IMG_TAB_VIEWEDITMETADATA_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RasterImageStyleButton"
+	marrImageName(i)	= "MI_IMG_TAB_RASTERIMAGESTYLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RasterRegStyleButton"
+	marrImageName(i)	= "MI_IMG_TAB_RASTERREGISTR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SeparatorRasterTable"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RasterAddControlPtsButton"
+	marrImageName(i)	= "MI_IMG_TAB_RASTERCONTROLPNT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "WfsPropertiesButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "WfsRefreshButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SeparatorWebService"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "WmsPropertiesButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "NewMapButton"
+	marrImageName(i)	= "MI_IMG_LAY_NEWMAP_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapExplorerControlButton"
+	marrImageName(i)	= "MI_IMG_WIN_WOREXPLORERWIN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapAddLayersButton"
+	marrImageName(i)	= "MI_IMG_MAP_ADDLAYER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapAddThematicButton"
+	marrImageName(i)	= "MI_IMG_MAP_ADDTHEME_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapCreateLegendDesignerButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTLEGEND_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RadiusSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_AREASELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MaqueeSelectButton"
+	marrImageName(i)	= "MI_IMG_LAY_MARQUEESELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RegionSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_POLYGONSELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "BoundarySelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_BOUNDARYSELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapSelectionSqlSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_SQLSELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapSelectionInvertSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_INVERT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapSelectionClearButton"
+	marrImageName(i)	= "MI_IMG_MAP_CLEAR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PanButton"
+	marrImageName(i)	= "MI_IMG_MAP_PAN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomInButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMIN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomOutButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMOUT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomToSelectionLayerButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMENTIRESELLYR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomToSelectedObjectsButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMTOEXTENTSEL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomToLayerButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMTOENTIRELAYER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomToEntireMapButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMTOENTIREMAP_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ZoomToNearestTileServerLevelButton"
+	marrImageName(i)	= "MI_IMG_MAP_ZOOMNRSTTLSRVRLVL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MoveMapToButton"
+	marrImageName(i)	= "MI_IMG_MAP_MOVETO_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PreviousViewButton"
+	marrImageName(i)	= "MI_IMG_TAB_PREV_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LabelToolButton"
+	marrImageName(i)	= "MI_IMG_MAP_LABELTOOL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SelectableLabelButton"
+	marrImageName(i)	= "MI_IMG_MAP_SELECTABLELABELS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClearCustomLabelButton"
+	marrImageName(i)	= "MI_IMG_MAP_CLEARCUSTOMLABELS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LabelPriorityButton"
+	marrImageName(i)	= "MI_IMG_MAP_LABELPRIORITY_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DragMapButton"
+	marrImageName(i)	= "MI_IMG_MAP_DRAGMAP_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "StatsWindowButton"
+	marrImageName(i)	= "MI_IMG_MAP_STATSWINDOW_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "NewRedistricterWindowButton"
+	marrImageName(i)	= "MI_IMG_MAP_REDISTRICTER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SetTargetButton"
+	marrImageName(i)	= "MI_IMG_MAP_REDISTRSETTARGET_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AssignDistrictButton"
+	marrImageName(i)	= "MI_IMG_MAP_REDISTRASSIGN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddDistrictButton"
+	marrImageName(i)	= "MI_IMG_MAP_REDISTRICTERADD_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ResdistrictorItemSeparator"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DeleteDistrictButton"
+	marrImageName(i)	= "MI_IMG_MAP_REDISTRDELETE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RedistricterOptionsButton"
+	marrImageName(i)	= "MI_IMG_MAP_REDISTRICTEROPTS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MeasureButton"
+	marrImageName(i)	= "MI_IMG_LAY_RULER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapOptionsButton"
+	marrImageName(i)	= "MI_IMG_MAP_MAPOPTIONS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapHotlinkOptionsButton"
+	marrImageName(i)	= "MI_IMG_MAP_HOTLINKOPTIONS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LockScaleButton"
+	marrImageName(i)	= "MI_IMG_MAP_LOCKSCALE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CreateScaleBarButton"
+	marrImageName(i)	= "MI_IMG_MAP_SCALEBAR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "MapRedrawButton"
+	marrImageName(i)	= "MI_IMG_WIN_REDRAWWINDOWS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClipboardCopyButton"
+	marrImageName(i)	= "MI_IMG_MAP_COPY_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClipboardPasteButton"
+	marrImageName(i)	= "MI_IMG_MAP_PASTE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClipboardCutButton"
+	marrImageName(i)	= "MI_IMG_MAP_CUT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClipboardUndoButton"
+	marrImageName(i)	= "MI_IMG_MAP_UNDO_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialSelectionSqlSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_SQLSELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialSelectionInvertSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_INVERT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialSelectionClearButton"
+	marrImageName(i)	= "MI_IMG_MAP_CLEAR_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClearTargetButton"
+	marrImageName(i)	= "MI_IMG_SPA_CLEARTARGET_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialEraseTargetButton"
+	marrImageName(i)	= "MI_IMG_SPA_ERASE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialEraseOutsideTargetButton"
+	marrImageName(i)	= "MI_IMG_SPA_ERASEOUTSIDE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CombineSelectedObjectsButton"
+	marrImageName(i)	= "MI_IMG_SPA_COMBINESELECTOBJ_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CombineUsingColumnButton"
+	marrImageName(i)	= "MI_IMG_SPA_COMBINEUSINGCOL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SplitTargetButton"
+	marrImageName(i)	= "MI_IMG_SPA_SPLIT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PolylineSplitButton"
+	marrImageName(i)	= "MI_IMG_SPA_POLYLINESPLIT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "PolylineSplitAtNodeButton"
+	marrImageName(i)	= "MI_IMG_SPA_POLYLINESPLITNODE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DisaggregateButton"
+	marrImageName(i)	= "MI_IMG_SPA_DISAGGROBJECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialBufferButton"
+	marrImageName(i)	= "MI_IMG_SPA_BUFFER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialBufferTableButton"
+	marrImageName(i)	= "MI_IMG_TAB_BUFFERTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialConvexHullButton"
+	marrImageName(i)	= "MI_IMG_SPA_CONVEXHULL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapToNodeButton"
+	marrImageName(i)	= "MI_IMG_SPA_SNAPTONODES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ReshapeButton"
+	marrImageName(i)	= "MI_IMG_SPA_RESHAPENODES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddNodeButton"
+	marrImageName(i)	= "MI_IMG_SPA_ADDNODES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "OverlayNodeButton"
+	marrImageName(i)	= "MI_IMG_SPA_OVERLAYNODES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CheckRegionsButton"
+	marrImageName(i)	= "MI_IMG_SPA_CHECKREGIONS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CleanButton"
+	marrImageName(i)	= "MI_IMG_SPA_CLEANOBJECTS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapButton"
+	marrImageName(i)	= "MI_IMG_SPA_SNAPTHIN_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SmoothButton"
+	marrImageName(i)	= "MI_IMG_SPA_SMOOTHLINES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "UnsmoothButton"
+	marrImageName(i)	= "MI_IMG_SPA_UNSMOOTHLINES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "OffsetObjectButton"
+	marrImageName(i)	= "MI_IMG_LAB_OFFSET_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RotateObjectButton"
+	marrImageName(i)	= "MI_IMG_SPA_ROTATEOBJECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialConvertToPolylineButton"
+	marrImageName(i)	= "MI_IMG_SPA_CVRTTOPOLYLINES_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SetClipRegionButton"
+	marrImageName(i)	= "MI_IMG_SPA_CLIPREGIONSET_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "ClipRegionOnOffButton"
+	marrImageName(i)	= "MI_IMG_SPA_CLIPREGIONTOGGLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DigitizerSetupButton"
+	marrImageName(i)	= "MI_IMG_SPA_DIGITIZERSETUP_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialClearMapObjectsButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertSymbolButton"
+	marrImageName(i)	= "MI_IMG_LAY_SYMBOL_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertTextButton"
+	marrImageName(i)	= "MI_IMG_SPA_INSERTTEXT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertLineButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTLINE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertPolylineButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTPOLYLINE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertArcButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTARC_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertPolygonButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTPOLYGREGION_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertEllipseButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTELLIPSE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertRectangleButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSERTRECTANGLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateInsertRoundedRectangleButton"
+	marrImageName(i)	= "MI_IMG_LAY_INSRTROUNDRECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateSymbolStyleButton"
+	marrImageName(i)	= "MI_IMG_LAY_SYMBOLSTYLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateLineStyleButton"
+	marrImageName(i)	= "MI_IMG_LAY_LINESTYLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateRegionStyleButton"
+	marrImageName(i)	= "MI_IMG_LAY_REGIONSTYLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateTextStyleButton"
+	marrImageName(i)	= "MI_IMG_LAY_TEXTSTYLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialConvertToRegionButton"
+	marrImageName(i)	= "MI_IMG_SPA_CONVERTTOREGIONS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialEncloseButton"
+	marrImageName(i)	= "MI_IMG_SPA_ENCLOSE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialCreateDriveRegionsButton"
+	marrImageName(i)	= "MI_IMG_SPA_DRIVEREGIONS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialDriveRegionsTableButton"
+	marrImageName(i)	= "MI_IMG_SPA_DRIVEREGIONSTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialVoronoiButton"
+	marrImageName(i)	= "MI_IMG_SPA_VORONOI_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SpatialVoronoiTableButton"
+	marrImageName(i)	= "MI_IMG_SPA_VORONOITABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "CreatePointsButton"
+	marrImageName(i)	= "MI_IMG_TAB_CREATEPOINTS_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "GeoCodeButton"
+	marrImageName(i)	= "MI_IMG_TAB_GEOCODE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "WebGeoCodeButton"
+	marrImageName(i)	= "MI_IMG_TAB_GEOCODESERVER_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutNewPageButton"
+	marrImageName(i)	= "MI_IMG_LAY_NEWLAYOUTPAGE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutPageSetupButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddMapButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "AddBrowserButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutDesigneInsertTextButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutDesigneInsertImageButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutAddMapLegendButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "InsertLineButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "InsertEllipseButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "InsertRectangleButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "InsertRoundedRectangleButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RemoveSelectedLayoutItemsButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutBringToFrontButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutSendToBackButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "VerticalGuidelineButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "HorizontalGuidelineButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "DisableGuidelinesButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "RemoveGuidelinesButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapToLeftButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapToBottomButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapToTopButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapToRightButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutGridLinesButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "SnapToGridButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutSelectButton"
+	marrImageName(i)	= "MI_IMG_MAP_SELECT_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutZoomInButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutZoomOutButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+	i = i + 1
+	marrControlName(i)	= "LayoutPanButton"
+	marrImageName(i)	= "MI_IMG_APP_OPENTABLE_"
+	marrCommandID(i)	= "102"
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBInitialControlArrays")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetImageStringFromControlName(ByVal sControlName As String) As String
+
+Dim	nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNGetImageStringFromControlName = "MI_IMG_APP_OPENTABLE_"
+
+	nItem = ARRAYFindValueString(marrControlName, sControlName)
+	If nItem > 0 Then
+		RBNGetImageStringFromControlName = marrImageName(nItem)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetImageStringFromControlName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetCommandIDFromControlName(ByVal sControlName As String) As String
+
+Dim	nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNGetCommandIDFromControlName = M_FILE_OPEN
+
+	nItem = ARRAYFindValueString(marrControlName, sControlName)
+	If nItem > 0 Then
+		RBNGetCommandIDFromControlName = marrCommandID(nItem)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetCommandIDFromControlName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetImageStringFromTabAndGroup(	  ByVal sRbnTabName As String
+									, ByVal sRbnGroupName As String
+									) As String
+
+OnError GoTo ErrorOccured
+
+RBNGetImageStringFromTabAndGroup = "MI_IMG_APP_CLOSEALL_"
+
+	Do Case sRbnTabName
+		Case TAB_HOME
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_APP_OPENTABLE_"
+		Case TAB_TABLE
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_TAB_NEWTABLE_"
+		Case TAB_MAP
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_MAP_NEWMAPPER_"
+		Case TAB_SPATIAL
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_SPA_BUFFER_"
+		Case TAB_LAYOUT
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_LAY_FRAME_"
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetImageStringFromTabAndGroup")
+	Call ERRShow()
+
+End Function
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -527,7 +1919,7 @@ RBNAddTab = 0
 
 	Call RBNInitiate
 
-	nCtrl = RBNAddElement(sTabName, "", "", "", "", CONTROL_TYPE_RLIB_TAB)
+	nCtrl = RBNAddElement(sTabName, "", "", "", "", CONTROL_TYPE_RLIB_TAB, 0)
 
 	'Add a new Tab to theTabsColl collection
 	marrControls(nCtrl) = RbnTabCollAddStrStr(theTabsColl, sTabName, sCaption)
@@ -813,6 +2205,38 @@ End Function
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNSelectTab(	  ByVal sTabName As String)
+
+Dim	rbnTabFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+		Call SetRbnTabIsSelected(rbnTab, TRUE)
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnTabFound 	= NULL_PTR
+	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNSelectTab")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
 '	:
 'Return value:
 '
@@ -951,7 +2375,7 @@ RBNTabAddGroup = 0
 	If RBNGetTab(sTabName, rbnTabFound) Then
 		rbnTab = rbnTabFound
 
-		nCtrl = RBNAddElement(sTabName, sGroupName, "", "", "", CONTROL_TYPE_RLIB_GROUP)
+		nCtrl = RBNAddElement(sTabName, sGroupName, "", "", "", CONTROL_TYPE_RLIB_GROUP, 0)
 
 		'Get the ribbon group collection.
 		rbnGroupsColl	= GetRbnTabGrps(rbnTab)
@@ -1464,7 +2888,7 @@ RBNGroupAddControl = 0
 			'Get Group controls collection
 			rbnGroupsColl = GetRbnCtrlGrpCtrls(rbnGroup)
 
-			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, nControlType)
+			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, nControlType, 0)
 			marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnGroupsColl, sControlName, sCaption, nControlType)
 
 			If sKeytip <> "" Then
@@ -1596,7 +3020,7 @@ RBNGroupInsertControl = 0
 			'Get Group controls collection
 			rbnGroupsColl = GetRbnCtrlGrpCtrls(rbnGroup)
 
-			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, nControlType)
+			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, nControlType, 0)
 			marrControls(nCtrl) = MICtrlCollInsertIntStrStrInt(rbnGroupsColl, nPosition, sControlName, sCaption, nControlType)
 
 			If sKeytip <> "" Then
@@ -2074,7 +3498,7 @@ RBNSplitButtonAddGroup = 0
 '				Call DEBUGPrint("   Splitbutton found: " & sSplitButtonName)
 				rbnSplitButton = rbnControlFound
 
-				nCtrl = RBNAddElement(sTabName, sGroupName, sSplitButtonName, sSplitButtonGroupName, "", ControlType_DropDownMenuGroup)
+				nCtrl = RBNAddElement(sTabName, sGroupName, sSplitButtonName, sSplitButtonGroupName, "", ControlType_DropDownMenuGroup, ControlType_SplitButton)
 '				Call DEBUGPrint("   Adding as element: " & nCtrl)
 
 '				Call DEBUGPrint("   Getting the Group Collection")
@@ -2363,7 +3787,7 @@ RBNSplitButtonGroupAddControl = 0
 					'Get Group controls collection
 					rbnControlsColl = GetCtrlGrpCtrls(rbnSplitButtonGroup)
 
-					nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), sSplitButtonName, sSplitButtonGroupName, sControlName, nControlType)
+					nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), sSplitButtonName, sSplitButtonGroupName, sControlName, nControlType, ControlType_SplitButton)
 					marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnControlsColl, sControlName, sCaption, nControlType)
 
 					If sKeytip <> "" Then
@@ -2589,7 +4013,7 @@ RBNDropDButtonAddGroup = 0
 '				Call DEBUGPrint("   DropDownButton found: " & sDropDButtonName)
 				rbnDropDButton = rbnControlFound
 
-				nCtrl = RBNAddElement(sTabName, sGroupName, sDropDButtonName, sDropDButtonGroupName, "", ControlType_DropDownMenuGroup)
+				nCtrl = RBNAddElement(sTabName, sGroupName, sDropDButtonName, sDropDButtonGroupName, "", ControlType_DropDownMenuGroup, ControlType_DropDownButton)
 '				Call DEBUGPrint("   Adding as element: " & nCtrl)
 
 '				Call DEBUGPrint("   Getting the Group Collection")
@@ -2878,7 +4302,7 @@ RBNDropDButtonGroupAddControl = 0
 					'Get Group controls collection
 					rbnControlsColl = GetCtrlGrpCtrls(rbnDropDButtonGroup)
 
-					nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), sDropDButtonName, sDropDButtonGroupName, sControlName, nControlType)
+					nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), sDropDButtonName, sDropDButtonGroupName, sControlName, nControlType, ControlType_DropDownButton)
 					marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnControlsColl, sControlName, sCaption, nControlType)
 
 					If sKeytip <> "" Then
@@ -3275,7 +4699,7 @@ RBNContextGroupAddButton = 0
 			'Get Group controls collection
 			rbnGroupsColl = GetRbnCtrlGrpCtrls(rbnGroup)
 
-			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, ControlType_Button)
+			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, ControlType_Button, 0)
 			marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnGroupsColl, sControlName, sCaption, ControlType_Button)
 
 			RBNContextGroupAddButton = nCtrl
@@ -3323,10 +4747,10 @@ RBNToolContextMenuAddMenuItem = 0
 	Call RBNInitiate
 
 	If sCaption = "(-" Then
-		nCtrl 			= RBNAddElement("ToolContextMenu", "", "", "", sControlName, ControlType_ContextMenuSeparator)
+		nCtrl 			= RBNAddElement("ToolContextMenu", "", "", "", sControlName, ControlType_ContextMenuSeparator, 0)
 		marrControls(nCtrl) = MICtrlCollAddStrStrInt(theToolContextMenuItemsColl, sControlName, "", ControlType_ContextMenuSeparator)
 	Else
-		nCtrl 			= RBNAddElement("ToolContextMenu", "", "", "", sControlName, ControlType_ContextMenuItem)
+		nCtrl 			= RBNAddElement("ToolContextMenu", "", "", "", sControlName, ControlType_ContextMenuItem, 0)
 		marrControls(nCtrl) = MICtrlCollAddStrStrInt(theToolContextMenuItemsColl, sControlName, sCaption, ControlType_ContextMenuItem)
 	End If
 
@@ -3644,7 +5068,7 @@ RBNMapMTBAddControl = 0
 
 	Call RBNInitiate
 
-	nCtrl 			= RBNAddElement("MapMiniToolbar", "", "", "", sControlName, nControlType)
+	nCtrl 			= RBNAddElement("MapMiniToolbar", "", "", "", sControlName, nControlType, 0)
 	marrControls(nCtrl) = MICtrlCollAddStrStrInt(theMapMTBControlsColl, sControlName, sCaption, nControlType)
 
 	If sKeytip <> "" Then
@@ -3685,7 +5109,7 @@ RBNMapMTBInsertControl = 0
 
 	Call RBNInitiate
 
-	nCtrl 			= RBNAddElement("MapMiniToolbar", "", "", "", sControlName, nControlType)
+	nCtrl 			= RBNAddElement("MapMiniToolbar", "", "", "", sControlName, nControlType, 0)
 	marrControls(nCtrl) = MICtrlCollInsertIntStrStrInt(theMapMTBControlsColl, nPosition, sControlName, sCaption, nControlType)
 
 	If sKeytip <> "" Then
@@ -3888,7 +5312,7 @@ OnError GoTo ErrorOccured
 
 		stackPanelColl	= GetIStackPanelCtrls(rbnsStackPanel)
 
-		nCtrl 			= RBNAddElement("MapMiniToolbar", sStackPanelName, "", "", sControlName, nControlType)
+		nCtrl 			= RBNAddElement("MapMiniToolbar", sStackPanelName, "", "", sControlName, nControlType, 0)
 		marrControls(nCtrl) = MICtrlCollAddStrStrInt(stackPanelColl, sControlName, sCaption, nControlType)
 
 		If sKeytip <> "" Then
@@ -4175,6 +5599,111 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
+Function RBNControlGetSizeThs(  rbnControl As This
+						) As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNControlGetSizeThs = CONTROL_SIZE_SMALL
+
+	Do Case GetMICtrlCtrlType(rbnControl)
+		Case ControlType_Button
+			If GetRbnBtnCtrlIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetRbnBtnCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+		Case ControlType_ToolButton
+			If GetRbnToolBtnCtrlIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetRbnToolBtnCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+		Case ControlType_RibbonMenuItem
+'			If GetRbnMenuItemCtrlIsExtraSmall(rbnControl) Then
+'				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			If GetRbnMenuItemCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+'		Case ControlType_RibbonButtonPanel
+'		Case ControlType_RibbonSeparator
+'		Case ControlType_ContextMenuItem
+'		Case ControlType_ContextMenuSeparator
+'		Case ControlType_MenuItemSeparator
+
+		Case ControlType_DropDownButton
+			If GetRbnDropDownCtrlIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetRbnDropDownCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+		Case ControlType_SplitButton
+			If GetRbnSplitCtrlIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetRbnSplitCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+'		Case ControlType_DropDownMenuGroup
+
+		Case ControlType_GalleryControl
+			If GetRbnGalleryCtrlIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetRbnGalleryCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+		Case ControlType_GalleryItem
+			If GetRbnGalleryItemIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetRbnGalleryItemIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+'		Case ControlType_GalleryGroup
+'		Case ControlType_CustomControl
+'		Case ControlType_TextBlock
+
+		Case ControlType_Image
+			If GetIImageCtrlIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetIImageCtrlIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+'		Case ControlType_BackStageTabItem
+
+		Case ControlType_BackStageButton
+			If GetIBackStageBtnIsExtraSmall(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_EXTRASMALL
+			ElseIf GetIBackStageBtnIsLarge(rbnControl) Then
+				RBNControlGetSizeThs = CONTROL_SIZE_LARGE
+			End If
+
+'		Case ControlType_BackStageTabSection
+'		Case ControlType_BackStageSeparator
+'		Case ControlType_StackPanel
+
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlGetSizeThs")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
 Sub RBNControlSetIconsThs( rbnControl As This
 					, ByVal nSize As Integer
 					, ByVal sSmallIcon As String
@@ -4206,10 +5735,10 @@ OnError GoTo ErrorOccured
 			Call SetRbnToolBtnCtrlSmallIcon(rbnControl, New_Uri(sSmallIcon, 0))
 
 		Case ControlType_RibbonMenuItem
-			Call SetRbnMenuItemCtrlIsExtraSmall(rbnControl, (nSize = CONTROL_SIZE_EXTRASMALL))
-			Call SetRbnMenuItemCtrlIsLarge(rbnControl, (nSize = CONTROL_SIZE_LARGE))
-			Call SetRbnMenuItemCtrlLargeIcon(rbnControl, New_Uri(sLargeIcon, 0))
-			Call SetRbnMenuItemCtrlSmallIcon(rbnControl, New_Uri(sSmallIcon, 0))
+'			Call SetRbnMenuItemCtrlIsExtraSmall(rbnControl, (nSize = CONTROL_SIZE_EXTRASMALL))
+'			Call SetRbnMenuItemCtrlIsLarge(rbnControl, (nSize = CONTROL_SIZE_LARGE))
+'			Call SetRbnMenuItemCtrlLargeIcon(rbnControl, New_Uri(sLargeIcon, 0))
+'			Call SetRbnMenuItemCtrlSmallIcon(rbnControl, New_Uri(sSmallIcon, 0))
 
 '		Case ControlType_RibbonButtonPanel
 '		Case ControlType_RibbonSeparator
@@ -5171,6 +6700,7 @@ Function RBNAddElement(	  ByVal sTabName As String
 					, ByVal sSplitButtonGroupName As String
 					, ByVal sControlName As String
 					, ByVal nControlType As Integer
+					, ByVal nParentControlType As Integer
 					) As Integer
 
 OnError GoTo ErrorOccured
@@ -5185,6 +6715,7 @@ RBNAddElement = 0
 	Redim marrSplitButtonNames(mnNumElements)
 	Redim marrSplitButtonGroupNames(mnNumElements)
 	Redim marrControlTypes(mnNumElements)
+	Redim marrParentControlTypes(mnNumElements)
 
 	marrTabNames(mnNumElements)				= sTabName
 	marrGroupNames(mnNumElements)				= sGroupName
@@ -5192,6 +6723,7 @@ RBNAddElement = 0
 	marrSplitButtonNames(mnNumElements)		= sSplitButtonName
 	marrSplitButtonGroupNames(mnNumElements)	= sSplitButtonGroupName
 	marrControlTypes(mnNumElements)			= nControlType
+	marrParentControlTypes(mnNumElements)		= nParentControlType
 
 	RBNAddElement = mnNumElements
 
@@ -5234,6 +6766,7 @@ RBNRemoveElement = 0
 			marrSplitButtonNames(nElementIdx) 		= marrSplitButtonNames(nElementIdx + 1)
 			marrSplitButtonGroupNames(nElementIdx)	= marrSplitButtonGroupNames(nElementIdx + 1)
 			marrControlTypes(nElementIdx)			= marrControlTypes(nElementIdx + 1)
+			marrParentControlTypes(nElementIdx)	= marrParentControlTypes(nElementIdx + 1)
 		Next
 
 		marrControls(mnNumElements)	= NULL_PTR
@@ -5245,6 +6778,7 @@ RBNRemoveElement = 0
 		Redim marrSplitButtonNames(mnNumElements)
 		Redim marrSplitButtonGroupNames(mnNumElements)
 		Redim marrControlTypes(mnNumElements)
+		Redim marrParentControlTypes(mnNumElements)
 	End If
 
 RBNRemoveElement = nElementIdx
@@ -5355,21 +6889,24 @@ OnError GoTo ErrorOccured
 '		Call DEBUGPrint("   " & i & " Tab: " & marrTabNames(i) & " | Group: " & marrGroupNames(i) & " | SplitButton: " & marrSplitButtonNames(i) & " | SplitButtonGroup: " & marrSplitButtonGroupNames(i) & " | Control: " & marrControlNames(i))
 
 		If NOT marrSplitButtonGroupNames(i) = "" Then
+'			Call DEBUGPrint("   Removing from a SplitButton or DropDButton")
 			If NOT marrControlNames(i) = "" Then
-				If marrControlTypes(i) = ControlType_SplitButton Then
+				If marrParentControlTypes(i) = ControlType_SplitButton Then
 					'**Remove SplitButton Control
 					nResult = RBNSplitButtonGroupRemoveControl(  marrControlNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i), marrSplitButtonGroupNames(i))
-	'				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-				ElseIf marrControlTypes(i) = ControlType_DropDownButton Then
+'					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
 					'**Remove DropDownButton Control
 					nResult = RBNDropDButtonGroupRemoveControl(  marrControlNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i), marrSplitButtonGroupNames(i))
 	'				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+				Else
+'					Call DEBUGPrint("   " & i & " Unexpected Control Type: " & marrControlTypes(i))
 				End If
 			Else
-				If marrControlTypes(i) = ControlType_SplitButton Then
+				If marrParentControlTypes(i) = ControlType_SplitButton Then
 					nResult = RBNSplitButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
-'					Call DEBUGPrint("   " & i & " SplitButton Group Removed Result: " & nResult)
-				ElseIf marrControlTypes(i) = ControlType_DropDownButton Then
+					Call DEBUGPrint("   " & i & " SplitButton Group Removed Result: " & nResult)
+				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
 					nResult = RBNDropDButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
 '					Call DEBUGPrint("   " & i & " DropDownButton Group Removed Result: " & nResult)
 				End If

@@ -227,6 +227,18 @@
 '						- Added:
 '							- RBNMapMTBStackPanelAddControl(...) As Integer
 '							- RBNMapMTBStackPanelRemoveControl(...) As Integer
+'	19-08-2015 14:00:00		- Changed RBNLoop to write to a specific file instead of via DEBUGPrint()
+'	20-08-2015 09:55:15		- Added:
+'							- RBNLoopCreateRibbonStatements for creating MapBasic statements to create the full Ribbon
+'								This will create the statements for recreating most of the ribbon using the RibbonLib
+'								However some control types aren't yet supported and therefor ignore, such as the Gallery
+'								Also it's not possible to extract all informations from the Ribbon, certain information
+'								will set to a generic value, such as the ToolTips, the Menu Command ID and the Image
+'								Some of the controls have been assigned the matching image, but not all
+'							- RBNControlGetSizeThs(...) As Integer
+'							- RBNSelectTab(...)
+'	21-08-2015 14:48:08		- Added ParentControlType to the Elements arrays - to be able to remove controls from SplitButton and DropDButtons
+'						- Fixed RBNClearCustomRibbonElements to better support SplitButton and DropDButton Controls
 '*****************************************************************************************************************************
 
 
@@ -295,6 +307,7 @@ Declare Method ObjectToString Class "System.Object" Lib "mscorlib, Version=4.0.0
 
 '**For testing and for getting the names of the controls and elements
 Declare Sub RBNLoop
+Declare Sub RBNLoopCreateRibbonStatements
 Declare Sub RBNLoopContext
 
 Declare Function RBNControlGetTypeName(ByVal nCtrlType As Integer) As String
@@ -313,6 +326,8 @@ Declare Function RBNGetTabIndex(	ByVal sTabName As String
 							) As Integer
 Declare Function RBNTabExists(	  ByVal sTabName As String
 							) As Logical
+Declare Sub RBNSelectTab(	  ByVal sTabName As String)
+
 Declare Function RBNTabExistsCaption(	  ByVal sTabCaption As String
 								) As Logical
 Declare Function RBNTabGetNameFromCaption(	  ByVal sTabCaption As String
@@ -682,6 +697,8 @@ Declare Sub RBNControlSetKeyGestureIdx(	  ByVal nElementIdx As Integer
 								, ByVal sGesture As String		'For example "Ctrl+Y", "Alt+Ctrl+Y"
 								)
 
+Declare Function RBNControlGetSizeThs(	  rbnControl As This
+								) As Integer
 Declare Sub RBNControlSetIconsThs(	  rbnControl As This
 							, ByVal nSize As Integer
 							, ByVal sSmallIcon As String		'If you omit this, the LargeIcon will be used as the SmallIcon as well
