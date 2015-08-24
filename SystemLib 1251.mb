@@ -16,7 +16,7 @@ Include "Defaults.def"
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
 Include "SYSTEMLib.def"
-Include "WINAPI.def"
+Include "WINAPI 1251.def"
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight

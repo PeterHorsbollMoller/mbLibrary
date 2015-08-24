@@ -107,7 +107,7 @@ Type STARTUPINFO
 End Type
 
 Type PROCESS_INFORMATION
-	hProcess		As Integer
+	hProcess		As IntPtr
 	hThread		As Integer
 	dwProcessID	As Integer
 	dwThreadID	As Integer
@@ -277,12 +277,13 @@ Declare Function GetComputerName Lib "kernel32" Alias "GetComputerNameA"
 Declare Function WAPIGetDriveType Lib "kernel32" Alias "GetDriveTypeA" (	ByVal sDrive As String	'A drive in this form: "A:"
 															) As Integer			'Returns one of the DRIVE_  defines
 
-Declare Function CloseHandle Lib "kernel32" (  hObject As Integer
+Declare Function CloseHandle Lib "kernel32" (  hObject As IntPtr
 									) As SmallInt
 
-Declare Function WaitForSingleObject Lib "kernel32" (	  ByVal hHandle As Integer
+Declare Function WaitForSingleObject Lib "kernel32" (	  ByVal hHandle As IntPtr
 											, ByVal dwMilliseconds As Integer
 											) As Integer
+'https://msdn.microsoft.com/en-us/library/windows/desktop/ms687032(v=vs.85).aspx
 
 Declare Function CreateProcessA Lib "kernel32"(	  ByVal lpApplicationName As Integer
 										, ByVal lpCommandLine As String
@@ -293,5 +294,8 @@ Declare Function CreateProcessA Lib "kernel32"(	  ByVal lpApplicationName As Int
 										, ByVal lpEnvironment As Integer
 										, ByVal lpCurrentDirectory As Integer
 										, lpStartupInfo As STARTUPINFO
-										,lpProcessInformation As PROCESS_INFORMATION
+										, lpProcessInformation As PROCESS_INFORMATION
 										) As Integer
+'https://msdn.microsoft.com/en-us/library/windows/desktop/ms682425(v=vs.85).aspx
+
+Declare Sub Sleep Lib "kernel32.dll" Alias "Sleep" (ByVal dwMilliseconds As Integer)
