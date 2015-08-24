@@ -1,0 +1,1663 @@
+'-----------------------------------------------------------------------------
+'** MapInfo version 12.5 menu and buttonpad definitions **********************
+' Don't use Ctrl+I as an accelerator key, since it is equivalent to Tab ASCII
+' code and will break Tab functionality in a browser and some dialogs.
+'-----------------------------------------------------------------------------
+
+'** WebService submenu ****************************************************
+Create Menu "Åbn &webtjeneste" ID 39 As
+	"Åbn W&FS..."
+		HelpMsg "Åbn en fil fra en WFS-server."
+		calling 119,
+	"Åbn W&MS..."
+		HelpMsg "Åbn en fil fra en WMS-server."
+		calling 118
+
+'*** Tile Server maps submenu *****************************************************
+Create Menu "Tile server-kort" ID 45 As
+	"Tilføj Bing-lu&ftfoto til kort"
+		HelpMsg "Tilføj Bing-luftfoto til kort."
+		Calling 128,
+	"Tilføj Bing-h&ybrid til kort"
+		HelpMsg "Tilføj Bing-hybrid til kort."
+		Calling 129,
+	"Tilføj Bing-&veje til kort"
+		HelpMsg "Tilføj Bing-veje til kort."
+		Calling 130
+
+'** FILE menu **************************************************************
+Create Menu "&Filer" ID 1 As
+	"&Ny tabel...\tCtrl+N/W^N"
+		HelpMsg "Opret en ny tabel."
+		calling 101,
+	"&Åbn...\tCtrl+O/W^O"
+		HelpMsg "Åbn tabeller eller arbejdsområder."
+		calling 102,
+	"Åbn webtjeneste" As "Åbn webtjeneste",
+	"Åbn DB&MS-tilslutning..."
+		HelpMsg "Tilslut til en DBMS-server."
+		calling 125,
+	"Åbn &universelle data..."
+		HelpMsg "Åbn eksterne data"
+		calling 126,
+	"(-",
+	"T&ile server-kort" As "Tile server-kort",
+	"(-",
+	"(&Luk tabel..."
+		HelpMsg "Luk en eller flere tabeller."
+		calling 103,
+	"Luk D&BMS-tilslutning..."
+		HelpMsg "Luk en DBMS-tilslutning."
+		calling 124,
+	"(Luk  all&e"
+		HelpMsg "Luk alle åbne tabeller."
+		calling 104,
+	"(-",
+	"(&Gem tabel...\tCtrl+S/W^S"
+		HelpMsg "Gem ændringer i en tabel."
+		calling 105,
+	"(Gem &kopi som..."
+		HelpMsg "Gem en tabel under et nyt navn, en ny projektion eller i et nyt format."
+		calling 106,
+	"(Gem foresp&ørgsel..."
+		HelpMsg "Gem en tabel som en forespørgsel."
+		calling 117,
+	"Gem a&rbejdsområde...\tCtrl+K/W^K"
+		HelpMsg "Gem den aktuelle session som en navngivet konfiguration."
+		calling 109,
+	"Gem &vindue..."
+		HelpMsg "Gem det aktive vindue som en billedfil."
+		calling 609,
+	"(Genskab &tabel..."
+		HelpMsg "Fortryd redigeringer og brug den sidst gemte version af tabellen."
+		calling 107,
+	"(-",
+	"Sideops&ætning..."
+		HelpMsg "Vælg printer og printeropsætning."
+		calling 111,
+	"(&Udskriv...\tCtrl+P/W^P"
+		HelpMsg "Udskriv vinduets indhold."
+		calling 112,
+	"Udskriv til P&DF..."
+		HelpMsg "Usdkriv det aktive vindue til PDF."
+		calling 127,
+	"(-",
+	"($",   '*  MRU list
+	"(-",
+	"Af&slut\tAlt+F4"
+		HelpMsg "Afslut MapInfo Professional."
+		calling 113
+
+'** EDIT menu **************************************************************
+Create Menu "&Rediger" ID 2 As
+	"&Fortryd\tCtrl+Z/W^Z"
+		HelpMsg "Annullerer den sidste ændring."
+		calling 201,
+	"(-",
+	"Kli&p\tCtrl+X/W^X"
+		HelpMsg "Udklipper tekst og objekter, som er markeret, til Udklipsholder."
+		calling 202,
+	"Ko&pier\tCtrl+C/W^C"
+		HelpMsg "Kopierer tekst og objekter, som er markeret, til Udklipsholder."
+		calling 203,
+	"Sæt &ind\tCtrl+V/W^V"
+		HelpMsg "Kopierer indholdet i Udklipsholder til det aktive vindue."
+		calling 204,
+	"&Slet\tDel"
+		HelpMsg "Slet den tekst eller de objekter, der er markeret."
+		calling 205,
+	"F&jern kun kortobjekter"
+		HelpMsg "Fjern grafiske objekter fra en tabel."
+		calling 206,
+	"(-",
+	"(!Omfo&rm\tCtrl+R/W^R"
+		HelpMsg "Ret objekter ved at flytte, tilføje eller slette knudepunkter."
+		calling 1601,
+	"&Ny række\tCtrl+E/W^E"
+		HelpMsg "Tilføj en post til den aktive liste."
+		calling 702,
+	"(-",
+	"&Vis information...\tF7/W%118"
+		HelpMsg "Henter information om det valgte objekt."
+		calling 207
+
+'** OBJECTS menu ***********************************************************
+Create Menu "&Objekter" ID 14 As
+	"Vælg &målobjekt\tCtrl+T/W^T"
+		HelpMsg "Angiv det valgte objekt som mål for redigering."
+		calling 1610,
+	"Fjern &valgt målobjekt\tCtrl+Del/W^%46"
+		HelpMsg "Fortryd valget af aktuelt objekt som målobjekt."
+		calling 1611,
+	"(-",
+	"&Kombiner..."
+		HelpMsg "Kombiner separate kortobjekter, så de fungerer som ét objekt."
+		calling 1605,
+	"&Opsplit..."
+		HelpMsg "Opsplit regioner i et antal polygoner."
+		calling 1621,
+	"&Buffer..."
+		HelpMsg "Opret en bufferpolygon rundt om de(t) valgt(e) objekt(er)."
+		calling 1606,
+	"Konveks &skal..."
+		HelpMsg "Opret konveks skalobjekt om de markerede objekter."
+		calling 1616,
+	"&Indram..."
+		HelpMsg "Opret indramninger med segmenter fra valgte polylinier."
+		calling 1617,
+	"&Voronoi..."
+		HelpMsg "Opret Voronoi-diagram ud fra de markerede punkter."
+		calling 1622,
+	"&Kørselsområder..."
+		HelpMsg "Opret kørselsområder ud fra valgte punkter."
+		calling 1627,
+	"(-",
+	"&Opdel..."
+		HelpMsg "Opdel de aktuelle kortobjekter ved at bruge de valgte sletteobjekter."
+		calling 1612,
+	"S&let..."
+		HelpMsg "Slet de aktuelle kortobjekter ved at bruge de valgte sletteobjekter."
+		calling 1613,
+	"Sl&et udenfor..."
+		HelpMsg "Slet den del af de aktuelle regioner, der ikke dækkes af sletteobjekterne."
+		calling 1614,
+	"Opdel ud fra pol&ylinie..."
+		HelpMsg "Opdel målobjekt(er) ved at bruge en enkelt polylinie som sletteobjekt."
+		calling 1623,
+	"Opdel polylinie i &knudepunkt..."
+		HelpMsg "Opdel polylinie med enkelt sektion i valgt knudepunkt."
+		calling 1626,
+	"Opret knu&depunkt"
+		HelpMsg "Tilføj knudepunkter til målobjekter, hvor de skærer de valgte objekter."
+		calling 1615,
+	"(-",
+	"Ko&ntroller regioner..."
+		HelpMsg "Undersøg regioner for forkerte data - selv-skæringspunkter og overlap."
+		calling 1618,
+	"&Rens..."
+		HelpMsg "Løs objektdataproblemer."
+		calling 1619,
+	"Snap\/&udtynding..."
+		HelpMsg "Snap tætliggende knudepunkter og udtynd i data."
+		calling 1620,
+	"(-",
+	"&Forskydning..."
+		HelpMsg "Flyt det valgte objekt ved at angive afstand og retning."
+		calling 1624,
+	"&Roter..."
+		HelpMsg "Roter objektet ved at angive en vinkel."
+		calling 1625,
+	"(-",
+	"&Udglat"
+		HelpMsg "Udglat den valgte polylinie, så den bliver til en kurve."
+		calling 1602,
+	"&Fjern udglatning"
+		HelpMsg "Genskab den valgte polylinie i ikke-udglattet tilstand."
+		calling 1603,
+	"(-",
+	"Konverter til &regioner"
+		HelpMsg "Omdan alle de valgte objekter til et regionsobjekt."
+		calling 1607,
+	"Konverter til &polylinier"
+		HelpMsg "Omdan de valgte objekter til et polylinieobjekt."
+		calling 1604
+
+'** Find Selection submenu ****************************************************
+Create Menu "Fin&d udvalg" ID 40 As
+	"I det aktuelle &kortvindue\tCtrl+G/W^G"
+		HelpMsg "Marker element/række og find udvalget i det øverste kortvindue."
+		calling 312,
+	"I alle &vinduer\tCtrl+A/W^A"
+		HelpMsg "Marker element/række og find udvalget i alle vinduer."
+		calling 306
+
+'** QUERY menu *************************************************************
+Create Menu "Fore&spørgsel" ID 3 As
+	"&Vælg..."
+		HelpMsg "Opret et udvalg ved at forespørge i tabeller."
+		calling 301,
+	"S&QL-valg..."
+		HelpMsg "Opret et udvalg ved at forespørge i tabeller vha. SQL."
+		calling 302,
+	"Vælg a&lt"
+		HelpMsg "Marker alt på et kort- eller layoutvindue eller på en liste."
+		calling 303,
+	"&Inverter markering"
+		HelpMsg "Inverterer markeringen af objekter/rækker i et kort-/layoutvindue eller på en liste."
+		calling 311,
+	"&Annuller alle valg\tCtrl+W/W^W"
+		HelpMsg "Fjern alle objekt- eller rækkemarkeringer i et kort-/layoutvindue eller på en liste."
+		calling 304,
+	"(-",
+	"&Find...\tCtrl+F/W^F"
+		HelpMsg "Lokaliser og marker enkelte objekter eller adresser."
+		calling 305,
+	"Fin&d udvalg" As "Find udvalg",
+	"Find &adresse..."
+		HelpMsg "Find en adresse via en geokodningsserver."
+		calling 313,
+	"(-",
+	"&Beregn statistik..."
+		HelpMsg "Udfør beregninger på en kolonne i en tabel eller et udvalg."
+		calling 309
+
+'== Oracle submenu -- new in MIPro 8.0 ===============================================
+Create Menu "V&ærktøj til Oracle-arbejdsområde" ID 41 As
+	"O&pret arbejdsområde..."
+		HelpMsg "Opret et nyt Oracle-arbejdsområde"
+		Calling 1804,
+	"S&let arbejdsområde..."
+		HelpMsg "Slet et Oracle-arbejdsområde"
+		calling 1805,
+	"(-",
+	"&Aktiver versionering..."
+		HelpMsg "Slå versionering TIL for en eksisterende Oracle-tabel"
+		calling 1806,
+	"&Deaktiver versionering..."
+		HelpMsg "Slå versionering FRA for en eksisterende Oracle-tabel"
+		calling 1807,
+	"(-",
+	"&Flet tabel..."
+		HelpMsg "Indsæt et arbejdsområde i det overordnede arbejdsområde, løs konflikter."
+		calling 1808,
+	"&Opdater tabel..."
+		HelpMsg "Opdater et arbejdsområde fra det overordnede arbejdsområde, løs konflikter."
+		calling 1809
+
+'** MAINTENANCE submenu ****************************************************
+Create Menu "&Juster" ID 42 As
+	"&Tabelstruktur..."
+		HelpMsg "Ret tabelstrukturen."
+		calling 404,
+	"&Slet tabel..."
+		HelpMsg "Slet en tabel og dens tilhørende filer. "
+		calling 409,
+	"&Omdøb tabel..."
+		HelpMsg "Omdøb en tabel og dens tilhørende filer."
+		calling 410,
+	"&Pak tabel..."
+		HelpMsg "Pak tabel(ler) for at spare plads og eliminere slettede poster."
+		calling 403,
+	"(-",
+	"&Gør DBMS-tabel klar til kortlægning..."
+		HelpMsg "Find rumlig information i en tabel."
+		calling 415,
+	"&Ret DBMS-tabellens symbol..."
+		HelpMsg "Ret symbolet for en DBMS-tabel, der skal kortlægges."
+		calling 418,
+	"&Frigør DBMS-tabel..."
+		HelpMsg "Omdan en DBMS-tabel, så den bliver en MapInfo-tabel."
+		calling 416,
+	"Opdater &DBMS-tabel..."
+		HelpMsg "Opdater indholdet i en DBMS-tabel."
+		calling 417
+
+'** RASTER submenu *********************************************************
+Create Menu "&Rasterbillede" ID 43 As
+	"&Juster raster..."
+		HelpMsg "Juster rasterbilledets farve, kontrast eller klarhed."
+		calling 414,
+	"(-",
+	"&Rediger billedorientering..."
+		HelpMsg "Tilføj eller ret de punkter, der blev brugt ved orientering af rasterbilleder."
+		calling 413,
+	"&Vælg orienteringspunkter fra kort"
+		HelpMsg "Tilføj orienteringspunkter til et rasterbillede."
+		calling 1730
+
+'** TABLE menu *************************************************************
+Create Menu "&Tabel" ID 15 As
+	"&Opdater kolonne..."
+		HelpMsg "Opret midlertidige kolonner eller ret eksisterende kolonner."
+		calling 405,
+	"Til&føj rækker til tabel..."
+		HelpMsg "Knyt poster fra en tabel til en anden tabel."
+		calling 411,
+	"(-",
+	"&Geokodning..."
+		HelpMsg "Knyt punktobjekter til linier i en tabel."
+		calling 407,
+	"Geoko&dning via server..."
+		HelpMsg "Tilknyt punktobjekter til rækkerne i en tabel vha. en geokodningstjeneste."
+		calling 424,
+	"Opret &punkter..."
+		HelpMsg "Opret punktobjekter til en database med X- og Y-koordinater."
+		calling 408,
+	"&Kombiner objekter ved hjælp af kolonne..."
+		HelpMsg "Kombiner objekter ved at bruge fælles kolonnedata."
+		calling 406,
+	"&Buffer..."
+		HelpMsg "Bufferobjekter i tabellen."
+		calling 419,
+	"&Voronoi..."
+		HelpMsg "Udfør Voronoi-handling på objekter i tabellen."
+		calling 420,
+	"&Kørselsområder..."
+		HelpMsg "Opret kørselsområder for objekterne i en tabel."
+		calling 425,
+	"(-",
+	"&Importer..."
+		HelpMsg "Importer en fil med vektorgrafik."
+		calling 401,
+	"&Eksport..."
+		HelpMsg "Eksporter en tabel til et andet format."
+		calling 402,
+	"(-",
+	"&Juster" As "Juster",
+	"V&ærktøj til Oracle-arbejdsområde" as "Værktøj til Oracle-arbejdsområde",
+	"&Rasterbillede" As "Rasterbillede",
+	"(-",
+	"&WMS-tabelegenskaber..."
+		HelpMsg "Rediger egenskaberne for en WMS-tabel."
+		calling 421,
+	"(-",
+	"Opd&ater WFS-tabel...\tAlt+F5/W@%116"
+		HelpMsg "Opdater en WFS-tabel."
+		calling 422,
+	"Egenskaber for WF&S-tabel..."
+		HelpMsg "Ret egenskaberne for en WFS-tabel."
+		calling 423,
+	"(-",
+	"Opdater u&niversel datatabel..."
+		HelpMsg "Opdater tabel åbnet fra universelle data"
+		calling 426,
+	"(-",
+	"Vis &Tabeloversigt..."
+		HelpMsg "Vis vinduet Tabeloversigt"
+		calling 1738,
+	"(-",
+	"Tilf&øj til bibliotek"
+		HelpMsg "Tilføj en tabel til tabelstyringens bibliotek"
+		calling 1740
+
+'** OPTIONS menu ***********************************************************
+Create Menu "&Indstillinger" ID 5 As
+	"&Liniestil...\tShift+F8/W#%119"
+		HelpMsg "Definer liniefarve, mønster og bredde."
+		calling 501,
+	"&Regionstil...\tCtrl+F8/W^%119"
+		HelpMsg "Definer farve, mønster og omrids på lukkede objekter."
+		calling 502,
+	"&Symbolstil...\tAlt+F8/W@%119"
+		HelpMsg "Definer symbolstørrelse, farve og type."
+		calling 503,
+	"&Tekststil...\tF8/W%119"
+		HelpMsg "Definer tekstfarve, skrifttype og størrelse."
+		calling 504,
+	"(-",
+	"&Menupaletter..."
+		HelpMsg "Vis eller skjul menupaletterne Primær, Tegn eler MapBasic."
+		calling 605,
+	"!Skjul tematisk signaturforklar&ing^Vis tematisk signaturforklar&ing"
+		HelpMsg "Vis eller skjul signaturforklaring til kort/graf."
+		calling 606,
+	"!Skjul statistikvi&ndue^Vis statistikvi&ndue"
+		HelpMsg "Vis eller skjul statistikvindue."
+		calling 607,
+	"!Skjul MapBasi&c-vindue^Vis MapBasi&c-vindue"
+		HelpMsg "Vis eller skjul MapBasic-vindue."
+		calling 608,
+	"!Skjul st&atuslinie^Vis st&atuslinie"
+		HelpMsg "Vis eller skjul statuslinie."
+		calling 616,
+	"(-",
+	"Vælg &farver..."
+		HelpMsg "Vælg fra farvepaletten."
+		calling 617,
+	"&Grundindstillinger..."
+		HelpMsg "Tilpas visning og funktion i MapInfo Professional."
+		calling 208
+
+'** WINDOW menu ************************************************************
+Create Menu "&Vindue" ID 6 As
+	"Nyt &listevindue\tF2/W%113"
+		HelpMsg "Vis og ret data i tabelformat."
+		calling 601,
+	"Nyt &kortvindue\tF3/W%114"
+		HelpMsg "Vis en tabel som et kort."
+		calling 602,
+	"Nyt &grafvindue...\tF4/W%115"
+		HelpMsg "Vis en tabel som en graf."
+		calling 603,
+	"Nyt la&youtvindue...\tF5/W%116"
+		HelpMsg "Opret eller rediger et layout, der skal udskrives."
+		calling 604,
+	"Nyt layoutdesig&nervindue...\tF6/W%117"
+		HelpMsg "Opret eller rediger vinduer til udgivelse."
+		calling 620,
+	"Nyt &distriktsoptimeringsvindue..."
+		HelpMsg "Opret og vis den aktive tabel på en distriktsliste."
+		calling 615,
+	"(-",
+	"Genskab vinduer &uden for skærmen"
+		HelpMsg "Sikrer, at flydende vinduer og værktøjslinjer placeres på skærmen."
+		calling 619,
+	"G&entegn vindue\tCtrl+D/W^D"
+		HelpMsg "Gentegn det aktive vindue."
+		calling 610,
+	"S&ide om side\tShift+F4/W#%115"
+		HelpMsg "Arranger aller åbne vinduer side om side."
+		calling 611,
+	"&Overlappet\tShift+F5/W#%116"
+		HelpMsg "Ret vinduernes størrelse og placer dem bag hinanden."
+		calling 612,
+	"&Arranger ikoner"
+		HelpMsg "Arranger de minimerede vinduesikoner."
+		calling 613,
+	"(>"     ' list of windows; appears as separator if windows follow
+
+'** Licensing submenu ****************************************************
+Create Menu "&Licensbestemmelser" ID 44 As
+	"&Overfør licens..."
+		HelpMsg "Overfør licens til MapInfo."
+		calling 1216,
+	"&Lån licens..."
+		HelpMsg "Lån licens fra licensserver."
+		calling 1217,
+	"&Returner lånt licens..."
+		HelpMsg "Returner lånt licens til licensserver."
+		calling 1218,
+	"&Indtast en Bing-licensnøgle..."
+		HelpMsg "Indtast brugerens Bing-licensnøgle for adgang til Bing-tileserver."
+		calling 1222
+
+
+'** HELP menu **************************************************************
+Create Menu "&Hjælp" ID 7 As
+	"&Hjælpeemner i MapInfo Professional"
+		HelpMsg "Vis emner i Hjælp til MapInfo Professional."
+		calling 1203,
+	"Hjælp til &grafer i MapInfo"
+		HelpMsg "Vis emner om grafer i MapInfo."
+		calling 1214,
+	"(-",
+	"Forbind til MapInfo på &Web..."
+		HelpMsg "Opret en forbindelse til MapInfo's hjemmeside på World Wide Web."
+		calling 1210,
+	"MapInfo Professional-øvelser &å internettet..."
+		HelpMsg "Opret forbindelse til siden med MapInfo-øvelser på internettet."
+		calling 1213,
+	"MapInfo &dataprodukter på Internettet..."
+		HelpMsg "Opret en forbindelse til MapInfo's side med dataprodukter på World Wide Web."
+		calling 1211,
+	"MapInfo data og løsninger for &Europa..."
+		HelpMsg "Forbind til MapInfo's europæiske side med data og løsninger på World Wide Web."
+		calling 1209,
+	"&Find opdateringer..."
+		HelpMsg "Kontroller, om der er tilgængelige opdateringer til MapInfo Professional."
+		Calling 1212,
+	"Kontroller, om der er &nyheder..."
+		HelpMsg "Kontroller, om der er tilgængelige nyheder om MapInfo Professional."
+		Calling 1221,
+	"Indsend forslag til &produktforbedring..."
+		HelpMsg "Opretter forbindelse til en hjemmeside på internettet, hvor du kan komme med forslag til produktforbedringer."
+		Calling 1219,
+	"&Vilkår for brug af Bing-kort..."
+		HelpMsg "Forbinder til vilkår for brug af Bing-kort."
+		Calling 1220,
+	"(-",
+	"&Licensbestemmelser" As "Licensbestemmelser",
+	"(-",
+	"&Om dette MapInfo-produkt"
+		HelpMsg "Vis programinformation, versionsnummer og copyright for MapInfo Professional."
+		Calling 1205
+
+'---------------------------------------------------------------------------
+'** WINDOW SPECIFIC MENUS **************************************************
+'---------------------------------------------------------------------------
+
+'** BROWSE menu ************************************************************
+Create Menu "&Liste" ID 8 As
+	"&Tekststil...\tF8/W%119"
+		HelpMsg "Definer tekstfarve, skrifttype og størrelse."
+		calling 504,
+	"Vælg f&elter..."
+		HelpMsg "Vælger felter, der er vist på den aktive liste."
+		calling 704,
+	"(-",
+	"Sorter flere &kolonner..."
+		HelpMsg "Sorterer browseren efter en eller flere kolonner."
+		calling 710,
+	"&Genbrug sortering"
+		HelpMsg "Genbrug sorterings- og filtreringsbetingelser så de seneste redigeringer indgår."
+		calling 2709,
+	"&Slå sortering fra"
+		HelpMsg "Slår sorterings- eller filtreringsbetingelser til eller fra."
+		calling 2706,
+	"&Ryd al sortering og filtrering"
+		HelpMsg "Rydder alle sorterings- og filtreringsbetingelser, så alle rækker vises i den oprindelige rækkefølge."
+		calling 2710,
+	"R&yd filter"
+		HelpMsg "Rydder alle filter, så alle rækker vises. En eventuel sorteringsrækkefølge bevares."
+		calling 2707,
+	"Ry&d sortering"
+		HelpMsg "Ryd sorteringen, så rækker vises i den oprindelige rækkefølge. En eventuel filtrering bevares."
+		calling 2701,
+	"Opret en &forspørgsel ud fra browserindhold..."
+		HelpMsg "Opret en forespørgsel ud fra browserens sorterings- og filtreringsbetingelser."
+		calling 2711,
+	"(-",
+	"Vælg a&lt"
+		HelpMsg "Vælg alle rækker fra aktuelle browser."
+		calling 2708,
+	"&Annuller alle valg\tCtrl+W/W^W"
+		HelpMsg "Fjern alle objekt- eller rækkemarkeringer i et kort-/layoutvindue eller på en liste."
+		calling 304,
+	"(-",
+	"!Skjul &menupalette^Vis &menupalette"
+		HelpMsg "Vis eller skjul menupaletten øverst i browseren."
+		calling 711,
+	"&Indstillinger..."
+		HelpMsg "Vis eller skjul netmønstret på den aktive liste ."
+		calling 703
+
+'** MAP menu ***************************************************************
+Create Menu "&Kort" ID 9 As
+	"&Lagkontrol...\tCtrl+L/W^L"
+		HelpMsg "Rediger kortlagene og visningen af dem."
+		calling 822,
+	"(-",
+	"Opret 3&D-kort...\tF11/W%122"
+		HelpMsg "Opret et 3D-kort ved hjælp af gitterlaget og det aktuelle kort."
+		calling 817,
+	"O&pret prismekort...\tF10/W%121"
+		HelpMsg "Opret et prismekort ud fra det aktuelle kort."
+		calling 818,
+	"(-",
+	"Opret &tematisk kort...\tF9/W%120"
+		HelpMsg "Analyser og vis kortenes dataværdier."
+		calling 307,
+	"&Rediger tematisk kort...\tAlt+F9/W@%120"
+		HelpMsg "Ret tematiske kort."
+		calling 308,
+	"(-",
+	"&Opret signaturforklaring..."
+		HelpMsg "Opret en ny signaturforklaring til det aktive kort med Signaturforklaring."
+		calling 826,
+	"Opret &målestok..."
+		HelpMsg "Opret en målestok på det aktive kort."
+		calling 824,
+	"(-",
+	"Ret &vindue..."
+		HelpMsg "Definer kortbredde, skala, størrelse og centrering."
+		calling 805,
+	"Klon vi&ndue"
+		HelpMsg "Vis en kloning af det aktive vindue."
+		calling 811,
+	"&Forrige vindue\tAlt+Left Arrow/W@%37"
+		HelpMsg "Returner til det foregående vindue for et kort."
+		calling 806,
+	"Vis &hele laget..."
+		HelpMsg "Viser et enkelt eller alle kortlag."
+		calling 807,
+	"R&et zoom til nærmeste tileserverniveau..."
+		HelpMsg "Ret zoom til nærmeste tileserverniveau."
+		calling 828,
+	"Fl&yt kortet til..."
+		HelpMsg "Indtast en adresse eller et sted for at ændre centreringen af kortet"
+		calling 825,
+	"(-",
+	"Fjern l&abels..."
+		HelpMsg "Fjern alle anvendte labels og benyt standardopsætning."
+		calling 814,
+	"&Gem kosmetiske objekter..."
+		HelpMsg "Gem objekterne fra det kosmetiske lag i en tabel."
+		calling 809,
+	"&Slet kosmetisk lag"
+		HelpMsg "Slet alle objekter fra det kosmetiske lag."
+		calling 810,
+	"(-",
+	"&Udklip"
+		HelpMsg "Vis det markerede som et udklip."
+		calling 812,
+	"!Sluk for ud&klip^Tænd for ud&klip"
+		HelpMsg "Aktiver eller deaktiver udklip."
+		calling 813,
+	"(-",
+	"Digiti&zeropsætning..."
+		HelpMsg "Konfigurer MapInfo Professional til digitialisering."
+		calling 803,
+	"&Indstillinger..."
+		HelpMsg "Definer kortkoordinater, afstands- og arealenheder."
+		calling 802
+
+'** LAYOUT menu ************************************************************
+Create Menu "&Layout" ID 10 As
+	"Ret &zoom-niveau..."
+		HelpMsg "Definer zoom-niveau til et aktivt layoutvindue."
+		calling 902,
+	"&Vis faktisk størrelse"
+		HelpMsg "Vis layoutobjekter i deres udskriftsstørrelse."
+		calling 903,
+	"Vis &hele layoutet"
+		HelpMsg "Vis alle sider i layoutvinduet."
+		calling 904,
+	"&Forrige vindue\tAlt+Left Arrow/W@%37"
+		HelpMsg "Reurner til det foregående vindue for et layout."
+		calling 905,
+	"(-",
+	"Sæt f&orrest"
+		HelpMsg "Placer de valgte layoutobjekter foran de andre objekter."
+		calling 906,
+	"Sæt &bagest"
+		HelpMsg "Flyt de valgte layoutobjekter om bag de andre objekter."
+		calling 907,
+	"(-",
+	"(Ob&jekter på linie..."
+		HelpMsg "Placer layoutobjekter på en linie eller ved layoutvinduets ramme."
+		calling 908,
+	"(Juster &venstre"
+		HelpMsg "Venstrejuster layoutobjekter i forhold til hinanden."
+		calling 911,
+	"(Juster h&øjre"
+		HelpMsg "Højrejuster layoutobjekter i forhold til hinanden."
+		calling 912,
+	"(Juster øvers&t"
+		HelpMsg "Juster layoutobjekter øverst i forhold til hinanden."
+		calling 913,
+	"(J&uster nederst"
+		HelpMsg "Juster layoutobjekter nederst i forhold til hinanden."
+		calling 914,
+	"&Skygger..."
+		HelpMsg "Anbring en skygge bag layoutvinduets ramme eller bag valgte objekter."
+		calling 909,
+	"(-",
+	"&Indstillinger..."
+		HelpMsg "Opsætning af layoutvinduets rammer og deres indhold."
+		calling 901
+
+'** LAYOUT DESIGNER menu *****************************************************
+Create Menu "&Layoutdesigner" ID 51 As
+	"Nyt &kort..."
+		HelpMsg "Opret et nyt kort i en layoutramme"
+		Calling 2901,
+	"Ny &liste..."
+		HelpMsg "Opret en ny liste i en layoutramme"
+		Calling 2902
+
+'** GRAPH menu *************************************************************
+Create Menu "&Graf" ID 11 As
+	"Graf&type..."
+		HelpMsg "Vælg en graftype og definer dens indstillinger."
+		calling 1001,
+	"&Navneakse..."
+		HelpMsg "Indstil grafens navneakse."
+		calling 1002,
+	"&Værdiakse..."
+		HelpMsg "Indstil grafens værdiakse."
+		calling 1003,
+	"&Serier..."
+		HelpMsg "Bestem grafens udseende."
+		calling 1004
+
+'** MAPBASIC menu **********************************************************
+Create Menu "&MapBasic" ID 12 As
+	"&Fjern indhold"
+		HelpMsg "Ryd MapBasic-vinduet."
+		calling 1101,
+	"&Gem indhold..."
+		HelpMsg "Gem MapBasic-vinduets indhold."
+		calling 1102
+
+'** REDISTRICT menu ********************************************************
+Create Menu "&Distriktsoptimering" ID 13 As
+	"(T&ildel valgte objekter"
+		HelpMsg "Permanent tildeling af valgte objekter til et måldistrikt."
+		Calling 705,
+	"(&Vælg måldistrikt fra kort"
+		HelpMsg "Angiv det valgte objekts område som måldistrikt."
+		Calling 706,
+	"(-",
+	"(&Tilføj distrikt"
+		HelpMsg "Tilføj et nyt distrikt på distriktslisten."
+		Calling 707,
+	"(&Slet måldistrikt"
+		HelpMsg "Slet det aktuelle måldistrikt fra distriktslisten."
+		Calling 708,
+	"(-",
+	"&Indstillinger..."
+		HelpMsg "Angiv distriktsrækkefølge og visning af netmønster."
+		Calling 709
+
+'** LEGEND menu **********************************************************
+Create Menu "&Signaturforklaring" ID 31 As
+	"&Tilføj rammer..."
+		HelpMsg "Tilføjer nye rammer til det aktive signaturforklaringsvindue."
+		calling 1903,
+	"&Gentegn..."
+		HelpMsg "Gentegner indholdet i det aktive signaturforklaringsvindue."
+		calling 1902,
+	"&Egenskaber for vindue..."
+		HelpMsg "Indstiller egenskaberne for det aktive signaturforklaringsvindue."
+		calling 1901
+
+'** LEGEND DESIGNER menu **********************************************************
+Create Menu "&Signaturforklaring" ID 49 As
+	"&Tilføj rammer..."
+		HelpMsg "Tilføjer nye rammer til det aktive signaturforklaringsvindue."
+		calling 2806,
+	"Tilføj en tekstra&mme..."
+		HelpMsg "Tilføjer nye tekstrammer til det aktive signaturforklaringsvindue."
+		calling 2807,
+	"&Gentegn..."
+		HelpMsg "Gentegner indholdet i det aktive signaturforklaringsvindue."
+		calling 2805,
+	"(-",
+	"Fjern alle h&jælpelinjer"
+		HelpMsg "Fjerner alle hjælpelinjer fra det aktive signaturforklaringsvindue."
+		calling 2802,
+	"(-",
+	"&Egenskaber..."
+		HelpMsg "Indstiller egenskaberne for det aktive signaturforklaringsvindue."
+		calling 2804
+
+'** New graph menu **********************************************************
+Create Menu "&Graf" ID 29 As
+	"&Formatering..."
+		HelpMsg "Indstiller egenskaberne for det markerede grafobjekt."
+		calling 2007,
+	"(-",
+	"&Generelle indstillinger..."
+		HelpMsg "Indstil egenskaber for grafen."
+		calling 2002,
+	"&Serieindstillinger..."
+		HelpMsg "Indstiller egenskaber for de markerede serier."
+		calling 2003,
+	"Git&re og skalaer..."
+		HelpMsg "Indstiller egenskaberne for grafgitre og skalaer."
+		calling 2004,
+	"&Titler..."
+		HelpMsg "Indstiller titler og etiketter for grafen."
+		calling 2005,
+	"&3D-visningsvinkel..."
+		HelpMsg "Indstiller visningsvinklen for en 3D-graf."
+		calling 2006,
+	"(-",
+	"Gem som sk&abelon..."
+		HelpMsg "Gem den aktuelle graf som en skabelon.."
+		calling 2008
+
+'** New 3DMap menu **********************************************************
+Create Menu "&3D-vindue" ID 28 As
+	"Gendan st&ruktur"
+		HelpMsg "Gendan strukturen fra de oprindelige lag."
+		calling 2103,
+	"(-",
+	"Klon vi&ndue"
+		HelpMsg "Vis en kopi af aktuelt 3D-vindue."
+		calling 2105,
+	"&Forrige vindue"
+		HelpMsg "Returner til sidste visning af 3D-vindue."
+		calling 2106,
+	"Vis h&ele laget"
+		HelpMsg "Nulstil synsvinkel for at centrere visningen af hele laget."
+		calling 2101,
+	"Syns&vinkel..."
+		HelpMsg "Brug dialogboksen til at indstille synsvinklen."
+		calling 2107,
+	"(-",
+	"(!&Trådnet"
+		HelpMsg "Skift mellem trådnet eller udfyldt visning."
+		calling 2104,
+	"(-",
+	"&Egenskaber..."
+		HelpMsg "Indstil egenskaber for 3D-vinduer."
+		calling 2102
+
+'---------------------------------------------------------------------------
+'** Some menus not used, but provided for 2.x MapBasic Apps for ************
+'** backwards compatibility ************************************************
+'---------------------------------------------------------------------------
+Create Menu "&Analyser" As
+	"&Vælg..." calling 301,
+	"S&QL-valg..." calling 302,
+	"Vælg a&lt" calling 303,
+	"&Annuller alle valg\tCtrl+W/W^W" calling 304,
+	"(-",
+	"&Find...\tCtrl+F/W^F" calling 305,
+	"Fin&d udvalg" calling 306,
+	"(-",
+	"Opret &tematisk kort..." calling 307,
+	"V&ælg signaturforklaring..." calling 308,
+	"(-",
+	"&Beregn statistik..." calling 309
+Create Menu "&Stil" As
+	"&Liniestil...\tShift+F8/W#%119" calling 501,
+	"&Regionstil...\tCtrl+F8/W^%119" calling 502,
+	"&Symbolstil...\tAlt+F8/W@%119" calling 503,
+	"&Tekststil...\tF8/W%119" calling 504
+
+'** CRYSTAL REPORTS submenu *********************************************************
+Create Menu "&Crystal Reports" As
+	"&Ny rapport..."
+		HelpMsg "Opretter en rapport fra en tabel og indlæser den i Crystal Report Designer."
+		calling 1802,
+	"&Åbn rapport..."
+		HelpMsg "Indlæser en eksisterende rapport i Crystal Report Designer."
+		calling 1803
+
+'---------------------------------------------------------------------------
+'** Tools menu.  Used for MapBasic tools and Crystal Reports
+'---------------------------------------------------------------------------
+Create Menu "Værkt&øj" ID 4 As
+	"&Crystal Reports" As "Crystal Reports",
+	"(-",
+	"Kør &MapBasic-program...\tCtrl+U/W^U"
+		HelpMsg "Start et MapBasic-program."
+		calling 110,
+	"(-",
+	"&Hent MapBasic-værktøjer..."
+		HelpMsg "Opretter internetforbindelse til Download-siden for Pitney Bowes Software Community."
+		calling 1811,
+	"(-",
+	"&Værktøjsstyring..."
+		HelpMsg "Konfigurer MapBasic-værktøjer, så de startes automatisk, når MapInfo Professional startes."
+		calling 1801
+
+'---------------------------------------------------------------------------
+'** SHORTCUT menus for the various window types ****************************
+'---------------------------------------------------------------------------
+
+Create Menu "DefaultShortcut" ID 16 Context As
+	"Fortryd"
+		HelpMsg "Annullerer den sidste ændring."
+		calling 201,
+	"(-",
+	"Klip"
+		HelpMsg "Udklipper tekst og objekter, som er markeret, til Udklipsholder."
+		calling 202,
+	"Kopier"
+		HelpMsg "Kopierer tekst og objekter, som er markeret, til Udklipsholder."
+		calling 203,
+	"Sæt ind"
+		HelpMsg "Kopierer indholdet i Udklipsholder til det aktive vindue."
+		calling 204
+
+Create Menu "MapperShortcut" ID 17 Context As
+	"&Lagkontrol..."
+		HelpMsg "Vis dialogboksen Lagkontrol"
+		calling 822,
+	"(-",
+	"Fin&d udvalg"
+		HelpMsg "Marker element/række og find udvalget i det øverste kortvindue."
+		calling 312,
+	"Vis he&le det markerede lag"
+		HelpMsg "Viser hele udstrækningen af det nuværende markerede lag."
+		calling 819,
+	"&Marker alt i det markerede lag"
+		HelpMsg "Markerer alle rækker i det nuværende markerede lag."
+		calling 820,
+	"Gør det markerede lag redi&gerbart"
+		HelpMsg "Gør det muligt at redigere i det nuværende markerede lag."
+		calling 821,
+	"(-",
+	"!&Autorul slået fra^&Autorul slået til"
+		HelpMsg "Aktiverer eller deaktiverer automatisk rulning i det aktive kortvindue"
+		calling 815,
+	"(-",
+	"&Slet kosmetisk lag"
+		HelpMsg "Slet alle objekter fra det kosmetiske lag."
+		calling 810,
+	"(-",
+	"Ret &vindue..."
+		HelpMsg "Definer kortbredde, skala, størrelse og centrering."
+		calling 805,
+	"Klon vi&ndue"
+		HelpMsg "Vis en kloning af det aktive vindue."
+		calling 811,
+	"&Forrige vindue"
+		HelpMsg "Returner til det foregående vindue for et kort."
+		calling 806,
+	"Vis &hele laget..."
+		HelpMsg "Viser et enkelt eller alle kortlag."
+		calling 807,
+	"&Ret zoom til nærmeste tileserverniveau..."
+		HelpMsg "Ret zoom til nærmeste tileserverniveau."
+		calling 828,
+	"(-",
+	"Redigerer Objekter" as "Objekter",
+	"(-",
+	"&Vis information...\tF7/W%118"
+		HelpMsg "Henter information om det valgte objekt."
+		calling 207
+
+Create Menu "BrowserShortcut" ID 18 Context As
+	"Sorter stigende"
+		HelpMsg "Sorter A-Å / lille til stor"
+		calling 2702,
+	"Sorter faldende"
+		HelpMsg "Sorter Å-A / stor til lille"
+		calling 2703,
+	"(-",
+	"Filter..."
+		HelpMsg "Vælg filterbetingelser for midlertidigt at skjule rækker ud fra celleværdier."
+		calling 2704,
+	"Ryd filter"
+		HelpMsg "Ryd alle filtreringsbetingelser for denne kolonne."
+		calling 2705
+
+Create Menu "BrowserFilterShortcut" ID 47 As
+	"Sorter flere kolonner..."
+		HelpMsg "Sorterer browseren efter en eller flere kolonner"
+		calling 710,
+	"(-",
+	"Genbrug sortering"
+		HelpMsg "Genbrug sortering/filtre for at gendanne anvendt sortering eller filtrering"
+		calling 2709,
+	"Slå sortering fra"
+		HelpMsg "Slå sortering/filtrering fra eller til."
+		calling 2706,
+	"(-",
+	"&Ryd al sortering og filtrering"
+		HelpMsg "Rydder al sortering og filtrering, så alle rækker vises i den oprindelige rækkefølge, inden sortering og filtrering blev foretaget"
+		calling 2710,
+	"Ryd filter"
+		HelpMsg "Rydder alle filter, så alle rækker vises. En eventuel sorteringsrækkefølge bevares."
+		calling 2707,
+	"Ryd sortering"
+		HelpMsg "Rydder sorteringen, så rækker vises i den oprindelige rækkefølge. En eventuel filtrering bevares."
+		calling 2701,
+	"(-",
+	"Opret en &forspørgsel ud fra browserindhold..."
+		HelpMsg "Opret en forespørgsel ud fra browserens sorterings- og filtreringsbetingelser."
+		calling 2711
+
+Create Menu "BrowserSelectShortcut" ID 48 As
+	"Vælg a&lt"
+		HelpMsg "Vælg alle rækker fra aktuelle browser."
+		calling 2708,
+	"&Annuller alle valg\tCtrl+W/W^W"
+		HelpMsg "Fjern alle objekt- eller rækkemarkeringer i et kort-/layoutvindue eller på en liste."
+		calling 304
+
+Create Menu "LayoutShortcut" ID 19 Context As
+	"Ret &zoom-niveau..."
+		HelpMsg "Definer zoom-niveau til et aktivt layoutvindue."
+		calling 902,
+	"&Vis faktisk størrelse"
+		HelpMsg "Vis layoutobjekter i deres udskriftsstørrelse."
+		calling 903,
+	"Vis &hele layoutet"
+		HelpMsg "Vis alle sider i layoutvinduet."
+		calling 904,
+	"&Forrige vindue"
+		HelpMsg "Reurner til det foregående vindue for et layout."
+		calling 905,
+	"(-",
+	"Sæt f&orrest"
+		HelpMsg "Placer de valgte layoutobjekter foran de andre objekter."
+		calling 906,
+	"Sæt &bagest"
+		HelpMsg "Flyt de valgte layoutobjekter om bag de andre objekter"
+		calling 907,
+	"(-",
+	"(Ob&jekter på linie..."
+		HelpMsg "Placer layoutobjekter på en linie eller ved layoutvinduets ramme."
+		calling 908,
+	"(&Venstrejuster"
+		HelpMsg "Venstrejuster layoutobjekter i forhold til hinanden."
+		calling 911,
+	"(&Højrejuster"
+		HelpMsg "Højrejuster layoutobjekter i forhold til hinanden."
+		calling 912,
+	"(Juster øvers&t"
+		HelpMsg "Juster layoutobjekter øverst i forhold til hinanden."
+		calling 913,
+	"(J&uster nederst"
+		HelpMsg "Juster layoutobjekter nederst i forhold til hinanden."
+		calling 914,
+	"&Skygger..."
+		HelpMsg "Anbring en skygge bag layoutvinduets ramme eller bag valgte objekter."
+		calling 909,
+	"(-",
+	"!&Autorul slået fra^&Autorul slået til"
+		HelpMsg "Aktiverer eller deaktiverer automatisk rulning i det aktive layoutvindue"
+		calling 910
+
+Create Menu "GrapherShortcut" ID 20 Context As
+	"Graf&type..."
+		HelpMsg "Vælg en graftype og definer dens indstillinger."
+		calling 1001,
+	"&Navneakse..."
+		HelpMsg "Indstil grafens navneakse."
+		calling 1002,
+	"&Værdiakse..."
+		HelpMsg "Indstil grafens værdiakse."
+		calling 1003,
+	"&Serier..."
+		HelpMsg "Bestem grafens udseende."
+		calling 1004
+
+Create Menu "CmdShortcut" ID 21 Context As
+	"Fortryd"
+		HelpMsg "Annullerer den sidste ændring."
+		calling 201,
+	"(-",
+	"Klip"
+		HelpMsg "Udklipper tekst og objekter, som er markeret, til Udklipsholder."
+		calling 202,
+	"Kopier"
+		HelpMsg "Kopierer tekst og objekter, som er markeret, til Udklipsholder."
+		calling 203,
+	"Sæt ind"
+		HelpMsg "Kopierer indholdet i Udklipsholder til det aktive vindue."
+		calling 204
+
+Create Menu "RedistrictShortcut" ID 22 Context As
+	"(T&ildel valgte objekter"
+		HelpMsg "Permanent tildeling af valgte objekter til et måldistrikt."
+		calling 705,
+	"(&Vælg måldistrikt fra kort"
+		HelpMsg "Angiv det valgte objekts område som måldistrikt."
+		calling 706,
+	"(-",
+	"&Tekststil...\tF8/W%119"
+		HelpMsg "Definer tekstfarve, skrifttype og størrelse."
+		calling 504,
+	"(-",
+	"(&Tilføj distrikt"
+		HelpMsg "Tilføj et nyt distrikt på distriktslisten."
+		calling 707,
+	"(&Slet måldistrikt"
+		HelpMsg "Slet det aktuelle måldistrikt fra distriktslisten."
+		calling 708
+
+Create Menu "LegendShortcut" ID 23 Context As
+	"&Tilføj rammer..."
+		HelpMsg "Tilføjer nye rammer til det aktive signaturforklaringsvindue."
+		calling 1903,
+	"&Gentegn..."
+		HelpMsg "Gentegner indholdet i det aktive signaturforklaringsvindue."
+		calling 1902,
+	"(-",
+	"&Slet"
+		HelpMsg "Sletter den markerede ramme."
+		calling 1904,
+	"(-",
+	"&Egenskaber for vindue..."
+		HelpMsg "Indstiller egenskaberne for det aktive signaturforklaringsvindue."
+		calling 1901
+
+Create Menu "GrapherShortcut" ID 24 Context As
+	"&Formatering..."
+		HelpMsg "Indstiller egenskaberne for det markerede grafobjekt."
+		calling 2007,
+	"(-",
+	"&Generelle indstillinger..."
+		HelpMsg "Indstil egenskaber for grafen."
+		calling 2002,
+	"&Serieindstillinger..."
+		HelpMsg "Indstiller egenskaber for de markerede serier."
+		calling 2003,
+	"Git&re og skalaer..."
+		HelpMsg "Indstiller egenskaberne for grafgitre og skalaer."
+		calling 2004,
+	"&Titler..."
+		HelpMsg "Indstiller titler og etiketter for grafen."
+		calling 2005,
+	"&3D-visningsvinkel..."
+		HelpMsg "Indstiller visningsvinklen for en 3D-graf."
+		calling 2006,
+	"(-",
+	"Gem som sk&abelon..."
+		HelpMsg "Gem den aktuelle graf som en skabelon.."
+		calling 2008
+
+Create Menu "&3DMapShortcut" ID 25 Context As
+	"Gendan st&ruktur"
+		HelpMsg "Gendan strukturen fra de oprindelige lag."
+		calling 2103,
+	"(-",
+	"Klon vi&ndue"
+		HelpMsg "Vis en kopi af aktuelt 3D-vindue."
+		calling 2105,
+	"&Forrige vindue"
+		HelpMsg "Returner til sidste visning af 3D-vindue."
+		calling 2106,
+	"Vis h&ele laget"
+		HelpMsg "Nulstil synsvinkel for at centrere visningen af hele laget."
+		calling 2101,
+	"Syns&vinkel..."
+		HelpMsg "Brug dialogboksen til at indstille synsvinklen."
+		calling 2107,
+	"(-",
+	"(!&Trådnet"
+		HelpMsg "Skift mellem trådnet eller udfyldt visning."
+		calling 2104,
+	"(-",
+	"&Egenskaber..."
+		HelpMsg "Indstil egenskaber for 3D-vinduer."
+		calling 2102
+
+Create Menu "MessageWinShortcut" ID 26 Context As
+	"&Kopier"
+		HelpMsg "Kopier den markerede tekst eller al tekst"
+		calling 203
+
+Create Menu "StatisticsWinShortcut" ID 27 Context As
+	"&Kopier  Ctrl+C"
+		HelpMsg "Kopier alle data til Udklipsholder"
+		calling 2301
+
+Create Menu "AdornmentShortcut" ID 32 Context As
+	"&Egenskaber..."
+		HelpMsg "Viser egenskaberne for udsmykningen."
+		calling 2401,
+	"(-",
+	"&Fjern"
+		HelpMsg "Fjern den aktuelle udsmykning fra kortvinduet."
+		calling 2402
+
+Create Menu "LcLayersShortcut" ID 33 Context As
+	"Vis hele laget"
+		HelpMsg "Vis hele laget"
+		calling 2501,
+	"(-",
+	"Lagegenskaber..."
+		HelpMsg "Vis dialogboksen Lagegenskaber"
+		calling 2502,
+	"Labelskrifttype..."
+		HelpMsg "Indstil egenskaber for skrifttyper til labels"
+		calling 2503,
+	"Fjern brugeroprettede labels fra de valgte lag"
+		HelpMsg "Kasser alle brugeroprettede labels for de valgte lag"
+		calling 2521,
+	"Gennemse tabel"
+		HelpMsg "Vis og ret data i tabelformat."
+		calling 2517,
+	"Vælg alt i laget"
+		HelpMsg "Vælg alle rækker i tabellen, som vises i dette lag."
+		calling 2523,
+	"(-",
+	"Gør andre lag ikke-valgbare"
+		HelpMsg "Gør andre lag ikke-valgbare"
+		calling 2504,
+	"(-",
+	"Indsæt lagtilpasning"
+		HelpMsg "Indsæt lagtilpasning"
+		calling 2511,
+	"Indsæt labeltilpasning"
+		HelpMsg "Indsæt labeltilpasning"
+		calling 2512,
+	"(-",
+	"Ret zoom til nærmeste tileserverniveau"
+		HelpMsg "Ret zoom til nærmeste tileserverniveau."
+		calling 2520,
+	"(-",
+	"Vis\/rediger metadata..."
+		HelpMsg "Vis/rediger metadatapost for tabellen."
+		calling 2518,
+	"Tilføj til bibliotek..."
+		HelpMsg "Tilføj en tabel til tabelstyringens bibliotek."
+		calling 2519
+
+Create Menu "LcMapsShortcut" ID 34 Context As
+	"Omdøb"
+		HelpMsg "Omdøb kortet"
+		calling 2505,
+	"Indstil kortet..."
+		HelpMsg "Vis dialogboksen Indstil kortet."
+		calling 2506,
+	"&Juster labelprioriteter..."
+		HelpMsg "Ret prioriteten for labels i forskellige lag"
+		calling 2522,
+	"Tilføj gruppe"
+		HelpMsg "Tilføj et nyt, tomt gruppelag"
+		calling 2507
+
+Create Menu "LcGroupsShortcut" ID 35 Context As
+	"Omdøb"
+		HelpMsg "Omdøb gruppen"
+		calling 2508,
+	"Tilføj lag..."
+		HelpMsg "Tilføj lag til en gruppe"
+		calling 2510,
+	"Tilføj gruppe"
+		HelpMsg "Tilføj et nyt, tomt gruppelag"
+		calling 2507,
+	"Fjern gruppering"
+		HelpMsg "Omdøb gruppemappen, uden at fjerne lagene i gruppen."
+		calling 2509
+
+Create Menu "TableAdornmentShortcut" ID 36 Context As
+	"&Fjern"
+		HelpMsg "Fjern den aktuelle udsmykning fra kortvinduet."
+		calling 2402
+
+Create Menu "TableListWindowShortcut" ID 37 Context As
+	"Marker alt"
+		HelpMsg "Marker alt på et kort- eller layoutvindue eller på en liste."
+		calling 2601,
+	"Gennemse"
+		HelpMsg "Vis og ret data i tabelformat."
+		calling 2602,
+	"Åbn i et nyt kortvindue"
+		HelpMsg "Vis en eller flere tabeller som et kort."
+		calling 2603,
+	"Eksport..."
+		HelpMsg "Eksporter en tabel til et andet format."
+		calling 2604,
+	"(-",
+	"Opdater"
+		HelpMsg "Opdater tabel åbnet via universelle data, indhold fra en DBMS-tabel eller fra en WFS-tabel."
+		calling 2605,
+	"Tabelstruktur..."
+		HelpMsg "Ret tabelstrukturen."
+		calling 2606,
+	"Opret punkter..."
+		HelpMsg "Opret punktobjekter til en database med X- og Y-koordinater."
+		calling 2607,
+	"Opdater kolonne..."
+		HelpMsg "Opret midlertidige kolonner eller ret eksisterende kolonner."
+		calling 2608,
+	"(-",
+	"Vis\/rediger metadata..."
+		HelpMsg "Vis/rediger metadatapost for tabellen."
+		calling 2610,
+	"Tilføj til bibliotek..."
+		HelpMsg "Tilføj en tabel til tabelstyringens bibliotek."
+		calling 2611,
+	"(-",
+	"Luk"
+		HelpMsg "Luk en eller flere tabeller."
+		calling 2609
+
+Create Menu "OverridesShortcut" ID 38 Context As
+	"Egenskaber for lagtilpasning..."
+		HelpMsg "Vis egenskaber for lagtilpasning"
+		calling 2513,
+	"Egenskaber for labeltilpasning..."
+		HelpMsg "Vis egenskaber for labeltilpasning"
+		calling 2514,
+	"Opdel"
+		HelpMsg "Opdel"
+		calling 2515,
+	"Fjern"
+		HelpMsg "Fjern"
+		calling 2516
+
+Create Menu "LegendDesignerShortcut" ID 50 Context As
+	"&Tilføj rammer..."
+		HelpMsg "Tilføjer nye rammer til det aktive signaturforklaringsvindue."
+		calling 2806,
+	"&Tilføj tekstramme..."
+		HelpMsg "Tilføj en ny uafhængig tekstramme til det aktive signaturforklaringsvindue."
+		calling 2807,
+	"&Gentegn..."
+		HelpMsg "Gentegner indholdet i det aktive signaturforklaringsvindue."
+		calling 2805,
+	"(-",
+	"!Sluk &hjælpelinjer^Tænd &hjælpelinjer"
+		HelpMsg "Tænd eller sluk for hjælpelinjer i det aktive signaturforklaringsvindue."
+		calling 2801,
+	"Fjern alle h&jælpelinjer"
+		HelpMsg "Fjerner alle hjælpelinjer fra det aktive signaturforklaringsvindue."
+		calling 2802,
+	"(-",
+	"&Slet de markerede rammer"
+		HelpMsg "Fjerner de markerede rammer fra det aktive signaturforklaringsvindue."
+		calling 2803,
+	"(-",
+	"&Egenskaber..."
+		HelpMsg "Indstiller egenskaberne for det aktive signaturforklaringsvindue."
+		calling 2804
+
+'---------------------------------------------------------------------------
+'** BUTTON PADS ************************************************************
+'---------------------------------------------------------------------------
+
+Create ButtonPad "Værktøj" ID 3 As
+	PushButton
+		Icon 32
+		Calling 110
+		HelpMsg "Start et MapBasic-program.\nKør MapBasic-program"
+	ToggleButton
+		Icon 33
+		Calling 608
+		HelpMsg "Vis eller skjul et MapBasic-vindue.\nVis/skjul MapBasic-vindue"
+	Hide
+	Width 2
+
+Create ButtonPad "Web-tjenester" ID 6 As
+	PushButton
+		Icon 338
+		calling 118
+		HelpMsg "Få adgang til lag på en WMS-server.\nÅbn WMS-tabel"
+	PushButton
+		Icon 339
+		calling 119
+		HelpMsg "Få adgang til lag på en WFS-server.\nÅbn WFS-tabel"
+	PushButton
+		Icon 184
+		Calling 313
+		HelpMsg "Find adresse...\nFind adresse"
+	PushButton
+		Icon 185
+		Calling 424
+		HelpMsg "Geokodning via server...\nGeokodning via server"
+	PushButton
+		Icon 14
+		Calling 1627
+		HelpMsg "Opret kørselsområder...\nOpret kørselsområder"
+	Separator
+	PushButton
+		Icon 183
+		Calling 220
+		HelpMsg "Indstillinger for Web-tjenester...\nIndstillinger for Web-tjenester"
+		Show
+		Width 2
+
+Create ButtonPad "Tegn" ID 2 As
+	ToolButton
+		Icon 16
+		Calling 1711
+		HelpMsg "Placer et symbol (punkt) på redigerbart kort eller aktivt layout.\nSymbol"
+	ToolButton
+		Icon 17
+		Calling 1712
+		HelpMsg "Tegn en linie på redigerbart kort eller aktivt layoutlag.\nLinie"
+	ToolButton
+		Icon 18
+		Calling 1713
+		HelpMsg "Tegn en polylinie på redigerbart kort eller aktivt layoutlag.\nPolylinie"
+	ToolButton
+		Icon 19
+		Calling 1716
+		HelpMsg "Tegn en bue på redigerbart kort eller aktivt layoutlag.\nBue"
+	ToolButton
+		Icon 20
+		Calling 1714
+		HelpMsg "Tegn en ny polygon på redigerbart kort eller aktivt layout.\nPolygon"
+	ToolButton
+		Icon 21
+		Calling 1715
+		HelpMsg "Tegn en ellipse eller cirkel på redigerbart kort eller aktivt layout.\nEllipse"
+	ToolButton
+		Icon 22
+		Calling 1717
+		HelpMsg "Tegn et rektangel (firkant) på redigerbart kort eller aktivt layout.\nRektangel"
+	ToolButton
+		Icon 23
+		Calling 1718
+		HelpMsg "Tegn et afrundet rektangel (firkant) på kort eller layout.\nAfrundet rektangel"
+	ToolButton
+		Icon 24
+		Calling 1709
+		HelpMsg "Læg tekst på kort/layout eller rediger dataliste.\nTekst"
+	ToolButton
+		Icon 25
+		Calling 1719
+		HelpMsg "Indsæt en layoutramme.\nRamme"
+	Separator
+	ToggleButton
+		Icon 26
+		Calling 1601
+		HelpMsg "Slår omformning til og fra.\nOmform"
+	ToolButton
+		Icon 27
+		Calling 1723
+		HelpMsg "Tilføj knudepunkt(er) til en region, en linie eller polylinie.\nTilføj knudepunkt"
+	Separator
+	PushButton
+		Icon 28
+		Calling 503
+		HelpMsg "Definer symbolstørrelse, farve og type.\nSymbolstil"
+	PushButton
+		Icon 29
+		Calling 501
+		HelpMsg "Definer liniefarve, mønster og bredde.\nLiniestil"
+	PushButton
+		Icon 30
+		Calling 502
+		HelpMsg "Definer lukkede objekters farve, mønster og omrids.\nRegionstil"
+	PushButton
+		Icon 31
+		Calling 504
+		HelpMsg "Definer tekstfarve, skrifttype og størrelse.\nTekststil"
+	Show
+	Width 2
+
+Create ButtonPad "Primær" ID 1 As
+	ToolButton
+		Icon 0
+		Calling 1701
+		HelpMsg "Vælg et eller flere kort/layoutobjekter eller listeposter.\nVælg"
+	ToolButton
+		Icon 1
+		Calling 1722
+		HelpMsg "Vælg kortobjekter inden for et rektangel.\nRektangelvalg"
+	ToolButton
+		Icon 2
+		Calling 1703
+		HelpMsg "Vælg kortobjekter inden for en bestemt radius.\nRadiusvalg"
+	ToolButton
+		Icon 332
+		Calling 1733
+		HelpMsg "Vælg kortobjekter inden for en polygon.\nPolygonvalg"
+	ToolButton
+		Icon 3
+		Calling 1704
+		HelpMsg "Vælg kortobjekter inden for en region.\nRegionvalg"
+	PushButton
+		Icon 333
+		Calling 304
+		HelpMsg "Annuller alle valg af kortobjekter.\nAnnuller alle valg"
+	PushButton
+		Icon 337
+		Calling 311
+		HelpMsg "Inverterer markeringen af objekter/rækker i et kort-/layoutvindue eller på en liste.\nInverter markering"
+	ToolButton
+		Icon 334
+		Calling 1735
+		HelpMsg "Ret tabelvalg til graf.\nGrafvalg"
+	Separator
+	ToolButton
+		Icon 4
+		Calling 1705
+		HelpMsg "Vis et kort eller et layout forstørret.\nZoom ind"
+	ToolButton
+		Icon 5
+		Calling 1706
+		HelpMsg "Vis et kort eller et layout formindsket.\nZoom ud"
+	PushButton
+		Icon 6
+		Calling 805
+		HelpMsg "Definer kortbredde, skala, størrelse og centrering.\nRet vindue"
+	ToolButton
+		Icon 7
+		Calling 1702
+		HelpMsg "Flyt rundt med kort eller layout inde i vinduet.\nFlyt"
+	Separator
+	ToolButton
+		Icon 8
+		Calling 1707
+		HelpMsg "Vis en tabel med information om kortobjekter.\nInfo"
+	ToolButton
+		Icon 336
+		Calling 1736
+		HelpMsg "Åbn den fil eller URL, som er associeret med aktive de kortobjekter.\nLinks"
+	ToolButton
+		Icon 9
+		Calling 1708
+		HelpMsg "Sæt labels på kortobjekter med information fra relateret database.\nLabel"
+	ToolButton
+		Icon 37
+		Calling 1734
+		HelpMsg "Flyt hele kortets indhold til MapInfo Professional eller en anden applikation.\nFlyt kortvindue"
+	Separator
+	PushButton
+		Icon 10
+		Calling 822
+		HelpMsg "Kontroller kortlagene og visningen af dem.\nLagkontrol"
+	ToolButton
+		Icon 11
+		Calling 1710
+		HelpMsg "Mål afstanden mellem to punkter på kortet.\nMålebånd"
+	Separator
+	ToggleButton
+		Icon 12
+		Calling 606
+		HelpMsg "Vis/skjul kortets eller grafens signaturforklaring.\nViser/skjuler signaturforklaring"
+	ToggleButton
+		Icon 13
+		Calling 607
+		HelpMsg "Vis/skjul statistikvinduet.\nViser/skjuler statistik"
+	Separator
+	PushButton
+		Icon 187
+		Calling 706
+		HelpMsg "Angiv de markerede objekters distrikt som måldistrikt.\nMåldistrikt"
+	PushButton
+		Icon 188
+		Calling 705
+		HelpMsg "Permanent tildeling af valgte objekter til et måldistrikt.\nTildel valgte objekter"
+	Separator
+	ToggleButton
+		Icon 35
+		Calling 813
+		HelpMsg "Styrer udklip.\nTænd/sluk for udklip"
+	PushButton
+		Icon 36
+		Calling 812
+		HelpMsg "Opret et udklip.\nUdklip"
+	PushButton
+		Icon 346
+		Calling 824
+		HelpMsg "Opret en målestok.\nOpret en målestok"
+	Separator
+	PushButton
+		Icon 355
+		Calling 1738
+		HelpMsg "Vis vinduet Tabeloversigt.\nVis vinduet Tabeloversigt"
+	Separator
+	PushButton
+		Icon 363
+		Calling 1740
+		HelpMsg "Tilføj en tabel til tabelstyringens bibliotek.\nTilføj en tabel til tabelstyringens bibliotek."
+	Show
+	Width 2
+
+Create ButtonPad "Standard" ID 4 as
+	PushButton Icon 38
+		calling 101
+		HelpMsg "Opret en ny tabel.\nNy tabel"
+	PushButton Icon 39
+		calling 102
+		HelpMsg "Åbn eksisterende tabel eller arbejdsområde.\nÅbn"
+	PushButton Icon 340
+		calling 108
+		HelpMsg "Åbn et eksisterende arbejdsområde.\nÅbn arbejdsområde"
+	PushButton
+		Icon 347
+		Calling 128
+		HelpMsg "Tilføj Bing-luftfoto til kort.\nBing-luftfoto"
+	PushButton
+		Icon 348
+		Calling 129
+		HelpMsg "Tilføj Bing-hybrid til kort.\nBing-hybrid"
+	PushButton
+		Icon 356
+		Calling 130
+		HelpMsg "Tilføj Bing-veje til kort.\nBing-veje"
+	PushButton
+		Icon 357
+		Calling 825
+		HelpMsg "Indtast en adresse eller et sted for at ændre centreringen af kortet\nFlyt kortet til..."
+	Separator
+	PushButton Icon 40
+		calling 105
+		HelpMsg "Gem den aktuelle tabel.\nGem tabel"
+	PushButton Icon 342
+		calling 109
+		HelpMsg "Gem ændringer foretaget i et arbejdsområde.\nGem arbejdsområde"
+	Separator
+	PushButton Icon 343
+		calling 104
+		HelpMsg "Luk alle filer.\nLuk alle"
+	Separator
+	PushButton Icon 341
+		calling 609
+		HelpMsg "Gem vinduets indhold.\nGem vindue"
+	PushButton Icon 41
+		calling 112
+		HelpMsg "Udskriv vinduets indhold.\nUdskriv vindue"
+	PushButton Icon 345
+		calling 127
+		HelpMsg "Udskriv vindue til PDF.\nUdskriv til PDF"
+	Separator
+	Pushbutton Icon 42
+		calling 202
+		HelpMsg "Flyt den valgte tekst og de valgte objekter til Udklipsholder.\nKlip"
+	Pushbutton Icon 43
+		calling 203
+		HelpMsg "Kopier den valgte tekst og de valgte objekter til Udklipsholder.\nKopier"
+	Pushbutton Icon 44
+		calling 204
+		HelpMsg "Kopier indhold fra Udklipsholder ind i et aktivt vindue.\nSæt ind"
+	Separator
+	PushButton Icon 45
+		calling 201
+		HelpMsg "Annullerer den sidste ændring.\nFortryd"
+	Separator
+	PushButton Icon 175
+		calling 601
+		HelpMsg "Vis og manipuler data på tabelform.\nNy liste"
+	PushButton Icon 176
+		calling 602
+		HelpMsg "Vis en tabel som et kort.\nNyt kort"
+	PushButton Icon 177
+		calling 603
+		HelpMsg "Vis en tabel som en graf.\nNy graf"
+	PushButton Icon 178
+		calling 604
+		HelpMsg "Opret eller rediger vinduer, der skal udskrives.\nNyt layout"
+	PushButton Icon 368
+		calling 620
+		HelpMsg "Opret eller rediger vinduer, der skal udskrives.\nNy layoutdesiger"
+	PushButton Icon 179
+		calling 615
+		HelpMsg "Vis og manipuler en tabel ved distriktsoptimering.\nNy distriktsoptimering"
+	Fixed
+	Show
+
+Create ButtonPad "DBMS" ID 5 As
+	PushButton
+		Icon 321
+		Calling 116
+		HelpMsg "Åbn en DBMS-tabel.\nÅbn DBMS-tabel"
+	PushButton
+		Icon 322
+		Calling 417
+		HelpMsg "Opdater en DBMS-tabel.\nOpdater DBMS-tabel"
+	PushButton
+		Icon 323
+		Calling 416
+		HelpMsg "Frigør en DBMS-tabel.\nFrigør en DBMS-tabel"
+	PushButton
+		Icon 324
+		Calling 415
+		HelpMsg "Gør DBMS-tabel klar til kortlægning.\nKlargør DBMS-tabel til kortlægning"
+	PushButton
+		Icon 325
+		Calling 418
+		HelpMsg "Ret symbolet for en kortlægningsklar DBMS-tabel.\nRet en kortlægningsklar DBMS-tabels symbol."
+	PushButton
+		Icon 335
+		Calling 124
+		HelpMsg "Luk en DBMS-tilslutning.\nLuk DBMS"
+	Width 5
+
+'--------------------------------------------------------------------------
+'** MENU BAR ***************************************************************
+'---------------------------------------------------------------------------
+Create Menu Bar As
+	"&Filer",
+	"&Rediger",
+	"Værkt&øj",
+	"&Objekter",
+	"Fore&spørgsel",
+	"&Tabel",
+	"&Indstillinger",
+	"WinSpecific",
+	"&Vindue",
+	"&Hjælp"

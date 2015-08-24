@@ -1,0 +1,1666 @@
+'-----------------------------------------------------------------------------
+'** MapInfo version 15.0 menu and buttonpad definitions **********************
+' Don't use Ctrl+I as an accelerator key, since it is equivalent to Tab ASCII
+' code and will break Tab functionality in a browser and some dialogs.
+'-----------------------------------------------------------------------------
+
+'** WebService submenu ****************************************************
+Create Menu "Open &Web Service" ID 39 As
+	"Open W&FS..."
+		HelpMsg "Open a file from a WFS Server."
+		calling 119,
+	"Open W&MS..."
+		HelpMsg "Open a file from a WMS Server."
+		calling 118
+
+'*** Tile Server maps submenu *****************************************************
+Create Menu "Tile Server Maps" ID 45 As
+	"Add Bing A&erial to Map"
+		HelpMsg "Add Bing Aerial to Map."
+		Calling 128,
+	"Add Bing H&ybrid to Map"
+		HelpMsg "Add Bing Hybrid to Map."
+		Calling 129,
+	"Add Bing R&oads to Map"
+		HelpMsg "Add Bing Roads to Map."
+		Calling 130
+
+'** FILE menu **************************************************************
+Create Menu "&File" ID 1 As
+	"&New Table...\tCtrl+N/W^N"
+		HelpMsg "Create a new table."
+		calling 101,
+	"&Open...\tCtrl+O/W^O"
+		HelpMsg "Open tables or workspaces."
+		calling 102,
+	"Open Web Service" As "Open Web Service",
+	"Open DB&MS Connection..."
+		HelpMsg "Connect to a DBMS server."
+		calling 125,
+	"Open &Universal Data..."
+		HelpMsg "Open external data"
+		calling 126,
+	"(-",
+	"Tile Ser&ver Maps" As "Tile Server Maps",
+	"(-",
+	"(&Close Table..."
+		HelpMsg "Close one or more tables."
+		calling 103,
+	"Close D&BMS Connection..."
+		HelpMsg "Close a DBMS Connection."
+		calling 124,
+	"(Close A&ll"
+		HelpMsg "Close all open tables."
+		calling 104,
+	"(-",
+	"(&Save Table...\tCtrl+S/W^S"
+		HelpMsg "Save changes made to a table."
+		calling 105,
+	"(Save Copy &As..."
+		HelpMsg "Save a table with a new name, projection or format."
+		calling 106,
+	"(Save &Query..."
+		HelpMsg "Save a table as a query."
+		calling 117,
+	"Save Wor&kspace...\tCtrl+K/W^K"
+		HelpMsg "Save current session as a named configuration."
+		calling 109,
+	"Save W&indow As..."
+		HelpMsg "Save active window as a bitmap or metafile."
+		calling 609,
+	"(&Revert Table..."
+		HelpMsg "Discard edits and use the last saved table version."
+		calling 107,
+	"(-",
+	"Page Se&tup..."
+		HelpMsg "Choose a printer and configure print settings."
+		calling 111,
+	"(&Print...\tCtrl+P/W^P"
+		HelpMsg "Print window contents."
+		calling 112,
+	"Print to P&DF..."
+		HelpMsg "Print the active window to PDF."
+		calling 127,
+	"(-",
+	"($",   '*  MRU list
+	"(-",
+	"E&xit\tAlt+F4"
+		HelpMsg "Quit MapInfo Pro."
+		calling 113
+
+'** EDIT menu **************************************************************
+Create Menu "&Edit" ID 2 As
+	"&Undo\tCtrl+Z/W^Z"
+		HelpMsg "Undo the last edit."
+		calling 201,
+	"(-",
+	"Cu&t\tCtrl+X/W^X"
+		HelpMsg "Cut selected text and objects to the clipboard."
+		calling 202,
+	"&Copy\tCtrl+C/W^C"
+		HelpMsg "Copy selected text and objects to the clipboard."
+		calling 203,
+	"&Paste\tCtrl+V/W^V"
+		HelpMsg "Copy clipboard contents into the active window."
+		calling 204,
+	"Cle&ar\tDel"
+		HelpMsg "Delete selected text or objects."
+		calling 205,
+	"Clear Map &Objects Only"
+		HelpMsg "Remove graphic objects from a table."
+		calling 206,
+	"(-",
+	"(!&Reshape\tCtrl+R/W^R"
+		HelpMsg "Modify objects by moving, adding or deleting nodes."
+		calling 1601,
+	"&New Row\tCtrl+E/W^E"
+		HelpMsg "Add a record to the active Browser."
+		calling 702,
+	"(-",
+	"Get &Info...\tF7/W%118"
+		HelpMsg "Display information about the selected object."
+		calling 207
+
+'** OBJECTS menu ***********************************************************
+Create Menu "&Objects" ID 14 As
+	"Set &Target\tCtrl+T/W^T"
+		HelpMsg "Specify the selected object(s) as the target for editing."
+		calling 1610,
+	"Clear Ta&rget\tCtrl+Del/W^%46"
+		HelpMsg "Deselect current editing target."
+		calling 1611,
+	"(-",
+	"&Combine..."
+		HelpMsg "Combine separate map objects into a single object."
+		calling 1605,
+	"&Disaggregate..."
+		HelpMsg "Disaggregate regions into constituant polygons."
+		calling 1621,
+	"&Buffer..."
+		HelpMsg "Create a buffer polygon around selected object(s)."
+		calling 1606,
+	"Convex &Hull..."
+		HelpMsg "Create a convex hull object around selected object(s)."
+		calling 1616,
+	"E&nclose..."
+		HelpMsg "Create Enclosures using segments from selected polyline(s)."
+		calling 1617,
+	"&Voronoi..."
+		HelpMsg "Create Voronoi diagram from selected points."
+		calling 1622,
+	"&Driving Regions..."
+		HelpMsg "Create driving regions from selected points."
+		calling 1627,
+	"(-",
+	"&Split..."
+		HelpMsg "Break target map object(s) using selected cutter object(s)."
+		calling 1612,
+	"&Erase..."
+		HelpMsg "Erase target map object(s) using selected eraser object(s)."
+		calling 1613,
+	"Er&ase Outside..."
+		HelpMsg "Erase area of target object(s) not covered by selected eraser object(s)."
+		calling 1614,
+	"Pol&yline Split..."
+		HelpMsg "Split target object(s) using one single section polyline cutter object."
+		calling 1623,
+	"Polyline Split &at Node..."
+		HelpMsg "Split single section polyline at selected node."
+		calling 1626,
+	"&Overlay Nodes"
+		HelpMsg "Add nodes to target object(s) where they intersect with selected object(s)."
+		calling 1615,
+	"(-",
+	"Chec&k Regions..."
+		HelpMsg "Check Regions for incorrect data - self-intersections and overlaps."
+		calling 1618,
+	"C&lean..."
+		HelpMsg "Clean object data problems."
+		calling 1619,
+	"Snap\/Th&in..."
+		HelpMsg "Snap nodes together that are close and thin data."
+		calling 1620,
+	"(-",
+	"O&ffset..."
+		HelpMsg "Move the selected object(s) by specifying a distance and direction."
+		calling 1624,
+	"&Rotate..."
+		HelpMsg "Rotate object(s) by specifying an angle."
+		calling 1625,
+	"(-",
+	"S&mooth"
+		HelpMsg "Smooth selected polyline into a curve."
+		calling 1602,
+	"&Unsmooth"
+		HelpMsg "Return selected polyline to its unsmoothed state."
+		calling 1603,
+	"(-",
+	"Convert to Re&gions"
+		HelpMsg "Change each selected object into a region object."
+		calling 1607,
+	"Convert to &Polylines"
+		HelpMsg "Change each selected object into a polyline object."
+		calling 1604
+
+'** Find Selection submenu ****************************************************
+Create Menu "Fin&d Selection" ID 40 As
+	"In Current &Map Window\tCtrl+G/W^G"
+		HelpMsg "Select an item/row and find the selection in the front map window."
+		calling 312,
+	"In All &Windows\tCtrl+A/W^A"
+		HelpMsg "Select an item/row and find the selection in all windows."
+		calling 306
+
+'** QUERY menu *************************************************************
+Create Menu "&Query" ID 3 As
+	"&Select..."
+		HelpMsg "Create a selection by querying tables."
+		calling 301,
+	"S&QL Select..."
+		HelpMsg "Create a selection by querying tables using SQL."
+		calling 302,
+	"Select &All"
+		HelpMsg "Select all objects/rows from a Map/Layout window or Browser."
+		calling 303,
+	"&Invert Selection"
+		HelpMsg "Invert currently selected objects/rows from a Map/Layout window or Browser."
+		calling 311,
+	"&Unselect All\tCtrl+W/W^W"
+		HelpMsg "Deselect all selected objects/rows from a Map/Layout window or Browser."
+		calling 304,
+	"(-",
+	"&Find...\tCtrl+F/W^F"
+		HelpMsg "Locate and mark individual objects or addresses."
+		calling 305,
+	"Fin&d Selection" As "Find Selection",
+	"Find Add&ress..."
+		HelpMsg "Find an address using a geocoding server."
+		calling 313,
+	"(-",
+	"&Calculate Statistics..."
+		HelpMsg "Perform calculations on a column in a table or selection."
+		calling 309
+
+'== Oracle submenu -- new in MIPro 8.0 ===============================================
+Create Menu "&Oracle Workspace Tools" ID 41 As
+	"&Create Workspace..."
+		HelpMsg "Create a new Oracle Workspace"
+		Calling 1804,
+	"De&lete Workspace..."
+		HelpMsg "Delete an Oracle workspace"
+		calling 1805,
+	"(-",
+	"&Enable Versioning..."
+		HelpMsg "Turn versioning ON for an existing Oracle table"
+		calling 1806,
+	"&Disable Versioning..."
+		HelpMsg "Turn versioning OFF for an existing Oracle table"
+		calling 1807,
+	"(-",
+	"&Merge Table..."
+		HelpMsg "Merge a workspace into its parent workspace, resolving conflicts."
+		calling 1808,
+	"&Refresh Table..."
+		HelpMsg "Refresh a workspace from its parent workspace, resolving conflicts."
+		calling 1809
+
+'** MAINTENANCE submenu ****************************************************
+Create Menu "&Maintenance" ID 42 As
+	"&Table Structure..."
+		HelpMsg "Modify the table structure."
+		calling 404,
+	"&Delete Table..."
+		HelpMsg "Delete a table and its component files. "
+		calling 409,
+	"&Rename Table..."
+		HelpMsg "Rename a table and its component files."
+		calling 410,
+	"&Pack Table..."
+		HelpMsg "Compress tables to conserve space and eliminate deleted records."
+		calling 403,
+	"(-",
+	"&Make DBMS Table Mappable..."
+		HelpMsg "Identify spatial information in a table."
+		calling 415,
+	"&Change DBMS Table Symbol..."
+		HelpMsg "Change the symbol for a mappable DBMS table."
+		calling 418,
+	"&Unlink DBMS Table..."
+		HelpMsg "Make a DBMS table into a MapInfo table."
+		calling 416,
+	"R&efresh DBMS Table..."
+		HelpMsg "Refresh the contents of a DBMS table."
+		calling 417
+
+'** RASTER submenu *********************************************************
+Create Menu "&Raster" ID 43 As
+	"&Adjust Image Styles..."
+		HelpMsg "Adjust raster image color, contrast or brightness."
+		calling 414,
+	"(-",
+	"&Modify Image Registration..."
+		HelpMsg "Add or edit control points used to register raster images."
+		calling 413,
+	"&Select Control Point from Map"
+		HelpMsg "Add control points to a raster image."
+		calling 1730
+
+'** TABLE menu *************************************************************
+Create Menu "T&able" ID 15 As
+	"&Update Column..."
+		HelpMsg "Create temporary columns or modify existing columns."
+		calling 405,
+	"&Append Rows to Table..."
+		HelpMsg "Attach records from one table to another table."
+		calling 411,
+	"(-",
+	"&Geocode..."
+		HelpMsg "Assign point objects to rows in a table."
+		calling 407,
+	"Geocode Using Ser&ver..."
+		HelpMsg "Assign point objects to rows in a table using geocoding service."
+		calling 424,
+	"Create &Points..."
+		HelpMsg "Create point objects for a database with X and Y coordinates."
+		calling 408,
+	"&Combine Objects using Column..."
+		HelpMsg "Combine objects by using common column data."
+		calling 406,
+	"&Buffer..."
+		HelpMsg "Buffer objects in table."
+		calling 419,
+	"&Voronoi..."
+		HelpMsg "Perform Voronoi operation on objects in table."
+		calling 420,
+	"&Driving Regions..."
+		HelpMsg "Create Driving Regions for objects in table."
+		calling 425,
+	"(-",
+	"&Import..."
+		HelpMsg "Import a vector graphics file."
+		calling 401,
+	"&Export..."
+		HelpMsg "Export a table to another format."
+		calling 402,
+	"(-",
+	"&Maintenance" As "Maintenance",
+	"&Oracle Workspace Tools" as "Oracle Workspace Tools",
+	"&Raster" As "Raster",
+	"(-",
+	"&WMS Table Properties..."
+		HelpMsg "Modify the properties of a WMS table."
+		calling 421,
+	"(-",
+	"W&FS Table Refresh...\tAlt+F5/W@%116"
+		HelpMsg "Refresh a WFS Table."
+		calling 422,
+	"WF&S Table Properties..."
+		HelpMsg "Modify the properties of a WFS Table."
+		calling 423,
+	"(-",
+	"U&niversal Data Table Refresh..."
+		HelpMsg "Refresh table opened from Universal Data"
+		calling 426,
+	"(-",
+	"&Table List..."
+		HelpMsg "Display Table List"
+		calling 1738,
+	"(-",
+	"Add To &Library"
+		HelpMsg "Add Table to MapInfo Manager Library"
+		calling 1740
+
+'** OPTIONS menu ***********************************************************
+Create Menu "O&ptions" ID 5 As
+	"&Line Style...\tShift+F8/W#%119"
+		HelpMsg "Specify line color, pattern and width."
+		calling 501,
+	"&Region Style...\tCtrl+F8/W^%119"
+		HelpMsg "Specify the color, pattern and outline of closed objects."
+		calling 502,
+	"&Symbol Style...\tAlt+F8/W@%119"
+		HelpMsg "Specify symbol size, color and type."
+		calling 503,
+	"&Text Style...\tF8/W%119"
+		HelpMsg "Specify text color, font and size."
+		calling 504,
+	"(-",
+	"Tool&bars..."
+		HelpMsg "Display or hide the Main, Drawing or Tools Toolbars."
+		calling 605,
+	"!Hide Theme Le&gend Window^Show Theme Le&gend Window"
+		HelpMsg "Display or hide the map/graph legend."
+		calling 606,
+	"!Hide Stat&istics Window^Show Stat&istics Window"
+		HelpMsg "Display or hide the Statistics window."
+		calling 607,
+	"!Hide &MapBasic Window^Show &MapBasic Window"
+		HelpMsg "Display or hide MapBasic window."
+		calling 608,
+	"!Hide St&atus Bar^Show St&atus Bar"
+		HelpMsg "Display or hide the Status Bar."
+		calling 616,
+	"(-",
+	"&Custom Colors..."
+		HelpMsg "Customize the color palette."
+		calling 617,
+	"&Preferences..."
+		HelpMsg "Customize MapInfo Pro display and operation."
+		calling 208
+
+'** WINDOW menu ************************************************************
+Create Menu "&Window" ID 6 As
+	"New &Browser Window\tF2/W%113"
+		HelpMsg "Display and manipulate data in tabular format."
+		calling 601,
+	"New &Map Window\tF3/W%114"
+		HelpMsg "Display a table as a map."
+		calling 602,
+	"New &Graph Window...\tF4/W%115"
+		HelpMsg "Display a table as a graph."
+		calling 603,
+	"New &Layout Window...\tF5/W%116"
+		HelpMsg "Arrange/annotate windows for printing."
+		calling 604,
+	"New La&yout Designer Window...\tF6/W%117"
+		HelpMsg "Arrange/annotate windows for publishing."
+		calling 620,
+	"New &Redistrict Window..."
+		HelpMsg "Create and display the active table in a Districts Browser."
+		calling 615,
+	"(-",
+	"Recover &Off Screen Windows"
+		HelpMsg "Ensures that floating windows and toolbars are positioned on screen."
+		calling 619,
+	"Re&draw Window\tCtrl+D/W^D"
+		HelpMsg "Redraw the active window."
+		calling 610,
+	"&Tile Windows\tShift+F4/W#%115"
+		HelpMsg "Resize and arrange windows horizontally."
+		calling 611,
+	"&Cascade Windows\tShift+F5/W#%116"
+		HelpMsg "Resize and arrange windows vertically."
+		calling 612,
+	"&Arrange Icons"
+		HelpMsg "Arrange minimized window icons."
+		calling 613,
+	"(>"     ' list of windows; appears as separator if windows follow
+
+'** Licensing submenu ****************************************************
+Create Menu "&Licensing" ID 44 As
+	"&Transfer license..."
+		HelpMsg "Transfer license to MapInfo."
+		calling 1216,
+	"&Borrow license..."
+		HelpMsg "Borrow license from license server."
+		calling 1217,
+	"&Return borrowed license..."
+		HelpMsg "Return borrowed license to the license server."
+		calling 1218,
+	"&Enter a Bing License Key..."
+		HelpMsg "Enter user Bing license key for accessing Bing tile server."
+		calling 1222
+
+
+'** HELP menu **************************************************************
+Create Menu "&Help" ID 7 As
+	"MapInfo Pro &Help Topics"
+		HelpMsg "Displays Help topics for MapInfo Pro."
+		calling 1203,
+	"MapInfo &Graphing Help Topics"
+		HelpMsg "Displays Help topics for MapInfo Graphing."
+		calling 1214,
+	"(-",
+	"MapInfo on the &Web..."
+		HelpMsg "Connects to the MapInfo Home Page on the World Wide Web."
+		calling 1210,
+	"MapInfo Pro &Tutorial on the Web..."
+		HelpMsg "Connects to the MapInfo Tutorial Page on the World Wide Web."
+		calling 1213,
+	"MapInfo &Data Products on the Web..."
+		HelpMsg "Connects to the MapInfo Data Products Page on the World Wide Web."
+		calling 1211,
+	"MapInfo Data and Solutions for &Europe..."
+		HelpMsg "Connects to the MapInfo European Data and Solutions Page on the World Wide Web."
+		calling 1209,
+	"Check for &Update..."
+		HelpMsg "Check if upgrade is available for MapInfo Pro."
+		Calling 1212,
+	"Check for &News Feed..."
+		HelpMsg "Check if News is available for MapInfo Pro."
+		Calling 1221,
+	"Send Product &Improvement Suggestions..."
+		HelpMsg "Connects to a World Wide Web site where you can enter product improvement ideas."
+		Calling 1219,
+	"&Bing Maps Terms of Use..."
+		HelpMsg "Connects to the Terms of Use for Bing Maps."
+		Calling 1220,
+	"(-",
+	"&Licensing" As "Licensing",
+	"(-",
+	"&About this MapInfo Product"
+		HelpMsg "Displays program info, MapInfo Pro version number and the copyright."
+		Calling 1205
+
+'---------------------------------------------------------------------------
+'** WINDOW SPECIFIC MENUS **************************************************
+'---------------------------------------------------------------------------
+
+'** BROWSE menu ************************************************************
+Create Menu "&Browse" ID 8 As
+	"&Text Style...\tF8/W%119"
+		HelpMsg "Specify text color, font and size."
+		calling 504,
+	"&Pick Fields..."
+		HelpMsg "Choose fields that display in the active Browser."
+		calling 704,
+	"(-",
+	"&Sort Multi-Column..."
+		HelpMsg "Sort the browser by one or more columns."
+		calling 710,
+	"&Reapply Sort"
+		HelpMsg "Reapply sort & filter conditions so that recent edits are included."
+		calling 2709,
+	"To&ggle Sort Off"
+		HelpMsg "Toggle the sort & filter conditions on or off."
+		calling 2706,
+	"&Clear All Sort && Filters"
+		HelpMsg "Clear all sort & filter conditions, to display all the rows, in the original order."
+		calling 2710,
+	"C&lear Filters"
+		HelpMsg "Clear all filters, to display all the rows, preserving the sort order if any."
+		calling 2707,
+	"Cl&ear Sort"
+		HelpMsg "Clear the sort, to display the rows in the original order, preserving filter conditions if any."
+		calling 2701,
+	"Create a &Query from the Browser Contents..."
+		HelpMsg "Create a query based on the browser's sort & filter conditions."
+		calling 2711,
+	"(-",
+	"Select &All"
+		HelpMsg "Select all rows from current Browser."
+		calling 2708,
+	"&Unselect All\tCtrl+W/W^W"
+		HelpMsg "Deselect all selected objects/rows from a Map/Layout window or Browser."
+		calling 304,
+	"(-",
+	"!Hide Tool&bar^Show Tool&bar"
+		HelpMsg "Show or hide the toolbar at the top of the Browser."
+		calling 711,
+	"&Options..."
+		HelpMsg "Display or hide the grid pattern in the active Browser."
+		calling 703
+
+'** MAP menu ***************************************************************
+Create Menu "&Map" ID 9 As
+	"&Layer Control...\tCtrl+L/W^L"
+		HelpMsg "Manage map layering and display."
+		calling 822,
+	"(-",
+	"Create &3DMap...\tF11/W%122"
+		HelpMsg "Create a 3DMap using the GridLayer and current Map."
+		calling 817,
+	"Create Pr&ism Map...\tF10/W%121"
+		HelpMsg "Create a Prism Map using the current Mapper."
+		calling 818,
+	"(-",
+	"Create &Thematic Map...\tF9/W%120"
+		HelpMsg "Analyze and display map data values."
+		calling 307,
+	"&Modify Thematic Map...\tAlt+F9/W@%120"
+		HelpMsg "Modify a thematic map."
+		calling 308,
+	"(-",
+	"Cre&ate Legend..."
+		HelpMsg "Create new legend based on the active map with a Legend Designer."
+		calling 826,
+	"Create Scale &Bar..."
+		HelpMsg "Create a scale bar on the active map."
+		calling 824,
+	"(-",
+	"Change &View..."
+		HelpMsg "Specify map width, scale, resizing and centering."
+		calling 805,
+	"Clo&ne View"
+		HelpMsg "Display a clone of the active map."
+		calling 811,
+	"&Previous View\tAlt+Left Arrow/W@%37"
+		HelpMsg "Return to a map's last view."
+		calling 806,
+	"View &Entire Layer..."
+		HelpMsg "Display an individual or all map layer(s)."
+		calling 807,
+	"C&hange Zoom To Nearest Tile Server Level..."
+		HelpMsg "Change Zoom To Nearest Tile Server Level."
+		calling 828,
+	"Move Map To&..."
+		HelpMsg "Type an address or place name to recenter map"
+		calling 825,
+	"(-",
+	"&Clear Custom Labels..."
+		HelpMsg "Discard all custom labels and revert to defaults."
+		calling 814,
+	"&Save Cosmetic Objects..."
+		HelpMsg "Save objects in the Cosmetic layer to a table."
+		calling 809,
+	"Clear Cosmetic La&yer"
+		HelpMsg "Clear all objects from the Cosmetic layer."
+		calling 810,
+	"(-",
+	"Set Clip Re&gion"
+		HelpMsg "Define clip view region."
+		calling 812,
+	"!Clip &Region Off^Clip &Region On"
+		HelpMsg "Turn map clipping on or off."
+		calling 813,
+	"(-",
+	"Digiti&zer Setup..."
+		HelpMsg "Configure MapInfo Pro for digitizing."
+		calling 803,
+	"&Options..."
+		HelpMsg "Specify map coordinate, distance and area units."
+		calling 802
+
+'** LAYOUT menu ************************************************************
+Create Menu "&Layout" ID 10 As
+	"Change &Zoom..."
+		HelpMsg "Specify a zoom level for an active Layout window."
+		calling 902,
+	"View Actual &Size"
+		HelpMsg "Display layout objects as their printed size."
+		calling 903,
+	"View &Entire Layout"
+		HelpMsg "Display all pages in the Layout window."
+		calling 904,
+	"&Previous View\tAlt+Left Arrow/W@%37"
+		HelpMsg "Return to a layout's last view."
+		calling 905,
+	"(-",
+	"Bring to &Front"
+		HelpMsg "Display selected layout objects in front of other objects."
+		calling 906,
+	"Send to &Back"
+		HelpMsg "Move selected layout objects behind other objects."
+		calling 907,
+	"(-",
+	"(&Align Objects..."
+		HelpMsg "Align layout objects with each other or with the Layout window frame."
+		calling 908,
+	"(Align &Left"
+		HelpMsg "Left align layout objects with respect to each other."
+		calling 911,
+	"(Align &Right"
+		HelpMsg "Right align layout objects with respect to each other."
+		calling 912,
+	"(Align &Top"
+		HelpMsg "Top align layout objects with respect to each other."
+		calling 913,
+	"(Align B&ottom"
+		HelpMsg "Bottom align layout objects with respect to each other."
+		calling 914,
+	"&Create Drop Shadows..."
+		HelpMsg "Create a shadow behind Layout window frames or selected objects."
+		calling 909,
+	"(-",
+	"&Options..."
+		HelpMsg "Configure display of Layout window frames and their contents."
+		calling 901
+
+'** LAYOUT DESIGNER menu *****************************************************
+Create Menu "&Layout Designer" ID 51 As
+	"New &Map..."
+		HelpMsg "Create a new Map in a Layout frame"
+		Calling 2901,
+	"New &Browser..."
+		HelpMsg "Create a new Browser in a Layout frame"
+		Calling 2902
+
+'** GRAPH menu *************************************************************
+Create Menu "&Graph" ID 11 As
+	"Graph &Type..."
+		HelpMsg "Choose a graph type and specify its associated options."
+		calling 1001,
+	"&Label Axis..."
+		HelpMsg "Customize the graph label axis."
+		calling 1002,
+	"&Value Axis..."
+		HelpMsg "Customize the graph value axis."
+		calling 1003,
+	"&Series..."
+		HelpMsg "Customize the appearance of graphs."
+		calling 1004
+
+'** MAPBASIC menu **********************************************************
+Create Menu "&MapBasic" ID 12 As
+	"&Clear Contents"
+		HelpMsg "Clear the MapBasic window."
+		calling 1101,
+	"&Save Contents..."
+		HelpMsg "Save the contents of the MapBasic window."
+		calling 1102
+
+'** REDISTRICT menu ********************************************************
+Create Menu "&Redistrict" ID 13 As
+	"(A&ssign Selected Objects"
+		HelpMsg "Permanently assign selected objects to the target district."
+		Calling 705,
+	"(Set &Target District from Map"
+		HelpMsg "Specify the selected object's district as the target district."
+		Calling 706,
+	"(-",
+	"(&Add District"
+		HelpMsg "Add a new district to the Districts Browser."
+		Calling 707,
+	"(&Delete Target District"
+		HelpMsg "Delete the current target district from the Districts Browser."
+		Calling 708,
+	"(-",
+	"&Options..."
+		HelpMsg "Specify the district order and grid pattern display."
+		Calling 709
+
+'** LEGEND menu **********************************************************
+Create Menu "&Legend" ID 31 As
+	"&Add Frames..."
+		HelpMsg "Add new frames to the active Legend window."
+		calling 1903,
+	"&Refresh..."
+		HelpMsg "Refresh the contents of the active Legend window."
+		calling 1902,
+	"&Window Properties..."
+		HelpMsg "Set properties for the active Legend window."
+		calling 1901
+
+'** LEGEND DESIGNER menu **********************************************************
+Create Menu "&Legend Designer" ID 49 As
+	"&Add Frames..."
+		HelpMsg "Add new frames to the active Legend window."
+		calling 2806,
+	"Add &Text Frame..."
+		HelpMsg "Add new text frames to the active Legend window."
+		calling 2807,
+	"&Refresh..."
+		HelpMsg "Refresh the contents of the active Legend window."
+		calling 2805,
+	"(-",
+	"Remove All G&uidelines"
+		HelpMsg "Remove all guidelines from the active Legend window."
+		calling 2802,
+	"(-",
+	"&Properties..."
+		HelpMsg "Set properties for the active Legend window."
+		calling 2804
+
+'** New graph menu **********************************************************
+Create Menu "&Graph" ID 29 As
+	"&Formatting..."
+		HelpMsg "Set properties for the selected graph object."
+		calling 2007,
+	"(-",
+	"&General Options..."
+		HelpMsg "Set properties of the graph."
+		calling 2002,
+	"&Series Options..."
+		HelpMsg "Set properties of the selected series."
+		calling 2003,
+	"G&rids && Scales..."
+		HelpMsg "Set properties of the graph grids and scales."
+		calling 2004,
+	"&Titles..."
+		HelpMsg "Set title and label text of the graph."
+		calling 2005,
+	"&3D Viewing Angle..."
+		HelpMsg "Set the viewing angle of the 3D graph."
+		calling 2006,
+	"(-",
+	"Save &As Template..."
+		HelpMsg "Save current graph as template."
+		calling 2008
+
+'** New 3DMap menu **********************************************************
+Create Menu "&3DWindow" ID 28 As
+	"&Refresh Texture"
+		HelpMsg "Recreate the texture from the original layers."
+		calling 2103,
+	"(-",
+	"Clo&ne View"
+		HelpMsg "Display clone of current 3DWindow."
+		calling 2105,
+	"Previ&ous View"
+		HelpMsg "Return to 3DWindows last view."
+		calling 2106,
+	"View &Entire Layer"
+		HelpMsg "Reset Viewpoint to view center the entire layer."
+		calling 2101,
+	"&Viewpoint Control..."
+		HelpMsg "Use a dialog to set Viewpoint."
+		calling 2107,
+	"(-",
+	"(!&WireFrame"
+		HelpMsg "Toggle between wireframe and solid representation."
+		calling 2104,
+	"(-",
+	"&Properties..."
+		HelpMsg "Set properties of the 3DWindow."
+		calling 2102
+
+'---------------------------------------------------------------------------
+'** Some menus not used, but provided for 2.x MapBasic Apps for ************
+'** backwards compatibility ************************************************
+'---------------------------------------------------------------------------
+Create Menu "&Analyze" As
+	"&Select..." calling 301,
+	"S&QL Select..." calling 302,
+	"Select &All" calling 303,
+	"&Unselect All\tCtrl+W/W^W" calling 304,
+	"(-",
+	"&Find...\tCtrl+F/W^F" calling 305,
+	"Fin&d Selection" calling 306,
+	"(-",
+	"Shade by &Value..." calling 307,
+	"&Customize Legend..." calling 308,
+	"(-",
+	"Ca&lculate Statistics..." calling 309
+Create Menu "&Style" As
+	"&Line Style...\tShift+F8/W#%119" calling 501,
+	"&Region Style...\tCtrl+F8/W^%119" calling 502,
+	"&Symbol Style...\tAlt+F8/W@%119" calling 503,
+	"&Text Style...\tF8/W%119" calling 504
+
+'** CRYSTAL REPORTS submenu *********************************************************
+Create Menu "&Crystal Reports" As
+	"&New Report..."
+		HelpMsg "Build report from a table and load it into Crystal Report Designer."
+		calling 1802,
+	"&Open Report..."
+		HelpMsg "Load an existing report into Crystal Report Designer."
+		calling 1803
+
+'---------------------------------------------------------------------------
+'** Tools menu.  Used for MapBasic tools and Crystal Reports
+'---------------------------------------------------------------------------
+Create Menu "&Tools" ID 4 As
+	"&Crystal Reports" As "Crystal Reports",
+	"(-",
+	"R&un MapBasic Program...\tCtrl+U/W^U"
+		HelpMsg "Start a MapBasic application."
+		calling 110,
+	"(-",
+	"&Get MapBasic Utilities..."
+		HelpMsg "Connects to the Pitney Bowes Software Community Download site on the World Wide Web."
+		calling 1811,
+	"(-",
+	"&Tool Manager..."
+		HelpMsg "Configure MapBasic tools to run automatically when MapInfo Pro starts."
+		calling 1801
+
+'---------------------------------------------------------------------------
+'** SHORTCUT menus for the various window types ****************************
+'---------------------------------------------------------------------------
+
+Create Menu "DefaultShortcut" ID 16 Context As
+	"Undo"
+		HelpMsg "Undo the last edit."
+		calling 201,
+	"(-",
+	"Cut"
+		HelpMsg "Cut selected text and objects to the clipboard."
+		calling 202,
+	"Copy"
+		HelpMsg "Copy selected text and objects to the clipboard."
+		calling 203,
+	"Paste"
+		HelpMsg "Copy clipboard contents into the active window."
+		calling 204
+
+Create Menu "MapperShortcut" ID 17 Context As
+	"&Layer Control..."
+		HelpMsg "Bring up layer Control dialog"
+		calling 822,
+	"(-",
+	"Fin&d Selection"
+		HelpMsg "Select an item/row and find the selection in the front map window."
+		calling 312,
+	"View Enti&re Selection Layer"
+		HelpMsg "View the entire extents of the layer that has the current selection."
+		calling 819,
+	"&Select All from Selection Layer"
+		HelpMsg "Select all the rows in the layer that has the current selection."
+		calling 820,
+	"Make Selection Layer Edita&ble"
+		HelpMsg "Make the layer that has the current selection editable."
+		calling 821,
+	"(-",
+	"!&Turn Autoscroll Off^Turn &Autoscroll On"
+		HelpMsg "Turn autoscroll on or off for the active map window"
+		calling 815,
+	"(-",
+	"&Clear Cosmetic Layer"
+		HelpMsg "Clear all objects from the Cosmetic layer."
+		calling 810,
+	"(-",
+	"Change &View..."
+		HelpMsg "Specify map width, scale, resizing and centering."
+		calling 805,
+	"Clo&ne View"
+		HelpMsg "Display a clone of the active map."
+		calling 811,
+	"&Previous View"
+		HelpMsg "Return to a map's last view."
+		calling 806,
+	"View &Entire Layer..."
+		HelpMsg "Display an individual or all map layer(s)."
+		calling 807,
+	"C&hange Zoom To Nearest Tile Server Level..."
+		HelpMsg "Change Zoom To Nearest Tile Server Level."
+		calling 828,
+	"(-",
+	"Edit Objects" as "Objects",
+	"(-",
+	"Get &Info...\tF7/W%118"
+		HelpMsg "Display information about the selected object."
+		calling 207
+
+Create Menu "BrowserShortcut" ID 18 Context As
+	"Sort Ascending"
+		HelpMsg "Sort A-Z / Small to Large"
+		calling 2702,
+	"Sort Descending"
+		HelpMsg "Sort Z-A / Large to Small"
+		calling 2703,
+	"(-",
+	"Filter..."
+		HelpMsg "Choose filter conditions, to temporarily hide some rows based on cell values."
+		calling 2704,
+	"Clear Filter"
+		HelpMsg "Clear the filter condition from this column."
+		calling 2705
+
+Create Menu "BrowserFilterShortcut" ID 47 As
+	"Sort Multi-Column..."
+		HelpMsg "Sort the browser by one or more columns"
+		calling 710,
+	"(-",
+	"Reapply Sort"
+		HelpMsg "Reapply Sort/Filters to refresh any eventual stale sort or filters"
+		calling 2709,
+	"Toggle Sort Off"
+		HelpMsg "Toggle off or on the sort/filters."
+		calling 2706,
+	"(-",
+	"Clear All Sort && Filters"
+		HelpMsg "Clear all sort and filters, to display all the original rows before any filters or sort were applied"
+		calling 2710,
+	"Clear Filters"
+		HelpMsg "Clear all filters, to display all the original rows preserving the sort order if any"
+		calling 2707,
+	"Clear Sort"
+		HelpMsg "Clear the sort, to display the rows in their original order preserving any applied filter if any"
+		calling 2701,
+	"(-",
+	"Create a &Query from the Browser Contents..."
+		HelpMsg "Create a query based on the browser's sort & filter conditions."
+		calling 2711
+
+Create Menu "BrowserSelectShortcut" ID 48 As
+	"Select &All"
+		HelpMsg "Select all rows from current Browser."
+		calling 2708,
+	"&Unselect All\tCtrl+W/W^W"
+		HelpMsg "Deselect all selected objects/rows from a Map/Layout window or Browser."
+		calling 304
+
+Create Menu "LayoutShortcut" ID 19 Context As
+	"Change &Zoom..."
+		HelpMsg "Specify a zoom level for an active Layout window."
+		calling 902,
+	"View Actual &Size"
+		HelpMsg "Display layout objects as their printed size."
+		calling 903,
+	"View &Entire Layout"
+		HelpMsg "Display all pages in the Layout window."
+		calling 904,
+	"&Previous View"
+		HelpMsg "Return to a layout's last view."
+		calling 905,
+	"(-",
+	"Bring to &Front"
+		HelpMsg "Display selected layout objects in front of other objects."
+		calling 906,
+	"Send to &Back"
+		HelpMsg "Move selected layout objects behind other objects."
+		calling 907,
+	"(-",
+	"(&Align Objects..."
+		HelpMsg "Align layout objects with each other or with the Layout window frame."
+		calling 908,
+	"(Align &Left"
+		HelpMsg "Left align layout objects with respect to each other."
+		calling 911,
+	"(Align &Right"
+		HelpMsg "Right align layout objects with respect to each other."
+		calling 912,
+	"(Align &Top"
+		HelpMsg "Top align layout objects with respect to each other."
+		calling 913,
+	"(Align B&ottom"
+		HelpMsg "Bottom align layout objects with respect to each other."
+		calling 914,
+	"&Create Drop Shadows..."
+		HelpMsg "Create a shadow behind Layout window frames or selected objects."
+		calling 909,
+	"(-",
+	"!&Turn Autoscroll Off^Turn &Autoscroll On"
+		HelpMsg "Turn autoscroll on or off for the active layout window"
+		calling 910
+
+Create Menu "GrapherShortcut" ID 20 Context As
+	"Graph &Type..."
+		HelpMsg "Choose a graph type and specify its associated options."
+		calling 1001,
+	"&Label Axis..."
+		HelpMsg "Customize the graph label axis."
+		calling 1002,
+	"&Value Axis..."
+		HelpMsg "Customize the graph value axis."
+		calling 1003,
+	"&Series..."
+		HelpMsg "Customize the appearance of graphs."
+		calling 1004
+
+Create Menu "CmdShortcut" ID 21 Context As
+	"Undo"
+		HelpMsg "Undo the last edit."
+		calling 201,
+	"(-",
+	"Cut"
+		HelpMsg "Cut selected text and objects to the clipboard."
+		calling 202,
+	"Copy"
+		HelpMsg "Copy selected text and objects to the clipboard."
+		calling 203,
+	"Paste"
+		HelpMsg "Copy clipboard contents into the active window."
+		calling 204
+
+Create Menu "RedistrictShortcut" ID 22 Context As
+	"(A&ssign Selected Objects"
+		HelpMsg "Permanently assign selected objects to the target district."
+		calling 705,
+	"(Set &Target District from Map"
+		HelpMsg "Specify the selected object's district as the target district."
+		calling 706,
+	"(-",
+	"&Text Style...\tF8/W%119"
+		HelpMsg "Specify text color, font and size."
+		calling 504,
+	"(-",
+	"(&Add District"
+		HelpMsg "Add a new district to the Districts Browser."
+		calling 707,
+	"(&Delete Target District"
+		HelpMsg "Delete the current target district from the Districts Browser."
+		calling 708
+
+Create Menu "LegendShortcut" ID 23 Context As
+	"&Add Frames..."
+		HelpMsg "Add new frames to the active Legend window."
+		calling 1903,
+	"&Refresh..."
+		HelpMsg "Refresh the contents of the active Legend window."
+		calling 1902,
+	"(-",
+	"&Delete"
+		HelpMsg "Delete the selected frame."
+		calling 1904,
+	"(-",
+	"&Window Properties..."
+		HelpMsg "Set properties for the active Legend window."
+		calling 1901
+
+Create Menu "GrapherShortcut" ID 24 Context As
+	"&Formatting..."
+		HelpMsg "Set properties for the selected graph object."
+		calling 2007,
+	"(-",
+	"&General Options..."
+		HelpMsg "Set properties of the graph."
+		calling 2002,
+	"&Series Options..."
+		HelpMsg "Set properties of the selected series."
+		calling 2003,
+	"G&rids && Scales..."
+		HelpMsg "Set grid and scale properties of the graph."
+		calling 2004,
+	"&Titles..."
+		HelpMsg "Set title and label text of the graph."
+		calling 2005,
+	"&3D Viewing Angle..."
+		HelpMsg "Set the viewing angle of the 3D graph."
+		calling 2006,
+	"(-",
+	"Save &As Template..."
+		HelpMsg "Save current graph as template."
+		calling 2008
+
+Create Menu "&3DMapShortcut" ID 25 Context As
+	"&Refresh Texture"
+		HelpMsg "Recreate the texture from the original layers."
+		calling 2103,
+	"(-",
+	"Clo&ne View"
+		HelpMsg "Display clone of current 3DWindow."
+		calling 2105,
+	"Previ&ous View"
+		HelpMsg "Return to 3DWindows last view."
+		calling 2106,
+	"View &Entire Layer"
+		HelpMsg "Reset Viewpoint to view center the entire layer."
+		calling 2101,
+	"&Viewpoint Control..."
+		HelpMsg "Use a dialog to set Viewpoint."
+		calling 2107,
+	"(-",
+	"(!&WireFrame"
+		HelpMsg "Toggle between wireframe and solid representation."
+		calling 2104,
+	"(-",
+	"&Properties..."
+		HelpMsg "Set properties of the 3DWindow."
+		calling 2102
+
+Create Menu "MessageWinShortcut" ID 26 Context As
+	"&Copy"
+		HelpMsg "Copy selected text or all text"
+		calling 203
+
+Create Menu "StatisticsWinShortcut" ID 27 Context As
+	"&Copy  Ctrl+C"
+		HelpMsg "Copy all data to clipboard"
+		calling 2301
+
+Create Menu "AdornmentShortcut" ID 32 Context As
+	"&Properties ..."
+		HelpMsg "Show properties of the adornment."
+		calling 2401,
+	"(-",
+	"&Remove"
+		HelpMsg "Remove current adornment from the map window."
+		calling 2402
+
+Create Menu "LcLayersShortcut" ID 33 Context As
+	"View Entire Layer"
+		HelpMsg "View Entire Layer"
+		calling 2501,
+	"(-",
+	"Layer Properties..."
+		HelpMsg "Show Layer Properties dialog box"
+		calling 2502,
+	"Label Font..."
+		HelpMsg "Set font properties for labeling"
+		calling 2503,
+	"Rename"
+		HelpMsg "Rename layer"
+		calling	2542,
+	"Clear Custom Labels from Selected Layers"
+		HelpMsg "Discard all custom labels for the selected layers"
+		calling 2521,
+	"Browse Table"
+		HelpMsg "Display and manipulate data in tabular format."
+		calling 2517,
+	"Select All from Layer"
+		HelpMsg "Select all rows in the table displayed in this layer."
+		calling 2523,
+	"(-",
+	"Make Other Layers Non-selectable"
+		HelpMsg "Make Other Layers Non-selectable"
+		calling 2504,
+	"(-",
+	"Add a Display Override"
+		HelpMsg "Add a Display Override"
+		calling 2511,
+	"Add a Label Override"
+		HelpMsg "Add a Label Override"
+		calling 2512,
+	"(-",
+	"Change Zoom to Nearest Tile Server Level"
+		HelpMsg "Change Zoom to Nearest Tile Server Level"
+		calling 2520,
+	"(-",
+	"View\/Edit Metadata..."
+		HelpMsg "View/Edit metadata record for the table."
+		calling 2518,
+	"Add to Library..."
+		HelpMsg "Add Table to MapInfo Manager Library."
+		calling 2519
+
+Create Menu "LcMapsShortcut" ID 34 Context As
+	"Rename"
+		HelpMsg "Rename the Map"
+		calling 2505,
+	"Map Options..."
+		HelpMsg "Display the Map Options dialog"
+		calling 2506,
+	"Ad&just Labeling Priorities..."
+		HelpMsg "Change the priority of labels from different layers"
+		calling 2522,
+	"Add Group"
+		HelpMsg "Add a new, empty group layer"
+		calling 2507
+
+Create Menu "LcGroupsShortcut" ID 35 Context As
+	"Rename"
+		HelpMsg "Rename the group"
+		calling 2508,
+	"Add Layers..."
+		HelpMsg "Add layers to group"
+		calling 2510,
+	"Add Group"
+		HelpMsg "Add a new, empty group layer"
+		calling 2507,
+	"Ungroup"
+		HelpMsg "Remove the group folder, without removing the layers in the group."
+		calling 2509
+
+Create Menu "TableAdornmentShortcut" ID 36 Context As
+	"&Remove"
+		HelpMsg "Remove current adornment from the map window."
+		calling 2402
+
+Create Menu "TableListWindowShortcut" ID 37 Context As
+	"Select All"
+		HelpMsg "Select all objects/rows from a Map/Layout window or Browser."
+		calling 2601,
+	"Browse"
+		HelpMsg "Display and manipulate data in tabular format."
+		calling 2602,
+	"Open in new Map Window"
+		HelpMsg "Display one or tables as a map."
+		calling 2603,
+	"Export..."
+		HelpMsg "Export a table to another format."
+		calling 2604,
+	"(-",
+	"Refresh"
+		HelpMsg "Refresh table opened from Universal Data, contents of a DBMS table or a WFS Table."
+		calling 2605,
+	"Table Structure..."
+		HelpMsg "Modify the table structure."
+		calling 2606,
+	"Create Points..."
+		HelpMsg "Create point objects for a database with X and Y coordinates."
+		calling 2607,
+	"Update Column..."
+		HelpMsg "Create temporary columns or modify existing columns."
+		calling 2608,
+	"(-",
+	"View\/Edit Metadata..."
+		HelpMsg "View/Edit metadata record for the table."
+		calling 2610,
+	"Add to Library..."
+		HelpMsg "Add Table to MapInfo Manager Library."
+		calling 2611,
+	"(-",
+	"Close"
+		HelpMsg "Close one or more tables."
+		calling 2609
+
+Create Menu "OverridesShortcut" ID 38 Context As
+	"Display Override Properties..."
+		HelpMsg "Show Display Override Properties"
+		calling 2513,
+	"Label Override Properties..."
+		HelpMsg "Show Label Override Properties"
+		calling 2514,
+	"Split"
+		HelpMsg "Split"
+		calling 2515,
+	"Remove"
+		HelpMsg "Remove"
+		calling 2516
+
+Create Menu "LegendDesignerShortcut" ID 50 Context As
+	"&Add Frames..."
+		HelpMsg "Add new frames to the active Legend window."
+		calling 2806,
+	"&Add Text Frame..."
+		HelpMsg "Add new stand alone Text frame to the active Legend window."
+		calling 2807,
+	"&Refresh..."
+		HelpMsg "Refresh the contents of the active Legend window."
+		calling 2805,
+	"(-",
+	"!Disable &Guidelines^Enable &Guidelines"
+		HelpMsg "Enable or disable guidelines in the active Legend window."
+		calling 2801,
+	"Remove All G&uidelines"
+		HelpMsg "Remove all guidelines from the active Legend window."
+		calling 2802,
+	"(-",
+	"&Delete Selected Frames"
+		HelpMsg "Remove selected frames from the active Legend window."
+		calling 2803,
+	"(-",
+	"&Properties..."
+		HelpMsg "Set properties for the active Legend window."
+		calling 2804
+
+'---------------------------------------------------------------------------
+'** BUTTON PADS ************************************************************
+'---------------------------------------------------------------------------
+
+Create ButtonPad "Tools" ID 3 As
+	PushButton
+		Icon 32
+		Calling 110
+		HelpMsg "Start a MapBasic application.\nRun MapBasic Program"
+	ToggleButton
+		Icon 33
+		Calling 608
+		HelpMsg "Display or hide the MapBasic window.\nShow/Hide MapBasic Window"
+	Hide
+	Width 2
+
+Create ButtonPad "Web Services" ID 6 As
+	PushButton
+		Icon 338
+		calling 118
+		HelpMsg "Access layers from a WMS Server.\nOpen WMS Table"
+	PushButton
+		Icon 339
+		calling 119
+		HelpMsg "Access a layer from a WFS Server.\nOpen WFS Table"
+	PushButton
+		Icon 184
+		Calling 313
+		HelpMsg "Find Address...\nFind Address"
+	PushButton
+		Icon 185
+		Calling 424
+		HelpMsg "Geocode Using Server...\nGeocode Using Server"
+	PushButton
+		Icon 14
+		Calling 1627
+		HelpMsg "Create Drive Regions...\nCreate Drive Regions"
+	Separator
+	PushButton
+		Icon 183
+		Calling 220
+		HelpMsg "Web Services Preferences...\nWeb Services Preferences"
+		Show
+		Width 2
+
+Create ButtonPad "Drawing" ID 2 As
+	ToolButton
+		Icon 16
+		Calling 1711
+		HelpMsg "Place a symbol (point) on an editable map or active layout.\nSymbol"
+	ToolButton
+		Icon 17
+		Calling 1712
+		HelpMsg "Draw a line in an editable map or active layout layer.\nLine"
+	ToolButton
+		Icon 18
+		Calling 1713
+		HelpMsg "Draw a polyline in an editable map or active layout layer.\nPolyline"
+	ToolButton
+		Icon 19
+		Calling 1716
+		HelpMsg "Draw an arc in an editable map or active layout layer.\nArc"
+	ToolButton
+		Icon 20
+		Calling 1714
+		HelpMsg "Draw a new polygon in an editable map or active layout.\nPolygon"
+	ToolButton
+		Icon 21
+		Calling 1715
+		HelpMsg "Draw an ellipse or circle in an editable map or active layout.\nEllipse"
+	ToolButton
+		Icon 22
+		Calling 1717
+		HelpMsg "Draw a rectangle/square in an editable map or active layout.\nRectangle"
+	ToolButton
+		Icon 23
+		Calling 1718
+		HelpMsg "Draw a rounded rectangle/square in a map or layout.\nRounded Rectangle"
+	ToolButton
+		Icon 24
+		Calling 1709
+		HelpMsg "Add text to a map/layout or edit Browser data.\nText"
+	ToolButton
+		Icon 25
+		Calling 1719
+		HelpMsg "Insert a layout frame.\nFrame"
+	Separator
+	ToggleButton
+		Icon 26
+		Calling 1601
+		HelpMsg "Turn reshape mode on/off.\nReshape"
+	ToolButton
+		Icon 27
+		Calling 1723
+		HelpMsg "Add a node to a region, polyline or line.\nAdd Node"
+	Separator
+	PushButton
+		Icon 28
+		Calling 503
+		HelpMsg "Specify the symbol size, color and type.\nSymbol Style"
+	PushButton
+		Icon 29
+		Calling 501
+		HelpMsg "Specify line color, pattern and width.\nLine Style"
+	PushButton
+		Icon 30
+		Calling 502
+		HelpMsg "Specify the color, pattern and outline of closed objects.\nRegion Style"
+	PushButton
+		Icon 31
+		Calling 504
+		HelpMsg "Specify text color, font and size.\nText Style"
+	Show
+	Width 2
+
+Create ButtonPad "Main" ID 1 As
+	ToolButton
+		Icon 0
+		Calling 1701
+		HelpMsg "Select one or more map/layout objects or browser records.\nSelect"
+	ToolButton
+		Icon 1
+		Calling 1722
+		HelpMsg "Select map objects within a rectangle.\nMarquee Select"
+	ToolButton
+		Icon 2
+		Calling 1703
+		HelpMsg "Select map objects within a circle.\nRadius Select"
+	ToolButton
+		Icon 332
+		Calling 1733
+		HelpMsg "Select map objects within a polygon.\nPolygon Select"
+	ToolButton
+		Icon 3
+		Calling 1704
+		HelpMsg "Select map objects within a boundary.\nBoundary Select"
+	PushButton
+		Icon 333
+		Calling 304
+		HelpMsg "Unselect all map objects.\nUnselect All"
+	PushButton
+		Icon 337
+		Calling 311
+		HelpMsg "Invert currently selected objects/rows from a Map/Layout window or Browser.\nInvert Selection"
+	ToolButton
+		Icon 334
+		Calling 1735
+		HelpMsg "Change table selection from graph.\nGraph Select"
+	Separator
+	ToolButton
+		Icon 4
+		Calling 1705
+		HelpMsg "Display a closer view of a map or layout.\nZoom-in"
+	ToolButton
+		Icon 5
+		Calling 1706
+		HelpMsg "Display a wider view of a map or layout.\nZoom-out"
+	PushButton
+		Icon 6
+		Calling 805
+		HelpMsg "Specify map width, scale, resizing and centering.\nChange View"
+	ToolButton
+		Icon 7
+		Calling 1702
+		HelpMsg "Reposition a map or layout within its window.\nGrabber"
+	Separator
+	ToolButton
+		Icon 8
+		Calling 1707
+		HelpMsg "Display tabular information about map objects.\nInfo"
+	ToolButton
+		Icon 336
+		Calling 1736
+		HelpMsg "Launch file or URL associated with active map objects.\nHotLink"
+	ToolButton
+		Icon 9
+		Calling 1708
+		HelpMsg "Label map objects with information from a related database.\nLabel"
+	ToolButton
+		Icon 37
+		Calling 1734
+		HelpMsg "Drag entire Map contents into MapInfo Pro or another application.\nDrag Map Window"
+	Separator
+	PushButton
+		Icon 10
+		Calling 822
+		HelpMsg "Manage map layering and display.\nLayer Control"
+	ToolButton
+		Icon 11
+		Calling 1710
+		HelpMsg "Display the distance between two map points.\nRuler"
+	Separator
+	ToggleButton
+		Icon 12
+		Calling 606
+		HelpMsg "Display/hide the map/graph legend.\nShow/Hide Legend"
+	ToggleButton
+		Icon 13
+		Calling 607
+		HelpMsg "Display/hide the Statistics window.\nShow/Hide Statistics"
+	Separator
+	PushButton
+		Icon 187
+		Calling 706
+		HelpMsg "Set selected object's district as target.\nSet Target District"
+	PushButton
+		Icon 188
+		Calling 705
+		HelpMsg "Permanently assign selected objects to district.\nAssign Selected Objects"
+	Separator
+	ToggleButton
+		Icon 35
+		Calling 813
+		HelpMsg "Toggle Map Clipping.\nClip Region On/Off"
+	PushButton
+		Icon 36
+		Calling 812
+		HelpMsg "Set Clip Region.\nSet Clip Region"
+	PushButton
+		Icon 346
+		Calling 824
+		HelpMsg "Create a Scale Bar.\nCreate a Scale Bar"
+	Separator
+	PushButton
+		Icon 355
+		Calling 1738
+		HelpMsg "Display Table List.\nDisplay Table List"
+	Separator
+	PushButton
+		Icon 363
+		Calling 1740
+		HelpMsg "Add Table to MapInfo Manager Library.\nAdd Table to MapInfo Manager Library"
+	Show
+	Width 2
+
+Create ButtonPad "Standard" ID 4 as
+	PushButton Icon 38
+		calling 101
+		HelpMsg "Create a new table.\nNew Table"
+	PushButton Icon 39
+		calling 102
+		HelpMsg "Open an existing table or workspace.\nOpen"
+	PushButton Icon 340
+		calling 108
+		HelpMsg "Open an existing workspace.\nOpen Workspace"
+	PushButton
+		Icon 347
+		Calling 128
+		HelpMsg "Add Bing Aerial to Map.\nBing Aerial"
+	PushButton
+		Icon 348
+		Calling 129
+		HelpMsg "Add Bing Hybrid to Map.\nBing Hybrid"
+	PushButton
+		Icon 356
+		Calling 130
+		HelpMsg "Add Bing Roads to Map.\nBing Roads"
+	PushButton
+		Icon 357
+		Calling 825
+		HelpMsg "Type an address or place name to recenter map\nMove Map To..."
+	Separator
+	PushButton Icon 40
+		calling 105
+		HelpMsg "Save changes made to a table.\nSave Table"
+	PushButton Icon 342
+		calling 109
+		HelpMsg "Save changes made to a workspace.\nSave Workspace"
+	Separator
+	PushButton Icon 343
+		calling 104
+		HelpMsg "Close all files.\nClose All"
+	Separator
+	PushButton Icon 341
+		calling 609
+		HelpMsg "Save window contents.\nSave Window"
+	PushButton Icon 41
+		calling 112
+		HelpMsg "Print window contents.\nPrint Window"
+	PushButton Icon 345
+		calling 127
+		HelpMsg "Print window to PDF.\nPrint to PDF"
+	Separator
+	Pushbutton Icon 42
+		calling 202
+		HelpMsg "Cut selected text and objects to the clipboard.\nCut"
+	Pushbutton Icon 43
+		calling 203
+		HelpMsg "Copy selected text and objects to the clipboard.\nCopy"
+	Pushbutton Icon 44
+		calling 204
+		HelpMsg "Copy clipboard contents into the active window.\nPaste"
+	Separator
+	PushButton Icon 45
+		calling 201
+		HelpMsg "Undo the last edit.\nUndo"
+	Separator
+	PushButton Icon 175
+		calling 601
+		HelpMsg "Display and manipulate data in tabular format.\nNew Browser"
+	PushButton Icon 176
+		calling 602
+		HelpMsg "Display a table as a map.\nNew Mapper"
+	PushButton Icon 177
+		calling 603
+		HelpMsg "Display a table as a graph.\nNew Grapher"
+	PushButton Icon 178
+		calling 604
+		HelpMsg "Arrange/annotate windows for printing.\nNew Layout"
+	PushButton Icon 368
+		calling 620
+		HelpMsg "Arrange/annotate windows for printing.\nNew Layout Designer"
+	PushButton Icon 179
+		calling 615
+		HelpMsg "Display and manipulate a table in a redistricter.\nNew Redistricter"
+	Fixed
+	Show
+
+Create ButtonPad "DBMS" ID 5 As
+	PushButton
+		Icon 321
+		Calling 116
+		HelpMsg "Open a DBMS Table.\nOpen DBMS Table"
+	PushButton
+		Icon 322
+		Calling 417
+		HelpMsg "Refresh a DBMS Table.\nRefresh DBMS Table"
+	PushButton
+		Icon 323
+		Calling 416
+		HelpMsg "Unlink a DBMS Table.\nUnlink DBMS Table"
+	PushButton
+		Icon 324
+		Calling 415
+		HelpMsg "Make a DBMS Table Mappable.\nMake DBMS Table Mappable"
+	PushButton
+		Icon 325
+		Calling 418
+		HelpMsg "Change the symbol for a mappable DBMS table.\nChange the symbol for a mappable DBMS table"
+	PushButton
+		Icon 335
+		Calling 124
+		HelpMsg "Close a DBMS Connection.\nDisconnect DBMS"
+	Width 5
+
+'--------------------------------------------------------------------------
+'** MENU BAR ***************************************************************
+'---------------------------------------------------------------------------
+Create Menu Bar As
+	"&File",
+	"&Edit",
+	"&Tools",
+	"&Objects",
+	"&Query",
+	"T&able",
+	"O&ptions",
+	"WinSpecific",
+	"&Window",
+	"&Help"
