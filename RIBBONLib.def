@@ -239,6 +239,24 @@
 '							- RBNSelectTab(...)
 '	21-08-2015 14:48:08		- Added ParentControlType to the Elements arrays - to be able to remove controls from SplitButton and DropDButtons
 '						- Fixed RBNClearCustomRibbonElements to better support SplitButton and DropDButton Controls
+'	27-08-2015 13:05:04		- Added:
+'							- RBNTabSetVisibility(...)
+'							- RBNTabSetVisibilityThs(...)
+'							- RBNTabSetVisibilityIdx(...)
+'							- RBNGroupSetVisibilityThs(...)
+'							- RBNGroupSetVisibilityIdx(...)
+'							- RBNGroupSetVisibility(...)
+'	08-09-2015 14:28:50		- Added:
+'							- RBNCntxtMenuAddControl(...) As Integer
+'							- RBNCntxtMenuInsertControl(...) As Integer
+'							- RBNCntxtMenuInsertControlAfter(...) As Integer
+'							- RBNCntxtMenuInsertControlBefore(...) As Integer
+'							- RBNCntxtMenuAddMenuItem(...) As Integer
+'							- RBNCntxtMenuInsertMenuItem(...) As Integer
+'							- RBNCntxtMenuInsertMenuItemAfter(...) As Integer
+'							- RBNCntxtMenuInsertMenuItemBefore(...) As Integer
+'							- RBNCntxtMenuRemoveControl(...) As Integer
+'							- RBNCntxtMenuGetControlIndex(...) As Integer
 '*****************************************************************************************************************************
 
 
@@ -295,13 +313,15 @@
 
 
 Define		RBN_ELEMENT_NOT_FOUND		-1
+Define		RBN_ELEMENT_INSERT_AS_LAST	-9999
 
 Define		CONTROL_SIZE_EXTRASMALL	1
 Define		CONTROL_SIZE_SMALL		2
 Define		CONTROL_SIZE_LARGE		3
 
-Define		CONTROL_TYPE_RLIB_TAB	100
-Define		CONTROL_TYPE_RLIB_GROUP	101
+Define		CONTROL_TYPE_RLIB_TAB		100
+Define		CONTROL_TYPE_RLIB_GROUP		101
+Define		CONTROL_TYPE_RLIB_CNTXT_MNU	200
 
 Declare Method ObjectToString Class "System.Object" Lib "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" alias ToString (ByVal objectInstace As This) As String
 
@@ -353,6 +373,12 @@ Declare Sub RBNTabEnableThs(	  ByVal rbnTab As This
 						, ByVal bEnabled As Logical)
 Declare Sub RBNTabEnableIdx(	  ByVal nTabIdx As Integer
 						, ByVal bEnabled As Logical)
+Declare Sub RBNTabSetVisibilityThs(  ByVal rbnTab As This
+							, ByVal bVisible As Logical)
+Declare Sub RBNTabSetVisibilityIdx(  ByVal nTabIdx As Integer
+							, ByVal bVisible As Logical)
+Declare Sub RBNTabSetVisibility(	  ByVal sTabName As String
+							, ByVal bVisible As Logical)
 
 Declare Function RBNTabAddGroup(	  ByVal sGroupName As String
 							, ByVal sCaption As String
@@ -404,6 +430,13 @@ Declare Sub RBNGroupEnableThs(	  ByVal rbnGroup As This
 							, ByVal bEnabled As Logical)
 Declare Sub RBNGroupEnableIdx(	  ByVal nElementIdx As Integer
 							, ByVal bEnabled As Logical)
+Declare Sub RBNGroupSetVisibilityThs(	  ByVal rbnGroup As This
+								, ByVal bVisible As Logical)
+Declare Sub RBNGroupSetVisibilityIdx(	  ByVal nElementIdx As Integer
+								, ByVal bVisible As Logical)
+Declare Sub RBNGroupSetVisibility(	  ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal bVisible As Logical)
 
 Declare Function RBNGroupAddControl(	  ByVal sControlName As String
 								, ByVal sCaption As String
@@ -476,6 +509,11 @@ Declare Sub RBNGroupEnableControl(	  ByVal sTabName As String		'If "", the TAB i
 							, ByVal sGroupName As String		'If "", the GROUP is ignored in the search and the first match is used
 							, ByVal sControlName As String
 							, ByVal bEnabled As Logical)
+Declare Function RBNGroupGetControl(	  ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sControlName As String
+								, rbnControlFound As RefPtr
+								) As Logical
 Declare Function RBNGroupGetControlThs(  rbnGroup As This
 								, ByVal sControlName As String
 								, rbnControlFound As RefPtr
@@ -595,6 +633,67 @@ Declare Function RBNToolContextMenuAddMenuItem(	  ByVal sControlName As String
 										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
 Declare Function RBNToolContextMenuRemoveMenuItem(  ByVal sControlName As String
 										) As Integer
+
+'** WORKING WITH MENUITEMS ON CONTEXTMENUS *************************************************************
+Declare Function RBNCntxtMenuAddControl(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuInsertControl(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal nPosition As Integer
+									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuInsertControlAfter(	  ByVal nContextMenuID As Integer
+										, ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal sNameAfter As String
+										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuInsertControlBefore(	  ByVal nContextMenuID As Integer
+										, ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal sNameBefore As String
+										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuAddMenuItem(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String		'If "(-" then a separator is added
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuInsertMenuItem(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String		'If "(-" then a separator is added
+									, ByVal sKeytip As String
+									, ByVal nPosition As Integer
+									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuInsertMenuItemAfter(	  ByVal nContextMenuID As Integer
+										, ByVal sControlName As String
+										, ByVal sCaption As String		'If "(-" then a separator is added
+										, ByVal sKeytip As String
+										, ByVal sNameAfter As String
+										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuInsertMenuItemBefore(  ByVal nContextMenuID As Integer
+										, ByVal sControlName As String
+										, ByVal sCaption As String		'If "(-" then a separator is added
+										, ByVal sKeytip As String
+										, ByVal sNameBefore As String
+										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+
+Declare Function RBNCntxtMenuRemoveControl(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuGetControlIndex(  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									) As Integer
+
 
 '** WORKING WITH STACKPANELS ON MINI MAP TOOLBAR **********************************************
 Declare Function RBNMapMTBNumStackPanels() As Integer
@@ -750,6 +849,18 @@ Declare Sub RBNControlEnableThs(	  ByVal rbnControl As This
 Declare Sub RBNControlEnableIdx(	  ByVal nElementIdx As Integer
 							, ByVal bEnabled As Logical
 							)
+Declare Sub RBNControlSetVisibilityThs(	  ByVal rbnControl As This
+								, ByVal bVisible As Logical
+								)
+Declare Sub RBNControlSetVisibilityIdx(	  ByVal nElementIdx As Integer
+								, ByVal bVisible As Logical
+								)
+Declare Sub RBNControlSetVisibility(	  ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sControlName As String
+								, ByVal bVisible As Logical
+								)
+
 Declare Sub RBNControlCheckThs(	  ByVal rbnControl As This
 							, ByVal bChecked As Logical
 							)

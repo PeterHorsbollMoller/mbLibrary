@@ -114,6 +114,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 	rbnDropDownCtrlControlItem As This,
 	rbnStackPanelControlsColl As This,
 	rbnStackPanelControlItem As This,
+	rbnCntxtMenuItemsColl As This,
+	rbnCntxtMenu As This,
 	rbnStatusbarControlsColl As This
 
 	'--------------------------------
@@ -296,7 +298,36 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 				Print #369, "         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 			Next
 		End If
+	Next
 
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, MenuId_MapperShortcut)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+	nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+	Call DEBUGPrint("   Map Context Menu: Number of Controls " & nNumCntrls)
+	Print #369, "   Map Context Menu: Number of Controls " & nNumCntrls
+	For i = 0 To (nNumCntrls - 1)
+		rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+
+		sName		= GetMICtrlName(rbnControlItem)
+		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+		sCaption		= GetMICtrlCaption(rbnControlItem)
+'		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+		Print #369, "      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+	Next
+
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, MenuId_BrowserShortcut)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+	nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+	Call DEBUGPrint("   Browser Context Menu: Number of Controls " & nNumCntrls)
+	Print #369, "   Browser Context Menu: Number of Controls " & nNumCntrls
+	For i = 0 To (nNumCntrls - 1)
+		rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+
+		sName		= GetMICtrlName(rbnControlItem)
+		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+		sCaption		= GetMICtrlCaption(rbnControlItem)
+'		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+		Print #369, "      Browser Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 	Next
 
 	rbnStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
@@ -334,6 +365,8 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 	rbnDropDownCtrlControlItem	= NULL_PTR
 	rbnStackPanelControlsColl	= NULL_PTR
 	rbnStackPanelControlItem		= NULL_PTR
+	rbnCntxtMenu				= NULL_PTR
+	rbnCntxtMenuItemsColl		= NULL_PTR
 	rbnStatusbarControlsColl		= NULL_PTR
 
 	Exit Sub
@@ -496,7 +529,7 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 								nCntrlType	= ControlType_Button	'Need to change them to a different type as Gallery Items can't be place in a group
 
 '								Print #369, "			'Create the SplitButton Group Controls"
-								Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+								Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sItemName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
 														& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
 '								Print #369, "			If nCtrlIdx > 0 Then"
 '								Print #369, "				'Create & Set the button tooltip"
@@ -554,7 +587,7 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 									sImageName	= RBNGetImageStringFromControlName(sItemName)
 
 '									Print #369, "			'Create the SplitButton Group Controls"
-									Print #369, "	nCtrlIdx	= RBNSplitButtonGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+									Print #369, "	nCtrlIdx	= RBNSplitButtonGroupAddControl(" & eye & sItemName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
 															& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye
 															& ", " & eye & sName & eye & ", " & eye & sGroupName & eye & ")"
 '									Print #369, "			If nCtrlIdx > 0 Then"
@@ -615,7 +648,7 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 									sImageName	= RBNGetImageStringFromControlName(sItemName)
 
 '									Print #369, "			'Create the DropDownButton Group Controls"
-									Print #369, "	nCtrlIdx	= RBNDropDButtonGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+									Print #369, "	nCtrlIdx	= RBNDropDButtonGroupAddControl(" & eye & sItemName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
 															& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye
 															& ", " & eye & sName & eye & ", " & eye & sGroupName & eye & ")"
 '									Print #369, "			If nCtrlIdx > 0 Then"
@@ -1880,8 +1913,11 @@ OnError GoTo ErrorOccured
 	theToolContextMenuItemsColl	= GetICntxtMnuCtrls(theToolContextMenu)
 
 	'--------------------------------
-	'Get the Groups Collection for the Map MiniToolbar
+	'Get the ContextMenus Collection
 	theContextMenus		= GetContextMenus(theMapInfoApplication)
+
+	'--------------------------------
+	'Get the Groups Collection for the Map MiniToolbar
 	theMapMTB				= GetICntxtMnusMapMiniToolBar(theContextMenus)
 	theMapMTBControlsColl	= GetIMapMiniToolBarCtrls(theMapMTB)
 
@@ -2094,6 +2130,78 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNTabSetVisibilityThs(	  ByVal rbnTab As This
+						, ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnTabVisible(rbnTab, bVisible)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetVisibilityThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNTabSetVisibilityIdx(	  ByVal nTabIdx As Integer
+						, ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call RBNTabSetVisibilityThs(marrControls(nTabIdx), bVisible)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetVisibilityIdx: " & nTabIdx)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNTabSetVisibility(	  ByVal sTabName As String
+					, ByVal bVisible As Logical)
+
+Dim	rbnTabFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+		Call SetRbnTabVisible(rbnTab, bVisible)
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnTabFound 	= NULL_PTR
+	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetVisibility")
+	Call ERRShow()
+
+End Sub
+
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -2849,6 +2957,91 @@ ErrorOccured:
 
 End Sub
 
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetVisibilityThs(	  ByVal rbnGroup As This
+						, ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnCtrlGrpVisible(rbnGroup, bVisible)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetVisibilityThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetVisibilityIdx(	  ByVal nElementIdx As Integer
+						, ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call RBNGroupSetVisibilityThs(marrControls(nGroupIdx), bVisible)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetVisibilityIdx: " & nTabIdx)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetVisibility(	  ByVal sTabName As String
+						, ByVal sGroupName As String
+						, ByVal bVisible As Logical)
+
+Dim	rbnGroup As This,
+	rbnTabFound As RefPtr,
+	rbnGroupFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+'	Call DEBUGPrint("RBNGetTab")
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+
+'		Call DEBUGPrint("RBNTabGetGroupThs")
+		If RBNTabGetGroupThs(rbnTab, sGroupName, rbnGroupFound) Then
+
+			rbnGroup = rbnGroupFound
+			'Set Group visibility
+			Call SetRbnCtrlGrpVisible(rbnGroup, bVisible)
+		End If
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnGroup		= NULL_PTR
+	rbnTabFound	= NULL_PTR
+	rbnGroupFound	= NULL_PTR
+	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PleaseEnterNameOfSubprocedureHere")
+	Call ERRShow()
+
+End Sub
+
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
@@ -3288,6 +3481,62 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupGetControl(	  ByVal sTabName As String
+						, ByVal sGroupName As String
+						, ByVal sControlName As String
+						, rbnControlFound As RefPtr
+						) As Logical
+
+OnError GoTo ErrorOccured
+
+RBNGroupGetControl = FALSE
+
+Dim	rbnTab As This,
+	rbnGroup As This,
+	rbnTabFound As RefPtr,
+	rbnGroupFound As RefPtr
+
+OnError GoTo ErrorOccured
+
+RBNGroupGetControl = 0
+
+	Call RBNInitiate
+
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+
+		If RBNTabGetGroupThs(rbnTab, sGroupName, rbnGroupFound) Then
+			rbnGroup = rbnGroupFound
+
+			If RBNGroupGetControlThs(rbnGroup, sControlName, rbnControlFound) Then
+
+				RBNGroupGetControl = TRUE
+			End If
+		End If
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnTab			= NULL_PTR
+	rbnGroup			= NULL_PTR
+	rbnTabFound		= NULL_PTR
+	rbnGroupFound		= NULL_PTR
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupGetControl")
+	Call ERRShow()
+
+End Function
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -4414,7 +4663,8 @@ RBNDropDButtonGroupRemoveControl = 0
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNDropDButtonGroupRemoveControl: " & sControlName & " from " & sDropDButtonGroupName & " on " & sDropDButtonName & " - tab | group: " & sTabName & "|" & sGroupName)
+	Call ERRCreate(Err(), Error$(), "RBNDropDButtonGroupRemoveControl: " & sControlName & " from " & sDropDButtonGroupName & " on " & sDropDButtonName & " - tab | group: " & sTabName & "|" & sGroupName & ", nItem: " & nItem)
+	Call ERRPrint()
 	Call ERRShow()
 
 End Function
@@ -4796,6 +5046,362 @@ RBNToolContextMenuRemoveMenuItem = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNToolContextMenuRemoveMenuItem")
+	Call ERRShow()
+
+End Function
+
+'*******************************************************************************************************
+'** WORKING WITH MENUITEMS ON CONTEXTMENUS *************************************************************
+'*******************************************************************************************************
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuAddControl(		  ByVal nContextMenuID As Integer
+								, ByVal sControlName As String
+								, ByVal sCaption As String		'If "(-" then a separator is added
+								, ByVal sKeytip As String
+								, ByVal nControlType As Integer
+								) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+OnError GoTo ErrorOccured
+
+	RBNCntxtMenuAddControl = RBNCntxtMenuInsertControl(nContextMenuID, sControlName, sCaption, sKeytip, nControlType, RBN_ELEMENT_INSERT_AS_LAST)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuAddControl")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuInsertControl(	  ByVal nContextMenuID As Integer
+								, ByVal sControlName As String
+								, ByVal sCaption As String
+								, ByVal sKeytip As String
+								, ByVal nControlType As Integer
+								, ByVal nPosition As Integer
+								) As Integer
+
+Dim	nCtrl As Integer,
+	rbnCntxtMenu As This,
+	rbnCntxtMenuItemsColl As This
+
+OnError GoTo ErrorOccured
+
+RBNCntxtMenuInsertControl = 0
+
+	Call RBNInitiate
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, nContextMenuID)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+
+	nCtrl 			= RBNAddElement("CONTEXTMENU=" & Str$(nContextMenuID), "", "", "", sControlName, nControlType, CONTROL_TYPE_RLIB_CNTXT_MNU)
+	If nPosition = RBN_ELEMENT_INSERT_AS_LAST Then
+		marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnCntxtMenuItemsColl, sControlName, "", nControlType)
+	Else
+		marrControls(nCtrl) = MICtrlCollInsertIntStrStrInt(rbnCntxtMenuItemsColl, nPosition, sControlName, sCaption, nControlType)
+	End If
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+	RBNCntxtMenuInsertControl = nCtrl
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnCntxtMenuItemsColl	= NULL_PTR
+	rbnCntxtMenu			= NULL_PTR
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuInsertControl: " & sControlName & " at position " & nPosition)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuInsertControlAfter(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sNameAfter As String
+									) As Integer
+
+Dim	nPosition As Integer
+
+OnError GoTo ErrorOccured
+
+RBNCntxtMenuInsertControlAfter = 0
+
+	nPosition = RBNCntxtMenuGetControlIndex(nContextMenuID, sNameAfter)
+	If nPosition <> RBN_ELEMENT_NOT_FOUND Then
+		'**Let's insert it AFTER the control we found
+		nPosition		= nPosition + 1
+	Else
+		'**Let's insert it as the LAST control
+		nPosition		= RBN_ELEMENT_INSERT_AS_LAST
+	End If
+	RBNCntxtMenuInsertControlAfter	= RBNCntxtMenuInsertControl(nContextMenuID, sControlName, sCaption, sKeytip, nControlType, nPosition)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuInsertControlAfter: " & sControlName & " after " & sNameAfter)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuInsertControlBefore(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sNameBefore As String
+									) As Integer
+
+Dim	nPosition As Integer
+
+OnError GoTo ErrorOccured
+
+RBNCntxtMenuInsertControlBefore = 0
+
+	nPosition = RBNCntxtMenuGetControlIndex(nContextMenuID, sNameBefore)
+	If nPosition = RBN_ELEMENT_NOT_FOUND Then
+		'**Let's insert it as the LAST control
+		nPosition		= RBN_ELEMENT_INSERT_AS_LAST
+	End If
+	RBNCntxtMenuInsertControlBefore 	= RBNCntxtMenuInsertControl(nContextMenuID, sControlName, sCaption, sKeytip, nControlType, nPosition)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuInsertControlBefore: " & sControlName & " before " & sNameBefore)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuAddMenuItem(		  ByVal nContextMenuID As Integer
+								, ByVal sControlName As String
+								, ByVal sCaption As String		'If "(-" then a separator is added
+								, ByVal sKeytip As String
+								, ByVal nControlType As Integer
+								) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+OnError GoTo ErrorOccured
+
+	If sCaption = "(-" Then
+		RBNCntxtMenuAddMenuItem = RBNCntxtMenuInsertControl(nContextMenuID, sControlName, "", "", ControlType_ContextMenuSeparator, RBN_ELEMENT_INSERT_AS_LAST)
+	Else
+		RBNCntxtMenuAddMenuItem = RBNCntxtMenuInsertControl(nContextMenuID, sControlName, sCaption, sKeytip, ControlType_ContextMenuItem, RBN_ELEMENT_INSERT_AS_LAST)
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuAddMenuItem")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuInsertMenuItem(	  ByVal nContextMenuID As Integer
+								, ByVal sControlName As String
+								, ByVal sCaption As String		'If "(-" then a separator is added
+								, ByVal sKeytip As String
+								, ByVal nPosition As Integer
+								) As Integer
+
+OnError GoTo ErrorOccured
+
+	If sCaption = "(-" Then
+		RBNCntxtMenuInsertMenuItem = RBNCntxtMenuInsertControl(nContextMenuID, sControlName, "", "", ControlType_ContextMenuSeparator, nPosition)
+	Else
+		RBNCntxtMenuInsertMenuItem = RBNCntxtMenuInsertControl(nContextMenuID, sControlName, sCaption, sKeytip, ControlType_ContextMenuItem, nPosition)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuInsertMenuItem: " & sControlName & " at position " & nPosition)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuInsertMenuItemAfter(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String		'If "(-" then a separator is added
+									, ByVal sKeytip As String
+									, ByVal sNameAfter As String
+									) As Integer
+
+OnError GoTo ErrorOccured
+
+	If sCaption = "(-" Then
+		RBNCntxtMenuInsertMenuItemAfter = RBNCntxtMenuInsertControlAfter(nContextMenuID, sControlName, "", "", ControlType_ContextMenuSeparator, sNameAfter)
+	Else
+		RBNCntxtMenuInsertMenuItemAfter = RBNCntxtMenuInsertControlAfter(nContextMenuID, sControlName, sCaption, sKeytip, ControlType_ContextMenuItem, sNameAfter)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuInsertMenuItemAfter: " & sControlName & " after " & sNameAfter)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuInsertMenuItemBefore(	  ByVal nContextMenuID As Integer
+									, ByVal sControlName As String
+									, ByVal sCaption As String		'If "(-" then a separator is added
+									, ByVal sKeytip As String
+									, ByVal sNameBefore As String
+									) As Integer
+
+OnError GoTo ErrorOccured
+
+	If sCaption = "(-" Then
+		RBNCntxtMenuInsertMenuItemBefore = RBNCntxtMenuInsertControlBefore(nContextMenuID, sControlName, "", "", ControlType_ContextMenuSeparator, sNameBefore)
+	Else
+		RBNCntxtMenuInsertMenuItemBefore = RBNCntxtMenuInsertControlBefore(nContextMenuID, sControlName, sCaption, sKeytip, ControlType_ContextMenuItem, sNameBefore)
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuInsertMenuItemBefore: " & sControlName & " before " & sNameBefore)
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuRemoveControl(	  ByVal nContextMenuID As Integer
+								, ByVal sControlName As String
+								) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+Dim	nControlItem, nCtrl as Integer,
+	rbnCntxtMenu As This,
+	rbnCntxtMenuItemsColl As This
+
+OnError GoTo ErrorOccured
+
+RBNCntxtMenuRemoveControl = 0
+
+	Call RBNInitiate
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, nContextMenuID)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+
+	nControlItem = RBNCollectionGetControlIndexThs(rbnCntxtMenuItemsColl, sControlName)
+	If nControlItem > RBN_ELEMENT_NOT_FOUND Then
+		Call MICtrlCollRemoveAt(rbnCntxtMenuItemsColl, nControlItem)
+		nCtrl 					= RBNRemoveElement("CONTEXTMENU=" & Str$(nContextMenuID), "", "", "", sControlName)
+		RBNCntxtMenuRemoveControl	= nCtrl
+	Else
+		Call DEBUGPrint("RBNCntxtMenuRemoveControl: Menu Item not found: " & sControlName)
+	End If
+
+	RBNCntxtMenuRemoveControl = nCtrl
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnCntxtMenuItemsColl	= NULL_PTR
+	rbnCntxtMenu			= NULL_PTR
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuRemoveControl")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuGetControlIndex(	  ByVal nContextMenuID As Integer
+								, ByVal sControlName As String
+								) As Integer
+
+Dim	rbnCntxtMenu As This,
+	rbnCntxtMenuItemsColl As This
+
+OnError GoTo ErrorOccured
+
+RBNCntxtMenuGetControlIndex = 0
+
+	Call RBNInitiate
+	rbnCntxtMenu 				= ICntxtMnusGetCntxtMnu(theContextMenus, nContextMenuID)
+	rbnCntxtMenuItemsColl		= GetICntxtMnuCtrls(rbnCntxtMenu)
+
+	RBNCntxtMenuGetControlIndex = RBNCollectionGetControlIndexThs(rbnCntxtMenuItemsColl, sControlName)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuGetControlIndex")
 	Call ERRShow()
 
 End Function
@@ -5322,6 +5928,8 @@ OnError GoTo ErrorOccured
 		End If
 	End If
 
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
 	rbnsStackPanelFound	= NULL_PTR
 	rbnsStackPanel		= NULL_PTR
 	stackPanelColl		= NULL_PTR
@@ -6333,6 +6941,142 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
+Sub RBNControlSetVisibilityThs(	  ByVal rbnControl As This
+							, ByVal bVisible As Logical)
+
+Dim	sType As String
+
+OnError GoTo ErrorOccured
+
+	Do Case GetMICtrlCtrlType(rbnControl)
+		Case ControlType_Button
+			Call SetRbnBtnCtrlVisible(rbnControl, bVisible)
+
+		Case ControlType_ToolButton
+			Call SetRbnToolBtnCtrlVisible(rbnControl, bVisible)
+
+		Case ControlType_RibbonMenuItem
+			Call SetRbnMenuItemCtrlVisible(rbnControl, bVisible)
+
+		Case ControlType_RibbonButtonPanel
+			Call SetRbnBtnPnlVisible(rbnControl, bVisible)
+
+'		Case ControlType_RibbonSeparator
+
+		Case ControlType_ContextMenuItem
+			Call SetICntxtMnuMenuItemVisible(rbnControl, bVisible)
+
+'		Case ControlType_ContextMenuSeparator
+'		Case ControlType_MenuItemSeparator
+
+		Case ControlType_DropDownButton
+			Call SetRbnDropDownCtrlVisible(rbnControl, bVisible)
+
+		Case ControlType_SplitButton
+			Call SetRbnSplitCtrlVisible(rbnControl, bVisible)
+
+'		Case ControlType_DropDownMenuGroup
+'		Case ControlType_GalleryControl
+
+		Case ControlType_GalleryItem
+			Call SetRbnGalleryItemVisible(rbnControl, bVisible)
+
+		Case ControlType_GalleryGroup
+			Call SetRbnGalleryGrpVisible(rbnControl, bVisible)
+
+		Case ControlType_CustomControl
+			Call SetRbnGalleryCtrlVisible(rbnControl, bVisible)
+
+		Case ControlType_TextBlock
+			Call SetITextBlockVisible(rbnControl, bVisible)
+
+		Case ControlType_Image
+			Call SetIImageVisible(rbnControl, bVisible)
+
+		Case ControlType_BackStageTabItem
+			Call SetIBackStageTabItemVisible(rbnControl, bVisible)
+
+		Case ControlType_BackStageButton
+			Call SetIBackStageBtnVisible(rbnControl, bVisible)
+
+'		Case ControlType_BackStageTabSection
+'		Case ControlType_BackStageSeparator
+
+		Case ControlType_StackPanel
+			Call SetIStackPanelVisible(rbnControl, bVisible)
+
+	End Case
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetVisibilityThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNControlSetVisibilityIdx(	  ByVal nElementIdx As Integer
+							, ByVal bVisible As Logical
+							)
+
+OnError GoTo ErrorOccured
+
+	Call RBNControlSetVisibilityThs(marrControls(nElementIdx), bVisible)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetVisibilityIdx")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNControlSetVisibility(	  ByVal sTabName As String
+						, ByVal sGroupName As String
+						, ByVal sControlName As String
+						, ByVal bVisible As Logical
+						)
+
+Dim	rbnControl As This,
+	rbnControlFound As RefPtr
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	If RBNGroupGetControl(sTabName, sGroupName, sControlName, rbnControlFound) Then
+		rbnControl = rbnControlFound
+		Call RBNControlSetVisibilityThs(rbnControl, bVisible)
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnControl		= NULL_PTR
+	rbnControlFound	= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetVisibility")
+	Call ERRShow()
+
+End Sub
+
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
 Sub RBNControlCheckThs(	  ByVal rbnControl As This
 					, ByVal bChecked As Logical)
 
@@ -6873,7 +7617,7 @@ End Function
 Sub RBNClearCustomRibbonElements
 
 Dim	bRemoved as Logical,
-	i, nResult, nTabIndex, nGroupIndex As Integer,
+	i, nResult, nTabIndex, nGroupIndex, nContextMenuID As Integer,
 	rbnTab As This,
 	rbnGroupsColl As This,
 	rbnGroupItem As This,
@@ -6905,7 +7649,7 @@ OnError GoTo ErrorOccured
 			Else
 				If marrParentControlTypes(i) = ControlType_SplitButton Then
 					nResult = RBNSplitButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
-					Call DEBUGPrint("   " & i & " SplitButton Group Removed Result: " & nResult)
+'					Call DEBUGPrint("   " & i & " SplitButton Group Removed Result: " & nResult)
 				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
 					nResult = RBNDropDButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
 '					Call DEBUGPrint("   " & i & " DropDownButton Group Removed Result: " & nResult)
@@ -6924,6 +7668,10 @@ OnError GoTo ErrorOccured
 					nResult = RBNMapMTBStackPanelRemoveControl(marrControlNames(i), marrGroupNames(i))
 '					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
 				End If
+			ElseIf marrParentControlTypes(i) = CONTROL_TYPE_RLIB_CNTXT_MNU Then
+				nContextMenuID	= Val(Right$(marrTabNames(i), Len(marrTabNames(i)) - Len("ContextMenu=") ))
+				nResult 		= RBNCntxtMenuRemoveControl(nContextMenuID, marrControlNames(i))
+				Call DEBUGPrint("   " & i & "RBNCntxtMenuRemoveControl: Control Removed Result: " & nResult)
 			Else
 				nResult = RBNGroupRemoveControl(marrControlNames(i), marrTabNames(i), marrGroupNames(i))
 '				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
