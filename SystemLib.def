@@ -34,5 +34,6 @@ Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLi
 Declare Function SYSFindTextEditor() As String
 Declare Function SYSFindExecutable(ByVal sDocument As String) As String
 
-Declare Function SYSExecuteAndWait(	  ByVal sCmdLine As String
-								) As Integer
+Declare Function SYSExecuteAndWait(  ByVal sCmdLine As String
+							, ByVal nShowWindow As Integer
+							) As Logical

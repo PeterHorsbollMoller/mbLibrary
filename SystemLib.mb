@@ -182,24 +182,32 @@ End Function
 '
 '**********************************************************************************************''
 Function SYSExecuteAndWait(	  ByVal sCmdLine As String
-						) As Integer
+						, ByVal nShowWindow As Integer
+						) As Logical
 
 Dim	nRetVal As Integer,
-	NameOfProc as PROCESS_INFORMATION,
-	NameStart as STARTUPINFO
+	ProcInfo as PROCESS_INFORMATION,
+	StartupInfo as STARTUPINFO
 
 OnError GoTo ErrorOccured
 
 SYSExecuteAndWait = FALSE
 
-	NameStart.cb			= 256
-	NameStart.dwFlags		= 1
-	NameStart.wShowWindow	= 0
-	nRetVal = CreateProcessA(0, sCmdLine, 0, 0, 1, NORMAL_PRIORITY_CLASS, 0, 0, NameStart, NameOfProc)
+	StartupInfo.cb			= 256
+	StartupInfo.dwFlags		= 1
+	StartupInfo.wShowWindow	= nShowWindow
 
-	nRetVal = NameOfProc.hProcess
-	nRetVal = WaitForSingleObject(NameOfProc.hProcess, INFINITE)
-	nRetVal = CloseHandle(NameOfProc.hProcess)
+	nRetVal = WAPICreateProcess(0, sCmdLine, 0, 0, 1, NORMAL_PRIORITY_CLASS, 0, 0, StartupInfo, ProcInfo)
+	If nRetVal = 0 Then
+		Note "Failed to start process: " & sCmdLine
+			& lf & lf
+			& "WAPIGetLastError: " & WAPIGetLastError()
+		Exit Function
+	End If
+	nRetVal = WAPIWaitForSingleObject(ProcInfo.hProcess, INFINITE)
+	nRetVal = WAPICloseHandle(ProcInfo.hProcess)
+
+	Set Window WIN_MAPINFO Front
 
 	SYSExecuteAndWait = TRUE
 
