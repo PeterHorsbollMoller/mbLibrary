@@ -6207,6 +6207,103 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
+Sub RBNControlSetCaptionThs(	  rbnControl As This
+						, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
+						)
+
+OnError GoTo ErrorOccured
+
+	Do Case GetMICtrlCtrlType(rbnControl)
+		Case ControlType_Button
+			Call SetRbnBtnCtrlCaption(rbnControl, sCaption)
+
+		Case ControlType_ToolButton
+			Call SetRbnToolBtnCtrlCaption(rbnControl, sCaption)
+
+		Case ControlType_RibbonMenuItem
+			Call SetRbnMenuItemCtrlCaption(rbnControl, sCaption)
+
+'		Case ControlType_RibbonButtonPanel
+'		Case ControlType_RibbonSeparator
+
+		Case ControlType_ContextMenuItem
+			Call SetICntxtMnuMenuItemCaption(rbnControl, sCaption)
+
+'		Case ControlType_ContextMenuSeparator
+'		Case ControlType_MenuItemSeparator
+
+		Case ControlType_DropDownButton
+			Call SetRbnDropDownCtrlCaption(rbnControl, sCaption)
+
+		Case ControlType_SplitButton
+			Call SetRbnSplitCtrlCaption(rbnControl, sCaption)
+
+'		Case ControlType_DropDownMenuGroup
+
+		Case ControlType_GalleryControl
+			Call SetRbnGalleryCtrlCaption(rbnControl, sCaption)
+
+		Case ControlType_GalleryItem
+			Call SetRbnGalleryItemCaption(rbnControl, sCaption)
+
+		Case ControlType_GalleryGroup
+			Call SetRbnGalleryGrpCaption(rbnControl, sCaption)
+
+		Case ControlType_CustomControl
+			Call SetRbnCustomCtrlCaption(rbnControl, sCaption)
+
+		Case ControlType_TextBlock
+			Call SetITextBlockCaption(rbnControl, sCaption)
+
+		Case ControlType_Image
+			Call SetIImageCaption(rbnControl, sCaption)
+
+'		Case ControlType_BackStageTabItem
+
+		Case ControlType_BackStageButton
+			Call SetIBackStageBtnCaption(rbnControl, sCaption)
+
+'		Case ControlType_BackStageTabSection
+'		Case ControlType_BackStageSeparator
+
+		Case ControlType_StackPanel
+			Call SetIStackPanelCaption(rbnControl, sCaption)
+	End Case
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetCaptionThs: Caption: " & sCaption)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNControlSetCaption(	  ByVal nElementIdx As Integer
+						, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
+						)
+
+OnError GoTo ErrorOccured
+
+	Call RBNControlSetCaptionThs(marrControls(nElementIdx), sCaption)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetCaption")
+	Call ERRShow()
+
+End Sub
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
 Function RBNControlGetSizeThs(  rbnControl As This
 						) As Integer
 

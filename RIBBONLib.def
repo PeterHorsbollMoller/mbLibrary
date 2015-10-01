@@ -257,6 +257,9 @@
 '							- RBNCntxtMenuInsertMenuItemBefore(...) As Integer
 '							- RBNCntxtMenuRemoveControl(...) As Integer
 '							- RBNCntxtMenuGetControlIndex(...) As Integer
+'	30-09-2015 08:15:24		- Added:
+'							- RBNControlSetCaptionThs(...)
+'							- RBNControlSetCaption(...)
 '*****************************************************************************************************************************
 
 
@@ -795,6 +798,12 @@ Declare Sub RBNControlSetKeyGestureThs(	  rbnControl As This
 Declare Sub RBNControlSetKeyGestureIdx(	  ByVal nElementIdx As Integer
 								, ByVal sGesture As String		'For example "Ctrl+Y", "Alt+Ctrl+Y"
 								)
+Declare Sub RBNControlSetCaptionThs( rbnControl As This
+							, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
+							)
+Declare Sub RBNControlSetCaption(	  ByVal nElementIdx As Integer
+							, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
+							)
 
 Declare Function RBNControlGetSizeThs(	  rbnControl As This
 								) As Integer
