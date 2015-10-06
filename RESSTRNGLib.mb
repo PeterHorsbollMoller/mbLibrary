@@ -87,7 +87,7 @@ RESSTRNGLoadStringsByLanguage = FALSE
 '	Call DEBUGPrint("1. Number of language files found: " & Ubound(marrStringFiles()))
 	If Ubound(marrStringFiles()) = 0 Then
 		If RESSTRNGFindStringFiles(RESSTRNGGetStringFilesFolder()) = 0 Then
-			Print "No language files (.str) were found. These are required for the application to work!"
+'			Print "No language files (.str) were found. These are required for the application to work!"
 			Exit Function
 		End If
 '		Call DEBUGPrint("2. Number of language files found: " & Ubound(marrStringFiles()))
@@ -311,7 +311,7 @@ RESSTRNGGetStringFiles = 0
 
 	If Ubound(marrStringFiles()) = 0 Then
 		If RESSTRNGFindStringFiles(RESSTRNGGetStringFilesFolder()) = 0 Then
-			Print "No language files (.str) were found. These are required for the application to work!"
+'			Print "No language files (.str) were found. These are required for the application to work!"
 			Exit Function
 		End If
 	End If
@@ -352,7 +352,7 @@ RESSTRNGGetLanguages = 0
 
 	If Ubound(marrStringFiles()) = 0 Then
 		If RESSTRNGFindStringFiles(RESSTRNGGetStringFilesFolder()) = 0 Then
-			Print "No language files (.str) were found. These are required for the application to work!"
+'			Print "No language files (.str) were found. These are required for the application to work!"
 			Exit Function
 		End If
 	End If
