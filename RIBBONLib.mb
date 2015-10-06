@@ -94,7 +94,9 @@ Sub RBNLoop
 OnError GoTo ErrorOccured
 
 Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumSplitCtrlCtrls, nNumDropDownMenuCtrls, nNumDropDownCtrlCtrls, nNumStackPanelCtrls As Integer,
-	i, j, k, l, m As Integer,
+	i, j, k, l, m, nMenu As Integer,
+	arrContextMenuIDs() As Integer,
+	arrContextMenuNames() As String,
 	sName, sCaption As String,
 	nCntrlType As Integer,
 	rbnTabItem As This,
@@ -300,35 +302,91 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 		End If
 	Next
 
-	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, MenuId_MapperShortcut)
-	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
-	nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
-	Call DEBUGPrint("   Map Context Menu: Number of Controls " & nNumCntrls)
-	Print #369, "   Map Context Menu: Number of Controls " & nNumCntrls
-	For i = 0 To (nNumCntrls - 1)
-		rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+	'Context Menus not looped currently
+	'Define MenuId_DefaultShortcut 16
+	'Define MenuId_CmdShortcut 21
+	'Define MenuId_LegendShortcut 23
+	'Define MenuId_ThreeDMapShortcut 25
+	'Define MenuId_MessageWinShortcut 26
+	'Define MenuId_StatisticsWinShortcut 27
+	'Define MenuId_AdornmentShortcut 32
+	'Define MenuId_TableAdornmentShortcut 36
+	'Define MenuId_LcOverridesShortcut 38
+	'Define MenuId_LegendDesignerShortcut 50
+	'Define MenuId_LayoutCanvasShortcut 52
+	'Define MenuId_LayoutFrameShortcut 53
+	'Define MenuId_ConnectionListShortcut 55
 
-		sName		= GetMICtrlName(rbnControlItem)
-		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
-		sCaption		= GetMICtrlCaption(rbnControlItem)
-'		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
-		Print #369, "      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_MapperShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "MapperShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_BrowserShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "BrowserShortcut")
+'	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LayoutShortcut)
+'	Call ARRAYAddValueString(arrContextMenuNames, "LayoutShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_RedistrictShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "RedistrictShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LcLayersShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "LcLayersShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LcMapsShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "LcMapsShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LcGroupsShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "LcGroupsShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_TableListTablesShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "TableListTablesShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_DataGridColFilterShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "DataGridColFilterShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_DataGridColFilterSelectShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "DataGridColFilterSelectShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_WindowListShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "WindowListShortcut")
+
+	For nMenu = 1 To Ubound(arrContextMenuIDs)
+		Call DEBUGPrint("   " & arrContextMenuNames(nMenu) & " Menu")
+		rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, arrContextMenuIDs(nMenu))
+		rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+		nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+		Call DEBUGPrint("      : Number of Controls " & nNumCntrls)
+		Print #369, "   " & arrContextMenuNames(nMenu) & " Menu: Number of Controls " & nNumCntrls
+		For i = 0 To (nNumCntrls - 1)
+			rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+
+			sName		= GetMICtrlName(rbnControlItem)
+			nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+			sCaption		= GetMICtrlCaption(rbnControlItem)
+	'		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+			Print #369, "      " & arrContextMenuNames(nMenu) & " Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+		Next
 	Next
 
-	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, MenuId_BrowserShortcut)
-	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
-	nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
-	Call DEBUGPrint("   Browser Context Menu: Number of Controls " & nNumCntrls)
-	Print #369, "   Browser Context Menu: Number of Controls " & nNumCntrls
-	For i = 0 To (nNumCntrls - 1)
-		rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
-
-		sName		= GetMICtrlName(rbnControlItem)
-		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
-		sCaption		= GetMICtrlCaption(rbnControlItem)
-'		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
-		Print #369, "      Browser Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
-	Next
+'	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, MenuId_MapperShortcut)
+'	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+'	nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+'	Call DEBUGPrint("   Map Context Menu: Number of Controls " & nNumCntrls)
+'	Print #369, "   Map Context Menu: Number of Controls " & nNumCntrls
+'	For i = 0 To (nNumCntrls - 1)
+'		rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+'
+'		sName		= GetMICtrlName(rbnControlItem)
+'		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+'		sCaption		= GetMICtrlCaption(rbnControlItem)
+''		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Print #369, "      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'	Next
+'
+'	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, MenuId_BrowserShortcut)
+'	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+'	nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+'	Call DEBUGPrint("   Browser Context Menu: Number of Controls " & nNumCntrls)
+'	Print #369, "   Browser Context Menu: Number of Controls " & nNumCntrls
+'	For i = 0 To (nNumCntrls - 1)
+'		rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+'
+'		sName		= GetMICtrlName(rbnControlItem)
+'		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+'		sCaption		= GetMICtrlCaption(rbnControlItem)
+''		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Print #369, "      Browser Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'	Next
 
 	rbnStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
 	nNumCntrls 			= GetMICtrlCollCount(rbnStatusbarControlsColl)
