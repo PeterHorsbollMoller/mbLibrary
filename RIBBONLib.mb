@@ -3543,6 +3543,64 @@ End Sub
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupCheckControls(	  ByVal sTabName As String
+						, ByVal sGroupName As String
+						, ByVal sControlName As String
+						, ByVal bChecked As Logical)
+
+Dim	nElementIdx As Integer
+
+OnError GoTo ErrorOccured
+
+	nElementIdx	= 0
+	nElementIdx	= RBNGetElementIndexOffset(sTabName, sGroupName, "", "", sControlName, (nElementIdx + 1))
+	Do While (nElementIdx > 0)
+
+		Call RBNControlCheckThs(marrControls(nElementIdx), bChecked)
+
+		nElementIdx = RBNGetElementIndexOffset(sTabName, sGroupName, "", "", sControlName, (nElementIdx + 1))
+	Loop
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupCheckControls")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupCheckControl(  ByVal sTabName As String
+					, ByVal sGroupName As String
+					, ByVal sControlName As String
+					, ByVal bChecked As Logical)
+
+Dim	nElementIdx As Integer
+
+OnError GoTo ErrorOccured
+
+	nElementIdx	= RBNGetElementIndex(sTabName, sGroupName, "", "", sControlName)
+	If nElementIdx > 0 Then
+		Call RBNControlCheckThs(marrControls(nElementIdx), bChecked)
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupCheckControl")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
 '	:
 'Return value:
 '
