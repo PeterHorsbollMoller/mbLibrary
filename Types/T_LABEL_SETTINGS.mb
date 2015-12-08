@@ -182,7 +182,7 @@ tlbsFromString	= FALSE
 
 	Call tlbsReset(tlbs)
 	If nItems >= 16 Then
-		tlbs.bAutoDisplay		= Val(arrItems(1))
+		tlbs.bAutoDisplay		= (arrItems(1) = "T")	'Val(arrItems(1))
 		tlbs.nVisibility		= Val(arrItems(2))
 		tlbs.fMinZoom			= Val(arrItems(3))
 		tlbs.fMaxZoom			= Val(arrItems(4))
