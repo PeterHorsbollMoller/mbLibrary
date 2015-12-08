@@ -103,7 +103,6 @@ OnError GoTo ErrorOccured
 
 STLAlterBrush = oObj
 
-
 	If STLObjectHasBrush(oObj) Then
 		Alter Object oObj
 			Info OBJ_INFO_BRUSH, brsNew
@@ -523,7 +522,7 @@ STLText2Symbol = CurrentSymbol()
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "STLText2Symbol")
+	Call ERRCreate(Err(), Error$(), "STLText2Symbol: " & sSymbol)
 	Call ERRShow()
 	STLText2Symbol = CurrentSymbol()
 
@@ -576,8 +575,9 @@ STLText2Brush = CurrentBrush()
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "STLText2Brush")
+	Call ERRCreate(Err(), Error$(), "STLText2Brush: " & sBrush)
 	Call ERRShow()
+	STLText2Brush = CurrentBrush()
 
 End Function
 
@@ -628,8 +628,9 @@ STLText2Pen = CurrentPen()
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "STLText2Pen")
+	Call ERRCreate(Err(), Error$(), "STLText2Pen: " & sPen)
 	Call ERRShow()
+	STLText2Pen = CurrentPen()
 
 End Function
 
