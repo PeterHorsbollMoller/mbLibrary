@@ -263,6 +263,9 @@
 '	08-12-2015 15:23:12		- Added:
 '							- RBNGroupCheckControls(...)
 '							- RBNGroupCheckControl(...)
+'	10-12-2015 15:06:51		- Added:
+'							- RBNGroupShowControls(...)
+'							- RBNGroupShowControl(...)
 '*****************************************************************************************************************************
 
 
@@ -523,6 +526,14 @@ Declare Sub RBNGroupCheckControl(	  ByVal sTabName As String
 							, ByVal sGroupName As String
 							, ByVal sControlName As String
 							, ByVal bChecked As Logical)
+Declare Sub RBNGroupShowControls(  ByVal sTabName As String		'If "", the TAB is ignored in the search
+							, ByVal sGroupName As String		'If "", the GROUP is ignored in the search
+							, ByVal sControlName As String
+							, ByVal bVisible As Logical)
+Declare Sub RBNGroupShowControl(	  ByVal sTabName As String		'If "", the TAB is ignored in the search and the first match is used
+							, ByVal sGroupName As String		'If "", the GROUP is ignored in the search and the first match is used
+							, ByVal sControlName As String
+							, ByVal bVisible As Logical)
 
 Declare Function RBNGroupGetControl(	  ByVal sTabName As String
 								, ByVal sGroupName As String
