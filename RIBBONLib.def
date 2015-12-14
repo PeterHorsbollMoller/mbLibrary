@@ -266,6 +266,11 @@
 '	10-12-2015 15:06:51		- Added:
 '							- RBNGroupShowControls(...)
 '							- RBNGroupShowControl(...)
+'	14-12-2015 08:49:58		- Added:
+'							- RBNGroupSelectControl(...)
+'							- RBNGroupRunMenuCommandControl(...)
+'							- RBNGroupGetFirstControlIdx(...) As Integer
+'							- RBNGroupGetNextControlIdx(...) As Integer
 '*****************************************************************************************************************************
 
 
@@ -534,6 +539,19 @@ Declare Sub RBNGroupShowControl(	  ByVal sTabName As String		'If "", the TAB is 
 							, ByVal sGroupName As String		'If "", the GROUP is ignored in the search and the first match is used
 							, ByVal sControlName As String
 							, ByVal bVisible As Logical)
+Declare Sub RBNGroupSelectControl(	  ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal sControlName As String)
+Declare Sub RBNGroupRunMenuCommandControl(	  ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sControlName As String)
+
+Declare Function RBNGroupGetFirstControlIdx(	  ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sControlName As String) As Integer
+Declare Function RBNGroupGetNextControlIdx(	  ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sControlName As String) As Integer
 
 Declare Function RBNGroupGetControl(	  ByVal sTabName As String
 								, ByVal sGroupName As String

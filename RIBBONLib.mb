@@ -84,6 +84,9 @@ Dim 	mnNumEvents As Integer,
 	marrEventMBXHandlers() As String,
 	mfDefaultLeftMarginInControls As Float	'Default Left Margin for Controls, defaults to 4.0
 
+'**Used for GetFirst/GetNext Control
+Dim	msTabName, msGroupName, msControlName As String,
+	mnCurCtrlIdx As Integer
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
@@ -3655,6 +3658,125 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSelectControl(	  ByVal sTabName As String
+						, ByVal sGroupName As String
+						, ByVal sControlName As String)
+
+Dim	nElementIdx As Integer
+
+OnError GoTo ErrorOccured
+
+	nElementIdx	= RBNGetElementIndex(sTabName, sGroupName, "", "", sControlName)
+	If nElementIdx > 0 Then
+		Call DEBUGPrint("Run Menu Command ID " & RBNControlGetControlIDThs(marrControls(nElementIdx)))
+		Run Menu Command ID  RBNControlGetControlIDThs(marrControls(nElementIdx))
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSelectControl")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupRunMenuCommandControl(	  ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal sControlName As String)
+
+Dim	nElementIdx As Integer
+
+OnError GoTo ErrorOccured
+
+	nElementIdx	= RBNGetElementIndex(sTabName, sGroupName, "", "", sControlName)
+	If nElementIdx > 0 Then
+		Call DEBUGPrint("Run Menu Command ID " & RBNControlGetControlIDThs(marrControls(nElementIdx)))
+		Run Menu Command ID  RBNControlGetControlIDThs(marrControls(nElementIdx))
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSelectControl")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupGetFirstControlIdx(	  ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sControlName As String) As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGroupGetFirstControlIdx = 0
+
+	msTabName		= sTabName
+	msGroupName	= sGroupName
+	msControlName	= sControlName
+
+	mnCurCtrlIdx	= RBNGetElementIndex(msTabName, msGroupName, "", "", msControlName)
+
+	RBNGroupGetFirstControlIdx = mnCurCtrlIdx
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupGetFirstControlIdx")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupGetNextControlIdx(	  ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sControlName As String) As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGroupGetNextControlIdx = 0
+
+	If msTabName = sTabName AND msGroupName = sGroupName AND msControlName = sControlName Then
+		msTabName		= sTabName
+		msGroupName	= sGroupName
+		msControlName	= sControlName
+		mnCurCtrlIdx				= RBNGetElementIndexOffset(msTabName, msGroupName, "", "", msControlName, (mnCurCtrlIdx + 1))
+		RBNGroupGetNextControlIdx	= mnCurCtrlIdx
+	Else
+		RBNGroupGetNextControlIdx	= RBNGroupGetFirstControlIdx(sTabName, sGroupName, sControlName)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupGetNextControlIdx")
+	Call ERRShow()
+
+End Function
+
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
