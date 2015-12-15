@@ -112,6 +112,41 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub TABCommit(	ByVal sTab As String		'Save potentially changes to the table if it is open
+			)
+
+Dim	nTrialAndError As Integer
+
+OnError GoTo ErrorOccured
+
+	'-------------------------
+	TryToSaveAgain:
+
+	If TABIsOpen(sTab) Then
+		If TableInfo(sTab, TAB_INFO_EDITED) Then
+			Commit Table sTab
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABCommit: " & sTab)
+	nTrialAndError = nTrialAndError + 1
+	If nTrialAndError < 4 Then
+		Call ERRPrint()
+		Resume TryToSaveAgain
+	Else
+		Call ERRShow()
+	End If
+
+End Sub
+
+'**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
 'Parameters:
 '	sTabFile : Name of tab file to find the tablename for

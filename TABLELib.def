@@ -8,6 +8,8 @@
 '					- TABIsBitOn(ByVal nBit As Integer, ByVal nBitSum As Integer) As Logical
 '	04-12-2014 10:42:38	Added
 '					- Function TABHasDeletedRows(...) As Logical
+'	15-12-2015 09:32:22	Added
+'					- Procedure TABCommit(...)
 '************************************************************************************************************
 
 'Requires MapInfo Pro 9.5
@@ -33,9 +35,11 @@ Define TAB_USE_ALL_MAPPABLE_BUT_IMAGES	TAB_USE_ALL_MAPPABLE - (TAB_USE_WMS + TAB
 Declare Function TABIsOpen(	ByVal sTab As String	'Table to check for
 					) As Logical		'Returns true if the table is open
 Declare Sub TABClose(	ByVal sTab As String		'Closes the table if it is open
-				)
+					)
 Declare Sub TABDrop(	ByVal sTab As String		'Drops the tables if it is open
-				)
+					)
+Declare Sub TABCommit(	ByVal sTab As String		'Save potentially changes to the table if it is open
+					)
 
 Declare Function TABGetNameFromTabFile(	ByVal sTabFile As String	'Tab File to look for
 							) As String				'Return the name of the table if it is open,
