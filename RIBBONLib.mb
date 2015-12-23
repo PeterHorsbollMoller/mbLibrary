@@ -5402,7 +5402,7 @@ RBNCntxtMenuInsertControl = 0
 
 	nCtrl 			= RBNAddElement("CONTEXTMENU=" & Str$(nContextMenuID), "", "", "", sControlName, nControlType, CONTROL_TYPE_RLIB_CNTXT_MNU)
 	If nPosition = RBN_ELEMENT_INSERT_AS_LAST Then
-		marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnCntxtMenuItemsColl, sControlName, "", nControlType)
+		marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnCntxtMenuItemsColl, sControlName, sCaption, nControlType)
 	Else
 		marrControls(nCtrl) = MICtrlCollInsertIntStrStrInt(rbnCntxtMenuItemsColl, nPosition, sControlName, sCaption, nControlType)
 	End If
