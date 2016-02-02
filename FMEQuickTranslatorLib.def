@@ -1,3 +1,6 @@
 Declare Function FMEQTExportToDWG(	  ByVal sInputFile As String
 							, ByVal sOutputFile As String
+							, ByVal sBaseName As String
 							) As Logical
+
+Declare Function FMEQTGetLogFileName() As String

@@ -16,9 +16,10 @@ Include "Defaults.def"
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
 Include "FILELib.def"
+Include "STRINGLib.def"
 Include "SYSTEMLib.def"
 Include "TABLELib.def"
-Include "WINAPI.def"
+Include "WINAPI 1251.def"
 
 Include "FMEQuickTranslatorLib.def"
 
@@ -33,11 +34,13 @@ Declare Function FMEQTSetFMEQTDirectory() As Logical
 '**********************************************************************************************''
 Function FMEQTExportToDWG(	  ByVal sInputFile As String
 						, ByVal sOutputFile As String
+						, ByVal sBaseName As String
 						) As Logical
 
 OnError GoTo ErrorOccured
 
-Dim	sInputFormat, sDestFormat, sExtension, sBaseName, sFullBaseName As String,
+'Dim	sInputFormat, sDestFormat, sExtension, sBaseName, sFullBaseName As String,
+Dim	sInputFormat, sDestFormat, sExtension, sFullBaseName As String,
 	sMappingFile As String,
 	sLogFileName, sLogFileOut, sLogAppend As String,
 	sDestAttr, sDestATTRKIND, sDestReleaseVer As String,
@@ -58,8 +61,6 @@ FMEQTExportToDWG = FALSE
 	sMappingFile		= FILEWindowsTempFolder() & "MappingFile.fme"
 	'Generates a logfile
 	sLogFileOut		= "YES"
-	'Specify logfile name
-	sLogFileName		= FILEWindowsTempFolder() & "MUTlog.txt"
 	'Append logfiles together - default is typically No
 	sLogAppend		= "NO"
 
@@ -81,8 +82,14 @@ FMEQTExportToDWG = FALSE
 	'Sets Input extension to TAB format.  If Input is MIF\MID, then use "MIF"
 	sExtension		= "TAB"
 	'Sets BaseName to InputFileName - can be whatever you want.
-	sBaseName			= PathToFileName$(sInputFile)
+'	sBaseName			= PathToFileName$(sInputFile)
 	'Sets Full Name to BaseName - again, can be whatever you want.
+'	sBaseName			= STRINGReplace(sBaseName, "Æ", "AE")
+'	sBaseName			= STRINGReplace(sBaseName, "Ø", "OE")
+'	sBaseName			= STRINGReplace(sBaseName, "Å", "AA")
+'	sBaseName			= STRINGReplace(sBaseName, "æ", "ae")
+'	sBaseName			= STRINGReplace(sBaseName, "ø", "oe")
+'	sBaseName			= STRINGReplace(sBaseName, "å", "aa")
 	sFullBaseName		= sBaseName
 
 	'Translation is two stage process:
@@ -99,10 +106,15 @@ FMEQTExportToDWG = FALSE
 	If FileExists(FILEWindowsTempFolder() & "__UT__.bat") Then
 		Kill FILEWindowsTempFolder() & "__UT__.bat"
 	End If
+	If FileExists(FMEQTGetLogFileName()) Then
+		Kill FMEQTGetLogFileName()
+	End If
+
 	Open File FILEWindowsTempFolder() & "__UT__.bat"
 		For Append
 		As 234
-		CharSet SystemInfo(SYS_INFO_CHARSET)
+		CharSet "CodePage850"	'This will match the code page of the "dos prompt"
+'		CharSet SystemInfo(SYS_INFO_CHARSET)
 
 	Print #234, sCmdExe
 		+ " CFGenerate"
@@ -125,20 +137,21 @@ FMEQTExportToDWG = FALSE
 		 + " --_BASENAME " + sBaseName
 		 + " --_FULLBASENAME " + sFullBaseName
 		 + " LOG_STANDARDOUT " + sLogFileOut
-		 + " LOG_FILENAME " + Chr$(34) + sLogFileName + chr$(34)
+		 + " LOG_FILENAME " + Chr$(34) + FMEQTGetLogFileName() + chr$(34)
 '	Print #234, "Pause"
 	Close File #234
 
-	Run Program FILEWindowsTempFolder() & "__UT__.bat"
-'	If SYSExecuteAndWait(FILEWindowsTempFolder() & "__UT__.bat") Then
-'	End If
+'	Run Program FILEWindowsTempFolder() & "__UT__.bat"
+	If SYSExecuteAndWait(FILEWindowsTempFolder() & "__UT__.bat", SW_SHOWNORMAL) Then
+	End If
 
-	Call Sleep(4000)
+'	Call Sleep(4000)
 
-'	If NOT FileExists(sOutputFile) Then
+	If NOT FileExists(sOutputFile) Then
 '		Note "Export to DWG failed. Check the log-file for potential errors!"
 '		Call FILELaunch(sLogFileName)
-'	End If
+		Exit Function
+	End If
 
 '	sCmd = sCmdExe
 '		+ " CFGenerate"
@@ -229,6 +242,26 @@ FMEQTSetFMEQTDirectory = FALSE
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "FMEQTSetFMEQTDirectory")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FMEQTGetLogFileName() As String
+
+OnError GoTo ErrorOccured
+
+	FMEQTGetLogFileName = FILEWindowsTempFolder() & "MUTlog_batch.txt"
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FMEQTGetLogFileName")
 	Call ERRShow()
 
 End Function
