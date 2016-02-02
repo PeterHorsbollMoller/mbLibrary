@@ -242,3 +242,35 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub MAPRefresh(	ByVal nMID As Integer)
+
+OnError GoTo ErrorOccured
+
+	If nMID = 0 Then
+		nMID = MAPFrontMostWindow()
+		If nMID = 0 Then
+			Exit Sub
+		End If
+	End If
+
+	Set Map
+		Window nMID
+		Pan 1 Units "m" North
+	Set Map
+		Window nMID
+		Pan 1 Units "m" South
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MAPRefresh")
+	Call ERRShow()
+
+End Sub
+

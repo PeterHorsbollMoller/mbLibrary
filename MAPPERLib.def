@@ -9,6 +9,8 @@
 '					- Function MAPFrontMostWindow() As Integer
 '16-04-2012 10:53:59	Peter Møller added
 '					- an extra check condition to MAPFrontWindow()
+'23-12-2015 10:42:42	Peter Møller added:
+'					- Sub MAPRefresh(..)
 '**************************************************************
 
 'Requires MapInfo Pro 4.0
@@ -23,3 +25,5 @@ Declare Function MAPGetExtent(ByVal nMID As Integer) As Object
 
 Declare Function MAPFrontWindow() As Integer		'Returns the ID of the FrontWindow, if it is a map - otherwise it returns 0
 Declare Function MAPFrontMostWindow() As Integer	'Returns the ID of the FrontWindow, if it is a map, or the most recently opened Map, if no maps are found, it returns 0
+
+Declare Sub MAPRefresh(	ByVal nMID As Integer)
