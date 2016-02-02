@@ -137,9 +137,9 @@ End Function
 '
 '**********************************************************************************************''
 Function FILERemoveBackSlash(ByVal sPath As String) As String
- 
+
 OnError GoTo ErrorOccured
- 
+
 		Do While Asc(Right$(sPath, 1)) = Asc("\")
 			sPath = Left$(sPath, (Len(sPath)-1))
 		Loop
@@ -149,9 +149,9 @@ OnError GoTo ErrorOccured
 ErrorOccured:
      Call ERRCreate(Err(), Error$(), "FILERemoveBackSlash")
      Call ERRShow()
- 
+
 End Function
- 
+
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
@@ -181,6 +181,42 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEChangeExtension(ByVal sFile As String, ByVal sNewExtension As String) As String
+
+Dim	sExtension As String
+
+OnError GoTo ErrorOccured
+
+FILEChangeExtension = sFile
+
+	sExtension = FILEGetExtension(sFile)
+
+	If Len(sExtension) > 0 Then
+		FILEChangeExtension = Left$(sFile, (Len(sFile) - Len(sExtension))) & sNewExtension
+	Else
+		If Right$(sFile, 1) = "." Then
+			FILEChangeExtension = sFile & sNewExtension
+		Else
+			FILEChangeExtension = sFile & "." & sNewExtension
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEChangeExtension")
+	Call ERRShow()
+
+End Function
+
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
 'Parameters:

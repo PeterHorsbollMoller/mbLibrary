@@ -16,6 +16,8 @@
 '01-10-2012 11:11:11	Emil Zegers added:
 '						- Method FILEDeleteFolder(...)
 '						- Method FILECopyFile(...)
+'23-12-2015 11:49:53	Peter Møller added:
+'						- Function FILEChangeExtension(...) As String
 '*****************************************************************************************************************
 
 
@@ -67,7 +69,7 @@ Declare Method FILECreateFolder
 
 Declare Method FILEDeleteFolder
 	Class "FILELib.MIController"  Lib "FILELib.dll" Alias "DeleteFolder"
-	(	ByVal sFolderPath As String		'Folder path to delete, only deepest folder in the path will be deleted 
+	(	ByVal sFolderPath As String		'Folder path to delete, only deepest folder in the path will be deleted
 										'including all file and folder contents
 	)
 
@@ -77,6 +79,7 @@ Declare Function FILEFindExecutable(	  ByVal sDocument As String	'File name to f
 Declare Function FILEAddBackSlash(ByVal sPath As String) As String
 Declare Function FILERemoveBackSlash(ByVal sPath As String) As String
 Declare Function FILEGetExtension(ByVal sFile As String) As String
+Declare Function FILEChangeExtension(ByVal sFile As String, ByVal sNewExtension As String) As String
 
 Declare Function FILEWindowsTempFolder() As String
 
