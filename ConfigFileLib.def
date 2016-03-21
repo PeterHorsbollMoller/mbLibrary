@@ -1,3 +1,9 @@
+'************************************************************************************
+'	21-03-2016 15:39:21	Added a function and a procedure by Uffe Kousgaard
+'						- Function CONFIGReadKeyBool(...) As Logical
+'						- Sub CONFIGWriteKeyBool(...)
+'************************************************************************************
+
 '[sectionname]
 'keyname=value
 
@@ -11,6 +17,11 @@ Declare Function CONFIGReadKeyInt
 		, ByVal sSection As String	'Section (without []) to read configuration from
 		, ByVal sKey As String		'Key to read value from
 		) As Integer			'Returns the value read from the key specified, or 0 if key wasn't found
+Declare Function CONFIGReadKeyBool
+	(	  ByVal sFile As String		'File to read configuration from
+		, ByVal sSection As String	'Section (without []) to read configuration from
+		, ByVal sKey As String		'Key to read value from
+		) As Logical				'Returns false if the key specified is 0, otherwise true - or false if key wasn't found
 
 Declare Sub CONFIGWriteKey
 	(	  ByVal sFile As String		'File to write configuration to
@@ -18,6 +29,13 @@ Declare Sub CONFIGWriteKey
 		, ByVal sKey As String		'Key to write the value to
 		, ByVal sValue As String	'value to write to the key above
 		)
+Declare Sub CONFIGWriteKeyBool
+	(	  ByVal sFile As String		'File to write configuration to
+		, ByVal sSection As String	'Section (without []) to write the value to
+		, ByVal sKey As String		'Key to write the value to
+		, ByVal bValue As Logical	'value to write to the key above, Written as "0" / "1"
+		)
+
 Declare Sub CONFIGDeleteKey
 	(	  ByVal sFile As String		'File to delete the key from
 		, ByVal sSection As String	'Section (without []) to delete the key from

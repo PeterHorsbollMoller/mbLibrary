@@ -84,6 +84,37 @@ ErrorHandler:
 End Function
 
 '**********************************************************************************************
+'Created by Uffe Kousgaard
+'
+' Uses the Int function for reading 0/1
+'
+'Parameters:
+' sFile    : File to read the value from
+' sSection : Section (without []) to read the value from
+' sKey     : Key to read value from
+'Return value:
+'	Returns the value read from the key specified, or false if key wasn't found
+'**********************************************************************************************
+Function CONFIGReadKeyBool(ByVal sFile As String, ByVal sSection As String, ByVal sKey As String) As Logical
+
+OnError GoTo ErrorHandler
+
+	If  GetPrivateProfileInt(sSection, sKey, DEFAULT_INT, sFile) = 0 then
+		CONFIGReadKeyBool = FALSE
+	Else
+		CONFIGReadKeyBool = TRUE
+	End If
+
+	Exit Function
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGReadKeyBool")
+	Call ERRShow()
+	CONFIGReadKeyBool = FALSE
+
+End Function
+
+'**********************************************************************************************
 'Created by Rob Marjot
 '
 ' Wraps the corresponding API import
@@ -106,6 +137,37 @@ OnError GoTo ErrorHandler
 '------------------------
 ErrorHandler:
 	Call ERRCreate(Err(), Error$(), "CONFIGWriteKey")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************
+'Created by Uffe Kousgaard
+'
+' Writes boolean as "0" / "1"
+'
+'Parameters:
+' sFile    : File to write configuration to
+' sSection : Section (without []) to write the value to
+' sKey     : Key to write the value to
+' sValue   : value to write to the key above
+'**********************************************************************************************
+Sub CONFIGWriteKeyBool(ByVal sFile As String, ByVal sSection As String, ByVal sKey As String, ByVal bValue As Logical )
+
+Dim	iResult As Integer
+
+OnError GoTo ErrorHandler
+
+    If bValue = FALSE Then
+	  iResult = WritePrivateProfileString(sSection, sKey, "0", sFile)
+	Else
+	  iResult = WritePrivateProfileString(sSection, sKey, "1", sFile)
+	End If
+
+	Exit Sub
+'------------------------
+ErrorHandler:
+	Call ERRCreate(Err(), Error$(), "CONFIGWriteKeyBool")
 	Call ERRShow()
 
 End Sub
