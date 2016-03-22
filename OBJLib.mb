@@ -144,7 +144,7 @@ End Function
 Function OBJFindNodeBinary(	  ByVal oObj As Object		'The object (polyline or polygon) to search in, only the first segment of the object will be searched
 						, ByVal oNode As Object		'Node position to look for
 						, ByVal fTolerance As Float	'Search tolerance, in meters, distance is measured using Cartesian calculation
-						, ByVal nOffset As Integer	'Offset of 1st node in polyline based on original
+						, ByVal nOffset As Integer	'Offset of 1st node in polyline based on original, use 0 for first call
 						) As Integer				'Returns the first matching node number, or 0 if no found
 
 Dim	objLow, objHigh As Object,
