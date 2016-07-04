@@ -85,6 +85,7 @@ OnError GoTo ErrorOccured
 RESSTRNGLoadStringsByLanguage = FALSE
 
 '	Call DEBUGPrint("1. Number of language files found: " & Ubound(marrStringFiles()))
+'	Call DEBUGPrint("Looking for language: " & sLanguage)
 	If Ubound(marrStringFiles()) = 0 Then
 		If RESSTRNGFindStringFiles(RESSTRNGGetStringFilesFolder()) = 0 Then
 '			Print "No language files (.str) were found. These are required for the application to work!"
@@ -173,17 +174,67 @@ End Function
 '**********************************************************************************************''
 Function RESSTRNGFindStringFiles(ByVal sPath As String) As Integer
 
-Dim	i, nNumFiles As Integer
+Dim	i, nNumFiles As Integer,
+	sFile As String
 
 OnError GoTo ErrorOccured
 
-	Call DEBUGPrint("Searching for language files in: '" & sPath & "'")
-	nNumFiles	= FILEFindFiles(sPath, "*.str", TRUE, FALSE, marrStringFiles)
+'	Call DEBUGPrint("Searching for language files in: '" & sPath & "'")
+'	nNumFiles	= FILEFindFiles(sPath, "*.str", TRUE, FALSE, marrStringFiles)
+	nNumFiles = FILEFindFilesInFolder(sPath, "*.str")
+	Redim marrStringFiles(nNumFiles)
+	nNumFiles	= FILEGetFindFilesFileNames(marrStringFiles)
+'	If nNumFiles > 0  Then
+'		If NOT FileExists(marrStringFiles(1)) Then
+'			Call DEBUGPrint("FILEFindFiles failed and returned half file names - looking for some specific file names")
+'
+'			Redim marrStringFiles(0)
+'			nNumFiles = 0
+'
+'			sFile = sPath & "Danish.str"
+'			If FileExists(sFile) Then
+'				nNumFiles = nNumFiles + 1
+'				Redim marrStringFiles(nNumFiles)
+'				marrStringFiles(nNumFiles)	= sFile
+'			End If
+'			sFile = sPath & "English.str"
+'			If FileExists(sFile) Then
+'				nNumFiles = nNumFiles + 1
+'				Redim marrStringFiles(nNumFiles)
+'				marrStringFiles(nNumFiles)	= sFile
+'			End If
+'			sFile = sPath & "Finnish.str"
+'			If FileExists(sFile) Then
+'				nNumFiles = nNumFiles + 1
+'				Redim marrStringFiles(nNumFiles)
+'				marrStringFiles(nNumFiles)	= sFile
+'			End If
+'			sFile = sPath & "French.str"
+'			If FileExists(sFile) Then
+'				nNumFiles = nNumFiles + 1
+'				Redim marrStringFiles(nNumFiles)
+'				marrStringFiles(nNumFiles)	= sFile
+'			End If
+'			sFile = sPath & "Italian.str"
+'			If FileExists(sFile) Then
+'				nNumFiles = nNumFiles + 1
+'				Redim marrStringFiles(nNumFiles)
+'				marrStringFiles(nNumFiles)	= sFile
+'			End If
+'			sFile = sPath & "Swedish.str"
+'			If FileExists(sFile) Then
+'				nNumFiles = nNumFiles + 1
+'				Redim marrStringFiles(nNumFiles)
+'				marrStringFiles(nNumFiles)	= sFile
+'			End If
+'		End If
+'	End If
+
 	If nNumFiles = 0 Then
 		RESSTRNGFindStringFiles = 0
 		Call DEBUGPrint("Found no string files!")
 	Else
-		Call DEBUGPrint("Found " & nNumFiles & " string files!")
+'		Call DEBUGPrint("Found " & nNumFiles & " string files!")
 		Redim marrLanguages(nNumFiles)
 		For i = 1 To nNumFiles
 			marrLanguages(i)	= RESSTRNGGetStringFileLanguage(marrStringFiles(i))
