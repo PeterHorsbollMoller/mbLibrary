@@ -5,16 +5,16 @@
 '*******************************************************************************
 
 '-------------------------------------
-Include "..\..\Library\MapBasic.def"
-Include "..\..\Library\Icons.def"
-Include "..\..\Library\Menu.def"
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
 '**default constants...
-Include "..\..\Library\Defaults.def"
+Include "..\Defaults.def"
 
 '-------------------------------------
-Include "..\..\Library\DEBUGLib.def"
-Include "..\..\Library\ERRORLib.def"
-Include "..\..\Library\TABLELib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\TABLELib.def"
 
 Include "T_GROUP_LAYER_INFO.def"
 

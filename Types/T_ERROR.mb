@@ -5,7 +5,7 @@
 '*******************************************************************************
 
 '-------------------------------------
-Include "..\MapBasic.def"
+Include "MapBasic.def"
 '**default constants...
 Include "..\Defaults.def"
 

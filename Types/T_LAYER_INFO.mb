@@ -9,13 +9,13 @@ Include "MapBasic.def"
 Include "Icons.def"
 Include "Menu.def"
 '**default constants...
-Include "..\..\Library\Defaults.def"
+Include "..\Defaults.def"
 
 '-------------------------------------
-Include "..\..\Library\DEBUGLib.def"
-Include "..\..\Library\ERRORLib.def"
-Include "..\..\Library\STRINGLib.def"
-Include "..\..\Library\STYLELib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\STRINGLib.def"
+Include "..\STYLELib.def"
 
 Include "T_DISPLAY_OVERRIDE.def"
 Include "T_LABEL_OVERRIDE.def"

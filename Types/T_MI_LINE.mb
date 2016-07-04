@@ -5,14 +5,14 @@
 '*******************************************************************************
 
 '-------------------------------------
-Include "..\..\Library\MapBasic.def"
+Include "MapBasic.def"
 '**default constants...
-Include "..\..\Library\Defaults.def"
+Include "..\Defaults.def"
 
 '-------------------------------------
-Include "..\..\Library\DEBUGLib.def"
-Include "..\..\Library\ERRORLib.def"
-Include "..\..\Library\TABLELib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\TABLELib.def"
 
 Include "T_MI_POINT.def"
 Include "T_MI_LINE.def"

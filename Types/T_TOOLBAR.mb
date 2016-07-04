@@ -19,17 +19,17 @@ Define TOOLBAR_STATE_DOCKED_BOTTOM	4
 'BTNPAD_INFO_DOCK_BOTTOM (4)
 
 '-------------------------------------
-Include "..\..\Library\MapBasic.def"
-Include "..\..\Library\Icons.def"
-Include "..\..\Library\Menu.def"
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
 '**default constants...
-Include "..\..\Library\Defaults.def"
+Include "..\Defaults.def"
 
 '-------------------------------------
-Include "..\..\Library\DEBUGLib.def"
-Include "..\..\Library\ERRORLib.def"
-Include "..\..\Library\STRINGLib.def"
-Include "..\..\Library\TABLELib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\STRINGLib.def"
+Include "..\TABLELib.def"
 
 Include "T_MI_POINT.def"
 Include "T_TOOLBAR.def"
