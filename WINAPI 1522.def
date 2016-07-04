@@ -1,0 +1,410 @@
+Define SW_HIDE				0
+Define SW_SHOWNORMAL		1
+Define SW_SHOWMINIMIZED		2
+Define SW_SHOWMAXIMIZED		3
+Define SW_SHOWNOACTIVATE		4
+Define SW_SHOW				5
+Define SW_MINIMIZE			6
+Define SW_SHOWMINNOACTIVE	7
+Define SW_SHOWNA			8
+Define SW_RESTORE			9
+Define SW_SHOWDEFAULT		10
+Define SW_MAXIMIZE			11
+Define SW_FORCEMINIMIZE    	11
+
+Define ERROR_OUT_OF_MEMORY 		0
+Define ERROR_FILE_NOT_FOUND 		2
+Define ERROR_PATH_NOT_FOUND 		3
+Define ERROR_ACCESS_DENIED		5
+Define ERROR_BAD_FORMAT 			11
+Define ERROR_NO_MORE_FILES		18
+Define ERROR_NO_ASSOCIATION 		31
+
+Define MAX_PATH				260
+Define INVALID_HANDLE_VALUE 		-1
+
+Define NORMAL_PRIORITY_CLASS		&H20
+Define INFINITE				-1
+
+Define DRIVE_UNKNOWN  0
+Define DRIVE_ABSENT  1
+Define DRIVE_REMOVABLE  2
+Define DRIVE_FIXED  3
+Define DRIVE_REMOTE  4
+Define DRIVE_CDROM  5
+Define DRIVE_RAMDISK  6
+
+'Note that from MapBasic 8.5 these have been added in the HTTPLib.def
+'If you use that file, disable these constants in HTTPLib.def
+Define FILE_ATTRIBUTE_READONLY	&H1		'1	The file is read only.
+Define FILE_ATTRIBUTE_HIDDEN		&H2		'2	The file is hidden.
+Define FILE_ATTRIBUTE_SYSTEM		&H4		'4	The file is a system file.
+Define FILE_ATTRIBUTE_DIRECTORY	&H10		'16	The file is a directory.
+Define FILE_ATTRIBUTE_ARCHIVE		&H20		'32	The archive bit is set for this file.
+Define FILE_ATTRIBUTE_NORMAL		&H80		'128	The file is normal—no other attributes are set.
+Define FILE_ATTRIBUTE_TEMPORARY	&H100	'256	The file is a temporary file.
+Define FILE_ATTRIBUTE_COMPRESSED	&H800	'2048	The file or directory is compressed.
+Define FILE_ATTRIBUTE_OFFLINE 	&H1000	'4096	The file has been moved to a offline disk/location
+Define FILE_ATTRIBUTE_INDEXED		&H2000	'8192	The file is indexed for fast search.
+
+Define FILE_ATTRIBUTE_READONLY_BIT		1	'1	The file is read only.
+Define FILE_ATTRIBUTE_HIDDEN_BIT		2	'2	The file is hidden.
+Define FILE_ATTRIBUTE_SYSTEM_BIT		3	'4	The file is a system file.
+Define FILE_ATTRIBUTE_DIRECTORY_BIT	4	'16	The file is a directory.
+Define FILE_ATTRIBUTE_ARCHIVE_BIT		5	'32	The archive bit is set for this file.
+'Define							6	'64
+Define FILE_ATTRIBUTE_NORMAL_BIT		7	'128	The file is normal—no other attributes are set.
+Define FILE_ATTRIBUTE_TEMPORARY_BIT	8	'256	The file is a temporary file.
+'Define							9	'512
+'Define							10	'1024
+Define FILE_ATTRIBUTE_COMPRESSED_BIT	11	'2048	The file or directory is compressed.
+Define FILE_ATTRIBUTE_OFFLINE_BIT 		12	'4096	The file has been moved to a offline disk/location
+Define FILE_ATTRIBUTE_INDEXED_BIT		13	'8192	The file is indexed for fast search.
+
+Type POINTAPI  '  8 Bytes
+     x As Integer
+     y As Integer
+End Type
+
+'64-bit number specifying the elapsed time since January 1, 1601, in 100-nanosecond increments
+Type FILETIME
+        dwLowDateTime As Integer
+        dwHighDateTime As Integer
+End Type
+
+Type WIN32_FIND_DATA Align4	'Used on 64 bit systems, Align[n] is a new keyword with MapBasic 15.2.2
+	dwFileAttributes	As Integer
+	ftCreationTime		As FILETIME
+	ftLastAccessTime	As FILETIME
+	ftLastWriteTime	As FILETIME
+	nFileSizeHigh		As Integer
+	nFileSizeLow		As Integer
+	dwReserved0		As Integer
+	dwReserved1		As Integer
+	cFileName			As String * MAX_PATH
+	cAlternate		As String * 14
+End Type
+
+Type STARTUPINFO
+	cb				As Integer
+	lpReserved		As IntPtr
+	lpDesktop			As IntPtr
+	lpTitle			As IntPtr
+	dwX				As Integer
+	dwY				As Integer
+	dwXSize			As Integer
+	dwYSize			As Integer
+	dwXCountChars		As Integer
+	dwYCountChars		As Integer
+	dwFillAttribute	As Integer
+	dwFlags			As Integer
+	wShowWindow		As SmallInt
+	cbReserved2		As SmallInt
+	lpReserved2		As IntPtr
+	hStdInput			As IntPtr
+	hStdOutput		As IntPtr
+	hStdError			As IntPtr
+End Type
+
+Type PROCESS_INFORMATION
+	hProcess		As IntPtr
+	hThread		As IntPtr
+	dwProcessID	As Integer
+	dwThreadID	As Integer
+End Type
+
+'**Similar to the build in Timer() MapBasic function, but will give you miliseconds in stead of seconds
+Declare Function WAPIGetTickCount Lib "kernel32.dll" Alias "GetTickCount"
+		() As Integer
+
+Declare Function WAPIShellExecute Lib "shell32.dll" Alias "ShellExecuteA"
+		( ByVal hwnd As Integer			'Can be zero or a pointer to the MapInfo Window
+		, ByVal sOperation As String		'Operation to perform on the file
+									'edit:	Launches an editor and opens the document for editing. If lpFile is not a document file, the function will fail.
+									'explore:	Explores a folder specified by lpFile.
+									'find:	Initiates a search beginning in the directory specified by lpDirectory.
+									'open:	Opens the item specified by the lpFile parameter. The item can be a file or folder.
+									'print:	Prints the file specified by lpFile. If lpFile is not a document file, the function fails.
+									'NULL:	In systems prior to Windows 2000, the default verb is used if it is valid and available in the registry.
+									'		If not, the "open" verb is used.
+									'		In Windows 2000 and later, the default verb is used if available. If not, the "open" verb is used.
+									'		If neither verb is available, the system uses the first verb listed in the registry
+
+		, ByVal sFile As String			'File to perform the operation on
+		, ByVal sParameters As String		'Parameters to send to the file
+		, ByVal sDirectory As String		'Default working directory
+		, ByVal nShowCmd As Integer		'How to display the application performing the operation
+									'SW_HIDE:			Hides the window and activates another window.
+									'SW_MAXIMIZE:		Maximizes the specified window.
+									'SW_MINIMIZE:		Minimizes the specified window and activates the next top-level window in the z-order.
+									'SW_RESTORE:		Activates and displays the window. If the window is minimized or maximized, Windows restores it to its original size and position. An application should specify this flag when restoring a minimized window.
+									'SW_SHOW:			Activates the window and displays it in its current size and position.
+									'SW_SHOWDEFAULT:		Sets the show state based on the SW_ flag specified in the STARTUPINFO structure passed to the CreateProcess function by the program that started the application. An application should call ShowWindow with this flag to set the initial show state of its main window.
+									'SW_SHOWMAXIMIZED:	Activates the window and displays it as a maximized window.
+									'SW_SHOWMINIMIZED:	Activates the window and displays it as a minimized window.
+									'SW_SHOWMINNOACTIVE:	Displays the window as a minimized window. The active window remains active.
+									'SW_SHOWNA:			Displays the window in its current state. The active window remains active.
+									'SW_SHOWNOACTIVATE:	Displays a window in its most recent size and position. The active window remains active.
+									'SW_SHOWNORMAL:		Activates and displays a window. If the window is minimized or maximized, Windows restores it to its original size and position. An application should specify this flag when displaying the window for the first time.
+
+
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/bb762153(VS.85).aspx
+
+Declare Function WAPIFindExecutable Lib "shell32.dll" Alias "FindExecutableA"
+		( ByVal lpFile As String		'The address of a null-terminated string that specifies a file name. This file should be a document.
+		, ByVal lpDirectory As String		'The address of a null-terminated string that specifies the default directory. This value can be NULL.
+		, lpResult As String			'The address of a buffer that receives the file name of the associated executable file
+								'This parameter must contain a valid non-null value and is assumed to be of length MAX_PATH.
+								'Responsibility for validating the value is left to the programmer.
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/bb776419(VS.85).aspx
+
+'**Create a single folder - must be the "last" in the path given
+Declare Function WAPICreateDirectory Lib "kernel32.dll" Alias "CreateDirectoryA"
+		( ByVal sPath as String
+		, ByVal nSecurityAttributes as Integer
+		) as Integer
+'http://msdn.microsoft.com/en-us/library/bb762130(VS.85).aspx
+'**err = WAPICreateDirectory("c:\test",0)
+
+'**Create a folder structure - will create the entire path given
+Declare Function WAPICreateDirectoryEx Lib "shell32.dll" Alias "SHCreateDirectoryExA"
+		( ByVal hWnd as Integer				'Can be zero or a pointer to the MapInfo Window
+		, ByVal sPath as String				'The folder structure/path to create
+		, ByVal nSecurityAttributes as Integer	'zero
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/bb762131(VS.85).aspx
+'**err = WAPICreateDirectoryEx(0,"c:\test\test1\test2",0)
+
+'**Set Current Directory to the path given
+Declare Function WAPISetCurrentDirectory Lib "Kernel32.dll" Alias "SetCurrentDirectoryA"
+		( ByVal sDir As String
+		) As SmallInt
+
+Declare Function WAPIFindFirstFile Lib "kernel32.dll" Alias "FindFirstFileA"
+		( ByVal lpFileName As String
+		, lpFindFileData As WIN32_FIND_DATA
+		) As IntPtr
+'http://msdn.microsoft.com/en-us/library/windows/desktop/aa364418(v=vs.85).aspx
+Declare Function WAPIFindNextFile Lib "kernel32.dll" Alias "FindNextFileA"
+		( ByVal hFindFile As IntPtr
+		, lpFindFileData As WIN32_FIND_DATA
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/windows/desktop/aa364428(v=vs.85).aspx
+Declare Function WAPIFindClose Lib "kernel32.dll" Alias "FindClose"
+		( ByVal hFindFile As IntPtr
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/windows/desktop/aa364413(v=vs.85).aspx
+
+Declare Function WAPIGetCursorPosition Lib "user32.dll" Alias "GetCursorPos"
+		( lpPoint As POINTAPI
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/windows/desktop/ms648390(v=vs.85).aspx
+
+'-------------------------------------
+'Win32 API Imports local to this module:
+Declare Function WAPIGetPrivateProfileString Lib "KERNEL32.DLL" Alias "GetPrivateProfileStringA"
+		( ByVal lpAppName As String		'The name of the section containing the key name.
+									'If this parameter is NULL, the GetPrivateProfileString function copies all section names in the file to the supplied buffer.
+		, ByVal lpKeyName As String		'The name of the key whose associated string is to be retrieved.
+									'If this parameter is NULL, all key names in the section specified by the lpAppName parameter are copied to the buffer specified by the lpReturnedString parameter.
+		, ByVal lpDefault As String		'A default string. If the lpKeyName key cannot be found in the initialization file, GetPrivateProfileString copies the default string to the lpReturnedString buffer.
+									'If this parameter is NULL, the default is an empty string, "". Avoid specifying a default string with trailing blank characters.
+									'The function inserts a null character in the lpReturnedString buffer to strip any trailing blanks.
+		, lpReturnedString As String		'A pointer to the buffer that receives the retrieved string.
+		, ByVal nSize As Integer			'The size of the buffer pointed to by the lpReturnedString parameter, in characters.
+		, ByVal lpFileName As String		'The name of the initialization file. If this parameter does not contain a full path to the file, the system searches for the file in the Windows directory.
+	  	) As Integer
+'http://msdn.microsoft.com/en-us/library/ms724353(v=vs.85).aspx
+
+Declare Function WAPIGetPrivateProfileInt Lib "KERNEL32.DLL" Alias "GetPrivateProfileIntA"
+		( ByVal lpAppName As String		'The name of the section containing the key name.
+		, ByVal lpKeyName As String		'The name of the key whose value is to be retrieved.
+									'This value is in the form of a string; the GetPrivateProfileInt function converts the string into an integer and returns the integer.
+		, ByVal nDefault As Integer		'The default value to return if the key name cannot be found in the initialization file.
+		, ByVal lpFileName As String		'The name of the initialization file. If this parameter does not contain a full path to the file, the system searches for the file in the Windows directory.
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/ms724345(v=vs.85).aspx
+
+Declare Function WAPIWritePrivateProfileString Lib "KERNEL32.DLL" Alias "WritePrivateProfileStringA"
+		( ByVal lpAppName As String	'The name of the section to which the string will be copied. If the section does not exist, it is created.
+								'The name of the section is case-independent; the string can be any combination of uppercase and lowercase letters.
+		, ByVal lpKeyName As String	'The name of the key to be associated with a string. If the key does not exist in the specified section, it is created.
+								'If this parameter is NULL, the entire section, including all entries within the section, is deleted.
+		, ByVal lpString As String	'A null-terminated string to be written to the file. If this parameter is NULL, the key pointed to by the lpKeyName parameter is deleted.
+		, ByVal lpFileName As String	'The name of the initialization file.
+								'If the file was created using Unicode characters, the function writes Unicode characters to the file. Otherwise, the function writes ANSI characters.
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/ms725501(v=vs.85).aspx
+
+Declare Function WAPIDeleteKey Lib "KERNEL32.DLL" Alias "WritePrivateProfileStringA"
+		( ByVal lpAppName As String	'The name of the section to which the string will be copied. If the section does not exist, it is created.
+								'The name of the section is case-independent; the string can be any combination of uppercase and lowercase letters.
+		, ByVal lpKeyName As String	'The name of the key to be associated with a string. If the key does not exist in the specified section, it is created.
+								'If this parameter is NULL, the entire section, including all entries within the section, is deleted.
+		, ByVal lpString As Integer	'Passing 0 here will remove the key from the section
+								'A null-terminated string to be written to the file. If this parameter is NULL, the key pointed to by the lpKeyName parameter is deleted.
+		, ByVal lpFileName As String	'The name of the initialization file.
+								'If the file was created using Unicode characters, the function writes Unicode characters to the file. Otherwise, the function writes ANSI characters.
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/aa389869(v=vs.85).aspx
+
+Declare Function WAPIDeleteSection Lib "KERNEL32.DLL" Alias "WritePrivateProfileStringA"
+		( ByVal lpAppName As String	'The name of the section to which the string will be copied. If the section does not exist, it is created.
+								'The name of the section is case-independent; the string can be any combination of uppercase and lowercase letters.
+		, ByVal lpKeyName As Integer	'Passing 0 here will remove the key from the section
+								'The name of the key to be associated with a string. If the key does not exist in the specified section, it is created.
+								'If this parameter is NULL, the entire section, including all entries within the section, is deleted.
+		, ByVal lpString As Integer	'Passing 0 here will remove the key from the section
+								'A null-terminated string to be written to the file. If this parameter is NULL, the key pointed to by the lpKeyName parameter is deleted.
+		, ByVal lpFileName As String	'The name of the initialization file.
+								'If the file was created using Unicode characters, the function writes Unicode characters to the file. Otherwise, the function writes ANSI characters.
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/aa389869(v=vs.85).aspx
+
+Declare Function WAPIGetUserName lib "advapi32.dll" alias "GetUserNameA"
+		( lpBuffer As String
+		, nSize As Integer
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/windows/desktop/ms724432(v=vs.85).aspx
+
+Declare Function WAPIGetComputerName Lib "kernel32.dll" Alias "GetComputerNameA"
+		( lpBuffer As String
+		, nSize As Integer
+		) As Integer
+'http://msdn.microsoft.com/en-us/library/windows/desktop/ms724295(v=VS.85).aspx
+
+Declare Function WAPIGetDriveType Lib "kernel32.dll" Alias "GetDriveTypeA"
+	( ByVal sDrive As String	'A drive in this form: "A:"
+	) As Integer			'Returns one of the DRIVE_  defines
+
+Declare Function WAPICloseHandle Lib "kernel32.dll" Alias "CloseHandle"
+	( hObject As IntPtr
+	) As SmallInt
+
+Declare Function WAPIWaitForSingleObject Lib "kernel32.dll" Alias "WaitForSingleObject"
+	( ByVal hHandle As IntPtr
+	, ByVal dwMilliseconds As Integer
+	) As Integer
+'https://msdn.microsoft.com/en-us/library/windows/desktop/ms687032(v=vs.85).aspx
+
+Declare Function WAPICreateProcess Lib "kernel32.dll" Alias "CreateProcessA"
+	( ByVal lpApplicationName As IntPtr			'[in, optional] The name of the module to be executed. This module can be a Windows-based application.
+											'It can be some other type of module (for example, MS-DOS or OS/2) if the appropriate subsystem is available on the local computer.
+	, ByVal lpCommandLine As String				'[in, out, optional] The command line to be executed. The maximum length of this string is 32,768 characters, including the Unicode terminating null character.
+											'If lpApplicationName is NULL, the module name portion of lpCommandLine is limited to MAX_PATH characters.
+	, ByVal lpProcessAttributes As IntPtr			'[in, optional] A pointer to a SECURITY_ATTRIBUTES structure that determines whether the returned handle to the new process object can be inherited by child processes.
+											'If lpProcessAttributes is NULL, the handle cannot be inherited.
+	, ByVal lpThreadAttributes As IntPtr			'[in, optional] A pointer to a SECURITY_ATTRIBUTES structure that determines whether the returned handle to the new thread object can be inherited by child processes.
+											'If lpThreadAttributes is NULL, the handle cannot be inherited.
+	, ByVal bInheritHandles As Integer				'[in] If this parameter TRUE, each inheritable handle in the calling process is inherited by the new process.
+											'If the parameter is FALSE, the handles are not inherited. Note that inherited handles have the same value and access rights as the original handles.
+	, ByVal dwCreationFlags As Integer				'[in] The flags that control the priority class and the creation of the process. For a list of values, see Process Creation Flags.
+	, ByVal lpEnvironment As IntPtr				'[in, optional] A pointer to the environment block for the new process. If this parameter is NULL, the new process uses the environment of the calling process.
+											'An environment block consists of a null-terminated block of null-terminated strings. Each string is in the following form: name=value\0
+	, ByVal lpCurrentDirectory As IntPtr			'[in, optional] The full path to the current directory for the process. The string can also specify a UNC path.
+	, lpStartupInfo As STARTUPINFO				'[in] A pointer to a STARTUPINFO or STARTUPINFOEX structure.
+	, lpProcessInformation As PROCESS_INFORMATION	'[out] A pointer to a PROCESS_INFORMATION structure that receives identification information about the new process.
+	) As Integer
+'https://msdn.microsoft.com/en-us/library/windows/desktop/ms682425(v=vs.85).aspx
+
+Declare Sub WAPISleep Lib "kernel32.dll" Alias "Sleep"
+	( ByVal dwMilliseconds As Integer
+	)
+
+Declare Function WAPIGetLastError Lib "kernel32.dll" Alias "GetLastError"
+	() As Integer
+'https://msdn.microsoft.com/en-us/library/windows/desktop/ms679360(v=vs.85).aspx
+
+
+
+
+
+'*******************************************************************************************
+'These functions have been replaces by similar functions starting with WAPI...
+'But they might already be used in other tools so we can't remove them
+'*******************************************************************************************
+'**Set Current Directory to the path given
+Declare Function SetCurrentDirectoryA Lib "Kernel32.dll"
+	( ByVal sDir As String
+	) As SmallInt
+Declare Function GetPrivateProfileString Lib "KERNEL32.DLL" Alias "GetPrivateProfileStringA"
+		( ByVal lpAppName As String		'The name of the section containing the key name.
+									'If this parameter is NULL, the GetPrivateProfileString function copies all section names in the file to the supplied buffer.
+		, ByVal lpKeyName As String		'The name of the key whose associated string is to be retrieved.
+									'If this parameter is NULL, all key names in the section specified by the lpAppName parameter are copied to the buffer specified by the lpReturnedString parameter.
+		, ByVal lpDefault As String		'A default string. If the lpKeyName key cannot be found in the initialization file, GetPrivateProfileString copies the default string to the lpReturnedString buffer.
+									'If this parameter is NULL, the default is an empty string, "". Avoid specifying a default string with trailing blank characters.
+									'The function inserts a null character in the lpReturnedString buffer to strip any trailing blanks.
+		, lpReturnedString As String		'A pointer to the buffer that receives the retrieved string.
+		, ByVal nSize As Integer			'The size of the buffer pointed to by the lpReturnedString parameter, in characters.
+		, ByVal lpFileName As String		'The name of the initialization file. If this parameter does not contain a full path to the file, the system searches for the file in the Windows directory.
+	  	) As Integer
+Declare Function GetPrivateProfileInt Lib "KERNEL32.DLL" Alias "GetPrivateProfileIntA"
+		( ByVal lpAppName As String		'The name of the section containing the key name.
+		, ByVal lpKeyName As String		'The name of the key whose value is to be retrieved.
+									'This value is in the form of a string; the GetPrivateProfileInt function converts the string into an integer and returns the integer.
+		, ByVal nDefault As Integer		'The default value to return if the key name cannot be found in the initialization file.
+		, ByVal lpFileName As String		'The name of the initialization file. If this parameter does not contain a full path to the file, the system searches for the file in the Windows directory.
+		) As Integer
+Declare Function WritePrivateProfileString Lib "KERNEL32.DLL" Alias "WritePrivateProfileStringA"
+		( ByVal lpAppName As String	'The name of the section to which the string will be copied. If the section does not exist, it is created.
+								'The name of the section is case-independent; the string can be any combination of uppercase and lowercase letters.
+		, ByVal lpKeyName As String	'The name of the key to be associated with a string. If the key does not exist in the specified section, it is created.
+								'If this parameter is NULL, the entire section, including all entries within the section, is deleted.
+		, ByVal lpString As String	'A null-terminated string to be written to the file. If this parameter is NULL, the key pointed to by the lpKeyName parameter is deleted.
+		, ByVal lpFileName As String	'The name of the initialization file.
+								'If the file was created using Unicode characters, the function writes Unicode characters to the file. Otherwise, the function writes ANSI characters.
+		) As Integer
+Declare Function DeleteKey Lib "KERNEL32.DLL" Alias "WritePrivateProfileStringA"
+		( ByVal lpAppName As String	'The name of the section to which the string will be copied. If the section does not exist, it is created.
+								'The name of the section is case-independent; the string can be any combination of uppercase and lowercase letters.
+		, ByVal lpKeyName As String	'The name of the key to be associated with a string. If the key does not exist in the specified section, it is created.
+								'If this parameter is NULL, the entire section, including all entries within the section, is deleted.
+		, ByVal lpString As Integer	'Passing 0 here will remove the key from the section
+								'A null-terminated string to be written to the file. If this parameter is NULL, the key pointed to by the lpKeyName parameter is deleted.
+		, ByVal lpFileName As String	'The name of the initialization file.
+								'If the file was created using Unicode characters, the function writes Unicode characters to the file. Otherwise, the function writes ANSI characters.
+		) As Integer
+Declare Function DeleteSection Lib "KERNEL32.DLL" Alias "WritePrivateProfileStringA"
+		( ByVal lpAppName As String	'The name of the section to which the string will be copied. If the section does not exist, it is created.
+								'The name of the section is case-independent; the string can be any combination of uppercase and lowercase letters.
+		, ByVal lpKeyName As Integer	'Passing 0 here will remove the key from the section
+								'The name of the key to be associated with a string. If the key does not exist in the specified section, it is created.
+								'If this parameter is NULL, the entire section, including all entries within the section, is deleted.
+		, ByVal lpString As Integer	'Passing 0 here will remove the key from the section
+								'A null-terminated string to be written to the file. If this parameter is NULL, the key pointed to by the lpKeyName parameter is deleted.
+		, ByVal lpFileName As String	'The name of the initialization file.
+								'If the file was created using Unicode characters, the function writes Unicode characters to the file. Otherwise, the function writes ANSI characters.
+		) As Integer
+Declare Function GetUserName lib "advapi32.dll" alias "GetUserNameA"
+		( lpBuffer As String
+		, nSize As Integer
+		) As Integer
+Declare Function GetComputerName Lib "kernel32.dll" Alias "GetComputerNameA"
+		( lpBuffer As String
+		, nSize As Integer
+		) As Integer
+Declare Function CloseHandle Lib "kernel32.dll" Alias "CloseHandle"
+	( hObject As IntPtr
+	) As SmallInt
+Declare Function WaitForSingleObject Lib "kernel32.dll" Alias "WaitForSingleObject"
+	( ByVal hHandle As IntPtr
+	, ByVal dwMilliseconds As Integer
+	) As Integer
+Declare Function CreateProcessA Lib "kernel32.dll" Alias "CreateProcessA"
+	( ByVal lpApplicationName As Integer
+	, ByVal lpCommandLine As String
+	, ByVal lpProcessAttributes As Integer
+	, ByVal lpThreadAttributes As Integer
+	, ByVal bInheritHandles As Integer
+	, ByVal dwCreationFlags As Integer
+	, ByVal lpEnvironment As Integer
+	, ByVal lpCurrentDirectory As Integer
+	, lpStartupInfo As STARTUPINFO
+	, lpProcessInformation As PROCESS_INFORMATION
+	) As Integer
+Declare Sub Sleep Lib "kernel32.dll" Alias "Sleep"
+	( ByVal dwMilliseconds As Integer
+	)
