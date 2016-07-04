@@ -1,0 +1,611 @@
+'*******************************************************************************
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "FILELib.def"
+Include "STRINGLib.def"
+Include "WINAPI 1522.def"
+
+Declare Function FILEAttributeIsDirectory(ByVal nFileAttributes As Integer) As Logical
+Declare Function FILEAttributeIsReadOnly(ByVal nFileAttributes As Integer) As Logical
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'*****************************************************************
+Sub FILELaunch(ByVal sFile As String)
+
+Dim nResult, nHwnd As Integer,
+	sOp, sDir As String,
+	nShowCmd, nNull As Integer
+
+OnError Goto ErrorOccured
+
+	nHwnd	= WindowInfo(WIN_MAPINFO, WIN_INFO_WND)
+	sOp		= "open"
+	sDir	= ApplicationDirectory$()
+	nShowCmd	= 1
+	nNull	= 0
+
+	nResult = WAPIShellExecute(nHwnd, sOp, sFile, nNull, sDir, nShowCmd)
+	If nResult <= 32 Then
+		Note "Unable to launch" + nResult
+	End If
+
+	Exit Sub
+
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGEnableByFile: " & sFile)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'
+'*****************************************************************
+Function FILEFindExecutable(ByVal sDocument As String) As String
+
+Dim	nResult As Integer,
+	sProgram, sError As String
+
+OnError GoTo ErrorOccured
+
+FILEFindExecutable = ""
+
+	sProgram = Space$(255)
+	nResult = WAPIFindExecutable(PathToFilename$(sDocument), PathToDirectory$(sDocument), sProgram)
+	if nResult <= 32 then
+		Do Case nResult
+			Case ERROR_OUT_OF_MEMORY
+				sError = "Out of memory"
+			Case ERROR_NO_ASSOCIATION
+				sError = "No association for *." & Right$(sDocument, 3) & " files."
+			Case ERROR_FILE_NOT_FOUND
+				sError = sDocument & eye & "file not found"
+			Case ERROR_PATH_NOT_FOUND
+				sError = sDocument & eye & "path not found"
+			Case ERROR_BAD_FORMAT
+				sError = "bad format"
+			Case Else
+				sError = "Unknown error " & Str$(nResult)
+		End Case
+
+		Note "FILEFindExecutable reported this error: " & sError
+		Exit Function
+	End If
+
+	FILEFindExecutable = sProgram
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DEBUGEnableByFile: " & sFile)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEAddBackSlash(ByVal sPath As String) As String
+
+OnError GoTo ErrorOccured
+
+	If sPath = "" Then
+		FILEAddBackSlash = sPath
+	Else
+		If Asc(Right$(sPath, 1)) = Asc("\") Then
+			FILEAddBackSlash = sPath
+		Else
+			FILEAddBackSlash = sPath & "\"
+		End If
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEAddBackSlash")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Emil Zegers, Speer IT B.V.
+'Parameters:
+'    :
+'Return value:
+'
+'**********************************************************************************************''
+Function FILERemoveBackSlash(ByVal sPath As String) As String
+
+OnError GoTo ErrorOccured
+
+		Do While Asc(Right$(sPath, 1)) = Asc("\")
+			sPath = Left$(sPath, (Len(sPath)-1))
+		Loop
+		FILERemoveBackSlash = sPath
+		Exit Function
+'-------------------------
+ErrorOccured:
+     Call ERRCreate(Err(), Error$(), "FILERemoveBackSlash")
+     Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEGetExtension(ByVal sFile As String) As String
+
+Dim	arrElements() As String,
+	nNumParts As Integer
+
+OnError GoTo ErrorOccured
+
+FILEGetExtension = ""
+
+	nNumParts = STRINGSplitAndTrim(sFile, ".", arrElements)
+
+	If nNumParts > 1 Then
+		FILEGetExtension = arrElements(nNumParts)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEGetExtension")
+	Call ERRShow()
+
+End Function
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEWindowsTempFolder() As String
+
+OnError GoTo ErrorOccured
+
+	FILEWindowsTempFolder = PathToDirectory$(TempFileName$(""))
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEWindowsTempFolder")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEGetAbsolutePath(	  ByVal sAbsolutePath As String	'A absolute path to add to the potential relative path (and file name)
+						, ByVal sRelativePath As String	'A potential relative path (and file name) to be changed to a absolute path (and file name)
+						) As String					'Absolute path (and file name) to the relative path (and file name) entered
+
+OnError GoTo ErrorOccured
+
+	If sRelativePath = "" Then
+		FILEGetAbsolutePath = sAbsolutePath
+	ElseIf not Mid$(sRelativePath, 2, 2) = ":\" And not Left$(sRelativePath, 2) = "\\" Then
+		FILEGetAbsolutePath = FILEAddBackSlash(sAbsolutePath) & sRelativePath
+	Else
+		FILEGetAbsolutePath = sRelativePath
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEGetAbsolutePath")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEGetRelativePath(	  ByVal sAbsolutePath As String	'A absolute path to remove from the path (and file name) given
+						, ByVal sPath As String			'A path (and file name) to be changed to a relative path (and file name)
+						) As String					'Relative path (and file name) to the path (and file name) entered
+OnError GoTo ErrorOccured
+
+	If Left$(sPath, Len(sAbsolutePath)) = sAbsolutePath Then
+		FILEGetRelativePath = Right$(sPath, ( Len(sPath) - Len(sAbsolutePath) ) )
+	Else
+		FILEGetRelativePath = sPath
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEGetRelativePath")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEAttributeIsDirectory(ByVal nFileAttributes As Integer) As Logical
+
+OnError GoTo ErrorOccured
+
+FILEAttributeIsDirectory = FALSE
+
+	If (nFileAttributes /  2 ^ FILE_ATTRIBUTE_DIRECTORY_BIT) Mod 2 Then
+		FILEAttributeIsDirectory = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEAttributeIsDirectory")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEAttributeIsReadOnly(ByVal nFileAttributes As Integer) As Logical
+
+OnError GoTo ErrorOccured
+
+FILEAttributeIsReadOnly = FALSE
+
+	If (nFileAttributes /  2 ^ FILE_ATTRIBUTE_READONLY_BIT) Mod 2 Then
+		FILEAttributeIsReadOnly = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEAttributeIsReadOnly")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEIsFolder(	ByVal sPath As String		'File Path to check if it is folder/directory
+					) As Logical				'Returns TRUE, if the path is a folder/directory
+
+Dim	nResult As Integer,
+	fData As WIN32_FIND_DATA
+
+OnError GoTo ErrorOccured
+
+FILEIsFolder = FALSE
+	sPath = FILERemoveBackSlash(sPath)
+
+	nResult = WAPIFindFirstFile (sPath, fData)
+	If nResult <> INVALID_HANDLE_VALUE Then
+		If FILEAttributeIsDirectory(fData.dwFileAttributes) Then
+			FILEIsFolder = TRUE
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEIsFolder: " & sPath)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Emil Zegers, Speer IT B.V.
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEFileExists(	ByVal sPath As String		'File Path to check if it is folder/directory
+					) As Logical				'Returns TRUE, if the path is a folder/directory
+
+Dim	nResult As Integer,
+	fData As WIN32_FIND_DATA
+
+OnError GoTo ErrorOccured
+
+FILEFileExists = FALSE
+	sPath = FILERemoveBackSlash(sPath)
+
+	nResult = WAPIFindFirstFile (sPath, fData)
+	If nResult <> INVALID_HANDLE_VALUE Then
+		FILEFileExists = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEFileExists: " & sPath)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEIsReadOnly(  ByVal sPath As String		'File Path to check if it is readonly
+					) As Logical				'Returns TRUE, if the path is readonly
+
+Dim	nResult As Integer,
+	fData As WIN32_FIND_DATA
+
+OnError GoTo ErrorOccured
+
+FILEIsReadOnly = FALSE
+
+	nResult = WAPIFindFirstFile (sPath, fData)
+	If nResult <> INVALID_HANDLE_VALUE Then
+		If FILEAttributeIsReadOnly(fData.dwFileAttributes) Then
+			FILEIsReadOnly = TRUE
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEIsReadOnly: " & sPath)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEFindFiles(	  ByVal sPath As String				'A path to search for files
+					, ByVal sCondition As String			'A condition the files should meet, for instance, "*.tab"
+					, ByVal bReturnFullPath As Logical		'If FALSE the file names will be relative to the sPath
+					, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+					, arrFiles() As String				'The resulting list of files found
+					) As Integer						'The number of files found
+
+OnError GoTo ErrorOccured
+
+	FILEFindFiles = FILEFindFilesRecursive(sPath, "", sCondition, bReturnFullPath, bSearchSubFolders, arrFiles)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEFindFiles: " & sPath)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEFindFilesRecursive(	  ByVal sPath As String			'The initial path
+							, ByVal sSubPath As String		'The current subfolder path, use "" when you call it
+							, ByVal sCondition As String		'A condition the files should meet, for instance, ".tab"
+							, ByVal bReturnFullPath As Logical	'If FALSE the file names will be relative to the sPath
+							, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+							, arrFiles() As String			'The resulting list of files found
+							) As Integer					'The number of files found
+
+Dim	nResult As IntPtr,
+	nStatus As Integer,
+	fData As WIN32_FIND_DATA,
+	nFiles As Integer
+
+OnError GoTo ErrorOccured
+
+FILEFindFilesRecursive = 0
+
+	If sCondition = "" Then
+		sCondition = "*"
+	End If
+	nFiles	= UBound(arrFiles)
+	Call DEBUGPrint("Searching " & FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & sCondition)
+	nResult	= WAPIFindFirstFile (FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & sCondition, fData)
+	If nResult <> INVALID_HANDLE_VALUE Then
+		Do
+			If NOT FILEAttributeIsDirectory(fData.dwFileAttributes) Then
+				nFiles = nFiles + 1
+				ReDim arrFiles(nFiles)
+
+				If NOT bReturnFullPath Then
+					arrFiles(nFiles) = FILEAddBackSlash(sSubPath) & fData.cFilename
+				Else
+					arrFiles(nFiles) = FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & fData.cFilename
+				End If
+'				Call DEBUGPrint(nFiles & ": " & arrFiles(nFiles) & " Length: " & Len(fData.cFilename) & " " & fData.cFilename)
+				Call DEBUGPrint(nFiles & ": Length: " & Len(fData.cFilename) & " " & fData.cFilename)
+			End If
+
+			nStatus = WAPIFindNextFile(nResult, fData)
+
+		Loop While nStatus = 1
+	End If
+	nStatus = WAPIFindClose(nResult)
+
+	If bSearchSubFolders Then
+		nResult	= WAPIFindFirstFile (FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & "*", fData)
+		If nResult <> INVALID_HANDLE_VALUE Then
+			Do
+				If FILEAttributeIsDirectory(fData.dwFileAttributes) Then
+					If NOT fData.cFilename IN (".", "..") Then
+						nFiles = FILEFindFilesRecursive(sPath, sSubPath & fData.cFilename & "\", sCondition, bReturnFullPath, bSearchSubFolders, arrFiles)
+					End If
+				End If
+
+				nStatus = WAPIFindNextFile(nResult, fData)
+
+			Loop While nStatus = 1
+		End If
+		nStatus = WAPIFindClose(nResult)
+	End If
+
+	FILEFindFilesRecursive = UBound(arrFiles)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEFindFilesRecursive: " & sPath)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEFindFolders(	  ByVal sPath As String				'A path to search for folders
+						, ByVal sCondition As String			'A condition the files should meet, for instance, "data"
+						, ByVal bReturnFullPath As Logical		'If FALSE the folder names will be relative to the sPath
+						, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+						, arrFolders() As String				'The resulting list of folders found, not include "." and ".."
+						) As Integer						'The number of folders found
+
+OnError GoTo ErrorOccured
+
+	FILEFindFolders = FILEFindFoldersRecursive(sPath, "", sCondition, bReturnFullPath, bSearchSubFolders, arrFolders)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEFindFolders: " & sPath)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function FILEFindFoldersRecursive(   ByVal sPath As String				'The initial path
+							, ByVal sSubPath As String			'The current subfolder path, use "" when you call it
+							, ByVal sCondition As String			'A condition the files should meet, for instance, ".tab"
+							, ByVal bReturnFullPath As Logical		'If FALSE the folder names will be relative to the sPath
+							, ByVal bSearchSubFolders As Logical	'If TRUE the sub folders will also be searched
+							, arrFolders() As String				'The resulting list of files found
+							) As Integer						'The number of folders found
+
+Dim	nResult As IntPtr,
+	nStatus As Integer,
+	fData As WIN32_FIND_DATA,
+	nFolders As Integer
+
+OnError GoTo ErrorOccured
+
+FILEFindFoldersRecursive = 0
+
+	If sCondition = "" Then
+		sCondition = "*"
+	End If
+	nFolders	= UBound(arrFolders)
+'	Call DEBUGPrint("Searching " & FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & sCondition)
+	nResult	= WAPIFindFirstFile (FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & sCondition, fData)
+	If nResult <> INVALID_HANDLE_VALUE Then
+		Do
+			If FILEAttributeIsDirectory(fData.dwFileAttributes) Then
+				If NOT fData.cFilename IN (".", "..") Then
+					nFolders = nFolders + 1
+					ReDim arrFolders(nFolders)
+
+					If NOT bReturnFullPath Then
+						arrFolders(nFolders) = FILEAddBackSlash(sSubPath) & fData.cFilename
+					Else
+						arrFolders(nFolders) = FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & fData.cFilename
+					End If
+				End If
+			End If
+
+			nStatus = WAPIFindNextFile(nResult, fData)
+
+		Loop While nStatus = 1
+	End If
+	nStatus = WAPIFindClose(nResult)
+
+	If bSearchSubFolders Then
+		nResult	= WAPIFindFirstFile (FILEAddBackSlash(FILEAddBackSlash(sPath) & sSubPath) & "*", fData)
+		If nResult <> INVALID_HANDLE_VALUE Then
+			Do
+				If FILEAttributeIsDirectory(fData.dwFileAttributes) Then
+					If NOT fData.cFilename IN (".", "..") Then
+						nFolders = FILEFindFoldersRecursive(sPath, sSubPath & fData.cFilename & "\", sCondition, bReturnFullPath, bSearchSubFolders, arrFolders)
+					End If
+				End If
+
+				nStatus = WAPIFindNextFile(nResult, fData)
+
+			Loop While nStatus = 1
+		End If
+		nStatus = WAPIFindClose(nResult)
+	End If
+
+	FILEFindFoldersRecursive = UBound(arrFolders)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "FILEFindFoldersRecursive: " & sPath)
+	Call ERRShow()
+
+End Function
