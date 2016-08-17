@@ -238,7 +238,7 @@ OnError GoTo ErrorOccured
 		Redim marrLanguages(nNumFiles)
 		For i = 1 To nNumFiles
 			marrLanguages(i)	= RESSTRNGGetStringFileLanguage(marrStringFiles(i))
-			Call DEBUGPrint("   " & i & " " & marrLanguages(i))
+'			Call DEBUGPrint("   " & i & " " & marrLanguages(i))
 		Next
 
 		RESSTRNGFindStringFiles = nNumFiles
