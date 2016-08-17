@@ -68,7 +68,8 @@ Dim	theMapInfoApplication As This,
 	theMapMTB As This,
 	theMapMTBControlsColl As This,
 	theNotification As This,
-	mbHasBeenInitiated As Logical
+	mbHasBeenInitiated As Logical,
+	mbToolTipShowHelpText As Logical	'Defines if a tooltip should show "Press F1 for more help", off by default
 
 Dim	marrControlName(), marrImageName(), marrCommandID() As String
 
@@ -6287,6 +6288,23 @@ End Function
 '*******************************************************************************************************
 '** WORKING WITH CONTROLS ******************************************************************************
 '*******************************************************************************************************
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNToolTipSetShowHelpText(ByVal bValue As Logical)
+
+OnError GoTo ErrorOccured
+
+	mbToolTipShowHelpText = bValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNToolTipThsSetShowHelpText")
+	Call ERRShow()
+
+End Sub
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -6306,15 +6324,17 @@ OnError GoTo ErrorOccured
 	If sDescription = "" Then
 		sDescription = sText
 	End If
-	If sDisabledText = "" Then
-		sDisabledText = sText
-	End If
+'	If sDisabledText = "" Then
+'		sDisabledText = sText
+'	End If
 
 	'Create & Set the button tooltip
 	rbnControlToolTip = New_MapInfoRibbonToolTip()
 	Call SetMIRbnToolTipToolTipText (rbnControlToolTip, sText)
 	Call SetMIRbnToolTipToolTipDescription (rbnControlToolTip, sDescription)
 	Call SetMIRbnToolTipToolTipDisabledText (rbnControlToolTip, sDisabledText)
+'	Call SetMIRbnToolTipShowSimpleToolTip (rbnControlToolTip, TRUE)
+	Call SetMIRbnToolTipShowHelpText (rbnControlToolTip, mbToolTipShowHelpText)
 
 	Do Case GetMICtrlCtrlType(rbnControl)
 		Case ControlType_Button

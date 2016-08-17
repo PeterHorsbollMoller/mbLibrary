@@ -271,6 +271,9 @@
 '							- RBNGroupRunMenuCommandControl(...)
 '							- RBNGroupGetFirstControlIdx(...) As Integer
 '							- RBNGroupGetNextControlIdx(...) As Integer
+'	17-08-2016 11:12:40		- Added:
+'							- RBNToolTipSetShowHelpText(...)
+'							- Changed RBNControlSetToolTipThs to no longer use the text as disabledtext
 '*****************************************************************************************************************************
 
 
@@ -825,6 +828,8 @@ Declare Function RBNCollectionGetControlIndexThs(	  rbnControlsColl As this
 										) As Integer
 
 '** WORKING WITH CONTROLS ******************************************************************************
+Declare Sub RBNToolTipSetShowHelpText(ByVal bValue As Logical)		'Defines if a tooltip should show "Press F1 for more help", off by default
+
 Declare Sub RBNControlSetToolTipThs( rbnControl As This
 							, ByVal sDescription As String
 							, ByVal sText As String
