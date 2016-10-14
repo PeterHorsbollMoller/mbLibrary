@@ -450,7 +450,7 @@ OnError GoTo ErrorOccured
 
 Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumSplitCtrlCtrls, nNumDropDownMenuCtrls, nNumDropDownCtrlCtrls, nNumStackPanelCtrls As Integer,
 	i, j, k, l, m As Integer,
-	sRbnTabName, sRbnGroupName, sName, sCaption, sKeyTip, sGroupName, sItemName, sImageName As String,
+	sRbnTabName, sRbnGroupName, sName, sCaption, sKeyTip, sGroupName, sItemName, sImageName, sHandler As String,
 	arrControlNames() As String,
 	nCntrlType, nImageSize As Integer,
 	rbnTabItem As This,
@@ -550,7 +550,17 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 '						Print #369, "		'Set the button icon"
 						Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
 '						Print #369, "		'Set Custom MapBasic Handle to the button"
-						Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+
+						If nCntrlType = ControlType_Button Then
+							sHandler = GetRbnBtnCtrlCallingHandler(rbnControlItem)
+						Else
+							sHandler = GetRbnToolBtnCtrlCallingHandler(rbnControlItem)
+						End If
+						If sHandler = "" Then
+							Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+						Else
+							Print #369, "	Call RBNControlSetHandlerIdx(nCtrlIdx, " & eye & sHandler & eye & ")"
+						End If
 						Print #369, ""
 
 						If NOT ARRAYContainsValueString(arrControlNames, sName) AND sItemName Then
@@ -6333,8 +6343,10 @@ OnError GoTo ErrorOccured
 	Call SetMIRbnToolTipToolTipText (rbnControlToolTip, sText)
 	Call SetMIRbnToolTipToolTipDescription (rbnControlToolTip, sDescription)
 	Call SetMIRbnToolTipToolTipDisabledText (rbnControlToolTip, sDisabledText)
-'	Call SetMIRbnToolTipShowSimpleToolTip (rbnControlToolTip, TRUE)
 	Call SetMIRbnToolTipShowHelpText (rbnControlToolTip, mbToolTipShowHelpText)
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1520 Then
+		Call SetMIRbnToolTipPlacement (rbnControlToolTip, Place_RelativePoint)
+	End If
 
 	Do Case GetMICtrlCtrlType(rbnControl)
 		Case ControlType_Button
