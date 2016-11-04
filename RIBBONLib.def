@@ -274,6 +274,16 @@
 '	17-08-2016 11:12:40		- Added:
 '							- RBNToolTipSetShowHelpText(...)
 '							- Changed RBNControlSetToolTipThs to no longer use the text as disabledtext
+'	03-11-2016 14:24:56		- Added:
+'							- RBNGroupSetCaptionThs(...)
+'							- RBNGroupSetCaptionIdx(...)
+'							- RBNGroupSetCaption(...)
+'							- RBNTabSetCaptionThs(...)
+'							- RBNTabSetCaptionIdx(...)
+'							- RBNTabSetCaption(...)
+'						- Renamed
+'							- RBNControlSetCaption to RBNControlSetCaptionIdx (Be aware: this might be a breaking change
+'	04-11-2016 12:15:54		- Added:
 '*****************************************************************************************************************************
 
 
@@ -294,21 +304,21 @@
 '	nCtrlIdx = RBNGroupAddButton("exportMapToExcel", "MS Excel", "TabMap", "MapClipboard")
 '	If nCtrlIdx > 0 Then
 '		'Create & Set the button tooltip
-'		Call RBNSetControlToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_MAP_TO_XLS), "", "")
+'		Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_MAP_TO_XLS), "", "")
 '		'Set the button icon
-'		Call RBNSetControlIconsIdx(nCtrlIdx, TRUE, PATH_IMAGES & "MapWindowExcel_16.bmp", PATH_IMAGES & "MapWindowExcel_24.bmp")
+'		Call RBNControlSetIconsIdx(nCtrlIdx, TRUE, PATH_IMAGES & "MapWindowExcel_16.bmp", PATH_IMAGES & "MapWindowExcel_24.bmp")
 '		'Set Custom MapBasic Handle to the button
-'		Call RBNSetControlCustomMBXHandlerIdx(nCtrlIdx, "MENUExportMapWindowToExcel")
+'		Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportMapWindowToExcel")
 '	End If
 '
 '	nCtrlIdx = RBNGroupInsertButtonBefore("exportBrowserToExcel", "MS Excel", "TabTable", "TableData", "ExportButton")
 '	If nCtrlIdx > 0 Then
 '		'Create & Set the button tooltip
-'		Call RBNSetControlToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_BROWSER_TO_XLS), "", "")
+'		Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_BROWSER_TO_XLS), "", "")
 '		'Set the button icon
-'		Call RBNSetControlIconsIdx(nCtrlIdx, FALSE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
+'		Call RBNControlSetIconsIdx(nCtrlIdx, FALSE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
 '		'Set Custom MapBasic Handle to the button
-'		Call RBNSetControlCustomMBXHandlerIdx(nCtrlIdx, "MENUExportBrowserDataToExcel")
+'		Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportBrowserDataToExcel")
 '	End If
 '
 '	If RBNAddTab("TabTools", "TOOLS", "TO") > 0 Then
@@ -316,11 +326,11 @@
 '			nCtrlIdx = RBNGroupAddButton("exportTableToExcel", "Table", "TabTools", xProgramMenu)
 '			If nCtrlIdx > 0 Then
 '				'Create & Set the button tooltip
-'				Call RBNSetControlToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_TAB_TO_XLS), "", "")
+'				Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_TAB_TO_XLS), "", "")
 '				'Set the button icon
-'				Call RBNSetControlIconsIdx(nCtrlIdx, TRUE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
+'				Call RBNControlSetIconsIdx(nCtrlIdx, TRUE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
 '				'Set Custom MapBasic Handle to the button
-'				Call RBNSetControlCustomMBXHandlerIdx(nCtrlIdx, "MENUExportTableToExcel")
+'				Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportTableToExcel")
 '			End If
 '		End if
 '	End if
@@ -381,18 +391,24 @@ Declare Sub RBNTabSetToolTip(	  ByVal sTabName As String
 						, ByVal sText As String
 						, ByVal sDescription As String
 						, ByVal sDisabledText As String)
-Declare Sub RBNTabSetToolTipIdx(	  ByVal nTabIdx As Integer		'The tabIdx returned by RBNAddTab
+Declare Sub RBNTabSetToolTipIdx(	  ByVal nElementIdx As Integer		'The tabIdx returned by RBNAddTab
 							, ByVal sText As String
 							, ByVal sDescription As String
 							, ByVal sDisabledText As String
 							)
 Declare Sub RBNTabEnableThs(	  ByVal rbnTab As This
 						, ByVal bEnabled As Logical)
-Declare Sub RBNTabEnableIdx(	  ByVal nTabIdx As Integer
+Declare Sub RBNTabEnableIdx(	  ByVal nElementIdx As Integer
 						, ByVal bEnabled As Logical)
+Declare Sub RBNTabSetCaptionThs(	  ByVal rbnTab As This
+							, ByVal sCaption As String)
+Declare Sub RBNTabSetCaptionIdx(	  ByVal nElementIdx As Integer
+							, ByVal sCaption As String)
+Declare Sub RBNTabSetCaption(	  ByVal sTabName As String
+						, ByVal sCaption As String)
 Declare Sub RBNTabSetVisibilityThs(  ByVal rbnTab As This
 							, ByVal bVisible As Logical)
-Declare Sub RBNTabSetVisibilityIdx(  ByVal nTabIdx As Integer
+Declare Sub RBNTabSetVisibilityIdx(  ByVal nElementIdx As Integer
 							, ByVal bVisible As Logical)
 Declare Sub RBNTabSetVisibility(	  ByVal sTabName As String
 							, ByVal bVisible As Logical)
@@ -438,7 +454,7 @@ Declare Sub RBNGroupSetToolTip(	  ByVal sTabName As String
 							, ByVal sText As String
 							, ByVal sDescription As String
 							, ByVal sDisabledText As String)
-Declare Sub RBNGroupSetToolTipIdx(	  ByVal nGroupIdx As Integer		'The groupIdx returned by RBNTabAddGroup
+Declare Sub RBNGroupSetToolTipIdx(	  ByVal nElementIdx As Integer		'The groupIdx returned by RBNTabAddGroup
 							, ByVal sText As String
 							, ByVal sDescription As String
 							, ByVal sDisabledText As String
@@ -447,6 +463,13 @@ Declare Sub RBNGroupEnableThs(	  ByVal rbnGroup As This
 							, ByVal bEnabled As Logical)
 Declare Sub RBNGroupEnableIdx(	  ByVal nElementIdx As Integer
 							, ByVal bEnabled As Logical)
+Declare Sub RBNGroupSetCaptionThs(	  ByVal rbnGroup As This
+							, ByVal sCaption As String)
+Declare Sub RBNGroupSetCaptionIdx(	  ByVal nElementIdx As Integer
+							, ByVal sCaption As String)
+Declare Sub RBNGroupSetCaption(	  ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal sCaption As String)
 Declare Sub RBNGroupSetVisibilityThs(	  ByVal rbnGroup As This
 								, ByVal bVisible As Logical)
 Declare Sub RBNGroupSetVisibilityIdx(	  ByVal nElementIdx As Integer
@@ -454,6 +477,13 @@ Declare Sub RBNGroupSetVisibilityIdx(	  ByVal nElementIdx As Integer
 Declare Sub RBNGroupSetVisibility(	  ByVal sTabName As String
 							, ByVal sGroupName As String
 							, ByVal bVisible As Logical)
+Declare Sub RBNGroupSetCollapsedIconThs(  rbnGroup As This
+								, ByVal sIcon As String)
+Declare Sub RBNGroupSetCollapsedIconIdx(  ByVal nElementIdx As Integer
+								, ByVal sIcon As String)
+Declare Sub RBNGroupSetCollapsedIcon(	  ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sIcon As String)
 
 Declare Function RBNGroupAddControl(	  ByVal sControlName As String
 								, ByVal sCaption As String
@@ -847,7 +877,7 @@ Declare Sub RBNControlSetKeyGestureIdx(	  ByVal nElementIdx As Integer
 Declare Sub RBNControlSetCaptionThs( rbnControl As This
 							, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
 							)
-Declare Sub RBNControlSetCaption(	  ByVal nElementIdx As Integer
+Declare Sub RBNControlSetCaptionIdx( ByVal nElementIdx As Integer
 							, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
 							)
 

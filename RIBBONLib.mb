@@ -2148,14 +2148,14 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
-Sub RBNTabSetToolTipIdx(	  ByVal nTabIdx As Integer
+Sub RBNTabSetToolTipIdx(	  ByVal nElementIdx As Integer
 					, ByVal sText As String
 					, ByVal sDescription As String
 					, ByVal sDisabledText As String)
 
 OnError GoTo ErrorOccured
 
-	Call RBNTabSetToolTipThs(marrControls(nTabIdx), sText, sDescription, sDisabledText)
+	Call RBNTabSetToolTipThs(marrControls(nElementIdx), sText, sDescription, sDisabledText)
 
 	Exit Sub
 '-------------------------
@@ -2189,19 +2189,91 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
-Sub RBNTabEnableIdx(  ByVal nTabIdx As Integer
+Sub RBNTabEnableIdx(  ByVal nElementIdx As Integer
 				, ByVal bEnabled As Logical)
 
 OnError GoTo ErrorOccured
 
-	Call RBNTabEnableThs(marrControls(nTabIdx), bEnabled)
+	Call RBNTabEnableThs(marrControls(nElementIdx), bEnabled)
 	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNTabEnableIdx: " & nTabIdx)
+	Call ERRCreate(Err(), Error$(), "RBNTabEnableIdx: " & nElementIdx)
 	Call ERRShow()
 
 End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNTabSetCaptionThs(	  ByVal rbnTab As This
+					, ByVal sCaption As String)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnTabCaption(rbnTab, sCaption)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetCaptionThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNTabSetCaptionIdx(	  ByVal nElementIdx As Integer
+					, ByVal sCaption As String)
+
+OnError GoTo ErrorOccured
+
+	Call RBNTabSetCaptionThs(marrControls(nElementIdx), sCaption)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetCaptionIdx: " & nElementIdx)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNTabSetCaption(	  ByVal sTabName As String
+					, ByVal sCaption As String)
+
+Dim	rbnTabFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+		Call SetRbnTabCaption(rbnTab, sCaption)
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnTabFound 	= NULL_PTR
+	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetCaption")
+	Call ERRShow()
+
+End Sub
+
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -2227,16 +2299,16 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
-Sub RBNTabSetVisibilityIdx(	  ByVal nTabIdx As Integer
+Sub RBNTabSetVisibilityIdx(	  ByVal nElementIdx As Integer
 						, ByVal bVisible As Logical)
 
 OnError GoTo ErrorOccured
 
-	Call RBNTabSetVisibilityThs(marrControls(nTabIdx), bVisible)
+	Call RBNTabSetVisibilityThs(marrControls(nElementIdx), bVisible)
 	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNTabSetVisibilityIdx: " & nTabIdx)
+	Call ERRCreate(Err(), Error$(), "RBNTabSetVisibilityIdx: " & nElementIdx)
 	Call ERRShow()
 
 End Sub
@@ -2273,7 +2345,6 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
-
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -2975,14 +3046,14 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
-Sub RBNGroupSetToolTipIdx(	  ByVal nGroupIdx As Integer
+Sub RBNGroupSetToolTipIdx(	  ByVal nElementIdx As Integer
 						, ByVal sText As String
 						, ByVal sDescription As String
 						, ByVal sDisabledText As String)
 
 OnError GoTo ErrorOccured
 
-	Call RBNGroupSetToolTip(marrControls(nGroupIdx), marrGroupNames(nGroupIdx), sText, sDescription, sDisabledText)
+	Call RBNGroupSetToolTip(marrControls(nElementIdx), marrGroupNames(nElementIdx), sText, sDescription, sDisabledText)
 	Exit Sub
 '-------------------------
 ErrorOccured:
@@ -3015,20 +3086,103 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
-Sub RBNGroupEnableIdx(	  ByVal nGroupIdx As Integer
+Sub RBNGroupEnableIdx(	  ByVal nElementIdx As Integer
 					, ByVal bEnabled As Logical)
 
 OnError GoTo ErrorOccured
 
-	Call RBNGroupEnableThs(marrControls(nGroupIdx), bEnabled)
+	Call RBNGroupEnableThs(marrControls(nElementIdx), bEnabled)
 	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNGroupEnableIdx: " & nTabIdx)
+	Call ERRCreate(Err(), Error$(), "RBNGroupEnableIdx: " & nElementIdx)
 	Call ERRShow()
 
 End Sub
 
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetCaptionThs(	  ByVal rbnGroup As This
+						, ByVal sCaption As String)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnCtrlGrpCaption(rbnGroup, sCaption)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetCaptionThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetCaptionIdx(	  ByVal nElementIdx As Integer
+						, ByVal sCaption As String)
+
+OnError GoTo ErrorOccured
+
+	Call RBNGroupSetCaptionThs(marrControls(nElementIdx), sCaption)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetCaptionIdx: " & nElementIdx)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetCaption(	  ByVal sTabName As String
+					, ByVal sGroupName As String
+					, ByVal sCaption As String)
+
+Dim	rbnGroup As This,
+	rbnTabFound As RefPtr,
+	rbnGroupFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+'	Call DEBUGPrint("RBNGetTab")
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+
+'		Call DEBUGPrint("RBNTabGetGroupThs")
+		If RBNTabGetGroupThs(rbnTab, sGroupName, rbnGroupFound) Then
+
+			rbnGroup = rbnGroupFound
+			'Set Group Caption
+			Call SetRbnCtrlGrpCaption(rbnGroup, sCaption)
+		End If
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnGroup		= NULL_PTR
+	rbnTabFound	= NULL_PTR
+	rbnGroupFound	= NULL_PTR
+	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetCaption")
+	Call ERRShow()
+
+End Sub
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -3059,11 +3213,11 @@ Sub RBNGroupSetVisibilityIdx(	  ByVal nElementIdx As Integer
 
 OnError GoTo ErrorOccured
 
-	Call RBNGroupSetVisibilityThs(marrControls(nGroupIdx), bVisible)
+	Call RBNGroupSetVisibilityThs(marrControls(nElementIdx), bVisible)
 	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNGroupSetVisibilityIdx: " & nTabIdx)
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetVisibilityIdx: " & nElementIdx)
 	Call ERRShow()
 
 End Sub
@@ -3109,7 +3263,91 @@ OnError GoTo ErrorOccured
 	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "PleaseEnterNameOfSubprocedureHere")
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetVisibility")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetCollapsedIconThs(	  rbnGroup As This
+							, ByVal sIcon As String)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnCtrlGrpCollapsedImage(rbnGroup, New_Uri(sIcon, 0))
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetCollapsedIconThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetCollapsedIconIdx(	  ByVal nElementIdx As Integer
+							, ByVal sIcon As String)
+
+OnError GoTo ErrorOccured
+
+	Call RBNGroupSetCollapsedIconThs(marrControls(nElementIdx), sIcon)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetCollapsedIconIdx: " & nElementIdx)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNGroupSetCollapsedIcon(	  ByVal sTabName As String
+						, ByVal sGroupName As String
+						, ByVal sIcon As String)
+
+Dim	rbnGroup As This,
+	rbnTabFound As RefPtr,
+	rbnGroupFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+'	Call DEBUGPrint("RBNGetTab")
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+
+'		Call DEBUGPrint("RBNTabGetGroupThs")
+		If RBNTabGetGroupThs(rbnTab, sGroupName, rbnGroupFound) Then
+
+			rbnGroup = rbnGroupFound
+			'Set Group collapsed icon
+			Call SetRbnCtrlGrpCollapsedImage(rbnGroup, New_Uri(sIcon, 0))
+		End If
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+	rbnGroup		= NULL_PTR
+	rbnTabFound	= NULL_PTR
+	rbnGroupFound	= NULL_PTR
+	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupSetCollapsedIcon")
 	Call ERRShow()
 
 End Sub
@@ -6610,7 +6848,7 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
-Sub RBNControlSetCaption(	  ByVal nElementIdx As Integer
+Sub RBNControlSetCaptionIdx(	  ByVal nElementIdx As Integer
 						, ByVal sCaption As String		'The Caption to to be seen in the Ribbon
 						)
 
@@ -6620,7 +6858,7 @@ OnError GoTo ErrorOccured
 	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNControlSetCaption")
+	Call ERRCreate(Err(), Error$(), "RBNControlSetCaptionIdx")
 	Call ERRShow()
 
 End Sub
