@@ -457,3 +457,38 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function TABGetDataExtent(ByVal sTab As String) As Object
+
+Dim	fMinX, fMinY, fMaxX, fMaxY As Float,
+	oExtent As Object
+
+OnError GoTo ErrorOccured
+
+	fMinX	= TableInfo(sTab, TAB_INFO_MINX)
+	fMinY	= TableInfo(sTab, TAB_INFO_MINY)
+	fMaxX	= TableInfo(sTab, TAB_INFO_MAXX)
+	fMaxY	= TableInfo(sTab, TAB_INFO_MAXY)
+
+	Create Pline
+		Into Variable oExtent
+		4
+		(fMinX, fMinY) (fMaxX, fMinY) (fMaxX, fMaxY) (fMinX, fMaxY)
+	oExtent = ConvertToRegion(oExtent)
+
+TABGetDataExtent = oExtent
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "TABGetDataExtent")
+	Call ERRShow()
+
+End Function

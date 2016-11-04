@@ -59,3 +59,5 @@ Declare Function TABIsBitOn(		  ByVal nBit As Integer		'Bit to check for
 						) As Logical					'True if the bit is set in the bit sum
 Declare Function TABHasDeletedRows(	ByVal sTab As String	'Name of table to check
 							) As Logical				'returns True if the table has deleted records, otherwise false
+Declare Function TABGetDataExtent(		ByVal sTab As String	'Name of table to query
+							) As Object				'Returns data extent as a Region object using the current coordsys
