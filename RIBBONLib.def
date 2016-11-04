@@ -284,6 +284,9 @@
 '						- Renamed
 '							- RBNControlSetCaption to RBNControlSetCaptionIdx (Be aware: this might be a breaking change
 '	04-11-2016 12:15:54		- Added:
+'							- RBNGroupSetCollapsedIconThs(...)
+'							- RBNGroupSetCollapsedIconIdx(...)
+'							- RBNGroupSetCollapsedIcon(...)
 '*****************************************************************************************************************************
 
 
