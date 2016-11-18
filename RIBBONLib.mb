@@ -5763,7 +5763,6 @@ Function RBNCntxtMenuAddMenuItem(		  ByVal nContextMenuID As Integer
 								, ByVal sControlName As String
 								, ByVal sCaption As String		'If "(-" then a separator is added
 								, ByVal sKeytip As String
-								, ByVal nControlType As Integer
 								) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
 
 OnError GoTo ErrorOccured
