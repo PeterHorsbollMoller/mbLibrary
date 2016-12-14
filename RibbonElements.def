@@ -1,31 +1,33 @@
 ' --------------------------------------------------------------
 ' STANDARD TABS
 ' --------------------------------------------------------------
-Define	TAB_HOME					"TabHome"				'HOME'
-Define	TAB_TABLE					"TabTable"			'TABLE'
-Define	TAB_MAP					"TabMap"				'MAP'
-Define	TAB_SPATIAL				"TabSpatial"			'SPATIAL'
-Define	TAB_LAYOUT				"TabLayout"			'LAYOUT'
-Define	TAB_LEGACY				"TabLegacy"			'LEGACY'
+Define	TAB_HOME						"TabHome"				'HOME'
+Define	TAB_TABLE						"TabTable"			'TABLE'
+Define	TAB_MAP						"TabMap"				'MAP'
+Define	TAB_SPATIAL					"TabSpatial"			'SPATIAL'
+Define	TAB_LAYOUT					"TabLayout"			'LAYOUT'
+Define	TAB_LEGACY					"TabLegacy"			'LEGACY'
 
 ' --------------------------------------------------------------
 ' STANDARD GROUPS ON 'HOME' TAB
 ' --------------------------------------------------------------
-Define	TAB_GROUP_HOME_FILE			"HomeFile"			'File'
-Define	TAB_GROUP_HOME_CLIPBOARD		"HomeClipboard"		'Clipboard'
-Define	TAB_GROUP_HOME_WINDOW		"HomeWindow"			'Window'
-Define	TAB_GROUP_HOME_OUTPUT		"HomeOutput"			'Output'
-Define	TAB_GROUP_HOME_TOOLS		"HomeTools"			'Tools'
+Define	TAB_GROUP_HOME_FILE				"HomeFile"				'File'
+Define	TAB_GROUP_HOME_CLIPBOARD			"HomeClipboard"			'Clipboard'
+Define	TAB_GROUP_HOME_WINDOW			"HomeWindow"				'Window'
+Define	TAB_GROUP_HOME_OUTPUT			"HomeOutput"				'Output'
+Define	TAB_GROUP_HOME_TOOLS			"HomeTools"				'Tools'
+Define	TAB_GROUP_HOME_DOC_WINDOW		"HomeDocumentWindow"		'Windows, from v16.0
+Define	TAB_GROUP_HOME_RECOVER_WINDOWS	"RecoverWindowsRibbonBar"	''' (no caption) from v16.0
 
 ' --------------------------------------------------------------
 ' STANDARD GROUPS ON 'TABLE' TAB
 ' --------------------------------------------------------------
-Define	TAB_GROUP_TABLE_DATA		"TableData"			'Content'
-Define	TAB_GROUP_TABLE_SELECTION	"TableSelection"		'Selection'
-Define	TAB_GROUP_TABLE_EDIT		"TableAddEdit"			'Edit'
-Define	TAB_GROUP_TABLE_BROWSERTOOLS	"BrowserTools"			'Browser Tools'
-Define	TAB_GROUP_TABLE_SORTFILTER	"BrowserSortFilter"		'Sort and Filter'
-Define	TAB_GROUP_TABLE_MAINTENANCE	"TableMaintenance"		'Maintenance'
+Define	TAB_GROUP_TABLE_DATA			"TableData"			'Content'
+Define	TAB_GROUP_TABLE_SELECTION		"TableSelection"		'Selection'
+Define	TAB_GROUP_TABLE_EDIT			"TableAddEdit"			'Edit'
+Define	TAB_GROUP_TABLE_BROWSERTOOLS		"BrowserTools"			'Browser Tools'
+Define	TAB_GROUP_TABLE_SORTFILTER		"BrowserSortFilter"		'Sort and Filter'
+Define	TAB_GROUP_TABLE_MAINTENANCE		"TableMaintenance"		'Maintenance'
 
 '--------------------------------------------------------------
 ' STANDARD GROUPS ON 'MAP' TAB
