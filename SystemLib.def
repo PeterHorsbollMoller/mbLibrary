@@ -15,7 +15,8 @@
 Declare Function SYSGetUserName() As String
 Declare Function SYSGetComputerName() As String
 
-Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLib.dll" Alias "GetProductInfo" (ByVal strKey as String, ByVal intVersion as Integer) As String
+Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLib.dll"
+	Alias "GetProductInfo" (ByVal strKey as String, ByVal intVersion as Integer) As String
 'Use SYSGetProductInfo to retrieve version information. As strKey you can either use:
 	'RegisteredOwner
 	'RegisteredOrganization
@@ -30,6 +31,18 @@ Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLi
 	'ActReqPath
 'Optional to include the MIVersion value. MIVersion value could be the SYS_INFO_MIVERSION. If no MIVersion value is given then the information of the last installation in the registry is returned.
 'If multiple installations are found in the registry, information about the last founded installation in the list is retrieved.
+
+Declare Method SYSCopyTextToClipboard Class "SystemLib.MIClipboard" Lib "SystemLib.dll"
+	Alias "CopyTextToClipboard" (ByVal sValue As String)
+Declare Method SYSGetTextFromClipboard Class "SystemLib.MIClipboard" Lib "SystemLib.dll"
+	Alias "GetTextFromClipboard" () As String
+Declare Method SYSCopyImageToClipboard Class "SystemLib.MIClipboard" Lib "SystemLib.dll"
+	Alias "CopyImageToClipboard" (ByVal sImageFile As String)
+
+Declare Method SYSGetPrimaryScreenSize Class "SystemLib.MISystemInfo" Lib "SystemLib.dll"
+	Alias "GetPrimaryScreenSize" () As String
+
+
 
 Declare Function SYSFindTextEditor() As String
 Declare Function SYSFindExecutable(ByVal sDocument As String) As String

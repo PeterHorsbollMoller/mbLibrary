@@ -8,3 +8,8 @@ D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\bin\D
 D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\obj\Debug\ResolveAssemblyReference.cache
 D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.dll
 D:\Data\PBS\mapinfo_premiumtoolsnl\Code\Library\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.pdb
+D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\SystemLib\SystemLib\bin\Debug\SystemLib.dll
+D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\SystemLib\SystemLib\bin\Debug\SystemLib.pdb
+D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.csprojResolveAssemblyReference.cache
+D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.dll
+D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\SystemLib\SystemLib\obj\Debug\SystemLib.pdb
