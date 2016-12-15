@@ -674,9 +674,9 @@ OnError GoTo ErrorOccured
 			Note "Help file does not exist: " & PRGIGetApplicationHelpFile()
 			Exit Sub
 		End If
+		Call FILELaunch(PRGIGetApplicationHelpFile())
 	End If
 
-	Call FILELaunch(PRGIGetApplicationHelpFile())
 	Exit Sub
 '-------------------------
 ErrorOccured:
