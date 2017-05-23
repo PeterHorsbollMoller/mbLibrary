@@ -288,7 +288,12 @@
 '							- RBNGroupSetCollapsedIconIdx(...)
 '							- RBNGroupSetCollapsedIcon(...)
 '	16-11-2016 15:21:48		- Remove parameter "ByVal nControlType As Integer" from RBNCntxtMenuAddMenuItem (Be aware: this might be a breaking change)
-
+'	23-05-2017 12:26:38		- Added:
+'							- RBNToolTipSetPlacement(...) for setting the tooltip placement
+'							- RBNSetVisibility(...)	'Show/Hide the entire ribbon - be aware that no controls will be visible
+'							- RBNGetVisibility() As Logical
+'							- RBNQATSetVisibility(...)
+'							- RBNQATGetVisibility() As Logical
 '*****************************************************************************************************************************
 
 
@@ -371,6 +376,9 @@ Declare Function RBNAddTab(		  ByVal sTabName As String
 							) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
 Declare Function RBNRemoveTab(	  ByVal sTabName As String
 							) As Integer
+Declare Sub RBNSetVisibility(	  ByVal bVisible As Logical)	'Show/Hide the entire ribbon - be aware that no controls will be visible
+Declare Function RBNGetVisibility() As Logical
+
 Declare Function RBNGetTab(	  ByVal sTabName As String
 						, rbnTabFound As RefPtr
 						) As Logical
@@ -776,6 +784,10 @@ Declare Function RBNCntxtMenuGetControlIndex(  ByVal nContextMenuID As Integer
 									) As Integer
 
 
+'** WORKING WITH QAT - Quick Access Toolbar ***************************************************
+Declare Sub RBNQATSetVisibility(	  ByVal bVisible As Logical)
+Declare Function RBNQATGetVisibility() As Logical
+
 '** WORKING WITH STACKPANELS ON MINI MAP TOOLBAR **********************************************
 Declare Function RBNMapMTBNumStackPanels() As Integer
 
@@ -863,6 +875,7 @@ Declare Function RBNCollectionGetControlIndexThs(	  rbnControlsColl As this
 
 '** WORKING WITH CONTROLS ******************************************************************************
 Declare Sub RBNToolTipSetShowHelpText(ByVal bValue As Logical)		'Defines if a tooltip should show "Press F1 for more help", off by default
+Declare Sub RBNToolTipSetPlacement(ByVal nValue As Integer)
 
 Declare Sub RBNControlSetToolTipThs( rbnControl As This
 							, ByVal sDescription As String

@@ -61,6 +61,7 @@ Dim	theMapInfoApplication As This,
 	theMapInfoEvents As This,
 	theStatusbar As This,
 	theRibbon As This,
+	theQAT As This,
 	theToolContextMenu As This,
 	theTabsColl As This,
 	theToolContextMenuItemsColl As This,
@@ -69,7 +70,8 @@ Dim	theMapInfoApplication As This,
 	theMapMTBControlsColl As This,
 	theNotification As This,
 	mbHasBeenInitiated As Logical,
-	mbToolTipShowHelpText As Logical	'Defines if a tooltip should show "Press F1 for more help", off by default
+	mbToolTipShowHelpText As Logical,	'Defines if a tooltip should show "Press F1 for more help", off by default
+	mnTooltipPlacement As Integer		'Defines the position of a tooltip for a control - defaults to Place_RelativePoint
 
 Dim	marrControlName(), marrImageName(), marrCommandID() As String
 
@@ -1958,16 +1960,19 @@ OnError GoTo ErrorOccured
 	End If
 
 	mfDefaultLeftMarginInControls	= 4.0
+	mnTooltipPlacement				= Place_RelativePoint
 
 	'--------------------------------
 	'Get MIPro interface
 	theMapInfoApplication	= SystemInfo(SYS_INFO_IMAPINFOAPPLICATION)
 	'Get Ribbon
-	theRibbon 			= GetRibbon(theMapInfoApplication)
+	theRibbon 				= GetRibbon(theMapInfoApplication)
 	'Get the Statusbar
 	theStatusbar			= GetStatusBar(theMapInfoApplication)
 	'Get Tabs Collection
 	theTabsColl 			= GetTabsColl(theRibbon)
+	'Get the QAT
+	theQAT					= GetMIProQAT(theMapInfoApplication)
 
 	Call RegisterUriParser(New_GenericUriParser(1), "pack", -1)
 
@@ -2083,6 +2088,45 @@ RBNRemoveTab = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNRemoveTab: " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Sub RBNSetVisibility(	  ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	Call SetRbnVisible(theRibbon, bVisible)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNSetVisibility")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function RBNGetVisibility() As Logical
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	RBNGetVisibility = GetRbnVisible(theRibbon)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetVisibility")
 	Call ERRShow()
 
 End Function
@@ -5950,6 +5994,48 @@ ErrorOccured:
 End Function
 
 '*******************************************************************************************************
+'** WORKING WITH QAT - QUICK ACCESS TOOLBAR  **********************************************
+'*******************************************************************************************************
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Sub RBNQATSetVisibility(	  ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	Call SetQATVisible(theQAT, bVisible)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNQATSetVisibility")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function RBNQATGetVisibility() As Logical
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	RBNQATGetVisibility = GetQATVisible(theQAT)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNQATGetVisibility")
+	Call ERRShow()
+
+End Function
+
+'*******************************************************************************************************
 '** WORKING WITH STACKPANELS ON MINI MAP TOOLBAR **********************************************
 '*******************************************************************************************************
 '**********************************************************************************************''
@@ -6552,6 +6638,25 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNToolTipSetPlacement(ByVal nValue As Integer)
+
+OnError GoTo ErrorOccured
+
+	mnTooltipPlacement = nValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNToolTipThsSetShowHelpText")
+	Call ERRShow()
+
+End Sub
+
+
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -6581,9 +6686,12 @@ OnError GoTo ErrorOccured
 	Call SetMIRbnToolTipToolTipDescription (rbnControlToolTip, sDescription)
 	Call SetMIRbnToolTipToolTipDisabledText (rbnControlToolTip, sDisabledText)
 	Call SetMIRbnToolTipShowHelpText (rbnControlToolTip, mbToolTipShowHelpText)
-	If SystemInfo(SYS_INFO_MIVERSION) >= 1520 Then
-		Call SetMIRbnToolTipPlacement (rbnControlToolTip, Place_RelativePoint)
-	End If
+
+'	If SystemInfo(SYS_INFO_MIFULLVERSION) >= 1520 Then
+'		If SystemInfo(SYS_INFO_MIFULLVERSION) < 1601 Then
+			Call SetMIRbnToolTipPlacement (rbnControlToolTip, Place_MousePoint)
+'		End If
+'	End If
 
 	Do Case GetMICtrlCtrlType(rbnControl)
 		Case ControlType_Button
@@ -8332,7 +8440,7 @@ OnError GoTo ErrorOccured
 			ElseIf marrParentControlTypes(i) = CONTROL_TYPE_RLIB_CNTXT_MNU Then
 				nContextMenuID	= Val(Right$(marrTabNames(i), Len(marrTabNames(i)) - Len("ContextMenu=") ))
 				nResult 		= RBNCntxtMenuRemoveControl(nContextMenuID, marrControlNames(i))
-				Call DEBUGPrint("   " & i & "RBNCntxtMenuRemoveControl: Control Removed Result: " & nResult)
+'				Call DEBUGPrint("   " & i & "RBNCntxtMenuRemoveControl: Control Removed Result: " & nResult)
 			Else
 				nResult = RBNGroupRemoveControl(marrControlNames(i), marrTabNames(i), marrGroupNames(i))
 '				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
@@ -8394,6 +8502,7 @@ OnError GoTo ErrorOccured
 	theMapInfoEvents			= NULL_PTR
 	theStatusbar				= NULL_PTR
 	theRibbon					= NULL_PTR
+	theQAT						= NULL_PTR
 	theToolContextMenu			= NULL_PTR
 	theTabsColl				= NULL_PTR
 	theToolContextMenuItemsColl	= NULL_PTR
