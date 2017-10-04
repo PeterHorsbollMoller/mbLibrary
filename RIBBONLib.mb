@@ -3437,6 +3437,7 @@ RBNGroupAddControl = 0
 
 			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, nControlType, 0)
 			marrControls(nCtrl) = MICtrlCollAddStrStrInt(rbnGroupsColl, sControlName, sCaption, nControlType)
+			Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
 
 			If sKeytip <> "" Then
 				'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
@@ -3569,6 +3570,7 @@ RBNGroupInsertControl = 0
 
 			nCtrl 			= RBNAddElement(GetRbnTabName(rbnTab), GetRbnCtrlGrpName(rbnGroup), "", "", sControlName, nControlType, 0)
 			marrControls(nCtrl) = MICtrlCollInsertIntStrStrInt(rbnGroupsColl, nPosition, sControlName, sCaption, nControlType)
+			Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
 
 			If sKeytip <> "" Then
 				'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
