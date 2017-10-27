@@ -317,6 +317,8 @@ Declare Function WAPIGetLastError Lib "kernel32.dll" Alias "GetLastError"
 	() As Integer
 'https://msdn.microsoft.com/en-us/library/windows/desktop/ms679360(v=vs.85).aspx
 
+Declare Function WAPIGetCommandLine Lib "kernel32" Alias "GetCommandLineA" () As String
+'https://msdn.microsoft.com/en-us/library/windows/desktop/ms683156(v=vs.85).aspx
 
 
 
