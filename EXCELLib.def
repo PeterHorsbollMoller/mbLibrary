@@ -22,6 +22,9 @@
 '					- EXCELDDECloseChannel: If it fails because the channel isn't open, the error is ignored
 '	22-09-2014	Added:
 '					- EXCELOpenNoTitles(...) As String
+'	17-11-2017	Added: OpenExcelWaitTime, to be used when opening a XLS file before checking if Excel is running
+'					- EXCELSetOpenExcelWaitTime(...)
+'					- EXCELGetOpenExcelWaitTime(...) As Integer
 '**********************************************************************************************************************************************
 
 '**Requires MapInfo Pro 9.5
@@ -66,3 +69,7 @@ Declare Sub EXCELDDECommitWork(	  ByVal sFile As String		'The file to commit cha
 Declare Sub EXCELDDEExecuteMacro(	  ByVal sFile As String		'The file to run the macro within
 							, ByVal sMacro As String		'The name of the macro to run
 							)
+
+'**OpenExcelWaitTime Property
+Declare Sub EXCELSetOpenExcelWaitTime(	ByVal nMiliSecs As Integer)
+Declare Function EXCELGetOpenExcelWaitTime() As Integer

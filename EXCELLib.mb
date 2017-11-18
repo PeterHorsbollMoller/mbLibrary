@@ -17,8 +17,9 @@ Include "ERRORLib.def"
 Include "EXCELLib.def"
 Include "FILELib.def"
 
-'Include "WINAPI.def"
+Include "WINAPI.def"
 
+Dim mnOpenExcelWaitTime As Integer
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
 'Parameters:
@@ -237,6 +238,8 @@ EXCELOpenFile = FALSE
 	Call DEBUGPrint("Trying to open file: " & sFile)
 	Call FILELaunch(sFile)
 
+	Call DEBUGPrint("Waiting " & FormatNumber$((EXCELGetOpenExcelWaitTime()/1000.0))  & " secs")
+	Call WAPISleep(EXCELGetOpenExcelWaitTime())
 	Call DEBUGPrint("Testing access to file in Excel")
 	If EXCELIsFileOpen(sFile) Then
 		EXCELOpenFile = TRUE
@@ -267,9 +270,13 @@ EXCELIsRunning = FALSE
 
 	nChannel = EXCELDDEOpenChannelNoWait("System")
 	If nChannel <> 0 Then
+		Call DEBUGPrint("EXCELIsRunning: TRUE")
+
 		Call EXCELDDECloseChannel(nChannel)
 
 		EXCELIsRunning = TRUE
+	Else
+		Call DEBUGPrint("EXCELIsRunning: FALSE")
 	End If
 
 	Exit Function
@@ -298,9 +305,12 @@ EXCELIsFileOpen = FALSE
 	If EXCELIsRunning() Then
 		nChannel = EXCELDDEOpenChannelNoWait(sFile)
 		If nChannel <> 0 Then
+			Call DEBUGPrint("EXCELIsFileOpen: TRUE")
 			Call EXCELDDECloseChannel(nChannel)
 
 			EXCELIsFileOpen = TRUE
+		Else
+			Call DEBUGPrint("EXCELIsFileOpen: FALSE")
 		End If
 	End If
 
@@ -572,3 +582,47 @@ ErrorOccured:
 
 End Sub
 
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub EXCELSetOpenExcelWaitTime(	ByVal nMiliSecs As Integer)
+
+OnError GoTo ErrorOccured
+
+	If nMiliSecs >= 0 Then
+		If nMiliSecs > 100000 Then
+			mnOpenExcelWaitTime	= 60000	'Max. wait time is set to one minute, 60 secs
+		Else
+			mnOpenExcelWaitTime	= nMiliSecs
+		End If
+	Else
+		mnOpenExcelWaitTime	= 0
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELSetOpenExcelWaitTime")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function EXCELGetOpenExcelWaitTime() As Integer
+
+OnError GoTo ErrorOccured
+
+	If mnOpenExcelWaitTime <= 0 Then
+		EXCELGetOpenExcelWaitTime	= 0
+	Else
+		EXCELGetOpenExcelWaitTime	= mnOpenExcelWaitTime
+	End If
+
+	Exit Function 
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "EXCELGetOpenExcelWaitTime")
+	Call ERRShow()
+
+End Function
