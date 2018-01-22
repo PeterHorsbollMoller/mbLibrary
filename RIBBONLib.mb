@@ -6712,7 +6712,7 @@ OnError GoTo ErrorOccured
 
 '	Print Time(24) & " RBNClearCustomRibbonElements Starting"
 
-If false then
+'If false then
 '	Call DEBUGPrint("Removing Controls from the ribbon")
 	For i = mnNumElements To 1 Step -1
 		If marrControlTypes(i) = CONTROL_TYPE_RLIB_TAB Then
@@ -6729,77 +6729,76 @@ If false then
 			bRemoved = MICtrlCollRemove(marrParentControlColls(i), marrControls(i))
 		End If
 	Next
-Else
-'	Call DEBUGPrint("Removing Controls from the ribbon")
-	For i = mnNumElements To 1 Step -1
-'		Call DEBUGPrint("   " & i & " Tab: " & marrTabNames(i) & " | Group: " & marrGroupNames(i) & " | SplitButton: " & marrSplitButtonNames(i) & " | SplitButtonGroup: " & marrSplitButtonGroupNames(i) & " | Control: " & marrControlNames(i))
-
-		If NOT marrSplitButtonGroupNames(i) = "" Then
-'			Call DEBUGPrint("   Removing from a SplitButton or DropDButton")
-			If NOT marrControlNames(i) = "" Then
-				If marrParentControlTypes(i) = ControlType_SplitButton Then
-					'**Remove SplitButton Control
-					nResult = RBNSplitButtonGroupRemoveControl(  marrControlNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i), marrSplitButtonGroupNames(i))
-'					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
-					'**Remove DropDownButton Control
-					nResult = RBNDropDButtonGroupRemoveControl(  marrControlNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i), marrSplitButtonGroupNames(i))
-	'				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-				Else
-'					Call DEBUGPrint("   " & i & " Unexpected Control Type: " & marrControlTypes(i))
-				End If
-			Else
-				If marrParentControlTypes(i) = ControlType_SplitButton Then
-					nResult = RBNSplitButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
-'					Call DEBUGPrint("   " & i & " SplitButton Group Removed Result: " & nResult)
-				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
-					nResult = RBNDropDButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
-'					Call DEBUGPrint("   " & i & " DropDownButton Group Removed Result: " & nResult)
-				End If
-			End If
-		ElseIf NOT marrControlNames(i) = "" Then
-			'**Remove Control
-			If marrTabNames(i) = "ToolContextMenu" Then
-				nResult = RBNToolContextMenuRemoveMenuItem(marrControlNames(i))
-'				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-			ElseIf marrTabNames(i) = "MapMiniToolbar" Then
-				If marrGroupNames(i) = "" Then
-					nResult = RBNMapMTBRemoveControl(marrControlNames(i))
-'					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-				Else
-					nResult = RBNMapMTBStackPanelRemoveControl(marrControlNames(i), marrGroupNames(i))
-'					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-				End If
-			ElseIf marrParentControlTypes(i) = CONTROL_TYPE_RLIB_CNTXT_MNU Then
-				nContextMenuID	= Val(Right$(marrTabNames(i), Len(marrTabNames(i)) - Len("ContextMenu=") ))
-				nResult 		= RBNCntxtMenuRemoveControl(nContextMenuID, marrControlNames(i))
-'				Call DEBUGPrint("   " & i & "RBNCntxtMenuRemoveControl: Control Removed Result: " & nResult)
-			Else
-				nResult = RBNGroupRemoveControl(marrControlNames(i), marrTabNames(i), marrGroupNames(i))
-'				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
-			End If
-		ElseIf NOT marrGroupNames(i) = "" Then
-			If RBNGroupNumControls(marrGroupNames(i), marrTabNames(i)) = 0 Then
-				'**Remove Group
-				nResult = RBNTabGroupRemove(marrGroupNames(i), marrTabNames(i))
-'				Call DEBUGPrint("   " & i & " Group Removed Result: " & nResult)
-			Else
-'				Call DEBUGPrint("   " & i & " Group has still Controls")
-			End If
-		Else
-			If RBNTabNumGroups(marrTabNames(i)) = 0 Then
-				'**Remove Tab
-				nResult = RBNRemoveTab(marrTabNames(i))
-'				Call DEBUGPrint("   " & i & " Tab Removed Result: " & nResult)
-			Else
-'				Call DEBUGPrint("   " & i & " Tab has still Groups")
-			End If
-		End If
-	Next
-End If
+'Else
+''	Call DEBUGPrint("Removing Controls from the ribbon")
+'	For i = mnNumElements To 1 Step -1
+''		Call DEBUGPrint("   " & i & " Tab: " & marrTabNames(i) & " | Group: " & marrGroupNames(i) & " | SplitButton: " & marrSplitButtonNames(i) & " | SplitButtonGroup: " & marrSplitButtonGroupNames(i) & " | Control: " & marrControlNames(i))
+'
+'		If NOT marrSplitButtonGroupNames(i) = "" Then
+''			Call DEBUGPrint("   Removing from a SplitButton or DropDButton")
+'			If NOT marrControlNames(i) = "" Then
+'				If marrParentControlTypes(i) = ControlType_SplitButton Then
+'					'**Remove SplitButton Control
+'					nResult = RBNSplitButtonGroupRemoveControl(  marrControlNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i), marrSplitButtonGroupNames(i))
+''					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+'				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
+'					'**Remove DropDownButton Control
+'					nResult = RBNDropDButtonGroupRemoveControl(  marrControlNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i), marrSplitButtonGroupNames(i))
+'	'				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+'				Else
+''					Call DEBUGPrint("   " & i & " Unexpected Control Type: " & marrControlTypes(i))
+'				End If
+'			Else
+'				If marrParentControlTypes(i) = ControlType_SplitButton Then
+'					nResult = RBNSplitButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
+''					Call DEBUGPrint("   " & i & " SplitButton Group Removed Result: " & nResult)
+'				ElseIf marrParentControlTypes(i) = ControlType_DropDownButton Then
+'					nResult = RBNDropDButtonGroupRemove(marrSplitButtonGroupNames(i), marrTabNames(i), marrGroupNames(i), marrSplitButtonNames(i))
+''					Call DEBUGPrint("   " & i & " DropDownButton Group Removed Result: " & nResult)
+'				End If
+'			End If
+'		ElseIf NOT marrControlNames(i) = "" Then
+'			'**Remove Control
+'			If marrTabNames(i) = "ToolContextMenu" Then
+'				nResult = RBNToolContextMenuRemoveMenuItem(marrControlNames(i))
+''				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+'			ElseIf marrTabNames(i) = "MapMiniToolbar" Then
+'				If marrGroupNames(i) = "" Then
+'					nResult = RBNMapMTBRemoveControl(marrControlNames(i))
+''					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+'				Else
+'					nResult = RBNMapMTBStackPanelRemoveControl(marrControlNames(i), marrGroupNames(i))
+''					Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+'				End If
+'			ElseIf marrParentControlTypes(i) = CONTROL_TYPE_RLIB_CNTXT_MNU Then
+'				nContextMenuID	= Val(Right$(marrTabNames(i), Len(marrTabNames(i)) - Len("ContextMenu=") ))
+'				nResult 		= RBNCntxtMenuRemoveControl(nContextMenuID, marrControlNames(i))
+''				Call DEBUGPrint("   " & i & "RBNCntxtMenuRemoveControl: Control Removed Result: " & nResult)
+'			Else
+'				nResult = RBNGroupRemoveControl(marrControlNames(i), marrTabNames(i), marrGroupNames(i))
+''				Call DEBUGPrint("   " & i & " Control Removed Result: " & nResult)
+'			End If
+'		ElseIf NOT marrGroupNames(i) = "" Then
+'			If RBNGroupNumControls(marrGroupNames(i), marrTabNames(i)) = 0 Then
+'				'**Remove Group
+'				nResult = RBNTabGroupRemove(marrGroupNames(i), marrTabNames(i))
+''				Call DEBUGPrint("   " & i & " Group Removed Result: " & nResult)
+'			Else
+''				Call DEBUGPrint("   " & i & " Group has still Controls")
+'			End If
+'		Else
+'			If RBNTabNumGroups(marrTabNames(i)) = 0 Then
+'				'**Remove Tab
+'				nResult = RBNRemoveTab(marrTabNames(i))
+''				Call DEBUGPrint("   " & i & " Tab Removed Result: " & nResult)
+'			Else
+''				Call DEBUGPrint("   " & i & " Tab has still Groups")
+'			End If
+'		End If
+'	Next
+'End If
 
 '	Print Time(24) & " RBNClearCustomRibbonElements End"
-
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
