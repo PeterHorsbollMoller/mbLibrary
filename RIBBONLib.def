@@ -294,6 +294,11 @@
 '							- RBNGetVisibility() As Logical
 '							- RBNQATSetVisibility(...)
 '							- RBNQATGetVisibility() As Logical
+'	22-01-2018 08:23:44		- Added:
+'							- RBNNotificationShowAtCursor(...) for showing Notification at cursor location
+'							- RBNMapMTBSetVisibility(...): for setting visibility of Map Mini Toolbar
+'							- RBNMapMTBGetVisibility() As Logical: for getting visibility of Map Mini Toolbar
+'						- RBNClearCustomRibbonElements: Improved performance for unloading all control. For 400 controls speed goes from 30-60 secs to 1 secs
 '*****************************************************************************************************************************
 
 
@@ -311,7 +316,7 @@
 
 
 '**** A D D I N G    T A B S  ,    G R O U P S    A N D    C O N T R O L S
-'	nCtrlIdx = RBNGroupAddButton("exportMapToExcel", "MS Excel", "TabMap", "MapClipboard")
+'	nCtrlIdx = RBNGroupAddButton("exportMapToExcel", "MS Excel", "", "TabMap", "MapClipboard")
 '	If nCtrlIdx > 0 Then
 '		'Create & Set the button tooltip
 '		Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_MAP_TO_XLS), "", "")
@@ -321,7 +326,7 @@
 '		Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportMapWindowToExcel")
 '	End If
 '
-'	nCtrlIdx = RBNGroupInsertButtonBefore("exportBrowserToExcel", "MS Excel", "TabTable", "TableData", "ExportButton")
+'	nCtrlIdx = RBNGroupInsertButtonBefore("exportBrowserToExcel", "MS Excel", "TabTable", "", "TableData", "ExportButton")
 '	If nCtrlIdx > 0 Then
 '		'Create & Set the button tooltip
 '		Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_BROWSER_TO_XLS), "", "")
@@ -333,7 +338,7 @@
 '
 '	If RBNAddTab("TabTools", "TOOLS", "TO") > 0 Then
 '		If RBNTabAddGroup(xProgramMenu, xProgramMenu, "TabTools") > 0 Then
-'			nCtrlIdx = RBNGroupAddButton("exportTableToExcel", "Table", "TabTools", xProgramMenu)
+'			nCtrlIdx = RBNGroupAddButton("exportTableToExcel", "Table", "", "TabTools", xProgramMenu)
 '			If nCtrlIdx > 0 Then
 '				'Create & Set the button tooltip
 '				Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_TAB_TO_XLS), "", "")
@@ -788,6 +793,10 @@ Declare Function RBNCntxtMenuGetControlIndex(  ByVal nContextMenuID As Integer
 Declare Sub RBNQATSetVisibility(	  ByVal bVisible As Logical)
 Declare Function RBNQATGetVisibility() As Logical
 
+'** WORKING WITH MapMTB - Map Mini Toolbar ***************************************************
+Declare Sub RBNMapMTBSetVisibility(	  ByVal bVisible As Logical)
+Declare Function RBNMapMTBGetVisibility() As Logical
+
 '** WORKING WITH STACKPANELS ON MINI MAP TOOLBAR **********************************************
 Declare Function RBNMapMTBNumStackPanels() As Integer
 
@@ -1014,3 +1023,8 @@ Declare Sub RBNNotificationShow(	  ByVal sTitle As String
 							, ByVal nNotificationType As Integer
 							, ByVal nTimeToShow As Integer		'If <= 0 then defaults to 10000
 							)
+Declare Sub RBNNotificationShowAtCursor(	  ByVal sTitle As String
+									, ByVal sMessage As String
+									, ByVal nNotificationType As Integer
+									, ByVal nTimeToShow As Integer		'If <= 0 then defaults to 10000
+									)
