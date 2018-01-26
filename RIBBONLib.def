@@ -299,6 +299,32 @@
 '							- RBNMapMTBSetVisibility(...): for setting visibility of Map Mini Toolbar
 '							- RBNMapMTBGetVisibility() As Logical: for getting visibility of Map Mini Toolbar
 '						- RBNClearCustomRibbonElements: Improved performance for unloading all control. For 400 controls speed goes from 30-60 secs to 1 secs
+'	23-01-2018 16:19:39		- Added:
+'							- RBNTabAddGroupThs(...) As Integer	'Adding a group to a Tab instance (this)
+'							- RBNTabAddGroupIdx(...) As Integer	'Adding a group to a Tab using RIBBONLib index
+'							- RBNGroupAddControlThs(...) As Integer	'Adding a group to a Group instance (this)
+'							- RBNGroupAddControlIdx() As Integer	'Adding a control to a Group using RIBBONLib index
+'	24-01-2018 08:42:07		- Optimized:
+'							- RBNTabAddGroup: Will look at the already added tabs (in the elements list) and use a match if found
+'							- RBNGroupAddControl: Will look at the already added tabs/groups (in the elements list) and use a match if found
+'							- RBNGroupInsertControl: Will look at the already added tabs/groups (in the elements list) and use a match if found
+'							- RBNSplitButtonAddGroup: Will look at the already added splitbutton (in the elements list) and use a match if found
+'							- RBNSplitButtonGroupAddControl: Will look at the already added SplitButtonGroup (in the elements list) and use a match if found
+'						- Added:
+'							- RBNGroupInsertControlThs(...) As Integer
+'							- RBNGroupInsertControlIdx(...) As Integer
+'							- RBNSplitButtonAddGroupThs(...) As Integer
+'							- RBNSplitButtonAddGroupIdx(...) As Integer
+'							- RBNSplitButtonGroupAddControlThs(...) As Integer
+'							- RBNSplitButtonGroupAddControlIdx(...) As Integer
+'	25-01-2018 12:01:17		- Optimized:
+'							- RBNDropDButtonAddGroup: Will look at the already added DropDownButton (in the elements list) and use a match if found
+'							- RBNDropDButtonGroupAddControl: Will look at the already added SplitButtonGroup (in the elements list) and use a match if found
+'						- Added:
+'							- RBNDropDButtonAddGroupThs() As Integer
+'							- RBNDropDButtonAddGroupIdx() As Integer
+'							- RBNDropDButtonGroupAddControlThs(...) As Integer
+'							- RBNDropDButtonGroupAddControlIdx(...) As Integer
 '*****************************************************************************************************************************
 
 
@@ -435,6 +461,15 @@ Declare Function RBNTabAddGroup(	  ByVal sGroupName As String
 							, ByVal sCaption As String
 							, ByVal sTabName As String
 							) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+Declare Function RBNTabAddGroupThs(  ByVal sGroupName As String
+							, ByVal sCaption As String
+							, ByVal rbnTab As This
+							) As Integer
+Declare Function RBNTabAddGroupIdx(  ByVal sGroupName As String
+							, ByVal sCaption As String
+							, ByVal nTabIdx As Integer
+							) As Integer
+
 Declare Function RBNTabGroupRemove(  ByVal sGroupName As String
 							, ByVal sTabName As String
 							) As Integer
@@ -510,6 +545,19 @@ Declare Function RBNGroupAddControl(	  ByVal sControlName As String
 								, ByVal sTabName As String
 								, ByVal sGroupName As String
 								) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNGroupAddControlThs(	  ByVal sControlName As String
+								, ByVal sCaption As String
+								, ByVal sKeytip As String
+								, ByVal nControlType As Integer
+								, ByVal sTabName As String
+								, ByVal rbnGroup As This
+								) As Integer
+Declare Function RBNGroupAddControlIdx(	  ByVal sControlName As String
+								, ByVal sCaption As String
+								, ByVal sKeytip As String
+								, ByVal nControlType As Integer
+								, ByVal nGroupIdx As Integer
+								) As Integer
 Declare Function RBNGroupRemoveControl(	  ByVal sControlName As String
 								, ByVal sTabName As String
 								, ByVal sGroupName As String
@@ -522,6 +570,22 @@ Declare Function RBNGroupInsertControl(	  ByVal sControlName As String
 								, ByVal sGroupName As String
 								, ByVal nPosition As Integer
 								) As Integer
+Declare Function RBNGroupInsertControlThs(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal rbnGroup As This
+									, ByVal nPosition As Integer
+									) As Integer
+Declare Function RBNGroupInsertControlIdx(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal nGroupIdx As Integer
+									, ByVal nPosition As Integer
+									) As Integer
+
 Declare Function RBNGroupInsertControlAfter(	  ByVal sControlName As String
 									, ByVal sCaption As String
 									, ByVal sKeytip As String
@@ -617,6 +681,23 @@ Declare Function RBNGroupGetControlIndexThs(	  rbnGroup As This
 									, ByVal sControlName As String
 									) As Integer
 
+'** WORKING WITH MAPINFO CONTROL COLLECTIONS ************************************************************
+Declare Function RBNMICtrlCollAddControlThs(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal rbnCtrlColl As This
+									) As Integer
+Declare Function RBNMICtrlCollAddControlIdx(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal nGroupIdx As Integer
+									) As Integer
+
+
 '** WORKING WITH SPLITBUTTONS ***************************************************************************
 Declare Function RBNSplitButtonNumGroups( ByVal sTabName As String
 								, ByVal sGroupName As String
@@ -629,6 +710,17 @@ Declare Function RBNSplitButtonAddGroup(  ByVal sSplitButtonGroupName As String
 								, ByVal sGroupName As String
 								, ByVal sSplitButtonName As String
 								) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+Declare Function RBNSplitButtonAddGroupThs(	  ByVal sSplitButtonGroupName As String
+									, ByVal sCaption As String
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal rbnSplitButton As This
+									) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+Declare Function RBNSplitButtonAddGroupIdx(	  ByVal sSplitButtonGroupName As String
+									, ByVal sCaption As String
+									, ByVal nSplitButtonIdx As Integer
+									) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
 Declare Function RBNSplitButtonGroupRemove(	  ByVal sSplitButtonGroupName As String
 									, ByVal sTabName As String
 									, ByVal sGroupName As String
@@ -655,6 +747,23 @@ Declare Function RBNSplitButtonGroupAddControl(	  ByVal sControlName As String
 										, ByVal sSplitButtonName As string
 										, ByVal sSplitButtonGroupName As string
 										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNSplitButtonGroupAddControlThs(  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal sTabName As String
+										, ByVal sGroupName As String
+										, ByVal sSplitButtonName As string
+										, ByVal sSplitButtonGroupName As string
+										, ByVal rbnSplitButtonGroup As This
+										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNSplitButtonGroupAddControlIdx(  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal nSplitButtonGroupIdx As Integer
+										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
 Declare Function RBNSplitButtonGroupRemoveControl(  ByVal sControlName As String
 										, ByVal sTabName As String
 										, ByVal sGroupName As String
@@ -674,6 +783,19 @@ Declare Function RBNDropDButtonAddGroup(  ByVal sDropDButtonGroupName As String
 								, ByVal sGroupName As String
 								, ByVal sDropDButtonName As String
 								) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+Declare Function RBNDropDButtonAddGroupThs(	  ByVal sDropDButtonGroupName As String
+									, ByVal sCaption As String
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal rbnDropDButton As String
+									) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+Declare Function RBNDropDButtonAddGroupIdx(	  ByVal sDropDButtonGroupName As String
+									, ByVal sCaption As String
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal nDropDButtonIdx As String
+									) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
 Declare Function RBNDropDButtonGroupRemove(	  ByVal sDropDButtonGroupName As String
 									, ByVal sTabName As String
 									, ByVal sGroupName As String
@@ -700,6 +822,25 @@ Declare Function RBNDropDButtonGroupAddControl(	  ByVal sControlName As String
 										, ByVal sDropDButtonName As string
 										, ByVal sDropDButtonGroupName As string
 										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNDropDButtonGroupAddControlThs(  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal sTabName As String
+										, ByVal sGroupName As String
+										, ByVal sDropDButtonName As string
+										, ByVal rbnDropDButtonGroup As string
+										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNDropDButtonGroupAddControlIdx(  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal sTabName As String
+										, ByVal sGroupName As String
+										, ByVal sDropDButtonName As string
+										, ByVal nDropDButtonGroupIdx As string
+										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
 Declare Function RBNDropDButtonGroupRemoveControl(  ByVal sControlName As String
 										, ByVal sTabName As String
 										, ByVal sGroupName As String

@@ -56,6 +56,30 @@ Declare Function RBNGetElementIndexOffset(	  ByVal sTabName As String
 									, ByVal sControlName As String
 									, ByVal nOffset As Integer
 									) As Integer
+Declare Function RBNGetPrevTabElementIdx(	  ByVal sTabName As String
+									) As Integer
+Declare Function RBNGetPrevGroupElementIdx(	  ByVal sTabName As String
+									, ByVal sGroupName As String
+									) As Integer
+Declare Function RBNGetPrevSplitButtonElementIdx(	  ByVal sTabName As String
+										, ByVal sGroupName As String
+										, ByVal sSplitButtonName As String
+										) As Integer
+Declare Function RBNGetPrevSplitButtonGroupElementIdx(	  ByVal sTabName As String
+											, ByVal sGroupName As String
+											, ByVal sSplitButtonName As String
+											, ByVal sSplitButtonGroupName As String
+											) As Integer
+Declare Function RBNGetPrevDropDButtonElementIdx(	  ByVal sTabName As String
+										, ByVal sGroupName As String
+										, ByVal sDropDButtonName As String
+										) As Integer
+Declare Function RBNGetPrevDropDButtonGroupElementIdx(	  ByVal sTabName As String
+											, ByVal sGroupName As String
+											, ByVal sDropDButtonName As String
+											, ByVal sDropDButtonGroupName As String
+											) As Integer
+
 
 Dim	theMapInfoApplication As This,
 	theMapBasicApplication As This,
@@ -871,16 +895,22 @@ Function RBNTabAddGroup(	  ByVal sGroupName As String
 					) As Integer
 
 Dim	rbnTab As This,
-	rbnGroupsColl as This,
+'	rbnGroupsColl as This,
 	rbnTabFound As RefPtr,
 	rbnGroupFound As RefPtr,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNTabAddGroup = 0
 
 	Call RBNInitiate
+
+	nPrevIdx	= RBNGetPrevTabElementIdx(sTabName)
+	If nPrevIdx > 0 Then
+		RBNTabAddGroup	= RBNTabAddGroupIdx(sGroupName, sCaption, nPrevIdx)
+		Exit Function
+	End If
 
 	If RBNGetTab(sTabName, rbnTabFound) Then
 		rbnTab = rbnTabFound
@@ -892,7 +922,6 @@ RBNTabAddGroup = 0
 		marrParentControlColls(nCtrl)	= GetRbnTabGrps(rbnTab)
 
 		'Add a new group.
-		'marrParentControlColls(nCtrl)	= rbnGroupsColl
 		'marrControls(nCtrl)			= RbnCtrlGrpCollAddStrStr(rbnGroupsColl, sGroupName, sCaption)
 		marrControls(nCtrl)			= RbnCtrlGrpCollAddStrStr(marrParentControlColls(nCtrl), sGroupName, sCaption)
 
@@ -905,7 +934,7 @@ RBNTabAddGroup = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
 	rbnTabFound	= NULL_PTR
 	rbnGroupFound	= NULL_PTR
 	rbnTab		= NULL_PTR
@@ -917,6 +946,74 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNTabAddGroupThs(	  ByVal sGroupName As String
+						, ByVal sCaption As String
+						, ByVal rbnTab As This
+						) As Integer
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNTabAddGroupThs = 0
+
+	Call RBNInitiate
+
+	Call DEBUGPrint("RBNTabAddGroupThs, Value of rbnTab: " & rbnTab)
+	nCtrl = RBNAddElement(GetRbnTabName(rbnTab), sGroupName, "", "", "", CONTROL_TYPE_RLIB_GROUP, 0)
+
+	'Get the ribbon group collection.
+	marrParentControlColls(nCtrl)	= GetRbnTabGrps(rbnTab)
+
+	'Add a new group.
+	marrControls(nCtrl)			= RbnCtrlGrpCollAddStrStr(marrParentControlColls(nCtrl), sGroupName, sCaption)
+
+	'Disable the RibbonDialogLauncher. (A RibbonDialogLauncher is displayed in the
+	'lower-right corner of a group by default.)
+	Call SetRbnCtrlGrpIsLauncherVisible(marrControls(nCtrl), FALSE)
+
+	RBNTabAddGroupThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabAddGroupThs: " & sGroupName & " on tab " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNTabAddGroupIdx(	  ByVal sGroupName As String
+						, ByVal sCaption As String
+						, ByVal nTabIdx As Integer
+						) As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNTabAddGroupIdx = RBNTabAddGroupThs(sGroupName, sCaption, marrControls(nTabIdx))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabAddGroupIdx: " & sGroupName & " on tab index " & nTabIdx)
+	Call ERRShow()
+
+End Function
+
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -1631,17 +1728,24 @@ Function RBNGroupAddControl(	  ByVal sControlName As String
 						) As Integer
 
 Dim	rbnGroup As This,
-	rbnGroupsColl as This,
+'	rbnGroupsColl as This,
 	rbnTabFound As RefPtr,
 	rbnGroupFound As RefPtr,
 	rbnTab As This,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNGroupAddControl = 0
 
 	Call RBNInitiate
+
+	nPrevIdx	= RBNGetPrevGroupElementIdx(sTabName, sGroupName)
+	If nPrevIdx > 0 Then
+'		Call DEBUGPrint("Found Group " & sTabName & "|" & sGroupName & " as element " & nPrevIdx)
+		RBNGroupAddControl	= RBNGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, nPrevIdx)
+		Exit Function
+	End If
 
 '	Call DEBUGPrint("RBNGetTab")
 	If RBNGetTab(sTabName, rbnTabFound) Then
@@ -1657,7 +1761,6 @@ RBNGroupAddControl = 0
 			'Get Group controls collection
 '			rbnGroupsColl = GetRbnCtrlGrpCtrls(rbnGroup)
 			marrParentControlColls(nCtrl) = GetRbnCtrlGrpCtrls(rbnGroup)
-'			marrParentControlColls(nCtrl)	= rbnGroupsColl
 '			marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnGroupsColl, sControlName, sCaption, nControlType)
 			marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
 			Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
@@ -1675,7 +1778,7 @@ RBNGroupAddControl = 0
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
 	rbnGroup		= NULL_PTR
-	rbnGroupsColl	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
 	rbnTabFound	= NULL_PTR
 	rbnGroupFound	= NULL_PTR
 	rbnTab		= NULL_PTR
@@ -1684,6 +1787,83 @@ RBNGroupAddControl = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNGroupAddControl: " & sControlName & " to " & sGroupName & " on tab " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupAddControlThs( ByVal sControlName As String
+						, ByVal sCaption As String
+						, ByVal sKeytip As String
+						, ByVal nControlType As Integer
+						, ByVal sTabName As String
+						, ByVal rbnGroup As This
+						) As Integer
+
+Dim	nCtrl As Integer,
+	sGroupName As String
+
+OnError GoTo ErrorOccured
+
+RBNGroupAddControlThs = 0
+
+	Call RBNInitiate
+
+'	Call DEBUGPrint("RBNGroupAddControlThs, Value of rbnGroup: " & rbnGroup)
+	sGroupName				= GetRbnCtrlGrpName(rbnGroup)
+	nCtrl 					= RBNAddElement(sTabName, sGroupName, "", "", sControlName, nControlType, 0)
+
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = GetRbnCtrlGrpCtrls(rbnGroup)
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+	Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+	RBNGroupAddControlThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupAddControl: " & sControlName & " to " & sGroupName & " on tab " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupAddControlIdx( ByVal sControlName As String
+						, ByVal sCaption As String
+						, ByVal sKeytip As String
+						, ByVal nControlType As Integer
+						, ByVal nGroupIdx As Integer
+						) As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGroupAddControlIdx = 0
+
+	RBNGroupAddControlIdx = RBNGroupAddControlThs(sControlName, sCaption, sKeytip, nControlType, marrTabNames(nGroupIdx), marrControls(nGroupIdx))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupAddControlIdx: " & sControlName & " to Group Index " & nGroupIdx)
 	Call ERRShow()
 
 End Function
@@ -1770,17 +1950,23 @@ Function RBNGroupInsertControl( ByVal sControlName As String
 						) As Integer
 
 Dim	rbnGroup As This,
-	rbnGroupsColl as This,
+'	rbnGroupsColl as This,
 	rbnTabFound As RefPtr,
 	rbnGroupFound As RefPtr,
 	rbnTab As This,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNGroupInsertControl = 0
 
 	Call RBNInitiate
+
+	nPrevIdx	= RBNGetPrevGroupElementIdx(sTabName, sGroupName)
+	If nPrevIdx > 0 Then
+		RBNGroupInsertControl	= RBNGroupInsertControlIdx(sControlName, sCaption, sKeytip, nControlType, nPrevIdx, nPosition)
+		Exit Function
+	End If
 
 	If RBNGetTab(sTabName, rbnTabFound) Then
 		rbnTab = rbnTabFound
@@ -1795,7 +1981,6 @@ RBNGroupInsertControl = 0
 			marrParentControlColls(nCtrl) = GetRbnCtrlGrpCtrls(rbnGroup)
 '			rbnGroupsColl = GetRbnCtrlGrpCtrls(rbnGroup)
 
-			'marrParentControlColls(nCtrl)	= rbnGroupsColl
 			marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(marrParentControlColls(nCtrl), nPosition, sControlName, sCaption, nControlType)
 '			marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(rbnGroupsColl, nPosition, sControlName, sCaption, nControlType)
 			Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
@@ -1806,7 +1991,6 @@ RBNGroupInsertControl = 0
 				Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
 			End If
 
-
 			RBNGroupInsertControl = nCtrl
 		End If
 	End If
@@ -1814,7 +1998,7 @@ RBNGroupInsertControl = 0
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
 	rbnGroup 		= NULL_PTR
-	rbnGroupsColl	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
 	rbnTabFound	= NULL_PTR
 	rbnGroupFound	= NULL_PTR
 	rbnTab		= NULL_PTR
@@ -1826,6 +2010,82 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupInsertControlThs(	  ByVal sControlName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal nControlType As Integer
+							, ByVal sTabName As String
+							, ByVal rbnGroup As This
+							, ByVal nPosition As Integer
+							) As Integer
+
+Dim	nCtrl As Integer,
+	sGroupName As String
+
+OnError GoTo ErrorOccured
+
+RBNGroupInsertControlThs = 0
+
+	Call RBNInitiate
+
+	sGroupName				= GetRbnCtrlGrpName(rbnGroup)
+	nCtrl 					= RBNAddElement(sTabName, sGroupName, "", "", sControlName, nControlType, 0)
+
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = GetRbnCtrlGrpCtrls(rbnGroup)
+	marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(marrParentControlColls(nCtrl), nPosition, sControlName, sCaption, nControlType)
+	Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+	RBNGroupInsertControlThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupInsertControlThs: " & sControlName & " to " & sGroupName & " on tab " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGroupInsertControlIdx(	  ByVal sControlName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal nControlType As Integer
+							, ByVal nGroupIdx As Integer
+							, ByVal nPosition As Integer
+							) As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNGroupInsertControlIdx = RBNGroupInsertControlThs(sControlName, sCaption, sKeytip, nControlType, marrTabNames(nGroupIdx), marrControls(nGroupIdx), nPosition)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGroupInsertControlIdx: " & sControlName & " to Group Index " & nGroupIdx)
+	Call ERRShow()
+
+End Function
+
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
@@ -2455,6 +2715,83 @@ ErrorOccured:
 
 End Function
 
+'*******************************************************************************************************
+'** WORKING WITH MAPINFO CONTROL COLLECTIONS ***********************************************************
+'*******************************************************************************************************
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNMICtrlCollAddControlThs( ByVal sControlName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal nControlType As Integer
+							, ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal rbnCtrlColl As This
+							) As Integer
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNMICtrlCollAddControlThs = 0
+
+	Call RBNInitiate
+
+	nCtrl 					= RBNAddElement(sTabName, sGroupName, "", "", sControlName, nControlType, 0)
+
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = rbnCtrlColl
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnCtrlColl, sControlName, sCaption, nControlType)
+	Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+	RBNMICtrlCollAddControlThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNMICtrlCollAddControlThs: " & sControlName & " to " & sGroupName & " on tab " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNMICtrlCollAddControlIdx( ByVal sControlName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal nControlType As Integer
+							, ByVal nGroupIdx As Integer
+							) As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNMICtrlCollAddControlIdx = RBNMICtrlCollAddControlThs(sControlName, sCaption, sKeytip, nControlType, marrTabNames(nGroupIdx), marrGroupNames(nGroupIdx), marrParentControlColls(nGroupIdx))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNMICtrlCollAddControlIdx: " & sControlName & " to Group Index " & nGroupIdx)
+	Call ERRShow()
+
+End Function
 
 '*******************************************************************************************************
 '** WORKING WITH SPLITBUTTONS **************************************************************************
@@ -2544,13 +2881,19 @@ Dim	rbnTab As This,
 	rbnTabFound As RefPtr,
 	rbnGroupFound As RefPtr,
 	rbnControlFound As RefPtr,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNSplitButtonAddGroup = 0
 
 	Call RBNInitiate
+
+	nPrevIdx	= RBNGetPrevSplitButtonElementIdx(sTabName, sGroupName, sSplitButtonName)
+	If nPrevIdx > 0 Then
+		RBNSplitButtonAddGroup	= RBNSplitButtonAddGroupIdx(sSplitButtonGroupName, sCaption, nPrevIdx)
+		Exit Function
+	End If
 
 '	Call DEBUGPrint("RBNSplitButtonAddGroup")
 	If RBNGetTab(sTabName, rbnTabFound) Then
@@ -2576,7 +2919,6 @@ RBNSplitButtonAddGroup = 0
 
 				'Add a new group.
 '				Call DEBUGPrint("   Adding the new Group " & sSplitButtonGroupName)
-'				marrParentControlColls(nCtrl)	= rbnGroupsColl
 				marrControls(nCtrl)			= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sSplitButtonGroupName, sCaption, ControlType_DropDownMenuGroup)
 '				marrControls(nCtrl)			= MICtrlCollAddStrStrInt(rbnGroupsColl, sSplitButtonGroupName, sCaption, ControlType_DropDownMenuGroup)
 
@@ -2603,6 +2945,74 @@ RBNSplitButtonAddGroup = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNSplitButtonAddGroup: " & sSplitButtonGroupName & " on SplitButton " & sSplitButtonName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNSplitButtonAddGroupThs(	  ByVal sSplitButtonGroupName As String
+								, ByVal sCaption As String
+								, ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal rbnSplitButton As This
+								) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNSplitButtonAddGroupThs = 0
+
+	Call RBNInitiate
+
+	nCtrl = RBNAddElement(sTabName, sGroupName, GetRbnSplitCtrlName(rbnSplitButton), sSplitButtonGroupName, "", ControlType_DropDownMenuGroup, ControlType_SplitButton)
+
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = GetRbnSplitCtrlCtrls(rbnSplitButton)
+
+	'Add a new group.
+'	Call DEBUGPrint("   Adding the new Group " & sSplitButtonGroupName)
+	marrControls(nCtrl)			= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sSplitButtonGroupName, sCaption, ControlType_DropDownMenuGroup)
+
+	Call SetRbnDropDownCtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Stretch)
+	Call SetRbnDropDownCtrlVertAlign(marrControls(nCtrl), Vert_Align_Stretch)
+
+	RBNSplitButtonAddGroupThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNSplitButtonAddGroup: " & sSplitButtonGroupName & " on SplitButton " & GetRbnSplitCtrlName(rbnSplitButton))
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNSplitButtonAddGroupIdx(	  ByVal sSplitButtonGroupName As String
+								, ByVal sCaption As String
+								, ByVal nSplitButtonIdx As Integer
+								) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
+OnError GoTo ErrorOccured
+
+	RBNSplitButtonAddGroupIdx = RBNSplitButtonAddGroupThs(sSplitButtonGroupName, sCaption, marrTabNames(nSplitButtonIdx), marrGroupNames(nSplitButtonIdx), marrControls(nSplitButtonIdx))
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNSplitButtonAddGroup: " & sSplitButtonGroupName & " on SplitButton Index " & nSplitButtonIdx)
 	Call ERRShow()
 
 End Function
@@ -2835,13 +3245,19 @@ Dim	rbnTab As This,
 	rbnGroupFound As RefPtr,
 	rbnControlFound As RefPtr,
 	rbnControlGroupFound As RefPtr,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNSplitButtonGroupAddControl = 0
 
 	Call RBNInitiate
+
+	nPrevIdx	= RBNGetPrevSplitButtonGroupElementIdx(sTabName, sGroupName, sSplitButtonName, sSplitButtonGroupName)
+	If nPrevIdx > 0 Then
+		RBNSplitButtonGroupAddControl	= RBNSplitButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, nPrevIdx)
+		Exit Function
+	End If
 
 	If RBNGetTab(sTabName, rbnTabFound) Then
 		rbnTab = rbnTabFound
@@ -2861,7 +3277,6 @@ RBNSplitButtonGroupAddControl = 0
 					marrParentControlColls(nCtrl) = GetCtrlGrpCtrls(rbnSplitButtonGroup)
 '					rbnControlsColl = GetCtrlGrpCtrls(rbnSplitButtonGroup)
 
-'					marrParentControlColls(nCtrl)	= rbnControlsColl
 					marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
 '					marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnControlsColl, sControlName, sCaption, nControlType)
 
@@ -2893,6 +3308,84 @@ RBNSplitButtonGroupAddControl = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNSplitButtonGroupAddControl: " & sControlName & " to " & sSplitButtonGroupName & " on " & sSplitButtonName & " - tab | group: " & sTabName & "|" & sGroupName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNSplitButtonGroupAddControlThs(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sSplitButtonName As string
+									, ByVal sSplitButtonGroupName As string
+									, ByVal rbnSplitButtonGroup As This
+									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNSplitButtonGroupAddControlThs = 0
+
+	Call RBNInitiate
+
+	nCtrl 					= RBNAddElement(sTabName, sGroupName, sSplitButtonName, sSplitButtonGroupName, sControlName, nControlType, ControlType_SplitButton)
+
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = GetCtrlGrpCtrls(rbnSplitButtonGroup)
+'	rbnControlsColl = GetCtrlGrpCtrls(rbnSplitButtonGroup)
+
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+'	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnControlsColl, sControlName, sCaption, nControlType)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+	RBNSplitButtonGroupAddControlThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNSplitButtonGroupAddControlThs: " & sControlName & " to " & sSplitButtonGroupName & " on " & sSplitButtonName & " - tab | group: " & sTabName & "|" & sGroupName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNSplitButtonGroupAddControlIdx(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal nSplitButtonGroupIdx As Integer
+									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+OnError GoTo ErrorOccured
+
+	RBNSplitButtonGroupAddControlIdx = RBNSplitButtonGroupAddControlThs(sControlName, sCaption, sKeytip, nControlType
+										, marrTabNames(nSplitButtonGroupIdx), marrGroupNames(nSplitButtonGroupIdx), marrSplitButtonNames(nSplitButtonGroupIdx), marrSplitButtonGroupNames(nSplitButtonGroupIdx)
+										, marrControls(nSplitButtonGroupIdx))
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNSplitButtonGroupAddControlIdx: " & sControlName & " to SplitButtonGroup Index " & nSplitButtonGroupIdx)
 	Call ERRShow()
 
 End Function
@@ -3058,7 +3551,6 @@ Function RBNDropDButtonAddGroup(	  ByVal sDropDButtonGroupName As String
 							, ByVal sDropDButtonName As String
 							) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
 
-
 Dim	rbnTab As This,
 	rbnGroup As This,
 	rbnDropDButton As This,
@@ -3066,13 +3558,19 @@ Dim	rbnTab As This,
 	rbnTabFound As RefPtr,
 	rbnGroupFound As RefPtr,
 	rbnControlFound As RefPtr,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNDropDButtonAddGroup = 0
 
 	Call RBNInitiate
+
+	nPrevIdx = RBNGetPrevDropDButtonElementIdx(sTabName, sGroupName, sDropDButtonName)
+	If nPrevIdx > 0 Then
+		nCtrl = 	RBNDropDButtonAddGroupIdx(sDropDButtonGroupName, sCaption, sTabName, sGroupName, nPrevIdx)
+		Exit Function
+	End If
 
 '	Call DEBUGPrint("RBNDropDButtonAddGroup")
 	If RBNGetTab(sTabName, rbnTabFound) Then
@@ -3098,12 +3596,9 @@ RBNDropDButtonAddGroup = 0
 
 				'Add a new group.
 '				Call DEBUGPrint("   Adding the new Group " & sDropDButtonGroupName)
-'				marrParentControlColls(nCtrl)	= rbnGroupsColl
 				marrControls(nCtrl)			= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sDropDButtonGroupName, sCaption, ControlType_DropDownMenuGroup)
 '				marrControls(nCtrl)			= MICtrlCollAddStrStrInt(rbnGroupsColl, sDropDButtonGroupName, sCaption, ControlType_DropDownMenuGroup)
 
-'				Call DEBUGPrint( "GetRbnDropDownCtrlHorzAlign: " & GetRbnDropDownCtrlHorzAlign(marrControls(nCtrl)))
-'				Call DEBUGPrint( "GetRbnDropDownCtrlVertAlign: " & GetRbnDropDownCtrlVertAlign(marrControls(nCtrl)))
 				Call SetRbnDropDownCtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Stretch)
 				Call SetRbnDropDownCtrlVertAlign(marrControls(nCtrl), Vert_Align_Stretch)
 				RBNDropDButtonAddGroup = nCtrl
@@ -3125,6 +3620,76 @@ RBNDropDButtonAddGroup = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNDropDButtonAddGroup: " & sDropDButtonGroupName & " on DropDownButton " & sDropDButtonName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNDropDButtonAddGroupThs(  ByVal sDropDButtonGroupName As String
+							, ByVal sCaption As String
+							, ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal rbnDropDButton As String
+							) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNDropDButtonAddGroupThs = 0
+
+	Call RBNInitiate
+
+	nCtrl = RBNAddElement(sTabName, sGroupName, GetRbnDropDownCtrlName(rbnDropDButton), sDropDButtonGroupName, "", ControlType_DropDownMenuGroup, ControlType_DropDownButton)
+
+'	Call DEBUGPrint("   Getting the Group Collection")
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = GetRbnDropDownCtrlCtrls(rbnDropDButton)
+
+	'Add a new group.
+'	Call DEBUGPrint("   Adding the new Group " & sDropDButtonGroupName)
+	marrControls(nCtrl)			= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sDropDButtonGroupName, sCaption, ControlType_DropDownMenuGroup)
+
+	Call SetRbnDropDownCtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Stretch)
+	Call SetRbnDropDownCtrlVertAlign(marrControls(nCtrl), Vert_Align_Stretch)
+	RBNDropDButtonAddGroupThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNDropDButtonAddGroupThs: " & sDropDButtonGroupName & " on DropDownButton " & sDropDButtonName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNDropDButtonAddGroupIdx(  ByVal sDropDButtonGroupName As String
+							, ByVal sCaption As String
+							, ByVal sTabName As String
+							, ByVal sGroupName As String
+							, ByVal nDropDButtonIdx As String
+							) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
+OnError GoTo ErrorOccured
+
+	RBNDropDButtonAddGroupIdx = RBNDropDButtonAddGroupThs(sDropDButtonGroupName, sCaption, sTabName, sGroupName, marrControls(nDropDButtonIdx))
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNDropDButtonAddGroupIdx: " & sDropDButtonGroupName & " on DropDownButton Index " & nDropDButtonIdx)
 	Call ERRShow()
 
 End Function
@@ -3357,13 +3922,20 @@ Dim	rbnTab As This,
 	rbnGroupFound As RefPtr,
 	rbnControlFound As RefPtr,
 	rbnControlGroupFound As RefPtr,
-	nCtrl As Integer
+	nCtrl, nPrevIdx As Integer
 
 OnError GoTo ErrorOccured
 
 RBNDropDButtonGroupAddControl = 0
 
 	Call RBNInitiate
+
+	nPrevIdx = RBNGetPrevDropDButtonGroupElementIdx(sTabName, sGroupName, sDropDButtonName, sDropDButtonGroupName)
+	If nPrevIdx > 0 Then
+		Call DEBUGPrint("Found DropDButtonGroup as #" & nPrevIdx)
+		nCtrl = 	RBNDropDButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, nPrevIdx)
+		Exit Function
+	End If
 
 	If RBNGetTab(sTabName, rbnTabFound) Then
 		rbnTab = rbnTabFound
@@ -3383,7 +3955,6 @@ RBNDropDButtonGroupAddControl = 0
 					marrParentControlColls(nCtrl) = GetCtrlGrpCtrls(rbnDropDButtonGroup)
 '					rbnControlsColl = GetCtrlGrpCtrls(rbnDropDButtonGroup)
 
-'					marrParentControlColls(nCtrl)	= rbnControlsColl
 					marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
 '					marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnControlsColl, sControlName, sCaption, nControlType)
 
@@ -3415,6 +3986,84 @@ RBNDropDButtonGroupAddControl = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNDropDButtonGroupAddControl: " & sControlName & " to " & sDropDButtonGroupName & " on " & sDropDButtonName & " - tab | group: " & sTabName & "|" & sGroupName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNDropDButtonGroupAddControlThs(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sDropDButtonName As string
+									, ByVal rbnDropDButtonGroup As string
+									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNDropDButtonGroupAddControlThs = 0
+
+	Call RBNInitiate
+
+	nCtrl 			= RBNAddElement(sTabName, sGroupName, sDropDButtonName, GetMICtrlName(rbnDropDButtonGroup), sControlName, nControlType, ControlType_DropDownButton)
+
+	'Get Group controls collection
+	marrParentControlColls(nCtrl) = GetCtrlGrpCtrls(rbnDropDButtonGroup)
+
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+	RBNDropDButtonGroupAddControlThs = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNDropDButtonGroupAddControlThs: " & sControlName & " to " & sDropDButtonGroupName & " on " & sDropDButtonName & " - tab | group: " & sTabName & "|" & sGroupName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNDropDButtonGroupAddControlIdx(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal sKeytip As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sDropDButtonName As string
+									, ByVal nDropDButtonGroupIdx As string
+									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+
+OnError GoTo ErrorOccured
+
+	Call DEBUGPrint("nDropDButtonGroupIdx: " & nDropDButtonGroupIdx)
+	Call DEBUGPrint("   Num Controls: " & Ubound(marrControls))
+	RBNDropDButtonGroupAddControlIdx = RBNDropDButtonGroupAddControlThs(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, marrControls(nDropDButtonGroupIdx))
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNDropDButtonGroupAddControlIdx: " & sControlName & " to " & sDropDButtonGroupName & " on " & sDropDButtonName & " - tab | group: " & sTabName & "|" & sGroupName)
 	Call ERRShow()
 
 End Function
@@ -3784,7 +4433,6 @@ RBNContextGroupAddButton = 0
 			'Get Group controls collection
 			marrParentControlColls(nCtrl) = GetRbnCtrlGrpCtrls(rbnGroup)
 
-'			marrParentControlColls(nCtrl)	= rbnGroupsColl
 			marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, ControlType_Button)
 '			marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnGroupsColl, sControlName, sCaption, ControlType_Button)
 
@@ -3948,11 +4596,9 @@ RBNCntxtMenuInsertControl = 0
 '	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
 
 	If nPosition = RBN_ELEMENT_INSERT_AS_LAST Then
-'		marrParentControlColls(nCtrl)	= rbnCntxtMenuItemsColl
 		marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
 '		marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnCntxtMenuItemsColl, sControlName, sCaption, nControlType)
 	Else
-'		marrParentControlColls(nCtrl)	= rbnCntxtMenuItemsColl
 		marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(marrParentControlColls(nCtrl), nPosition, sControlName, sCaption, nControlType)
 '		marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(rbnCntxtMenuItemsColl, nPosition, sControlName, sCaption, nControlType)
 	End If
@@ -4855,7 +5501,6 @@ OnError GoTo ErrorOccured
 		marrParentControlColls(nCtrl)	= GetIStackPanelCtrls(rbnsStackPanel)
 '		stackPanelColl	= GetIStackPanelCtrls(rbnsStackPanel)
 
-'		marrParentControlColls(nCtrl)	= stackPanelColl
 		marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
 '		marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(stackPanelColl, sControlName, sCaption, nControlType)
 
@@ -6083,6 +6728,9 @@ OnError GoTo ErrorOccured
 		Case ControlType_StackPanel
 			Call SetIStackPanelVisible(rbnControl, bVisible)
 
+          Case ControlType_RibbonSeparator
+                     call SetCtrlVisible(rbnControl, bVisible)
+
 	End Case
 	Exit Sub
 '-------------------------
@@ -6690,6 +7338,242 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetPrevTabElementIdx(	  ByVal sTabName As String
+							) As Integer
+
+Dim	nElement As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGetPrevTabElementIdx = 0
+
+'	Call DEBUGPrint("RBNGetPrevTabElementIdx: " & sTabName)
+	For nElement = mnNumElements To 1 Step -1
+		If sTabName = marrTabNames(nElement) Then
+			If marrControlTypes(nElement) = CONTROL_TYPE_RLIB_TAB Then
+				RBNGetPrevTabElementIdx = nElement
+				Exit Function
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetPrevTabElementIdx")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetPrevGroupElementIdx(  ByVal sTabName As String
+							, ByVal sGroupName As String
+							) As Integer
+
+Dim	nElement As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGetPrevGroupElementIdx = 0
+
+'	Call DEBUGPrint("RBNGetPrevGroupElementIdx: " & sTabName & " | " & sGroupName)
+'	Call DEBUGPrint("   Max Elements: " & mnNumElements)
+	For nElement = mnNumElements To 1 Step -1
+		If sTabName = marrTabNames(nElement) Then
+			If sGroupName = marrGroupNames(nElement) Then
+				If marrControlTypes(nElement) = CONTROL_TYPE_RLIB_GROUP Then
+					RBNGetPrevGroupElementIdx = nElement
+					Exit Function
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetPrevGroupElementIdx")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetPrevSplitButtonElementIdx( ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sSplitButtonName As String
+								) As Integer
+
+Dim	nElement As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGetPrevSplitButtonElementIdx = 0
+
+	For nElement = mnNumElements to 1 Step - 1
+		If sTabName = marrTabNames(nElement) Then
+			If sGroupName = marrGroupNames(nElement) Then
+				If sSplitButtonName = marrSplitButtonNames(nElement) Then
+					If marrControlTypes(nElement) = ControlType_SplitButton Then
+						RBNGetPrevSplitButtonElementIdx = nElement
+						Exit Function
+					End If
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetPrevSplitButtonElementIdx")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetPrevSplitButtonGroupElementIdx( ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sSplitButtonName As String
+									, ByVal sSplitButtonGroupName As String
+									) As Integer
+
+Dim	nElement As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGetPrevSplitButtonGroupElementIdx = 0
+
+	For nElement = mnNumElements to 1 Step - 1
+		If sTabName = marrTabNames(nElement) Then
+			If sGroupName = marrGroupNames(nElement) Then
+				If sSplitButtonName = marrSplitButtonNames(nElement) Then
+					If sSplitButtonGroupName = marrSplitButtonGroupNames(nElement) Then
+						If marrControlTypes(nElement) = ControlType_DropDownMenuGroup Then
+							RBNGetPrevSplitButtonGroupElementIdx = nElement
+							Exit Function
+						End If
+					End If
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetPrevSplitButtonGroupElementIdx")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetPrevDropDButtonElementIdx( ByVal sTabName As String
+								, ByVal sGroupName As String
+								, ByVal sDropDButtonName As String
+								) As Integer
+
+Dim	nElement As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGetPrevDropDButtonElementIdx = 0
+
+	For nElement = mnNumElements to 1 Step - 1
+		If sTabName = marrTabNames(nElement) Then
+			If sGroupName = marrGroupNames(nElement) Then
+				If sDropDButtonName = marrSplitButtonNames(nElement) Then
+					If marrControlTypes(nElement) = ControlType_DropDownButton Then
+						RBNGetPrevDropDButtonElementIdx = nElement
+						Exit Function
+					End If
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetPrevDropDButtonElementIdx")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetPrevDropDButtonGroupElementIdx( ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sDropDButtonName As String
+									, ByVal sDropDButtonGroupName As String
+									) As Integer
+
+Dim	nElement As Integer
+
+OnError GoTo ErrorOccured
+
+RBNGetPrevDropDButtonGroupElementIdx = 0
+
+'	Call DEBUGPrint("Max Elements: " & mnNumElements)
+	For nElement = mnNumElements to 1 Step - 1
+		If sTabName = marrTabNames(nElement) Then
+			If sGroupName = marrGroupNames(nElement) Then
+				If sDropDButtonName = marrSplitButtonNames(nElement) Then
+					If sDropDButtonGroupName = marrSplitButtonGroupNames(nElement) Then
+						If marrControlTypes(nElement) = ControlType_DropDownMenuGroup Then
+							RBNGetPrevDropDButtonGroupElementIdx = nElement
+							Exit Function
+						End If
+					End If
+				End If
+			End If
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetPrevDropDButtonGroupElementIdx")
+	Call ERRShow()
+
+End Function
+
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
