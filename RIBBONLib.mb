@@ -3568,7 +3568,7 @@ RBNDropDButtonAddGroup = 0
 
 	nPrevIdx = RBNGetPrevDropDButtonElementIdx(sTabName, sGroupName, sDropDButtonName)
 	If nPrevIdx > 0 Then
-		nCtrl = 	RBNDropDButtonAddGroupIdx(sDropDButtonGroupName, sCaption, sTabName, sGroupName, nPrevIdx)
+		RBNDropDButtonAddGroup	= RBNDropDButtonAddGroupIdx(sDropDButtonGroupName, sCaption, sTabName, sGroupName, nPrevIdx)
 		Exit Function
 	End If
 
@@ -3933,7 +3933,7 @@ RBNDropDButtonGroupAddControl = 0
 	nPrevIdx = RBNGetPrevDropDButtonGroupElementIdx(sTabName, sGroupName, sDropDButtonName, sDropDButtonGroupName)
 	If nPrevIdx > 0 Then
 		Call DEBUGPrint("Found DropDButtonGroup as #" & nPrevIdx)
-		nCtrl = 	RBNDropDButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, nPrevIdx)
+		RBNDropDButtonGroupAddControl	= RBNDropDButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, nPrevIdx)
 		Exit Function
 	End If
 
