@@ -325,6 +325,8 @@
 '							- RBNDropDButtonAddGroupIdx() As Integer
 '							- RBNDropDButtonGroupAddControlThs(...) As Integer
 '							- RBNDropDButtonGroupAddControlIdx(...) As Integer
+'	14-04-2018 16:11:03		- Commented out a number of lines where a This or RefPtr variable was set equal to NULL_PTR
+'							This removed a number of errors occuring when running tools in MapInfo Pro 17.0
 '*****************************************************************************************************************************
 
 

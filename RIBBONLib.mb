@@ -274,7 +274,7 @@ RBNAddTab = 0
 
 	'Add a new Tab to theTabsColl collection
 	marrParentControlColls(nCtrl)	= theTabsColl
-	marrControls(nCtrl) 		= RbnTabCollAddStrStr(theTabsColl, sTabName, sCaption)
+	marrControls(nCtrl) 		= RbnTabCollAddStrStr(marrParentControlColls(nCtrl), sTabName, sCaption)
 
 	If sKeytip <> "" Then
 		'Set the KeyTip for the RibbonTab. KeyTip: The keyboard shortcut for
@@ -321,7 +321,7 @@ RBNRemoveTab = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab		= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -415,8 +415,8 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound 	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound 	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -546,8 +546,8 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound 	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound 	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -618,8 +618,8 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound 	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound 	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -697,7 +697,7 @@ RBNGetTabIndex = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sTabName Then
 			RBNGetTabIndex	= i
-			rbnTabItem	= NULL_PTR
+'			rbnTabItem	= NULL_PTR
 
 			Exit Function
 		End If
@@ -705,7 +705,7 @@ RBNGetTabIndex = RBN_ELEMENT_NOT_FOUND
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabItem		= NULL_PTR
+'	rbnTabItem		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -757,8 +757,8 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound 	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound 	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -822,15 +822,13 @@ RBNTabGetNameFromCaption = ""
 
 		If sCaption = sTabCaption Then
 			RBNTabGetNameFromCaption	= sName
-			rbnTabItem	= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabItem		= NULL_PTR
+'	rbnTabItem		= NULL_PTR
 	Exit Function
 '-------------------------
 ErrorOccured:
@@ -870,9 +868,9 @@ RBNTabNumGroups = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound	= NULL_PTR
-	rbnTab		= NULL_PTR
-	rbnGroupsColl	= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -907,7 +905,8 @@ RBNTabAddGroup = 0
 	Call RBNInitiate
 
 	nPrevIdx	= RBNGetPrevTabElementIdx(sTabName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
+		Call DEBUGPrint("RBNTabAddGroup Calling RBNTabAddGroupIdx, nRevIdx=" & nPrevIdx)
 		RBNTabAddGroup	= RBNTabAddGroupIdx(sGroupName, sCaption, nPrevIdx)
 		Exit Function
 	End If
@@ -922,8 +921,8 @@ RBNTabAddGroup = 0
 		marrParentControlColls(nCtrl)	= GetRbnTabGrps(rbnTab)
 
 		'Add a new group.
-		'marrControls(nCtrl)			= RbnCtrlGrpCollAddStrStr(rbnGroupsColl, sGroupName, sCaption)
-		marrControls(nCtrl)			= RbnCtrlGrpCollAddStrStr(marrParentControlColls(nCtrl), sGroupName, sCaption)
+		'marrControls(nCtrl)	= RbnCtrlGrpCollAddStrStr(rbnGroupsColl, sGroupName, sCaption)
+		marrControls(nCtrl)		= RbnCtrlGrpCollAddStrStr(marrParentControlColls(nCtrl), sGroupName, sCaption)
 
 		'Disable the RibbonDialogLauncher. (A RibbonDialogLauncher is displayed in the
 		'lower-right corner of a group by default.)
@@ -935,9 +934,9 @@ RBNTabAddGroup = 0
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
 '	rbnGroupsColl	= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1004,6 +1003,7 @@ Function RBNTabAddGroupIdx(	  ByVal sGroupName As String
 
 OnError GoTo ErrorOccured
 
+	Call DEBUGPrint("RBNTabAddGroupThs, Value of nTabIdx: " & nTabIdx & " Num Controls: " & Ubound(marrControls))
 	RBNTabAddGroupIdx = RBNTabAddGroupThs(sGroupName, sCaption, marrControls(nTabIdx))
 
 	Exit Function
@@ -1056,11 +1056,11 @@ RBNTabGroupRemove = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup		= NULL_PTR
-	rbnGroupsColl	= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnGroup		= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1102,7 +1102,7 @@ RBNTabGetGroupThs = FALSE
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
 '	rbnGroupItem	= NULL_PTR
 
 	Exit Function
@@ -1140,8 +1140,8 @@ RBNTabGetGroup = FALSE
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab		= NULL_PTR
-	rbnTabFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1177,8 +1177,8 @@ RBNTabGetGroupIndex = RBN_ELEMENT_NOT_FOUND
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1222,19 +1222,14 @@ RBNTabGetGroupIndexThs = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sGroupName Then
 			RBNTabGetGroupIndexThs	= i
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnGroupsColl		= NULL_PTR
-			rbnGroupItem		= NULL_PTR
-			Exit Function
+			Exit For
 		End If
 	Next
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl	= NULL_PTR
-	rbnGroupItem	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
+'	rbnGroupItem	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1323,11 +1318,11 @@ RBNGroupNumControls = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound		= NULL_PTR
-	rbnGroupFound		= NULL_PTR
-	rbnTab			= NULL_PTR
-	rbnGroup			= NULL_PTR
-	rbnControlsColl	= NULL_PTR
+'	rbnTabFound		= NULL_PTR
+'	rbnGroupFound		= NULL_PTR
+'	rbnTab			= NULL_PTR
+'	rbnGroup			= NULL_PTR
+'	rbnControlsColl	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1388,10 +1383,10 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
-	rbnGroup		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
+'	rbnGroup		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -1531,10 +1526,10 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup		= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnGroup		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -1615,10 +1610,10 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup		= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnGroup		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -1699,10 +1694,10 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup		= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnGroup		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Sub
 '-------------------------
@@ -1741,7 +1736,7 @@ RBNGroupAddControl = 0
 	Call RBNInitiate
 
 	nPrevIdx	= RBNGetPrevGroupElementIdx(sTabName, sGroupName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
 '		Call DEBUGPrint("Found Group " & sTabName & "|" & sGroupName & " as element " & nPrevIdx)
 		RBNGroupAddControl	= RBNGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, nPrevIdx)
 		Exit Function
@@ -1777,11 +1772,11 @@ RBNGroupAddControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup		= NULL_PTR
 '	rbnGroupsColl	= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroup		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1815,7 +1810,7 @@ RBNGroupAddControlThs = 0
 
 	Call RBNInitiate
 
-'	Call DEBUGPrint("RBNGroupAddControlThs, Value of rbnGroup: " & rbnGroup)
+	Call DEBUGPrint("RBNGroupAddControlThs, Value of rbnGroup: " & rbnGroup)
 	sGroupName				= GetRbnCtrlGrpName(rbnGroup)
 	nCtrl 					= RBNAddElement(sTabName, sGroupName, "", "", sControlName, nControlType, 0)
 
@@ -1919,11 +1914,11 @@ RBNGroupRemoveControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup		= NULL_PTR
-	rbnGroupsColl	= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnGroup		= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -1963,7 +1958,7 @@ RBNGroupInsertControl = 0
 	Call RBNInitiate
 
 	nPrevIdx	= RBNGetPrevGroupElementIdx(sTabName, sGroupName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
 		RBNGroupInsertControl	= RBNGroupInsertControlIdx(sControlName, sCaption, sKeytip, nControlType, nPrevIdx, nPosition)
 		Exit Function
 	End If
@@ -1997,11 +1992,11 @@ RBNGroupInsertControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroup 		= NULL_PTR
+'	rbnGroup 		= NULL_PTR
 '	rbnGroupsColl	= NULL_PTR
-	rbnTabFound	= NULL_PTR
-	rbnGroupFound	= NULL_PTR
-	rbnTab		= NULL_PTR
+'	rbnTabFound	= NULL_PTR
+'	rbnGroupFound	= NULL_PTR
+'	rbnTab		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -2604,10 +2599,10 @@ RBNGroupGetControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab			= NULL_PTR
-	rbnGroup			= NULL_PTR
-	rbnTabFound		= NULL_PTR
-	rbnGroupFound		= NULL_PTR
+'	rbnTab			= NULL_PTR
+'	rbnGroup			= NULL_PTR
+'	rbnTabFound		= NULL_PTR
+'	rbnGroupFound		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -2648,7 +2643,7 @@ RBNGroupGetControlThs = FALSE
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnControlsColl	= NULL_PTR
+'	rbnControlsColl	= NULL_PTR
 '	rbnControlItem		= NULL_PTR
 
 	Exit Function
@@ -2692,20 +2687,14 @@ RBNGroupGetControlIndexThs = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sControlName Then
 			RBNGroupGetControlIndexThs	= i
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnControlsColl		= NULL_PTR
-			rbnControlItem			= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnControlsColl	= NULL_PTR
-	rbnControlItem		= NULL_PTR
+'	rbnControlsColl	= NULL_PTR
+'	rbnControlItem		= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -2748,7 +2737,8 @@ RBNMICtrlCollAddControlThs = 0
 
 	'Get Group controls collection
 	marrParentControlColls(nCtrl) = rbnCtrlColl
-	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnCtrlColl, sControlName, sCaption, nControlType)
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+'	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnCtrlColl, sControlName, sCaption, nControlType)
 	Call SetMICtrlHorzAlign(marrControls(nCtrl), Horiz_Align_Left)
 
 	If sKeytip <> "" Then
@@ -2843,13 +2833,13 @@ RBNSplitButtonNumGroups = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab			= NULL_PTR
-	rbnGroup			= NULL_PTR
-	rbnSplitButton		= NULL_PTR
-	rbnGroupsColl		= NULL_PTR
-	rbnTabFound		= NULL_PTR
-	rbnGroupFound		= NULL_PTR
-	rbnControlFound	= NULL_PTR
+'	rbnTab			= NULL_PTR
+'	rbnGroup			= NULL_PTR
+'	rbnSplitButton		= NULL_PTR
+'	rbnGroupsColl		= NULL_PTR
+'	rbnTabFound		= NULL_PTR
+'	rbnGroupFound		= NULL_PTR
+'	rbnControlFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -2890,7 +2880,7 @@ RBNSplitButtonAddGroup = 0
 	Call RBNInitiate
 
 	nPrevIdx	= RBNGetPrevSplitButtonElementIdx(sTabName, sGroupName, sSplitButtonName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
 		RBNSplitButtonAddGroup	= RBNSplitButtonAddGroupIdx(sSplitButtonGroupName, sCaption, nPrevIdx)
 		Exit Function
 	End If
@@ -2933,13 +2923,13 @@ RBNSplitButtonAddGroup = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab 			= NULL_PTR
-	rbnGroup 			= NULL_PTR
-	rbnSplitButton 	= NULL_PTR
-	rbnGroupsColl 		= NULL_PTR
-	rbnTabFound 		= NULL_PTR
-	rbnGroupFound 		= NULL_PTR
-	rbnControlFound 	= NULL_PTR
+'	rbnTab 			= NULL_PTR
+'	rbnGroup 			= NULL_PTR
+'	rbnSplitButton 	= NULL_PTR
+'	rbnGroupsColl 		= NULL_PTR
+'	rbnTabFound 		= NULL_PTR
+'	rbnGroupFound 		= NULL_PTR
+'	rbnControlFound 	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3078,14 +3068,14 @@ RBNSplitButtonGroupRemove = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab				= NULL_PTR
-	rbnGroup				= NULL_PTR
-	rbnGroupsColl			= NULL_PTR
-	rbnSplitButton			= NULL_PTR
-	rbnTabFound			= NULL_PTR
-	rbnGroupFound			= NULL_PTR
-	rbnControlFound		= NULL_PTR
-	rbnControlGroupFound	= NULL_PTR
+'	rbnTab				= NULL_PTR
+'	rbnGroup				= NULL_PTR
+'	rbnGroupsColl			= NULL_PTR
+'	rbnSplitButton			= NULL_PTR
+'	rbnTabFound			= NULL_PTR
+'	rbnGroupFound			= NULL_PTR
+'	rbnControlFound		= NULL_PTR
+'	rbnControlGroupFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3127,7 +3117,7 @@ RBNSplitButtonGetGroupThs = FALSE
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl 	= NULL_PTR
+'	rbnGroupsColl 	= NULL_PTR
 '	rbnGroupItem 	= NULL_PTR
 
 	Exit Function
@@ -3171,20 +3161,14 @@ RBNSplitButtonGetGroupIndexThs = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sGroupName AND nCtrlType = ControlType_DropDownMenuGroup Then
 			RBNSplitButtonGetGroupIndexThs	= i
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnGroupsColl				= NULL_PTR
-			rbnGroupItem				= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl	= NULL_PTR
-	rbnGroupItem	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
+'	rbnGroupItem	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3254,7 +3238,7 @@ RBNSplitButtonGroupAddControl = 0
 	Call RBNInitiate
 
 	nPrevIdx	= RBNGetPrevSplitButtonGroupElementIdx(sTabName, sGroupName, sSplitButtonName, sSplitButtonGroupName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
 		RBNSplitButtonGroupAddControl	= RBNSplitButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, nPrevIdx)
 		Exit Function
 	End If
@@ -3294,15 +3278,15 @@ RBNSplitButtonGroupAddControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab 				= NULL_PTR
-	rbnGroup 				= NULL_PTR
-	rbnSplitButton 		= NULL_PTR
-	rbnSplitButtonGroup 	= NULL_PTR
-	rbnControlsColl 		= NULL_PTR
-	rbnTabFound 			= NULL_PTR
-	rbnGroupFound 			= NULL_PTR
-	rbnControlFound 		= NULL_PTR
-	rbnControlGroupFound 	= NULL_PTR
+'	rbnTab 				= NULL_PTR
+'	rbnGroup 				= NULL_PTR
+'	rbnSplitButton 		= NULL_PTR
+'	rbnSplitButtonGroup 	= NULL_PTR
+'	rbnControlsColl 		= NULL_PTR
+'	rbnTabFound 			= NULL_PTR
+'	rbnGroupFound 			= NULL_PTR
+'	rbnControlFound 		= NULL_PTR
+'	rbnControlGroupFound 	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3453,16 +3437,16 @@ RBNSplitButtonGroupRemoveControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab				= NULL_PTR
-	rbnGroup				= NULL_PTR
-	rbnSplitButton			= NULL_PTR
-	rbnSplitButtonGroup		= NULL_PTR
-	rbnControlsColl		= NULL_PTR
-	rbnControlItem			= NULL_PTR
-	rbnTabFound			= NULL_PTR
-	rbnGroupFound			= NULL_PTR
-	rbnControlFound		= NULL_PTR
-	rbnControlGroupFound	= NULL_PTR
+'	rbnTab				= NULL_PTR
+'	rbnGroup				= NULL_PTR
+'	rbnSplitButton			= NULL_PTR
+'	rbnSplitButtonGroup		= NULL_PTR
+'	rbnControlsColl		= NULL_PTR
+'	rbnControlItem			= NULL_PTR
+'	rbnTabFound			= NULL_PTR
+'	rbnGroupFound			= NULL_PTR
+'	rbnControlFound		= NULL_PTR
+'	rbnControlGroupFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3521,13 +3505,13 @@ RBNDropDButtonNumGroups = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab			= NULL_PTR
-	rbnGroup			= NULL_PTR
-	rbnDropDButton		= NULL_PTR
-	rbnGroupsColl		= NULL_PTR
-	rbnTabFound		= NULL_PTR
-	rbnGroupFound		= NULL_PTR
-	rbnControlFound	= NULL_PTR
+'	rbnTab			= NULL_PTR
+'	rbnGroup			= NULL_PTR
+'	rbnDropDButton		= NULL_PTR
+'	rbnGroupsColl		= NULL_PTR
+'	rbnTabFound		= NULL_PTR
+'	rbnGroupFound		= NULL_PTR
+'	rbnControlFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3567,7 +3551,7 @@ RBNDropDButtonAddGroup = 0
 	Call RBNInitiate
 
 	nPrevIdx = RBNGetPrevDropDButtonElementIdx(sTabName, sGroupName, sDropDButtonName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
 		RBNDropDButtonAddGroup	= RBNDropDButtonAddGroupIdx(sDropDButtonGroupName, sCaption, sTabName, sGroupName, nPrevIdx)
 		Exit Function
 	End If
@@ -3608,13 +3592,13 @@ RBNDropDButtonAddGroup = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab 			= NULL_PTR
-	rbnGroup 			= NULL_PTR
-	rbnDropDButton 	= NULL_PTR
-	rbnGroupsColl 		= NULL_PTR
-	rbnTabFound 		= NULL_PTR
-	rbnGroupFound 		= NULL_PTR
-	rbnControlFound 	= NULL_PTR
+'	rbnTab 			= NULL_PTR
+'	rbnGroup 			= NULL_PTR
+'	rbnDropDButton 	= NULL_PTR
+'	rbnGroupsColl 		= NULL_PTR
+'	rbnTabFound 		= NULL_PTR
+'	rbnGroupFound 		= NULL_PTR
+'	rbnControlFound 	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3755,14 +3739,14 @@ RBNDropDButtonGroupRemove = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab				= NULL_PTR
-	rbnGroup				= NULL_PTR
-	rbnGroupsColl			= NULL_PTR
-	rbnDropDButton			= NULL_PTR
-	rbnTabFound			= NULL_PTR
-	rbnGroupFound			= NULL_PTR
-	rbnControlFound		= NULL_PTR
-	rbnControlGroupFound	= NULL_PTR
+'	rbnTab				= NULL_PTR
+'	rbnGroup				= NULL_PTR
+'	rbnGroupsColl			= NULL_PTR
+'	rbnDropDButton			= NULL_PTR
+'	rbnTabFound			= NULL_PTR
+'	rbnGroupFound			= NULL_PTR
+'	rbnControlFound		= NULL_PTR
+'	rbnControlGroupFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3804,7 +3788,7 @@ RBNDropDButtonGetGroupThs = FALSE
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl 	= NULL_PTR
+'	rbnGroupsColl 	= NULL_PTR
 '	rbnGroupItem 	= NULL_PTR
 
 	Exit Function
@@ -3848,20 +3832,14 @@ RBNDropDButtonGetGroupIndexThs = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sGroupName AND nCtrlType = ControlType_DropDownMenuGroup Then
 			RBNDropDButtonGetGroupIndexThs	= i
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnGroupsColl				= NULL_PTR
-			rbnGroupItem				= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnGroupsColl	= NULL_PTR
-	rbnGroupItem	= NULL_PTR
+'	rbnGroupsColl	= NULL_PTR
+'	rbnGroupItem	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -3931,7 +3909,7 @@ RBNDropDButtonGroupAddControl = 0
 	Call RBNInitiate
 
 	nPrevIdx = RBNGetPrevDropDButtonGroupElementIdx(sTabName, sGroupName, sDropDButtonName, sDropDButtonGroupName)
-	If nPrevIdx > 0 Then
+	If nPrevIdx > 0 and mnNumElements > 0 Then
 		Call DEBUGPrint("Found DropDButtonGroup as #" & nPrevIdx)
 		RBNDropDButtonGroupAddControl	= RBNDropDButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, nPrevIdx)
 		Exit Function
@@ -3972,15 +3950,15 @@ RBNDropDButtonGroupAddControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab 				= NULL_PTR
-	rbnGroup 				= NULL_PTR
-	rbnDropDButton 		= NULL_PTR
-	rbnDropDButtonGroup 	= NULL_PTR
-	rbnControlsColl 		= NULL_PTR
-	rbnTabFound 			= NULL_PTR
-	rbnGroupFound 			= NULL_PTR
-	rbnControlFound 		= NULL_PTR
-	rbnControlGroupFound 	= NULL_PTR
+'	rbnTab 				= NULL_PTR
+'	rbnGroup 				= NULL_PTR
+'	rbnDropDButton 		= NULL_PTR
+'	rbnDropDButtonGroup 	= NULL_PTR
+'	rbnControlsColl 		= NULL_PTR
+'	rbnTabFound 			= NULL_PTR
+'	rbnGroupFound 			= NULL_PTR
+'	rbnControlFound 		= NULL_PTR
+'	rbnControlGroupFound 	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -4131,16 +4109,16 @@ RBNDropDButtonGroupRemoveControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab				= NULL_PTR
-	rbnGroup				= NULL_PTR
-	rbnDropDButton			= NULL_PTR
-	rbnDropDButtonGroup		= NULL_PTR
-	rbnControlsColl		= NULL_PTR
-	rbnControlItem			= NULL_PTR
-	rbnTabFound			= NULL_PTR
-	rbnGroupFound			= NULL_PTR
-	rbnControlFound		= NULL_PTR
-	rbnControlGroupFound	= NULL_PTR
+'	rbnTab				= NULL_PTR
+'	rbnGroup				= NULL_PTR
+'	rbnDropDButton			= NULL_PTR
+'	rbnDropDButtonGroup		= NULL_PTR
+'	rbnControlsColl		= NULL_PTR
+'	rbnControlItem			= NULL_PTR
+'	rbnTabFound			= NULL_PTR
+'	rbnGroupFound			= NULL_PTR
+'	rbnControlFound		= NULL_PTR
+'	rbnControlGroupFound	= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -4230,13 +4208,7 @@ RBNGalleryGetGroupIndexThs = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sGroupName Then
 			RBNGalleryGetGroupIndexThs	= i
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnGroupsColl		= NULL_PTR
-			rbnGroupItem		= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
@@ -4309,12 +4281,7 @@ RBNCollectionGetControlIndexThs = RBN_ELEMENT_NOT_FOUND
 
 		If sName = sControlName Then
 			RBNCollectionGetControlIndexThs	= i
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnControlItem				= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
@@ -4368,13 +4335,7 @@ RBNGetContextGroup = FALSE
 		If sName = sGroupName Then
 			rbnGroupFound		= rbnGroupItem
 			RBNGetContextGroup	= TRUE
-
-			'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
-			'This is necessary to avoid memory leaks and unnecessary variable references.
-			rbnGroupsColl		= NULL_PTR
-'			rbnGroupItem		= NULL_PTR
-
-			Exit Function
+			Exit For
 		End If
 	Next
 
@@ -4489,7 +4450,14 @@ RBNToolContextMenuAddMenuItem = 0
 
 	nCtrl 					= RBNAddElement("ToolContextMenu", "", "", "", sControlName, nCtrlType, 0)
 	marrParentControlColls(nCtrl)	= theToolContextMenuItemsColl
-	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(theToolContextMenuItemsColl, sControlName, "", nCtrlType)
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nCtrlType)
+'	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(theToolContextMenuItemsColl, sControlName, sCaption, nCtrlType)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
+		'A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetMICtrlKeyTip(marrControls(nCtrl), sKeytip)
+	End If
 
 	RBNToolContextMenuAddMenuItem = nCtrl
 	Exit Function
@@ -5254,7 +5222,8 @@ RBNMapMTBAddControl = 0
 
 	nCtrl 					= RBNAddElement("MapMiniToolbar", "", "", "", sControlName, nControlType, 0)
 	marrParentControlColls(nCtrl)	= theMapMTBControlsColl
-	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(theMapMTBControlsColl, sControlName, sCaption, nControlType)
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+'	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(theMapMTBControlsColl, sControlName, sCaption, nControlType)
 
 	If sKeytip <> "" Then
 		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
@@ -5296,7 +5265,8 @@ RBNMapMTBInsertControl = 0
 
 	nCtrl 					= RBNAddElement("MapMiniToolbar", "", "", "", sControlName, nControlType, 0)
 	marrParentControlColls(nCtrl)	= theMapMTBControlsColl
-	marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(theMapMTBControlsColl, nPosition, sControlName, sCaption, nControlType)
+	marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(marrParentControlColls(nCtrl), nPosition, sControlName, sCaption, nControlType)
+'	marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(theMapMTBControlsColl, nPosition, sControlName, sCaption, nControlType)
 
 	If sKeytip <> "" Then
 		'Set the KeyTip for the Control. KeyTip: The keyboard shortcut for the Control.
@@ -7355,6 +7325,10 @@ OnError GoTo ErrorOccured
 
 RBNGetPrevTabElementIdx = 0
 
+	If mnNumElements = 0 Then
+		Exit Sub
+	End If
+
 '	Call DEBUGPrint("RBNGetPrevTabElementIdx: " & sTabName)
 	For nElement = mnNumElements To 1 Step -1
 		If sTabName = marrTabNames(nElement) Then
@@ -7389,6 +7363,10 @@ Dim	nElement As Integer
 OnError GoTo ErrorOccured
 
 RBNGetPrevGroupElementIdx = 0
+
+	If mnNumElements = 0 Then
+		Exit Sub
+	End If
 
 '	Call DEBUGPrint("RBNGetPrevGroupElementIdx: " & sTabName & " | " & sGroupName)
 '	Call DEBUGPrint("   Max Elements: " & mnNumElements)
@@ -7429,6 +7407,10 @@ OnError GoTo ErrorOccured
 
 RBNGetPrevSplitButtonElementIdx = 0
 
+	If mnNumElements = 0 Then
+		Exit Sub
+	End If
+
 	For nElement = mnNumElements to 1 Step - 1
 		If sTabName = marrTabNames(nElement) Then
 			If sGroupName = marrGroupNames(nElement) Then
@@ -7468,6 +7450,10 @@ Dim	nElement As Integer
 OnError GoTo ErrorOccured
 
 RBNGetPrevSplitButtonGroupElementIdx = 0
+
+	If mnNumElements = 0 Then
+		Exit Sub
+	End If
 
 	For nElement = mnNumElements to 1 Step - 1
 		If sTabName = marrTabNames(nElement) Then
@@ -7510,6 +7496,10 @@ OnError GoTo ErrorOccured
 
 RBNGetPrevDropDButtonElementIdx = 0
 
+	If mnNumElements = 0 Then
+		Exit Sub
+	End If
+
 	For nElement = mnNumElements to 1 Step - 1
 		If sTabName = marrTabNames(nElement) Then
 			If sGroupName = marrGroupNames(nElement) Then
@@ -7550,6 +7540,10 @@ OnError GoTo ErrorOccured
 
 RBNGetPrevDropDButtonGroupElementIdx = 0
 
+	If mnNumElements = 0 Then
+		Exit Sub
+	End If
+
 '	Call DEBUGPrint("Max Elements: " & mnNumElements)
 	For nElement = mnNumElements to 1 Step - 1
 		If sTabName = marrTabNames(nElement) Then
@@ -7583,12 +7577,13 @@ End Function
 Sub RBNClearCustomRibbonElements
 
 Dim	bRemoved as Logical,
-	i, nResult, nTabIndex, nGroupIndex, nContextMenuID As Integer,
-	rbnTab As This,
-	rbnGroupsColl As This,
-	rbnGroupItem As This,
-	rbnControlsColl As This,
-	rbnControl As RefPtr
+	i As Integer
+'	, nResult, nTabIndex, nGroupIndex, nContextMenuID As Integer,
+'	rbnTab As This,
+'	rbnGroupsColl As This,
+'	rbnGroupItem As This,
+'	rbnControlsColl As This,
+'	rbnControl As RefPtr
 
 OnError GoTo ErrorOccured
 
@@ -7600,15 +7595,15 @@ OnError GoTo ErrorOccured
 '	Call DEBUGPrint("Removing Controls from the ribbon")
 	For i = mnNumElements To 1 Step -1
 		If marrControlTypes(i) = CONTROL_TYPE_RLIB_TAB Then
-'			Call DEBUGPrint(i & " Removing tab " & marrTabNames(i) & " of type " & marrControlTypes(i))
+			Call DEBUGPrint(i & " Removing tab " & marrTabNames(i) & " of type " & marrControlTypes(i))
 '			Call DEBUGPrint("    from list of " & GetRbnTabCollCount(marrParentControlColls(i)) & " elements")
 			bRemoved = RbnTabCollRemove(theTabsColl, marrControls(i))
 		ElseIf marrControlTypes(i) = CONTROL_TYPE_RLIB_GROUP Then
-'			Call DEBUGPrint(i & " Removing group " & marrGroupNames(i) & " of type " & marrControlTypes(i))
+			Call DEBUGPrint(i & " Removing group " & marrGroupNames(i) & " of type " & marrControlTypes(i))
 '			Call DEBUGPrint("    from list of " & GetRbnCtrlGrpCollCount(marrParentControlColls(i)) & " elements")
 			bRemoved = RbnCtrlGrpCollRemove(marrParentControlColls(i), marrControls(i))
 		Else
-'			Call DEBUGPrint(i & " Removing control " & marrControlNames(i) & " of type " & marrControlTypes(i))
+			Call DEBUGPrint(i & " Removing control " & marrControlNames(i) & " of type " & marrControlTypes(i))
 '			Call DEBUGPrint("    from list of " & GetMICtrlCollCount(marrParentControlColls(i)) & " elements")
 			bRemoved = MICtrlCollRemove(marrParentControlColls(i), marrControls(i))
 		End If
@@ -7686,17 +7681,38 @@ OnError GoTo ErrorOccured
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnTab			= NULL_PTR
-	rbnGroupsColl		= NULL_PTR
-	rbnGroupItem		= NULL_PTR
-	rbnControlsColl	= NULL_PTR
-	rbnControl		= NULL_PTR
+'	rbnTab			= NULL_PTR
+'	rbnGroupsColl		= NULL_PTR
+'	rbnGroupItem		= NULL_PTR
+'	rbnControlsColl	= NULL_PTR
+'	rbnControl		= NULL_PTR
 
 	Exit Sub
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNClearCustomRibbonElements: Ctrl Group Index: " & i & " Tab: " & marrTabNames(i) & ", Group: " & marrGroupNames(i) & ", Control: " & marrControlNames(i))
-	Call ERRShow()
+	Call ERRPrint()
+	If ERRGetLatestErrorNo() In (1660, 1666) Then
+		Do Case marrControlTypes(i)
+			Case CONTROL_TYPE_RLIB_TAB
+				Call DEBUGPrint(i & " Removing tab (Error Handling) " & marrTabNames(i) & " of type " & marrControlTypes(i))
+				bRemoved = (RBNRemoveTab(marrTabNames(i)) > 0)
+			Case CONTROL_TYPE_RLIB_GROUP
+				Call DEBUGPrint(i & " Removing group (Error Handling) " & marrGroupNames(i) & " of type " & marrControlTypes(i))
+				bRemoved = (RBNTabGroupRemove(marrGroupNames(i), marrTabNames(i)) > 0)
+			Case Else
+				If marrTabNames(i) = "MapMiniToolbar" Then
+					Call DEBUGPrint(i & " Removing MTB control (Error Handling) " & marrControlNames(i) & " of type " & marrControlTypes(i))
+					bRemoved = MICtrlCollRemove(theMapMTBControlsColl, marrControls(i))
+				Else
+					Call DEBUGPrint(i & " Removing control (Error Handling) " & marrControlNames(i) & " of type " & marrControlTypes(i))
+					bRemoved = (RBNGroupRemoveControl(marrControlNames(i), marrTabNames(i), marrGroupNames(i)) > 0)
+				End If
+		End Case
+	Else
+		Print "Latest error: " & ERRGetLatestErrorNo()
+		Call ERRShow()
+	End If
 	Resume Next
 
 End Sub
@@ -7722,7 +7738,7 @@ OnError GoTo ErrorOccured
 	theMapInfoEvents			= NULL_PTR
 	theStatusbar				= NULL_PTR
 	theRibbon					= NULL_PTR
-	theQAT						= NULL_PTR
+	theQAT					= NULL_PTR
 	theToolContextMenu			= NULL_PTR
 	theTabsColl				= NULL_PTR
 	theToolContextMenuItemsColl	= NULL_PTR
