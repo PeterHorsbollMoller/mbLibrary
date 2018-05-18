@@ -1,7 +1,7 @@
-Declare Function DLGSelectTable(	  ByVal nTypesToUse As Integer
-							, ByVal sTitle As String
-							, ByVal sTitleList As String
-							, ByVal sOpenButtonTitle As String
-							, ByVal bAllowUserToOpen As Logical
-							, ByVal sDefaultTableName As String
-							) As String
+Declare Function DLGSelectTable(	  ByVal nTypesToUse As Integer		'**Integer value determining what table types to show in the list
+							, ByVal sTitle As String				'**Dialog Title
+							, ByVal sTitleList As String			'**Title above the List of Tables
+							, ByVal sOpenButtonTitle As String		'**Title on the Open button
+							, ByVal bAllowUserToOpen As Logical	'**Can the User open additonal tables?
+							, ByVal sDefaultTableName As String	'**Preselected Table if Open
+							) As String						'**Returns the table selected or "" if dialog was cancelled
