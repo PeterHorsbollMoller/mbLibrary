@@ -1,0 +1,382 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Software
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\ARRAYLib.def"
+Include "..\COLUMNLib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\TABLELib.def"
+
+Include "DLGSelectTableAndColumn.def"
+
+Define	CTRL_LST_TABLES		100
+Define	CTRL_LST_COLUMNS		200
+Define	CTRL_CMD_OPEN_TABLES	300
+Define	CTRL_CMD_OK			1000
+
+Declare Sub DLGSTC_OnLoad
+Declare Sub DLGSTC_OKClicked
+Declare Sub DLGSTC_TableListClicked
+Declare Sub DLGSTC_ColumnListClicked
+Declare Sub DLGSTC_LoadTableList
+Declare Sub DLGSTC_LoadColumnList
+Declare Sub DLGSTC_OpenTablesClicked
+
+Dim	msTableName, msColumnName, msDefaultTableName, msDefaultColumnName As String,
+	mbAllowUserToOpen, mbUserDoubleClickedOnColumn, mbInitiatingDialog As Logical,
+	marrTableNames(), marrColumnNames() As String,
+	mnTableTypesToUse, mnColumnTypesToUse As Integer
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSelectTableAndColumn(	  ByVal nTableTypesToUse As Integer
+							, ByVal sTitle As String
+							, ByVal sTitleTableList As String
+							, ByVal sDefaultTableName As String
+							, ByVal nColumnTypesToUse As Integer
+							, ByVal sTitleColumnList As String
+							, ByVal sDefaultColumnName As String
+							, ByVal sOpenButtonTitle As String
+							, ByVal bAllowUserToOpen As Logical
+							) As Logical
+
+OnError GoTo ErrorOccured
+
+DLGSelectTableAndColumn = FALSE
+
+	mbAllowUserToOpen			= bAllowUserToOpen
+	mnTableTypesToUse			= nTableTypesToUse
+	msTableName				= ""
+	msDefaultTableName			= sDefaultTableName
+	mnColumnTypesToUse			= nColumnTypesToUse
+	msColumnName				= ""
+	msDefaultColumnName			= sDefaultColumnName
+	mbUserDoubleClickedOnColumn	= FALSE
+
+	Dialog
+		Title sTitle
+		Calling DLGSTC_OnLoad
+
+		Control StaticText		Position 5,5
+			Title sTitleTableList
+		Control PopupMenu		Position 5,15		ID CTRL_LST_TABLES
+			Width 150	'Height 120
+			Calling DLGSTC_TableListClicked
+
+		Control StaticText		Position 5,35
+			Title sTitleColumnList
+		Control Listbox		Position 5,45		ID CTRL_LST_COLUMNS
+			Width 150	Height 120
+			Calling DLGSTC_ColumnListClicked
+
+		Control OKButton		Position 170,15	ID CTRL_CMD_OK
+			Width 40
+			Calling DLGSTC_OKClicked
+		Control CancelButton	Position 170,30
+			Width 40
+
+		Control Button			Position 170,55	ID CTRL_CMD_OPEN_TABLES
+			Title sOpenButtonTitle
+			Calling DLGSTC_OpenTablesClicked
+			Width 40
+
+	If not CommandInfo(CMD_INFO_DLG_OK) Then
+		If NOT mbUserDoubleClickedOnColumn Then
+			msTableName	= ""
+			msColumnName	= ""
+			Exit Function
+		End If
+	End If
+
+	Print "DLGSelectTableAndColumn: " & msTableName & " (" & msColumnName & ")"
+	DLGSelectTableAndColumn = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSelectTableAndColumn")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_OnLoad
+
+Dim	nTable As Integer
+
+OnError GoTo ErrorOccured
+
+	mbInitiatingDialog	= TRUE
+
+	Alter Control CTRL_CMD_OK	Disable
+
+	If mbAllowUserToOpen Then
+		Alter Control CTRL_CMD_OPEN_TABLES	Show
+		Alter Control CTRL_CMD_OPEN_TABLES	Enable
+	Else
+		Alter Control CTRL_CMD_OPEN_TABLES	Hide
+		Alter Control CTRL_CMD_OPEN_TABLES	Disable
+	End If
+
+	Call DLGSTC_LoadTableList
+
+	If msDefaultTableName > "" Then
+		nTable = ARRAYFindValueString(marrTableNames, msDefaultTableName)
+		If nTable > 0 Then
+			Alter Control CTRL_LST_TABLES	Value nTable
+			Call DLGSTC_TableListClicked
+		End If
+	End If
+	If nTable = 0 Then
+		If Ubound(marrTableNames) > 0 Then
+			Alter Control CTRL_LST_TABLES	Value 1
+			Call DLGSTC_TableListClicked
+		End If
+	End If
+
+	mbInitiatingDialog = FALSE
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_OnLoad")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_OKClicked
+
+Dim	nTab, nCol As Integer
+
+OnError GoTo ErrorOccured
+
+	nTab	= ReadControlValue(CTRL_LST_TABLES)
+	If nTab = 0 Then
+		Dialog Preserve
+		Exit Sub
+	End If
+
+	msTableName	= marrTableNames(nTab)
+
+	nCol	= ReadControlValue(CTRL_LST_COLUMNS)
+	If nCol = 0 Then
+		Dialog Preserve
+		Exit Sub
+	End If
+
+	msColumnName	= marrColumnNames(nCol)
+'	Dialog Remove
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_OKClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_LoadTableList
+
+OnError GoTo ErrorOccured
+
+	Redim marrTableNames(0)
+	If TABGetListOfNames(mnTableTypesToUse, marrTableNames()) = 0 Then
+		ReDim marrTableNames(0)
+	End If
+
+	Alter Control CTRL_LST_TABLES	Title From Variable marrTableNames
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_LoadTableList")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_LoadColumnList
+
+OnError GoTo ErrorOccured
+
+	Redim marrColumnNames(0)
+	If COLGetListOfNames(msTableName, mnColumnTypesToUse, marrColumnNames()) Then
+
+	End If
+
+	Alter Control CTRL_LST_COLUMNS Title From Variable marrColumnNames
+'	Call DLGSTC_ColumnListClicked
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_LoadColumnList")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_TableListClicked
+
+Dim	nColumn As Integer
+
+OnError GoTo ErrorOccured
+
+	mbInitiatingDialog = TRUE
+
+	msTableName = marrTableNames(ReadControlValue(CTRL_LST_TABLES))
+	Call DLGSTC_LoadColumnList
+
+	If msDefaultColumnName > "" Then
+		nColumn = ARRAYFindValueString(marrColumnNames, msDefaultColumnName)
+		If nColumn > 0 Then
+			Alter Control CTRL_LST_COLUMNS	Value nColumn
+			Call DLGSTC_ColumnListClicked
+		End If
+	End If
+
+	mbInitiatingDialog = FALSE
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_TableListClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_ColumnListClicked
+
+Dim	nCol As Integer
+
+OnError GoTo ErrorOccured
+
+	nCol	= ReadControlValue(CTRL_LST_COLUMNS)
+	If nCol = 0 Then
+		Alter Control CTRL_CMD_OK	Disable
+	Else
+		Alter Control CTRL_CMD_OK	Enable
+	End If
+
+	msColumnName = marrColumnNames(ReadControlValue(CTRL_LST_COLUMNS))
+	If NOT mbInitiatingDialog Then
+		If CommandInfo(CMD_INFO_DLG_DBL) Then
+			mbUserDoubleClickedOnColumn = TRUE
+'			Call DLGSTC_OKClicked
+			Dialog Remove
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_ColumnListClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSTC_OpenTablesClicked
+
+OnError GoTo ErrorOccured
+
+	Run Menu Command M_FILE_OPEN
+	Call DLGSTC_LoadTableList
+
+	If Ubound(marrTableNames) > 0 Then
+		Alter Control CTRL_LST_TABLES	Value Ubound(marrTableNames)
+		Call DLGSTC_TableListClicked
+	End If
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTC_OpenTablesClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSTCGetTableName() As String
+
+OnError GoTo ErrorOccured
+
+	DLGSTCGetTableName = msTableName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTCGetTableName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSTCGetColumnName() As String
+
+OnError GoTo ErrorOccured
+
+	DLGSTCGetColumnName = msColumnName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSTCGetColumnName")
+	Call ERRShow()
+
+End Function
