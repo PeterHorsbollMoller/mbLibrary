@@ -327,6 +327,10 @@
 '							- RBNDropDButtonGroupAddControlIdx(...) As Integer
 '	14-04-2018 16:11:03		- Commented out a number of lines where a This or RefPtr variable was set equal to NULL_PTR
 '							This removed a number of errors occuring when running tools in MapInfo Pro 17.0
+'	22-06-2018 11:30:26		- Added:
+'							- RBNStatusbarAddControl(...) As Integer
+'							- RBNStatusbarRemoveControl(...) As Integer
+'						- Changed RBNAddElement/RemoveElement to support StatusBar
 '*****************************************************************************************************************************
 
 
@@ -392,6 +396,7 @@ Define		CONTROL_SIZE_LARGE		3
 Define		CONTROL_TYPE_RLIB_TAB		100
 Define		CONTROL_TYPE_RLIB_GROUP		101
 Define		CONTROL_TYPE_RLIB_CNTXT_MNU	200
+Define		CONTROL_TYPE_STATUSBAR		300
 
 Declare Method ObjectToString Class "System.Object" Lib "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" alias ToString (ByVal objectInstace As This) As String
 
@@ -1019,6 +1024,14 @@ Declare Function RBNGalleryGetGroupIndexThs(	  rbnGallery As This
 Declare Function RBNGalleryGroupExistsThs(	  rbnGallery As This
 									, ByVal sGroupName As String
 									) As Logical
+
+'** WORKING WITH STATUSBAR *************************************************************
+Declare Function RBNStatusbarAddControl(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNStatusbarRemoveControl(	  ByVal sControlName As String
+									) As Integer
 
 '** WORKING WITH COLLECTIONS ***************************************************************************
 Declare Function RBNCollectionGetControlIndexThs(	  rbnControlsColl As this

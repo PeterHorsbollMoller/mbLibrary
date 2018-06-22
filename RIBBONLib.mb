@@ -4248,6 +4248,83 @@ ErrorOccured:
 End Function
 
 '*******************************************************************************************************
+'** WORKING WITH STATUSBAR *************************************************************
+'*******************************************************************************************************
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNStatusbarAddControl(	  ByVal sControlName As String
+							, ByVal sCaption As String
+							, ByVal nControlType As Integer
+							) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNStatusbarAddControl = 0
+
+	Call RBNInitiate
+
+	nCtrl = RBNAddElement("Statusbar", "", "", "", "", nControlType, CONTROL_TYPE_STATUSBAR)
+
+	'Add a new Tab to theTabsColl collection
+	marrParentControlColls(nCtrl)	= GetIStatusBarCtrls(theStatusbar)
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+
+	RBNStatusbarAddControl = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNStatusbarAddControl")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNStatusbarRemoveControl(  ByVal sControlName As String
+							) As Integer
+
+Dim	nCtrl, nItem, nNumCntrls As Integer,
+	rbnControlsColl As This,
+	rbnControlItem As This
+
+OnError GoTo ErrorOccured
+
+RBNStatusbarRemoveControl = FALSE
+
+	rbnControlsColl	= GetCtrlGrpCtrls(rbnDropDButtonGroup)
+	nNumCntrls 		= GetMICtrlCollCount(rbnControlsColl)
+
+	For nItem = 0 To (nNumCntrls - 1)
+		rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, nItem)
+		If sControlName = GetMICtrlName(rbnControlItem) Then
+			Call MICtrlCollRemoveAt(rbnControlsColl, nItem)
+			nCtrl 					= RBNRemoveElement("Statusbar", "", "", "", sControlName)
+			RBNStatusbarRemoveControl	= nCtrl
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNStatusbarRemoveControl")
+	Call ERRShow()
+
+End Function
+
+'*******************************************************************************************************
 '** WORKING WITH COLLECTIONS *************************************************************************
 '*******************************************************************************************************
 
