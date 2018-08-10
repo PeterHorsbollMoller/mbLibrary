@@ -352,3 +352,49 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sInput: String to extract the specific word from
+'	nWordNo: The word number to extract from the inpt string, if -1 the function returns the last word
+'Return value:
+'	Returns the nth word from the input string where the words are separated with spaces
+'	Id the specified word number doesn't exist or if the input string is "", the function returns ""
+'**********************************************************************************************''
+Function STRINGLeftWord(	  ByVal sInput As String
+					, ByVal nWordNo As Integer
+					) As String		'Returns the nWordNo from the sInput
+
+Dim	arrInputs() As String,
+	nNumWords As Integer
+
+OnError GoTo ErrorOccured
+
+STRINGLeftWord = ""
+
+	If sInput = "" Then
+		Exit Function
+	End If
+
+	nNumWords = STRINGSplit(sInput, " ", arrInputs)
+	If nNumWords = 0 Then
+		Exit Function
+	End If
+	If nWordNo = -1 Then
+		STRINGLeftWord = arrInputs(nNumWords)
+		Exit Function
+	End If
+
+	If nWordNo <= nNumWords Then
+		STRINGLeftWord = arrInputs(nWordNo)
+		Exit Function
+	End if
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGLeftWord")
+	Call ERRShow()
+
+End Function

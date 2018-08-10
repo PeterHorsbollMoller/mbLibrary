@@ -51,3 +51,7 @@ Declare Function STRINGConcatenateWithSeparator(	  ByVal sFirst As String		'Firs
 										, ByVal sLast As String		'Last part of the concatenated string
 										, ByVal sSeparator As String	'Separator between the two string, only used if both are not equal to ""
 										) As String
+
+Declare Function STRINGLeftWord(	  ByVal sInput As String
+							, ByVal nWordNo As Integer
+							) As String		'Returns the nWordNo from the sInput
