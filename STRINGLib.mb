@@ -362,9 +362,9 @@ End Function
 '	Returns the nth word from the input string where the words are separated with spaces
 '	Id the specified word number doesn't exist or if the input string is "", the function returns ""
 '**********************************************************************************************''
-Function STRINGLeftWord(	  ByVal sInput As String
-					, ByVal nWordNo As Integer
-					) As String		'Returns the nWordNo from the sInput
+Function STRINGLeftWord(	  ByVal sInput As String		'The string to extract a specific word from
+					, ByVal nWordNo As Integer	'The Word to return from the input string
+					) As String				'Returns the nWordNo from the sInput
 
 Dim	arrInputs() As String,
 	nNumWords As Integer

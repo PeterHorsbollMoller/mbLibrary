@@ -5,6 +5,7 @@
 '	11.03.2013	- Added STRINGContainsOnlyNumbers(...) As Logical
 '	28-02-2015 	- Added STRINGReplacePosition(...) As Logical
 '	30-04-2015 	- Added STRINGConcatenateWithSeparator(...) As String
+'	10-08-2018 	- Added STRINGLeftWord(...) As String
 '**********************************************************************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -52,6 +53,6 @@ Declare Function STRINGConcatenateWithSeparator(	  ByVal sFirst As String		'Firs
 										, ByVal sSeparator As String	'Separator between the two string, only used if both are not equal to ""
 										) As String
 
-Declare Function STRINGLeftWord(	  ByVal sInput As String
-							, ByVal nWordNo As Integer
-							) As String		'Returns the nWordNo from the sInput
+Declare Function STRINGLeftWord(	  ByVal sInput As String		'The string to extract a specific word from
+							, ByVal nWordNo As Integer	'The Word to return from the input string
+							) As String				'Returns the nWordNo from the sInput
