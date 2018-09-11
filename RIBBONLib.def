@@ -330,6 +330,14 @@
 '	22-06-2018 11:30:26		- Added:
 '							- RBNStatusbarAddControl(...) As Integer
 '							- RBNStatusbarRemoveControl(...) As Integer
+'	11-09-2018 14:43:57		- Added:
+'							- RBNStatusbarInsertControl(...) As Integer
+'							- RBNStatusbarInsertControlAfter(...) As Integer
+'							- RBNStatusbarInsertControlBefore(...) As Integer
+'							- RBNStatusbarGetControlIndex(...) As Integer
+'							- theStatusbarControlsColl as a modular variable
+'						- Changed:
+'							- RBNControlSetCustomMBXHandlerThs now checks the length of the handler name/subprocedure
 '*****************************************************************************************************************************
 
 
@@ -1029,7 +1037,24 @@ Declare Function RBNStatusbarAddControl(	  ByVal sControlName As String
 									, ByVal sCaption As String
 									, ByVal nControlType As Integer
 									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNStatusbarInsertControl(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal nPosition As Integer
+									) As Integer
+Declare Function RBNStatusbarInsertControlAfter(	  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal nControlType As Integer
+										, ByVal sNameAfter As String
+										) As Integer
+Declare Function RBNStatusbarInsertControlBefore(	  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal nControlType As Integer
+										, ByVal sNameBefore As String
+										) As Integer
 Declare Function RBNStatusbarRemoveControl(	  ByVal sControlName As String
+									) As Integer
+Declare Function RBNStatusbarGetControlIndex(  ByVal sControlName As String
 									) As Integer
 
 '** WORKING WITH COLLECTIONS ***************************************************************************

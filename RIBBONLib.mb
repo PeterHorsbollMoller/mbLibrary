@@ -85,6 +85,7 @@ Dim	theMapInfoApplication As This,
 	theMapBasicApplication As This,
 	theMapInfoEvents As This,
 	theStatusbar As This,
+	theStatusbarControlsColl As This,
 	theRibbon As This,
 	theQAT As This,
 	theToolContextMenu As This,
@@ -207,6 +208,7 @@ OnError GoTo ErrorOccured
 	theRibbon 				= GetRibbon(theMapInfoApplication)
 	'Get the Statusbar
 	theStatusbar			= GetStatusBar(theMapInfoApplication)
+	theStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
 	'Get Tabs Collection
 	theTabsColl 			= GetTabsColl(theRibbon)
 	'Get the QAT
@@ -4273,7 +4275,7 @@ RBNStatusbarAddControl = 0
 	nCtrl = RBNAddElement("Statusbar", "", "", "", "", nControlType, CONTROL_TYPE_STATUSBAR)
 
 	'Add a new Tab to theTabsColl collection
-	marrParentControlColls(nCtrl)	= GetIStatusBarCtrls(theStatusbar)
+	marrParentControlColls(nCtrl)	= theStatusbarControlsColl
 	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
 
 	RBNStatusbarAddControl = nCtrl
@@ -4287,6 +4289,112 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNStatusbarInsertControl(  ByVal sControlName As String
+							, ByVal sCaption As String
+							, ByVal nControlType As Integer
+							, ByVal nPosition As Integer
+							) As Integer
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNStatusbarInsertControl = 0
+
+	Call RBNInitiate
+
+	nCtrl 					= RBNAddElement("Statusbar", "", "", "", "", nControlType, CONTROL_TYPE_STATUSBAR)
+	'Add a new Tab to theTabsColl collection
+	marrParentControlColls(nCtrl)	= theStatusbarControlsColl
+	marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
+
+	RBNStatusbarInsertControl = nCtrl
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNStatusbarInsertControl: " & sControlName & " at position " & nPosition)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNStatusbarInsertControlAfter(  ByVal sControlName As String
+								, ByVal sCaption As String
+								, ByVal nControlType As Integer
+								, ByVal sNameAfter As String
+								) As Integer
+
+Dim	nPosition As Integer
+
+OnError GoTo ErrorOccured
+
+RBNStatusbarInsertControlAfter = 0
+
+	nPosition = RBNStatusbarGetControlIndex(sNameAfter)
+	If nPosition = 0 Then
+		RBNStatusbarInsertControlAfter 	= RBNStatusbarAddControl(sControlName, sCaption, nControlType)
+	Else
+		nPosition					= nPosition + 1
+		RBNStatusbarInsertControlAfter 	= RBNStatusbarInsertControl(sControlName, sCaption, nControlType, nPosition)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNStatusbarInsertControlAfter: " & sControlName & " after " & sNameAfter)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNStatusbarInsertControlBefore( ByVal sControlName As String
+								, ByVal sCaption As String
+								, ByVal nControlType As Integer
+								, ByVal sNameBefore As String
+								) As Integer
+
+Dim	nPosition As Integer
+
+OnError GoTo ErrorOccured
+
+RBNStatusbarInsertControlBefore = 0
+
+	nPosition = RBNStatusbarGetControlIndex(sNameBefore)
+	If nPosition = 0 Then
+		RBNStatusbarInsertControlBefore 	= RBNStatusbarAddControl(sControlName, sCaption, nControlType)
+	Else
+		RBNStatusbarInsertControlBefore 	= RBNStatusbarInsertControl(sControlName, sCaption, nControlType, nPosition)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNStatusbarInsertControlBefore: " & sControlName & " before " & sNameBefore)
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
 'Parameters:
 '	:
@@ -4297,20 +4405,18 @@ Function RBNStatusbarRemoveControl(  ByVal sControlName As String
 							) As Integer
 
 Dim	nCtrl, nItem, nNumCntrls As Integer,
-	rbnControlsColl As This,
 	rbnControlItem As This
 
 OnError GoTo ErrorOccured
 
 RBNStatusbarRemoveControl = FALSE
 
-	rbnControlsColl	= GetCtrlGrpCtrls(rbnDropDButtonGroup)
-	nNumCntrls 		= GetMICtrlCollCount(rbnControlsColl)
+	nNumCntrls 		= GetMICtrlCollCount(theStatusbarControlsColl)
 
 	For nItem = 0 To (nNumCntrls - 1)
-		rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, nItem)
+		rbnControlItem	= GetMICtrlCollItemInt(theStatusbarControlsColl, nItem)
 		If sControlName = GetMICtrlName(rbnControlItem) Then
-			Call MICtrlCollRemoveAt(rbnControlsColl, nItem)
+			Call MICtrlCollRemoveAt(theStatusbarControlsColl, nItem)
 			nCtrl 					= RBNRemoveElement("Statusbar", "", "", "", sControlName)
 			RBNStatusbarRemoveControl	= nCtrl
 		End If
@@ -4320,6 +4426,31 @@ RBNStatusbarRemoveControl = FALSE
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNStatusbarRemoveControl")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNStatusbarGetControlIndex(	  ByVal sControlName As String
+								) As Integer
+
+OnError GoTo ErrorOccured
+
+RBNStatusbarGetControlIndex = 0
+
+	Call RBNInitiate
+
+	RBNStatusbarGetControlIndex = RBNCollectionGetControlIndexThs(theStatusbarControlsColl, sControlName)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNStatusbarGetControlIndex")
 	Call ERRShow()
 
 End Function
@@ -4355,6 +4486,7 @@ RBNCollectionGetControlIndexThs = RBN_ELEMENT_NOT_FOUND
 		rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, i)
 
 		sName		= GetMICtrlName(rbnControlItem)
+'		Call DEBUGPrint("     : " & i & " " & sName)
 
 		If sName = sControlName Then
 			RBNCollectionGetControlIndexThs	= i
@@ -6365,6 +6497,10 @@ Sub RBNControlSetCustomMBXHandlerThs(	  ByVal rbnControl As This
 								, ByVal sMBXHandler As String
 								)
 OnError GoTo ErrorOccured
+
+	If Len(sMBXHandler) > 30 Then
+		Note "The name of you Mapbasic subprocedure/MBX Handler is longer than the allowed 30 characters: '" & sMBXHandler & "'."
+	End If
 
 	Do Case GetMICtrlCtrlType(rbnControl)
 		Case ControlType_Button
