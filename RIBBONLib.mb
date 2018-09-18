@@ -6496,10 +6496,14 @@ End Sub
 Sub RBNControlSetCustomMBXHandlerThs(	  ByVal rbnControl As This
 								, ByVal sMBXHandler As String
 								)
+
+Dim	nMaxLen As Integer
+
 OnError GoTo ErrorOccured
 
-	If Len(sMBXHandler) > 30 Then
-		Note "The name of you Mapbasic subprocedure/MBX Handler is longer than the allowed 30 characters: '" & sMBXHandler & "'."
+	nMaxLen	= 31
+	If Len(sMBXHandler) > nMaxLen Then
+		Print "The name of you Mapbasic subprocedure/MBX Handler is longer than the allowed " & nMaxLen & " characters: '" & sMBXHandler & "'."
 	End If
 
 	Do Case GetMICtrlCtrlType(rbnControl)
