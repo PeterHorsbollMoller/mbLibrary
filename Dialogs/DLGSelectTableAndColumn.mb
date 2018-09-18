@@ -104,7 +104,7 @@ DLGSelectTableAndColumn = FALSE
 		End If
 	End If
 
-	Print "DLGSelectTableAndColumn: " & msTableName & " (" & msColumnName & ")"
+'	Print "DLGSelectTableAndColumn: " & msTableName & " (" & msColumnName & ")"
 	DLGSelectTableAndColumn = TRUE
 
 	Exit Function
