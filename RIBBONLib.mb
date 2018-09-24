@@ -493,6 +493,40 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
+Sub RBNTabEnable(	  ByVal sTabName As String
+				, ByVal bEnabled As Logical)
+
+Dim	rbnTabFound As RefPtr,
+	rbnTab As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+
+	If RBNGetTab(sTabName, rbnTabFound) Then
+		rbnTab = rbnTabFound
+		Call SetRbnTabEnabled(rbnTab, bEnabled)
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+'	rbnTabFound 	= NULL_PTR
+'	rbnTab		= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNTabSetVisibility")
+	Call ERRShow()
+
+End Sub
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
 Sub RBNTabSetCaptionThs(	  ByVal rbnTab As This
 					, ByVal sCaption As String)
 

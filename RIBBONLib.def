@@ -338,6 +338,8 @@
 '							- theStatusbarControlsColl as a modular variable
 '						- Changed:
 '							- RBNControlSetCustomMBXHandlerThs now checks the length of the handler name/subprocedure
+'	24-09-2018 10:34:53		- Added:
+'							- RBNTabEnable(...)
 '*****************************************************************************************************************************
 
 
@@ -458,6 +460,8 @@ Declare Sub RBNTabEnableThs(	  ByVal rbnTab As This
 						, ByVal bEnabled As Logical)
 Declare Sub RBNTabEnableIdx(	  ByVal nElementIdx As Integer
 						, ByVal bEnabled As Logical)
+Declare Sub RBNTabEnable(	  ByVal sTabName As String
+				, ByVal bEnabled As Logical)
 Declare Sub RBNTabSetCaptionThs(	  ByVal rbnTab As This
 							, ByVal sCaption As String)
 Declare Sub RBNTabSetCaptionIdx(	  ByVal nElementIdx As Integer
