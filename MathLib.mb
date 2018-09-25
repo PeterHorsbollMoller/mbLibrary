@@ -13,8 +13,6 @@ Include "Menu.def"
 Include "Defaults.def"
 
 '-------------------------------------
-Include "Types\T_MI_POINT.def"
-
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
 
@@ -30,7 +28,7 @@ Include "MATHLib.def"
 '	with east as the starting angle
 '	and counter clockwise
 '**********************************************************************************************''
-Function MATHGetDirection(tStart As T_MI_POINT, tEnd As T_MI_POINT) As Float
+Function MATHGetDirection(ByVal fStartX As Float, ByVal fStartY As Float, ByVal fEndX As Float, ByVal fEndY As Float) As Float
 
 Dim	fDirection As Float
 
@@ -39,9 +37,9 @@ OnError GoTo ErrorOccured
 MATHGetDirection = 0
 
 	'//Checking for vertical dirction
-	If (tEnd.fX - tStart.fX) = 0 Then
+	If (fEndX - fStartX) = 0 Then
 		'//not allowed to divide by zero...
-		If tEnd.fY > tStart.fY Then
+		If fEndY > fStartY Then
 			'//tEnd is north of tStart...
 			MATHGetDirection	= 90	'degrees
 		Else
@@ -52,23 +50,23 @@ MATHGetDirection = 0
 	End If
 
 	'//Checking for horisontal dirction
-	If (tEnd.fY = tStart.fY) Then
-		If (tEnd.fX < tStart.fX) Then
+	If (fEndY = fStartY) Then
+		If (fEndX < fStartX) Then
 			'//tEnd is west of tStart...
 			MATHGetDirection = 180	'degrees
-		ElseIf (tEnd.fX > tStart.fX) And (tEnd.fY = tStart.fY) Then
+		ElseIf (fEndX > fStartX) And (fEndY = fStartY) Then
 			'//tEnd is east of tStart...
 			MATHGetDirection = 0	'degrees
 		End If
 		Exit Function
 	End If
 
-	fDirection = Atn((tEnd.fY - tStart.fY) / (tEnd.fX - tStart.fX)) * RAD_2_DEG	'//Converting from RAD to Degrees
+	fDirection = Atn((fEndY - fStartY) / (fEndX - fStartX)) * RAD_2_DEG	'//Converting from RAD to Degrees
 
-	If (tEnd.fX < tStart.fX) And (tEnd.fY > tStart.fY) Then
+	If (fEndX < fStartX) And (fEndY > fStartY) Then
 		'//tEnd is northwest of tStart
 		fDirection = fDirection + 180	'degrees
-	ElseIf (tEnd.fX < tStart.fX) And (tEnd.fY < tStart.fY) Then
+	ElseIf (fEndX < fStartX) And (fEndY < fStartY) Then
 		'//tEnd is southwest of tStart
 		fDirection = fDirection + 180	'degrees
 	End If
