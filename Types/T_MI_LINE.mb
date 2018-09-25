@@ -95,6 +95,82 @@ End Function
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
 'Parameters:
+'	:
+'Return value: Float
+'Calculating the direction from tmil.StartPoint to tmil.EndPoint
+'	in 360 degrees
+'	with east as the starting angle
+'	and counter clockwise
+'**********************************************************************************************''
+Function tmilDirection( tmil As T_MI_LINE		'T_MI_LINE to calculate direction of
+					) As Float			'Return the direction of the line, East = 0, counter clockwise
+
+Dim	fDirection As Float
+
+OnError GoTo ErrorOccured
+
+tmilDirection = 0
+
+	'//Checking for vertical dirction
+	If (tmil.EndPoint.fX - tmil.StartPoint.fX) = 0 Then
+		'//not allowed to divide by zero...
+		If tmil.EndPoint.fY > tmil.StartPoint.fY Then
+			'//tmil.EndPoint is north of tmil.StartPoint...
+			tmilDirection	= 90	'degrees
+		Else
+			'//tmil.EndPoint is south of tmil.StartPoint...
+			tmilDirection	= 270	'degrees
+		End If
+
+		Exit Function
+	End If
+
+	'//Checking for horisontal dirction
+	If (tmil.EndPoint.fY = tmil.StartPoint.fY) Then
+		If (tmil.EndPoint.fX < tmil.StartPoint.fX) Then
+			'//tmil.EndPoint is west of tmil.StartPoint...
+			tmilDirection = 180	'degrees
+		ElseIf (tmil.EndPoint.fX > tmil.StartPoint.fX) And (tmil.EndPoint.fY = tmil.StartPoint.fY) Then
+			'//tmil.EndPoint is east of tmil.StartPoint...
+			tmilDirection = 0	'degrees
+		End If
+
+		Exit Function
+	End If
+
+	fDirection = Atn((tmil.EndPoint.fY - tmil.StartPoint.fY) / (tmil.EndPoint.fX - tmil.StartPoint.fX)) * RAD_2_DEG	'//Converting from RAD to Degrees
+
+	If (tmil.EndPoint.fX < tmil.StartPoint.fX) And (tmil.EndPoint.fY > tmil.StartPoint.fY) Then
+		'//tmil.EndPoint is northwest of tmil.StartPoint
+		fDirection = fDirection + 180	'degrees
+	ElseIf (tmil.EndPoint.fX < tmil.StartPoint.fX) And (tmil.EndPoint.fY < tmil.StartPoint.fY) Then
+		'//tmil.EndPoint is southwest of tmil.StartPoint
+		fDirection = fDirection + 180	'degrees
+	End If
+
+	'//fDirection should be less than or equal to 360 degress
+	Do Until fDirection <= 360
+		fDirection = fDirection - 360	'//degrees
+	Loop
+	'//fDirection should be more than or equal to 0 degress
+	Do Until fDirection >= 0
+		fDirection = fDirection + 360	'//degrees
+	Loop
+
+	tmilDirection = fDirection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmilDirection")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
 '	tmil : T_MI_LINE to use when creating the MapInfo Point
 'Return value:
 '	A point with the current Pen style

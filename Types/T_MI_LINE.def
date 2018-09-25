@@ -2,7 +2,7 @@
 
 Type T_MI_LINE
 	StartPoint	As T_MI_POINT
-	EndPoint	As T_MI_POINT
+	EndPoint		As T_MI_POINT
 End Type
 
 Declare Sub tmilCopy(	  tmilFrom As T_MI_LINE		'Input T_MI_LINE
@@ -16,6 +16,8 @@ Declare Sub tmilOffset(   tmil As T_MI_LINE		'T_MI_LINE to offset - this will be
 Declare Function tmilAreIdentical(	  tmil1 As T_MI_LINE	'first T_MI_LINE to compare
 						, tmil2 As T_MI_LINE	'second T_MI_LINE to compare
 						) As Logical
+Declare Function tmilDirection( tmil As T_MI_LINE		'T_MI_LINE to calculate direction of
+						) As Float			'Return the direction of the line, East = 0, counter clockwise
 
 Declare Function tmilToLine(	  tmil As T_MI_LINE	'Creates a line using the coordinates of the T_MI_LINE
 					) As Object			'Returns a line with the current style
