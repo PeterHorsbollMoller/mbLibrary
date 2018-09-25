@@ -90,6 +90,80 @@ End Function
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
 'Parameters:
+'	:
+'Return value: Float
+'Calculating the direction from tStart to tEnd
+'	in 360 degrees
+'	with east as the starting angle
+'	and counter clockwise
+'**********************************************************************************************''
+Function tmipDirection(tStart As T_MI_POINT, tEnd As T_MI_POINT) As Float
+
+Dim	fDirection As Float
+
+OnError GoTo ErrorOccured
+
+tmipDirection = 0
+
+	'//Checking for vertical dirction
+	If (tEnd.fX - tStart.fX) = 0 Then
+		'//not allowed to divide by zero...
+		If tEnd.fY > tStart.fY Then
+			'//tEnd is north of tStart...
+			tmipDirection	= 90	'degrees
+		Else
+			'//tEnd is south of tStart...
+			tmipDirection	= 270	'degrees
+		End If
+
+		Exit Function
+	End If
+
+	'//Checking for horisontal dirction
+	If (tEnd.fY = tStart.fY) Then
+		If (tEnd.fX < tStart.fX) Then
+			'//tEnd is west of tStart...
+			tmipDirection = 180	'degrees
+		ElseIf (tEnd.fX > tStart.fX) And (tEnd.fY = tStart.fY) Then
+			'//tEnd is east of tStart...
+			tmipDirection = 0	'degrees
+		End If
+
+		Exit Function
+	End If
+
+	fDirection = Atn((tEnd.fY - tStart.fY) / (tEnd.fX - tStart.fX)) * RAD_2_DEG	'//Converting from RAD to Degrees
+
+	If (tEnd.fX < tStart.fX) And (tEnd.fY > tStart.fY) Then
+		'//tEnd is northwest of tStart
+		fDirection = fDirection + 180	'degrees
+	ElseIf (tEnd.fX < tStart.fX) And (tEnd.fY < tStart.fY) Then
+		'//tEnd is southwest of tStart
+		fDirection = fDirection + 180	'degrees
+	End If
+
+	'//fDirection should be less than or equal to 360 degress
+	Do Until fDirection <= 360
+		fDirection = fDirection - 360	'//degrees
+	Loop
+	'//fDirection should be more than or equal to 0 degress
+	Do Until fDirection >= 0
+		fDirection = fDirection + 360	'//degrees
+	Loop
+
+	tmipDirection = fDirection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tmipDirection")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
 '	tmip : T_MI_POINT to use when creating the MapInfo Point
 'Return value:
 '	A point with the current symbol style

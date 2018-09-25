@@ -15,6 +15,10 @@ Declare Function tmipAreIdentical(	  tmip1 As T_MI_POINT	'T_MI_POINT A
 						, tmip2 As T_MI_POINT	'T_MI_POINT B
 						) As Logical		'Returns true if "elements" of A are equal to "elements" of B
 
+Declare Function tmipDirection( tStart As T_MI_POINT	'Starting point, using the T_MI_POINT type
+						, tEnd As T_MI_POINT	'Ending point, using the T_MI_POINT type
+						) As Float			'Return the direction of the line, East = 0, counter clockwise
+
 Declare Function tmipToPoint(	  tmip As T_MI_POINT		'Creates a point using the X and Y of the T_MI_POINT
 					) As Object				'Returns a point with the current style
 Declare Function tmipToPointWithStyle(	  tmip As T_MI_POINT		'Creates a point using the X and Y of the T_MI_POINT
