@@ -340,6 +340,17 @@
 '							- RBNControlSetCustomMBXHandlerThs now checks the length of the handler name/subprocedure
 '	24-09-2018 10:34:53		- Added:
 '							- RBNTabEnable(...)
+'	25-09-2018 08:54:17		- Added:
+'							- RBNCntxtMenuClear(...)
+'							- RBNBackstageEnable(...)
+'							- RBNBackstageSetCaption(...)
+'							- RBNBackstageSetVisibility(...)
+'							- RBNBackstageIsEnabled() As Logical
+'							- RBNBackstageGetCaption() As String
+'							- RBNBackstageGetVisibility() As Logical
+'							- RBNCntxtMenuRemoveControlItem(...)
+'							- RBNCntxtMenuCount(...) As Integer
+
 '*****************************************************************************************************************************
 
 
@@ -397,6 +408,7 @@
 
 Define		RBN_ELEMENT_NOT_FOUND		-1
 Define		RBN_ELEMENT_INSERT_AS_LAST	-9999
+Define		RBN_ELEMENT_REMOVE_LAST		-9999
 
 Define		CONTROL_SIZE_EXTRASMALL	1
 Define		CONTROL_SIZE_SMALL		2
@@ -415,6 +427,14 @@ Declare Sub RBNLoopCreateRibbonStatements
 Declare Sub RBNLoopContext
 
 Declare Function RBNControlGetTypeName(ByVal nCtrlType As Integer) As String
+
+'** WORKING WITH BACKSTAGE **********************************************************************************
+Declare Sub RBNBackstageEnable(	  ByVal bEnabled As Logical)
+Declare Function RBNBackstageIsEnabled() As Logical
+Declare Sub RBNBackstageSetCaption(  ByVal sCaption As String)
+Declare Function RBNBackstageGetCaption() As String
+Declare Sub RBNBackstageSetVisibility(	  ByVal bVisible As Logical)
+Declare Function RBNBackstageGetVisibility() As Logical
 
 '** WORKING WITH TABS **********************************************************************************
 Declare Function RBNAddTab(		  ByVal sTabName As String
@@ -461,7 +481,7 @@ Declare Sub RBNTabEnableThs(	  ByVal rbnTab As This
 Declare Sub RBNTabEnableIdx(	  ByVal nElementIdx As Integer
 						, ByVal bEnabled As Logical)
 Declare Sub RBNTabEnable(	  ByVal sTabName As String
-				, ByVal bEnabled As Logical)
+						, ByVal bEnabled As Logical)
 Declare Sub RBNTabSetCaptionThs(	  ByVal rbnTab As This
 							, ByVal sCaption As String)
 Declare Sub RBNTabSetCaptionIdx(	  ByVal nElementIdx As Integer
@@ -664,7 +684,7 @@ Declare Sub RBNGroupCheckControl(	  ByVal sTabName As String
 							, ByVal sGroupName As String
 							, ByVal sControlName As String
 							, ByVal bChecked As Logical)
-Declare Sub RBNGroupShowControls(  ByVal sTabName As String		'If "", the TAB is ignored in the search
+Declare Sub RBNGroupShowControls(  ByVal sTabName As String			'If "", the TAB is ignored in the search
 							, ByVal sGroupName As String		'If "", the GROUP is ignored in the search
 							, ByVal sControlName As String
 							, ByVal bVisible As Logical)
@@ -889,60 +909,67 @@ Declare Function RBNToolContextMenuRemoveMenuItem(  ByVal sControlName As String
 										) As Integer
 
 '** WORKING WITH MENUITEMS ON CONTEXTMENUS *************************************************************
-Declare Function RBNCntxtMenuAddControl(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuAddControl(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 									, ByVal sControlName As String
 									, ByVal sCaption As String
 									, ByVal sKeytip As String
 									, ByVal nControlType As Integer
 									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuInsertControl(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuInsertControl(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 									, ByVal sControlName As String
 									, ByVal sCaption As String
 									, ByVal sKeytip As String
 									, ByVal nControlType As Integer
 									, ByVal nPosition As Integer
 									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuInsertControlAfter(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuInsertControlAfter(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 										, ByVal sControlName As String
 										, ByVal sCaption As String
 										, ByVal sKeytip As String
 										, ByVal nControlType As Integer
 										, ByVal sNameAfter As String
 										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuInsertControlBefore(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuInsertControlBefore(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 										, ByVal sControlName As String
 										, ByVal sCaption As String
 										, ByVal sKeytip As String
 										, ByVal nControlType As Integer
 										, ByVal sNameBefore As String
-										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuAddMenuItem(	  ByVal nContextMenuID As Integer
+										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNCntxtMenuAddMenuItem(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 									, ByVal sControlName As String
 									, ByVal sCaption As String		'If "(-" then a separator is added
 									, ByVal sKeytip As String
 									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuInsertMenuItem(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuInsertMenuItem(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 									, ByVal sControlName As String
 									, ByVal sCaption As String		'If "(-" then a separator is added
 									, ByVal sKeytip As String
 									, ByVal nPosition As Integer
 									) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuInsertMenuItemAfter(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuInsertMenuItemAfter(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 										, ByVal sControlName As String
 										, ByVal sCaption As String		'If "(-" then a separator is added
 										, ByVal sKeytip As String
 										, ByVal sNameAfter As String
 										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
-Declare Function RBNCntxtMenuInsertMenuItemBefore(  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuInsertMenuItemBefore(  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 										, ByVal sControlName As String
 										, ByVal sCaption As String		'If "(-" then a separator is added
 										, ByVal sKeytip As String
 										, ByVal sNameBefore As String
 										) As Integer				'Returns the modular Idx of the control or 0, if it wasn't created
 
-Declare Function RBNCntxtMenuRemoveControl(	  ByVal nContextMenuID As Integer
+Declare Function RBNCntxtMenuRemoveControl(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
 									, ByVal sControlName As String
 									) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Sub RBNCntxtMenuRemoveControlItem(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
+									, ByVal nControlItem As Integer	'Standard MapBasic indexed, 1 is the first control
+									)
+Declare Sub RBNCntxtMenuClear(  ByVal nContextMenuID As Integer			'ID if the Context Menu, check Enums.def
+						)									'Clears and rebuilds the Contextmenu as Default
+Declare Function RBNCntxtMenuCount(	  ByVal nContextMenuID As Integer	'ID if the Context Menu, check Enums.def
+								) As Integer					'Returns the number of controls in the context menu.
 Declare Function RBNCntxtMenuGetControlIndex(  ByVal nContextMenuID As Integer
 									, ByVal sControlName As String
 									) As Integer

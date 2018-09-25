@@ -87,6 +87,7 @@ Dim	theMapInfoApplication As This,
 	theStatusbar As This,
 	theStatusbarControlsColl As This,
 	theRibbon As This,
+	theBackstage As This,
 	theQAT As This,
 	theToolContextMenu As This,
 	theTabsColl As This,
@@ -212,7 +213,9 @@ OnError GoTo ErrorOccured
 	'Get Tabs Collection
 	theTabsColl 			= GetTabsColl(theRibbon)
 	'Get the QAT
-	theQAT					= GetMIProQAT(theMapInfoApplication)
+	theQAT				= GetMIProQAT(theMapInfoApplication)
+	'Get the Backstage
+	theBackstage			= GetRibbonBackStage(theMapInfoApplication)
 
 	Call RegisterUriParser(New_GenericUriParser(1), "pack", -1)
 
@@ -247,6 +250,103 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+
+'*******************************************************************************************************
+'** WORKING WITH BACKSTAGE **********************************************************************************
+'*******************************************************************************************************
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNBackstageEnable(	  ByVal bEnabled As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnBackStageEnabled(theBackstage, bEnabled)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNBackstageEnable")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function RBNBackstageIsEnabled() As Logical
+
+OnError GoTo ErrorOccured
+
+	RBNBackstageIsEnabled = GetRbnBackStageEnabled(theBackstage)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNBackstageIsEnabled")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNBackstageSetCaption(  ByVal sCaption As String)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnBackStageCaption(theBackstage, sCaption)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNBackstageSetCaption")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function RBNBackstageGetCaption() As String
+
+OnError GoTo ErrorOccured
+
+	RBNBackstageGetCaption = GetRbnBackStageCaption(theBackstage)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNBackstageSetCaption")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNBackstageSetVisibility(	  ByVal bVisible As Logical)
+
+OnError GoTo ErrorOccured
+
+	Call SetRbnBackStageVisible(theBackstage, bVisible)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNBackstageSetVisibility")
+	Call ERRShow()
+
+End Sub
+'**********************************************************************************************''
+Function RBNBackstageGetVisibility() As Logical
+
+OnError GoTo ErrorOccured
+
+	RBNBackstageGetVisibility = GetRbnBackStageVisible(theBackstage)
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNBackstageGetVisibility")
+	Call ERRShow()
+
+End Function
 
 '*******************************************************************************************************
 '** WORKING WITH TABS **********************************************************************************
@@ -4792,8 +4892,7 @@ Function RBNCntxtMenuInsertControl(	  ByVal nContextMenuID As Integer
 								) As Integer
 
 Dim	nCtrl As Integer,
-	rbnCntxtMenu As This,
-	rbnCntxtMenuItemsColl As This
+	rbnCntxtMenu As This
 
 OnError GoTo ErrorOccured
 
@@ -4804,14 +4903,11 @@ RBNCntxtMenuInsertControl = 0
 
 	nCtrl = RBNAddElement("CONTEXTMENU=" & Str$(nContextMenuID), "", "", "", sControlName, nControlType, CONTROL_TYPE_RLIB_CNTXT_MNU)
 	marrParentControlColls(nCtrl)	= GetICntxtMnuCtrls(rbnCntxtMenu)
-'	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
 
 	If nPosition = RBN_ELEMENT_INSERT_AS_LAST Then
 		marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(marrParentControlColls(nCtrl), sControlName, sCaption, nControlType)
-'		marrControls(nCtrl) 		= MICtrlCollAddStrStrInt(rbnCntxtMenuItemsColl, sControlName, sCaption, nControlType)
 	Else
 		marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(marrParentControlColls(nCtrl), nPosition, sControlName, sCaption, nControlType)
-'		marrControls(nCtrl) 		= MICtrlCollInsertIntStrStrInt(rbnCntxtMenuItemsColl, nPosition, sControlName, sCaption, nControlType)
 	End If
 
 	If sKeytip <> "" Then
@@ -4824,8 +4920,7 @@ RBNCntxtMenuInsertControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnCntxtMenuItemsColl	= NULL_PTR
-	rbnCntxtMenu			= NULL_PTR
+	'rbnCntxtMenu			= NULL_PTR
 
 	Exit Function
 '-------------------------
@@ -5064,13 +5159,126 @@ RBNCntxtMenuRemoveControl = 0
 
 	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
 	'This is necessary to avoid memory leaks and unnecessary variable references.
-	rbnCntxtMenuItemsColl	= NULL_PTR
-	rbnCntxtMenu			= NULL_PTR
+'	rbnCntxtMenuItemsColl	= NULL_PTR
+'	rbnCntxtMenu			= NULL_PTR
 
 	Exit Function
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuRemoveControl")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Sub RBNCntxtMenuRemoveControlItem(	  ByVal nContextMenuID As Integer
+							, ByVal nControlItem As Integer	'Standard MapBasic indexed, 1 is the first control
+							)
+
+Dim	rbnCntxtMenu As This,
+	rbnCntxtMenuItemsColl As This,
+	nNumControls As Integer
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, nContextMenuID)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+
+	nNumControls	= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+	If nControlItem = RBN_ELEMENT_REMOVE_LAST Then
+		nControlItem = nNumControls
+	End If
+
+	If nControlItem > 0 And nControlItem <= nNumControls Then
+'		Print "RBNCntxtMenuRemoveControlItem: Removing Item " & (nControlItem - 1)
+		Call MICtrlCollRemoveAt(rbnCntxtMenuItemsColl, (nControlItem - 1))
+	End If
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+'	rbnCntxtMenuItemsColl	= NULL_PTR
+'	rbnCntxtMenu			= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuRemoveControlItem: " & nControlItem)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'**********************************************************************************************''
+Sub RBNCntxtMenuClear(	  ByVal nContextMenuID As Integer
+					)
+
+Dim	rbnCntxtMenu As This,
+	rbnCntxtMenuItemsColl As This
+
+OnError GoTo ErrorOccured
+
+	Call RBNInitiate
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, nContextMenuID)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+
+	'*Clear the controls collection
+	Call MICtrlCollClear(rbnCntxtMenuItemsColl)
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+'	rbnCntxtMenuItemsColl	= NULL_PTR
+'	rbnCntxtMenu			= NULL_PTR
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuClear")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNCntxtMenuCount(	  ByVal nContextMenuID As Integer
+						) As Integer					'Returns the number of controls in the context menu.
+
+Dim	rbnCntxtMenu As This,
+	rbnCntxtMenuItemsColl As This
+
+OnError GoTo ErrorOccured
+
+RBNCntxtMenuCount = 0
+
+	Call RBNInitiate
+	rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, nContextMenuID)
+	rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+
+	RBNCntxtMenuCount = GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+
+	'Always asing NULL_PTR to all local variables declared within this local scope who are of type - this or RefPtr.
+	'This is necessary to avoid memory leaks and unnecessary variable references.
+'	rbnCntxtMenuItemsColl	= NULL_PTR
+'	rbnCntxtMenu			= NULL_PTR
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNCntxtMenuCount")
 	Call ERRShow()
 
 End Function
