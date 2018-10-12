@@ -350,7 +350,10 @@
 '							- RBNBackstageGetVisibility() As Logical
 '							- RBNCntxtMenuRemoveControlItem(...)
 '							- RBNCntxtMenuCount(...) As Integer
-
+'	12-10-2018 11:27:11		- Added support for registering custom MapBasic functions as public functions, requires v17.0.1:
+'							- RBNRegisterFunctionAsPublic(...) As Logical	'Used to regiser a custom function
+'							- RBNUnregisterFunctionAsPublic(...) As Logical	'Used to unregister a cusom function
+'							- RBNUnregisterAllFunctionsAsPublic() As Logical	'Used to unregister all custom functions (used by RBNEndHandler)
 '*****************************************************************************************************************************
 
 
@@ -1226,6 +1229,16 @@ Declare Function RBNEventUnsubscribe(  	  ByVal nEventType As Integer
 								) As Logical
 Declare Function RBNEventUnsubscribeAll(
 								) As Logical
+
+
+'**** P U B L I C   F U N C T I O N S **************************************************************************
+Declare Function RBNRegisterFunctionAsPublic(  ByVal sFunctionName As String
+									, ByVal sPublicName As String
+									, ByVal sDescription As String
+								  	) As Logical
+Declare Function RBNUnregisterFunctionAsPublic(	  ByVal sFunctionName As String
+										) As Logical
+Declare Function RBNUnregisterAllFunctionsAsPublic() As Logical
 
 
 '**** N O T I F I C A T I O N **************************************************************

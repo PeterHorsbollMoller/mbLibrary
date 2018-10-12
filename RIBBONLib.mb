@@ -22,6 +22,21 @@ Include "ERRORLib.def"
 Include "RIBBONLib.def"
 Include "WinAPI 1522.def"
 
+'**Temporary function for registering public custom MapBasic functions in MapInfo Pro
+Declare Method RegisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
+	Alias RegisterPublicFunction
+		( ByVal IMBXInstance As This
+		, ByVal functionName As String
+		, ByVal publicName as String
+		, ByVal description as String
+		) As Integer
+Declare Method UnregisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
+	Alias UnregisterPublicFunction
+		( ByVal IMBXInstance As This
+		, ByVal fcnid As Integer
+		)
+
+
 Declare Sub RBNInitiate
 Declare Sub RBInitialControlArrays
 Declare Function RBNGetImageStringFromControlName(ByVal sControlName As String) As String
@@ -101,6 +116,11 @@ Dim	theMapInfoApplication As This,
 	mnTooltipPlacement As Integer		'Defines the position of a tooltip for a control - defaults to Place_RelativePoint
 
 Dim	marrControlName(), marrImageName(), marrCommandID() As String
+
+'**These variables keep track of which public functions have been registered
+Dim	mnNumPublicFunctions As Integer,
+	marrPublicFunctionIDs() As Integer,
+	marrPublicFunctionNames() As String
 
 '**These variables keep track of which controls have been added where
 Dim	marrControls(), marrParentControlColls() As This,
@@ -8191,6 +8211,9 @@ OnError GoTo ErrorOccured
 	If NOT RBNEventUnsubscribeAll() Then
 		'**Whoops, not all events were unsubscribed from
 	End If
+	If NOT RBNUnregisterAllFunctionsAsPublic() Then
+		'**Whoops, not all public functions were unregistered
+	End If
 
 	theMapInfoApplication		= NULL_PTR
 	theMapBasicApplication		= NULL_PTR
@@ -8335,6 +8358,119 @@ RBNEventUnsubscribeAll = FALSE
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNEventUnsubscribeAll")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNRegisterFunctionAsPublic(	  ByVal sFunctionName As String
+								, ByVal sPublicName As String
+								, ByVal sDescription As String
+							  	) As Logical
+
+Dim	nFuncID As Integer
+
+OnError GoTo ErrorOccured
+
+RBNRegisterFunctionAsPublic = FALSE
+
+	Call RBNInitiate
+
+	Call DEBUGPrint("RegisterPublicMBXFunction(" & sFunctionName & ", " & sPublicName & ", " & sDescription & ")")
+	nFuncID = RegisterPublicMBXFunction(theMapBasicApplication, sFunctionName, sPublicName, sDescription)
+
+	If nFuncID Then
+		mnNumPublicFunctions	= mnNumPublicFunctions + 1
+		Redim marrPublicFunctionNames(mnNumPublicFunctions)
+		Redim marrPublicFunctionIDs(mnNumPublicFunctions)
+		marrPublicFunctionNames(mnNumPublicFunctions)	= sFunctionName
+		marrPublicFunctionIDs(mnNumPublicFunctions)	= nFuncID
+
+		RBNRegisterFunctionAsPublic = TRUE
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNRegisterFunctionAsPublic")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNUnregisterFunctionAsPublic(	  ByVal sFunctionName As String
+								) As Logical
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+RBNUnregisterFunctionAsPublic = FALSE
+
+	Call RBNInitiate
+
+	For i = 1 To mnNumPublicFunctions
+		If marrPublicFunctionNames(i) = sFunctionName Then
+			Call UnregisterPublicMBXFunction(theMapBasicApplication, marrPublicFunctionIDs(i))
+			Call ARRAYRemoveItemString(marrPublicFunctionNames, i)
+			Call ARRAYRemoveItemInteger(marrPublicFunctionIDs, i)
+			mnNumPublicFunctions	= mnNumPublicFunctions - 1
+
+			RBNUnregisterFunctionAsPublic = TRUE
+		End If
+	Next
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNUnregisterFunctionAsPublic")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNUnregisterAllFunctionsAsPublic() As Logical
+
+Dim	i As Integer
+
+OnError GoTo ErrorOccured
+
+RBNUnregisterAllFunctionsAsPublic = FALSE
+
+	Call RBNInitiate
+
+	If mnNumPublicFunctions > 0 Then
+		Call UnregisterPublicMBXFunction(theMapBasicApplication, -1)
+
+		mnNumPublicFunctions	= 0
+		Redim marrPublicFunctionNames(mnNumPublicFunctions)
+		Redim marrPublicFunctionIDs(mnNumPublicFunctions)
+	End If
+
+	RBNUnregisterAllFunctionsAsPublic = (mnNumEvents = 0)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNUnregisterAllFunctionsAsPublic")
 	Call ERRShow()
 
 End Function
