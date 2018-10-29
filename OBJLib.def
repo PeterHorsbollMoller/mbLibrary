@@ -53,7 +53,7 @@ Declare Function OBJRemoveDuplicateNodes( ByVal oObj As Object		'The object (pol
 
 Declare Function OBJReverse(	  ByVal oObj As Object			'The object which node order to reverse, only line and polyline are supported
 						) As Object					'Returns the object with the nodes in reversed order
-Declare Function OBJReversePolyline(  ByVal oPLine As Object	'The polyline which node order to reverse, only is supported
+Declare Function OBJReversePolyline(  ByVal oPLine As Object	'The polyline which node order to reverse, only pline is supported
 							) As Object				'Returns the polyline with the nodes in reversed order
 Declare Function OBJReverseLine(	  ByVal oLine As Object		'The line which node order to reverse, only line is supported
 							) As Object				'Returns the line with the nodes in reversed order
@@ -78,3 +78,5 @@ Declare Function OBJAddNodeOnPolyline(	  ByVal oPolyline As Object		'The polylin
 								, ByVal fTolerance As Float		'The tolerance distance, m, that determines if the node is on the line
 								) As Object					'Returns the polyline with the added node.
 															'The node will be added to the first line where the distance from the node to the line is shorter than fTolerance
+Declare Function OBJDirection(	ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
+							) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1

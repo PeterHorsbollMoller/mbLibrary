@@ -14,6 +14,7 @@ Include "Defaults.def"
 '-------------------------------------
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
+Include "MATHLib.def"
 Include "OBJLib.def"
 Include "TABLELib.def"
 
@@ -669,6 +670,73 @@ OBJAddNodeOnPolyline = oPolyline
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "OBJAddNodeOnPolyline")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJDirection(	ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
+					) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+
+Dim	fStartX, fStartY, fEndX, fEndY As Float,
+	fDirection As Float,
+	symInput As Symbol
+
+OnError GoTo ErrorOccured
+
+OBJDirection = -1
+
+	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+		Case OBJ_TYPE_POINT
+			symInput = ObjectInfo(oInput, OBJ_INFO_SYMBOL)
+			If StyleAttr(symInput, SYMBOL_KIND) = SYMBOL_KIND_FONT Then
+				fDirection = StyleAttr(symInput, SYMBOL_ANGLE)
+			Else
+				fDirection = -1
+			End If
+
+		Case OBJ_TYPE_TEXT
+			fDirection = ObjectGeography(oInput, OBJ_GEO_TEXTANGLE)
+
+		Case OBJ_TYPE_LINE
+			fStartX	= ObjectGeography(oInput, OBJ_GEO_LINEBEGX)
+			fStartY	= ObjectGeography(oInput, OBJ_GEO_LINEBEGY)
+			fEndX	= ObjectGeography(oInput, OBJ_GEO_LINEENDX)
+			fEndY	= ObjectGeography(oInput, OBJ_GEO_LINEENDY)
+			'Print "MATHGetDirection( " & fStartX & ", " & fStartY & " | " & fEndX & ", " & fEndY & " )"
+			fDirection = MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+
+		Case OBJ_TYPE_COLLECTION, OBJ_TYPE_MPOINT
+			fDirection = -1
+
+		Case OBJ_TYPE_ARC
+			fDirection = -1
+
+		Case OBJ_TYPE_ELLIPSE, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT
+			fDirection = -1
+
+		Case OBJ_TYPE_PLINE
+			fDirection = -1
+
+		Case OBJ_TYPE_REGION
+			fDirection = -1
+
+		Case Else
+			fDirection = -1
+	End Case
+
+	OBJDirection = fDirection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJDirection")
 	Call ERRShow()
 
 End Function
