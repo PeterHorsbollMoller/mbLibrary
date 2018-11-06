@@ -26,6 +26,9 @@
 '							Uses a binary search algorytm to find the nearest node
 '							Splits the object into two half for each run thru and searches only the part where the node is within the MBR
 '	08-08-2014 18:16:44	- Fixed an error in OBJFindNodeBinary that meant that the wrong node was return in a number of cases
+'	06-11-2018 16:58:41	- Added:
+'						- OBJDirection(...) As Float
+'						- OBJCartesianCreatePointAlong(...) As Object
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -80,3 +83,8 @@ Declare Function OBJAddNodeOnPolyline(	  ByVal oPolyline As Object		'The polylin
 															'The node will be added to the first line where the distance from the node to the line is shorter than fTolerance
 Declare Function OBJDirection(	ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
 							) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+
+Declare Function OBJCartesianCreatePointAlong(	  ByVal oPolyline As Object	'The polyline to create the point along
+										, ByVal fDistance As Float	'Distance along polyline, can also be negative
+										, ByVal fOffset As Float		'Offset from polyline, negative is left, positive is right
+										) As Object

@@ -740,3 +740,115 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'	A point created along the input (poly)line
+'	Only works for single segment polylines
+'	Make sure to set the projected coordinate system to use before calling this function
+'**********************************************************************************************''
+Function OBJCartesianCreatePointAlong(	  ByVal oPolyline As Object	'The polyline to create the point along
+								, ByVal fDistance As Float	'Distance along polyline, can also be negative
+								, ByVal fOffset As Float		'Offset from polyline, negative is left, positive is right
+								) As Object
+
+Dim	oPoint As Object,
+	fLength, fLengthTotal, fLengthSofar, fX, fY, fXNext, fYNext,fXMid, fYMid, fXDiff, fYDiff As Float,
+    	nNumNodes, nNode As Integer
+
+OnError GoTo ErrorOccured
+
+	OBJCartesianCreatePointAlong = CreatePoint(0.00, 0.00)
+	OBJCartesianCreatePointAlong = Centroid(oPolyline)
+	OBJCartesianCreatePointAlong = CreatePoint(ObjectNodeX(oPolyline, 1, 1), ObjectNodeY(oPolyline, 1, 1))
+
+	If ObjectInfo(oPolyline, OBJ_INFO_TYPE) = OBJ_TYPE_LINE Then
+		oPolyline = ConvertToPline(oPolyline)
+ 	End If
+	If ObjectInfo(oPolyline, OBJ_INFO_TYPE) = OBJ_TYPE_PLINE Then
+		If ObjectInfo(oPolyline, OBJ_INFO_NPOLYGONS) > 1 Then
+			'**Only works for single segment polylines
+			Exit Function
+		End If
+
+		nNumNodes		= ObjectInfo(oPolyline,OBJ_INFO_NPNTS)
+		fLengthTotal	= CartesianObjectLen(oPolyline, "m")
+		fLength		= 0
+		fLengthSofar	= 0
+
+		If fDistance < 0 Then
+			fX 			= ObjectNodeX(oPolyline, 1, 2)
+			fY			= ObjectNodeY(oPolyline, 1, 2)
+			fXNext		= ObjectNodeX(oPolyline, 1, 1)
+			fYNext		= ObjectNodeY(oPolyline, 1, 1)
+'			Print "Option 1: CartesianDistance: " & FormatNumber$(fX) & " " & FormatNumber$(fY) & " | "  & FormatNumber$(fXNext) & " " & FormatNumber$(fYNext)
+			fLength 		= CartesianDistance(fX, fY, fXNext, fYNext, "m")
+
+			fDistance		= (-1 * fDistance) + fLength	'**Making it positive & adding the length of the first segment
+			fOffset		= -1 * fOffset		'**Mirroring the offset as we mirror the line too
+
+'			Print "Option 1: Distance: " & FormatNumber$(fDistance) & " m., Offset: " & FormatNumber$(fOffset) & " m."
+
+		ElseIf fDistance > fLengthTotal Then
+			fLengthSofar	= fLengthTotal
+			fX 			= ObjectNodeX(oPolyline, 1, (nNumNodes - 1))
+			fY			= ObjectNodeY(oPolyline, 1, (nNumNodes - 1))
+			fXNext		= ObjectNodeX(oPolyline, 1, nNumNodes)
+			fYNext		= ObjectNodeY(oPolyline, 1, nNumNodes)
+'			Print "Option 2: CartesianDistance: " & FormatNumber$(fX) & " " & FormatNumber$(fY) & " | "  & FormatNumber$(fXNext) & " " & FormatNumber$(fYNext)
+			fLength 		= CartesianDistance(fX, fY, fXNext, fYNext, "m")
+
+			fDistance		= fDistance + fLength	'**Adding the length of the last segment
+
+'			Print "Option 1: Distance: " & FormatNumber$(fDistance) & " m., Offset: " & FormatNumber$(fOffset) & " m."
+
+		Else
+			fX 			= ObjectNodeX(oPolyline, 1, 1)
+			fY			= ObjectNodeY(oPolyline, 1, 1)
+
+			For nNode = 2 To nNumNodes
+				fXNext	= ObjectNodeX(oPolyline, 1, nNode)
+				fYNext	= ObjectNodeY(oPolyline, 1, nNode)
+				fLength	= CartesianDistance(fX, fY, fXNext, fYNext, "m")
+				If (fLengthSofar + fLength) >= fDistance Then
+					Exit For
+				End If
+				fLengthSofar = fLengthSofar + fLength
+				fX	= fXNext
+				fY	= fYNext
+			Next	'nNode
+
+'			Print "Option 3: Distance: " & FormatNumber$(fDistance) & " m., Offset: " & FormatNumber$(fOffset) & " m."
+
+		End If
+
+		fXMid	= fX + (fDistance - fLengthSofar) * (fXNext-fX) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
+		fYMid	= fY + (fDistance - fLengthSofar) * (fYNext-fY) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
+
+		If fOffset = 0 Then
+			oPoint = CreatePoint(fXMid,fYMid)
+		Else
+			fXDiff	= (fY-fYMid) / Sqr((fY-fYMid) ^ 2 + (fX-fXMid) ^ 2) * Abs(fOffset)
+			fYDiff	= (fXMid-fX) / Sqr((fY-fYMid) ^ 2 + (fX-fXMid) ^ 2) * Abs(fOffset)
+			If fOffset < 0 Then
+				'**Left side
+				oPoint	= CreatePoint(fXMid + fXDiff, fYMid + fYDiff)
+			Else
+				'**Right Side
+				oPoint	= CreatePoint(fXMid - fXDiff, fYMid - fYDiff)
+			End If
+		End If
+	End If
+
+	OBJCartesianCreatePointAlong = oPoint
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCartesianCreatePointAlong")
+	Call ERRPrint()
+
+End Function
