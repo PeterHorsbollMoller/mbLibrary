@@ -852,3 +852,60 @@ ErrorOccured:
 	Call ERRPrint()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCombineFromTable(	  ByVal sTab As String
+						, ByVal sCol As String
+						, ByVal sID As String
+						) As Object
+
+Dim	oCombined As Object,
+	sCmd As String
+
+OnError GoTo ErrorOccured
+
+	sCmd = "Select * From " & sTab
+	If sCol Then
+		If ColumnInfo(sTab, sCol, COL_INFO_TYPE) = COL_TYPE_CHAR Then
+			sCmd = sCmd & " Where " & sCol & " = " & Chr$(34) & sID & Chr$(34)
+		Else
+			sCmd = sCmd & " Where " & sCol & " = " & Chr$(34) & sID & Chr$(34)
+		End If
+	End If
+
+
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1700 Then
+		sCmd = sCmd
+			& " Into __TO__COMBINE NoSelect Hide"
+	Else
+		sCmd = sCmd
+			& " Into __TO__COMBINE NoSelect"
+	End If
+
+'	Print sCmd
+	Run Command sCmd
+
+	Set Progressbars Off
+	Create Object As Union
+		From __TO__COMBINE
+		Into Variable oCombined
+'	Print "Area: " & CartesianArea(oCombined, "sq m")
+	Set Progressbars On
+
+	Close Table __TO__COMBINE
+
+	OBJCombineFromTable = oCombined
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCombineFromTable")
+	Call ERRShow()
+
+End Function

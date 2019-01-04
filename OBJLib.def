@@ -88,3 +88,7 @@ Declare Function OBJCartesianCreatePointAlong(	  ByVal oPolyline As Object	'The 
 										, ByVal fDistance As Float	'Distance along polyline, can also be negative
 										, ByVal fOffset As Float		'Offset from polyline, negative is left, positive is right
 										) As Object
+Declare Function OBJCombineFromTable(	  ByVal sTab As String
+								, ByVal sCol As String
+								, ByVal sID As String
+								) As Object
