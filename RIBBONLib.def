@@ -354,6 +354,30 @@
 '							- RBNRegisterFunctionAsPublic(...) As Logical	'Used to regiser a custom function
 '							- RBNUnregisterFunctionAsPublic(...) As Logical	'Used to unregister a cusom function
 '							- RBNUnregisterAllFunctionsAsPublic() As Logical	'Used to unregister all custom functions (used by RBNEndHandler)
+'	03-01-2019 11:45:14		- Changed the variables holding instances of the ribbon from Modular variables to Global variables. Makes them accessible outside of RibbonLib.
+'							they are defined in the RibbonLib.def
+'						- Changed RBNControlGetTypeName to include the three new control types added with v17
+'						- Added new functions/procedures, especially around support for Stack- and WrapPanels on Split- and DropDownButtons
+'							- RBNControlSetOrientationThs(...)
+'							- RBNControlSetOrientationIdx(...)
+'							- RBNControlSetWidthThs(...)
+'							- RBNControlSetWidthIdx(...)
+'							- RBNControlSetHeightThs(...)
+'							- RBNControlSetHeightIdx(...)
+'							- RBNDropDButtonAddControl(...) As Integer
+'							- RBNDropDButtonAddControlThs(...) As Integer
+'							- RBNDropDButtonAddControlIdx(...) As Integer
+'							- RBNDropDButtonRemoveControl(...) As Integer
+'							- RBNDropDButtonGetControlThs(...) As Logical
+'							- RBNDropDButtonGetControlIndexThs(...) As Integer
+'							- RBNDropDButtonControlExistsThs(...) As Logical
+'							- RBNSplitButtonAddControl(...) As Integer
+'							- RBNSplitButtonAddControlThs(...) As Integer
+'							- RBNSplitButtonAddControlIdx(...) As Integer
+'							- RBNSplitButtonRemoveControl(...) As Integer
+'							- RBNSplitButtonGetControlThs(...) As Logical
+'							- RBNSplitButtonGetControlIndexThs(...) As Integer
+'							- RBNSplitButtonControlExistsThs(...) As Logical
 '*****************************************************************************************************************************
 
 
@@ -407,6 +431,22 @@
 '
 '**** C L E A R I N G    T H E    A D D E D    T A B S  ,    G R O U P S    A N D    C O N T R O L S
 '	Call RBNClearCustomRibbonElements
+
+Global	theMapInfoApplication As This,
+		theMapBasicApplication As This,
+		theMapInfoEvents As This,
+		theStatusbar As This,
+		theStatusbarControlsColl As This,
+		theRibbon As This,
+		theBackstage As This,
+		theQAT As This,
+		theToolContextMenu As This,
+		theTabsColl As This,
+		theToolContextMenuItemsColl As This,
+		theContextMenus As This,
+		theMapMTB As This,
+		theMapMTBControlsColl As This,
+		theNotification As This
 
 
 Define		RBN_ELEMENT_NOT_FOUND		-1
@@ -778,7 +818,45 @@ Declare Function RBNSplitButtonGroupExistsThs(	  rbnSplitButton As This
 									, ByVal sGroupName As String
 									) As Logical
 
-'** WORKING WITH CONTROLS ON SPLITBUTTON GROUPS **********************************************************
+'** WORKING WITH PANELS ON SPLITBUTTON **********************************************************
+Declare Function RBNSplitButtonAddControl(	  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sSplitButtonName As String
+									) As Integer						'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNSplitButtonAddControlThs(  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal rbnSplitButton As String
+									) As Integer					'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNSplitButtonAddControlIdx(  ByVal sControlName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal nSplitButtonIdx As String
+									) As Integer					'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNSplitButtonRemoveControl(  ByVal sControlName As String
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sSplitButtonName As String
+									) As Integer						'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNSplitButtonGetControlThs(  rbnSplitButton As This
+									, ByVal sControlName As String
+									, rbnControlFound As RefPtr
+									) As Logical
+Declare Function RBNSplitButtonGetControlIndexThs(  rbnSplitButton As This
+										, ByVal sControlName As String
+										) As Integer
+Declare Function RBNSplitButtonControlExistsThs( rbnSplitButton As This
+									, ByVal sControlName As String
+									) As Logical
+
+'** WORKING WITH CONTROLS ON SPLITBUTTON GROUPS/PANELS **********************************************************
 Declare Function RBNSplitButtonGroupAddControl(	  ByVal sControlName As String
 										, ByVal sCaption As String
 										, ByVal sKeytip As String
@@ -816,7 +894,7 @@ Declare Function RBNSplitButtonGroupRemoveControl(  ByVal sControlName As String
 Declare Function RBNDropDButtonNumGroups( ByVal sTabName As String
 								, ByVal sGroupName As String
 								, ByVal sDropDButtonName As String
-								) As Integer
+								) As Integer	'Returns the number of groups and panels in the control collection of the DropDownButton
 
 Declare Function RBNDropDButtonAddGroup(  ByVal sDropDButtonGroupName As String
 								, ByVal sCaption As String
@@ -849,9 +927,47 @@ Declare Function RBNDropDButtonGetGroupThs(	  rbnDropDButton As This
 Declare Function RBNDropDButtonGetGroupIndexThs(  rbnDropDButton As This
 									, ByVal sGroupName As String
 									) As Integer
-Declare Function RBNDropDButtonGroupExistsThs(	  rbnDropDButton As This
+Declare Function RBNDropDButtonGroupExistsThs( rbnDropDButton As This
 									, ByVal sGroupName As String
 									) As Logical
+
+'** WORKING WITH PANELS ON DROPDOWNBUTTON GROUPS **********************************************************
+Declare Function RBNDropDButtonAddControl(	  ByVal sDropDButtonPanelName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sDropDButtonName As String
+									) As Integer						'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNDropDButtonAddControlThs(  ByVal sDropDButtonPanelName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal rbnDropDButton As String
+									) As Integer					'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNDropDButtonAddControlIdx(  ByVal sDropDButtonPanelName As String
+									, ByVal sCaption As String
+									, ByVal nControlType As Integer
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal nDropDButtonIdx As String
+									) As Integer					'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNDropDButtonRemoveControl(  ByVal sControlName As String
+									, ByVal sTabName As String
+									, ByVal sGroupName As String
+									, ByVal sDropDButtonName As String
+									) As Integer						'Returns the modular Idx of the Panel or 0, if it wasn't created
+Declare Function RBNDropDButtonGetControlThs(  rbnDropDButton As This
+									, ByVal sControlName As String
+									, rbnControlFound As RefPtr
+									) As Logical
+Declare Function RBNDropDButtonGetControlIndexThs(  rbnDropDButton As This
+										, ByVal sControlName As String
+										) As Integer
+Declare Function RBNDropDButtonControlExistsThs( rbnDropDButton As This
+										, ByVal sControlName As String
+										) As Logical
 
 '** WORKING WITH CONTROLS ON DROPDOWNBUTTON GROUPS **********************************************************
 Declare Function RBNDropDButtonGroupAddControl(	  ByVal sControlName As String
@@ -1185,6 +1301,24 @@ Declare Sub RBNControlSetVisibility(	  ByVal sTabName As String
 								, ByVal sControlName As String
 								, ByVal bVisible As Logical
 								)
+Declare Sub RBNControlSetOrientationThs(  ByVal rbnControl As This
+								, ByVal nOrientation As Integer
+								)
+Declare Sub RBNControlSetOrientationIdx(  ByVal nElementIdx As Integer
+								, ByVal nOrientation As Integer
+								)
+Declare Sub RBNControlSetWidthThs(	  ByVal rbnControl As This
+							, ByVal fWidth As Float
+							)
+Declare Sub RBNControlSetWidthIdx(  ByVal nElementIdx As Integer
+							, ByVal fWidth As Float
+							)
+Declare Sub RBNControlSetHeightThs(  ByVal rbnControl As This
+							, ByVal fWidth As Float
+							)
+Declare Sub RBNControlSetHeightIdx(  ByVal nElementIdx As Integer
+							, ByVal fWidth As Float
+							)
 
 Declare Sub RBNControlCheckThs(	  ByVal rbnControl As This
 							, ByVal bChecked As Logical
