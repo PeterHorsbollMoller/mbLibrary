@@ -6733,7 +6733,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageSeparator
 
-		Case ControlType_StackPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelToolTip(rbnControl, rbnControlToolTip)
 
 
@@ -6832,7 +6832,7 @@ OnError GoTo ErrorOccured
 			Call SetIBackStageBtnKeyGesture(rbnControl, sGesture)
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 	End Case
 
 	Exit Sub
@@ -6927,8 +6927,9 @@ OnError GoTo ErrorOccured
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
 
-		Case ControlType_StackPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelCaption(rbnControl, sCaption)
+
 	End Case
 
 	Exit Sub
@@ -7052,7 +7053,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 
 	End Case
 
@@ -7165,7 +7166,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 
 	End Case
 
@@ -7241,7 +7242,7 @@ End Sub
 '		Case ControlType_BackStageButton
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 '		Case ControlType_CheckBox
 '		Case ControlType_RadioButton
 '		Case ControlType_WrapPanel
@@ -7314,7 +7315,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageSeparator
 
-		Case ControlType_StackPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelLtMargin(rbnControl, fMargin)
 
 	End Case
@@ -7405,7 +7406,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 		Case ControlType_CheckBox
 			Call SetICmdCtrlCallingHandler(rbnControl, sMBXHandler)
 		Case ControlType_RadioButton
@@ -7489,7 +7490,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 	End Case
 
 	Exit Sub
@@ -7680,7 +7681,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 
 	End Case
 	Exit Sub
@@ -7776,7 +7777,7 @@ OnError GoTo ErrorOccured
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
 
-		Case ControlType_StackPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelVisible(rbnControl, bVisible)
 
           Case ControlType_RibbonSeparator
@@ -7881,9 +7882,7 @@ OnError GoTo ErrorOccured
 '		Case ControlType_BackStageButton
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-		Case ControlType_StackPanel
-			Call SetIStackPanelOrientation(rbnControl, nOrientation)
-		Case ControlType_WrapPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelOrientation(rbnControl, nOrientation)
 	End Case
 
@@ -7963,9 +7962,7 @@ OnError GoTo ErrorOccured
 			Call SetIBackStageBtnWidth(rbnControl, fWidth)
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-		Case ControlType_StackPanel
-			Call SetIStackPanelWidth(rbnControl, fWidth)
-		Case ControlType_WrapPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelWidth(rbnControl, fWidth)
 	End Case
 
@@ -8045,9 +8042,7 @@ OnError GoTo ErrorOccured
 			Call SetIBackStageBtnHeight(rbnControl, fHeight)
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-		Case ControlType_StackPanel
-			Call SetIStackPanelHeight(rbnControl, fHeight)
-		Case ControlType_WrapPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			Call SetIStackPanelHeight(rbnControl, fHeight)
 	End Case
 
@@ -8120,7 +8115,7 @@ OnError GoTo ErrorOccured
 '		Case ControlType_BackStageButton
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 
 	End Case
 
@@ -8191,7 +8186,7 @@ OnError GoTo ErrorOccured
 			Call SetIBackStageBtnIsSelected(rbnControl, bSelected)
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 
 	End Case
 
@@ -8259,7 +8254,7 @@ OnError GoTo ErrorOccured
 '		Case ControlType_BackStageButton
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-'		Case ControlType_StackPanel
+'		Case ControlType_StackPanel, ControlType_WrapPanel
 
 	End Case
 
@@ -8356,7 +8351,7 @@ OnError GoTo ErrorOccured
 
 '		Case ControlType_BackStageTabSection
 '		Case ControlType_BackStageSeparator
-		Case ControlType_StackPanel
+		Case ControlType_StackPanel, ControlType_WrapPanel
 			RBNControlGetControlIDThs	= GetIStackPanelCtrlId(rbnControl)
 
 	End Case
@@ -9619,7 +9614,7 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 '		Call DEBUGPrint("      Map Mini ToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
 		Print #369, "      Map MiniTool Bar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 
-		If nCntrlType = ControlType_StackPanel Then
+		If nCntrlType In (ControlType_StackPanel, ControlType_WrapPanel) Then
 			rbnStackPanelControlsColl	= GetIStackPanelCtrls(rbnControlItem)
 			nNumStackPanelCtrls			= GetMICtrlCollCount(rbnStackPanelControlsColl)
 
@@ -9630,7 +9625,7 @@ Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumS
 				sName		= GetMICtrlName(rbnStackPanelControlItem)
 				sCaption		= GetMICtrlCaption(rbnStackPanelControlItem)
 '				Call DEBUGPrint("         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
-				Print #369, "         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+				Print #369, "         Stack-/WrapPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
 			Next
 		End If
 	Next
