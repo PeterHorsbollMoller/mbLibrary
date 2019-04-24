@@ -378,6 +378,10 @@
 '							- RBNSplitButtonGetControlThs(...) As Logical
 '							- RBNSplitButtonGetControlIndexThs(...) As Integer
 '							- RBNSplitButtonControlExistsThs(...) As Logical
+'	11-04-2019 21:02:26		- Added new function for inserting a tab, instead of just adding it
+'							- RBNInsertTab(...) As Integer
+'							- RBNInsertTabAfter(...) As Integer
+'							- RBNInsertTabBefore(...) As Integer
 '*****************************************************************************************************************************
 
 
@@ -483,6 +487,21 @@ Declare Function RBNBackstageGetVisibility() As Logical
 Declare Function RBNAddTab(		  ByVal sTabName As String
 							, ByVal sCaption As String
 							, ByVal sKeytip As String
+							) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
+Declare Function RBNInsertTab(	  ByVal sTabName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal nPosition As Integer
+							) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
+Declare Function RBNInsertTabAfter(  ByVal sTabName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal sNameAfter As String
+							) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
+Declare Function RBNInsertTabBefore( ByVal sTabName As String
+							, ByVal sCaption As String
+							, ByVal sKeytip As String
+							, ByVal sNameBefore As String
 							) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
 Declare Function RBNRemoveTab(	  ByVal sTabName As String
 							) As Integer
@@ -1378,11 +1397,11 @@ Declare Function RBNUnregisterAllFunctionsAsPublic() As Logical
 '**** N O T I F I C A T I O N **************************************************************
 Declare Sub RBNNotificationShow(	  ByVal sTitle As String
 							, ByVal sMessage As String
-							, ByVal nNotificationType As Integer
+							, ByVal nNotificationType As Integer	'From Enums.def: Notify_None, Notify_Error, Notify_Warning, Notify_Info, Notify_Custom
 							, ByVal nTimeToShow As Integer		'If <= 0 then defaults to 10000
 							)
 Declare Sub RBNNotificationShowAtCursor(	  ByVal sTitle As String
 									, ByVal sMessage As String
-									, ByVal nNotificationType As Integer
+									, ByVal nNotificationType As Integer	'From Enums.def: Notify_None, Notify_Error, Notify_Warning, Notify_Info, Notify_Custom
 									, ByVal nTimeToShow As Integer		'If <= 0 then defaults to 10000
 									)

@@ -22,19 +22,19 @@ Include "ERRORLib.def"
 Include "RIBBONLib.def"
 Include "WinAPI 1522.def"
 
-'**Temporary function for registering public custom MapBasic functions in MapInfo Pro
-Declare Method _RegisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
-	Alias RegisterPublicFunction
-		( ByVal IMBXInstance As This
-		, ByVal functionName As String
-		, ByVal publicName as String
-		, ByVal description as String
-		) As Integer
-Declare Method _UnregisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
-	Alias UnregisterPublicFunction
-		( ByVal IMBXInstance As This
-		, ByVal fcnid As Integer
-		)
+	'**Temporary function for registering public custom MapBasic functions in MapInfo Pro
+	Declare Method _RegisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
+		Alias RegisterPublicFunction
+			( ByVal IMBXInstance As This
+			, ByVal functionName As String
+			, ByVal publicName as String
+			, ByVal description as String
+			) As Integer
+	Declare Method _UnregisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
+		Alias UnregisterPublicFunction
+			( ByVal IMBXInstance As This
+			, ByVal fcnid As Integer
+			)
 
 Declare Sub RBNInitiate
 'Declare Sub RBInitialControlArrays
@@ -415,6 +415,119 @@ RBNAddTab = 0
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RBNAddTab: " & sTabName)
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNInsertTab(	  ByVal sTabName As String
+					, ByVal sCaption As String
+					, ByVal sKeytip As String
+					, ByVal nPosition As Integer
+					) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
+
+Dim	nCtrl As Integer
+
+OnError GoTo ErrorOccured
+
+RBNInsertTab = 0
+
+	Call RBNInitiate
+
+	nCtrl = RBNAddElement(sTabName, "", "", "", "", CONTROL_TYPE_RLIB_TAB, 0)
+
+	'Add a new Tab to theTabsColl collection
+	marrParentControlColls(nCtrl)	= theTabsColl
+	marrControls(nCtrl) 		= RbnTabCollInsertIntStrStr(marrParentControlColls(nCtrl), nPosition, sTabName, sCaption)
+
+	If sKeytip <> "" Then
+		'Set the KeyTip for the RibbonTab. KeyTip: The keyboard shortcut for
+		'the tab. A KeyTip must have from 1 to 3 uppercase characters.
+		Call SetRbnItemKeyTip(marrControls(nCtrl), sKeytip)
+	End If
+
+
+RBNInsertTab = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNInsertTab")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNInsertTabAfter(	  ByVal sTabName As String
+						, ByVal sCaption As String
+						, ByVal sKeytip As String
+						, ByVal sNameAfter As String
+						) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
+
+Dim	nPosition As Integer
+
+OnError GoTo ErrorOccured
+
+RBNInsertTabAfter = 0
+
+	nPosition = RBNGetTabIndex(sNameAfter)
+	If nPosition = RBN_ELEMENT_NOT_FOUND Then
+		RBNInsertTabAfter 	= RBNAddTab(sTabName, sCaption, sKeytip)
+	Else
+		nPosition			= nPosition + 1
+		RBNInsertTabAfter 	= RBNInsertTab(sTabName, sCaption, sKeytip, nPosition)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNInsertTabAfter")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNInsertTabBefore(	  ByVal sTabName As String
+						, ByVal sCaption As String
+						, ByVal sKeytip As String
+						, ByVal sNameBefore As String
+						) As Integer					'Returns the modular Idx of the tab or 0, if it wasn't created
+
+Dim	nPosition As Integer
+
+OnError GoTo ErrorOccured
+
+RBNInsertTabBefore = 0
+
+	nPosition = RBNGetTabIndex(sNameBefore)
+	If nPosition = RBN_ELEMENT_NOT_FOUND Then
+		RBNInsertTabBefore 	= RBNAddTab(sTabName, sCaption, sKeytip)
+	Else
+		RBNInsertTabBefore 	= RBNInsertTab(sTabName, sCaption, sKeytip, nPosition)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNInsertTabBefore")
 	Call ERRShow()
 
 End Function
@@ -854,7 +967,7 @@ RBNGetTabIndex = RBN_ELEMENT_NOT_FOUND
 
 		sName	= GetRbnTabName(rbnTabItem)
 '		sCaption	= GetRbnTabCaption(rbnTabItem)
-'		Call DEBUGPrint("Tab " & i & " is named " & sName & " but shown as " & sCaption)
+		Call DEBUGPrint("Tab " & i & " is named " & sName & " but shown as " & sCaption)
 
 		If sName = sTabName Then
 			RBNGetTabIndex	= i
