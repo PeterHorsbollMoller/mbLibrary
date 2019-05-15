@@ -1,0 +1,94 @@
+﻿Declare Method FILEBrowseForFolder
+	Class "FILELib.Files"  Lib "FILELib.dll" Alias "BrowseForFolder"
+	(	  ByVal sDescription As String	'Text to display in the dialog
+		, ByVal sFolder As String		'Start folder to use in the dialog
+		) As String					'Return the folder selected, or "" if the dialog was cancelled
+
+Declare Method FILEOpenFilesDlg
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "OpenFilesDlg"
+	(	  ByVal sTitle As String		'Title of FileOpen dialog
+		, ByVal sStartFolder As String	'Folder the dialog show on startup
+		, ByVal sFileTypes As String		'List of filetypes that are available in the FileType dropdown list
+								'Should be in this form:
+								'	description | filter [; filter ...] [| description | filter  [; filter ...]]
+								'Single filter:				"Text Files (*.txt)|*.txt"
+								'Multiple filters:	 		"Tables (*.tab)|*.tab|Workspaces (*.wor)|*.wor"
+								'Multiple filetypes at a time:	"MapInfo files (*.tab,*.wor)|*.tab;*.wor"
+	) As Integer					'Returns the number of files selected by the user
+								'	use GetOpenFilesDlgFileName to get each file item
+Declare Method FILEGetOpenFilesDlgFileName
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetOpenFilesDlgFileName"
+	(	  ByVal nFileItem As Integer		'File number to get the name full path of
+	) As String						'Returns full path for the file number, 1 is the first file in the list
+
+Declare Method FILEGetOpenFilesDlgFileNames
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetOpenFilesDlgFileNames"
+	(	  arrFileNames() As String		'Array to hold all the filenames selected
+	) As Integer					'Returns full the number of files returned
+
+Declare Method FILEDelete
+	Class "FILELib.Files"  Lib "FILELib.dll" Alias "DeleteFile"
+	(	  ByVal sFile As String			'Full path of file to delete
+	)
+
+Declare Method FILECopyFile
+	Class "FILELib.Files"  Lib "FILELib.dll" Alias "CopyFile"
+	(	  ByVal sSrcFile As String			'Full path of file to copy
+		, ByVal sDstFile As String			'Full path of file to delete
+	)
+
+Declare Method FILECreateFolder
+	Class "FILELib.Files"  Lib "FILELib.dll" Alias "CreateFolder"
+	(	ByVal sFolderPath As String		'Folder path to create, all folders in the path will be created
+	)
+
+Declare Method FILEDeleteFolder
+	Class "FILELib.Files"  Lib "FILELib.dll" Alias "DeleteFolder"
+	(	ByVal sFolderPath As String		'Folder path to delete, only deepest folder in the path will be deleted
+										'including all file and folder contents
+	)
+
+Declare Method FILEFindFilesInFolder	'**Searches thru this specific folder only, no subfolders
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "FindFilesInFolder"
+	(	  ByVal sPath As String		'Path to search
+		, ByVal sMask As String		'Mask to use, eg. "*.*", "*.tab" etc
+	) As Integer
+Declare Method FILEFindFilesInFolders	'**Searches thru this specific folder and all subfolders
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "FindFilesInFolders"
+	(	  ByVal sPath As String		'Path to search
+		, ByVal sMask As String		'Mask to use, eg. "*.*", "*.tab" etc
+	) As Integer
+
+Declare Method FILEGetFindFilesFileName
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetFindFilesFileName"
+	(	  ByVal nFileItem As Integer		'File number to get the name full path of
+	) As String						'Returns full path for the file number, 1 is the first file in the list
+Declare Method FILEGetFindFilesFileNames
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetFindFilesFileNames"
+	(	  arrFileNames() As String		'Array to hold all the filenames selected
+	) As Integer
+
+Declare Method FILEFindFoldersInFolder	'**Searches thru this specific folder only, no subfolders
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "FindFoldersInFolder"
+	(	  ByVal sPath As String		'Path to search
+		, ByVal sMask As String		'Mask to use, eg. "*.*", "*.tab" etc
+	) As Integer
+Declare Method FILEGetFindFoldersFolderName
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetFindFoldersFolderName"
+	(	  ByVal nFolderItem As Integer		'File number to get the name full path of
+	) As String						'Returns full path for the file number, 1 is the first file in the list
+Declare Method FILEGetFindFoldersFolderNames
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "FILEGetFindFoldersFolderNames"
+	(	  arrFolderNames() As String		'Array to hold all the filenames selected
+	) As Integer
+
+Declare Method FILEWriteAllTextToFile
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "WriteAllTextToFile"
+	( ByVal sFile As String
+	, ByVal sContent As String
+	)
+Declare Method FILEAppendAllTextToFile
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "AppendAllTextToFile"
+	( ByVal sFile As String
+	, ByVal sContent As String
+	)

@@ -10,6 +10,7 @@ namespace FILELib
         // Use a static var to store the list of selected filenames
         static string[] mselectedFiles;
         static List<string> _mfoundFiles = new List<string>();
+        static List<string> _mfoundFolders = new List<string>();
 
         //<summary>
         /// This is called from MapBasic code
@@ -228,6 +229,65 @@ namespace FILELib
                 count++;
             }
             return files.Length;
+        }
+
+        /// <summary>This will search the folder passed (but not the sub folders) for the folders matching the mask</summary>
+        /// <param name="folderPath">Folder to search</param>
+        /// <param name="mask">Folders to search for, use * to find all</param>
+        /// <returns>Int, the number of files found</returns>
+        public static int FindFoldersInFolder(string folderPath, string mask)
+        {
+            _mfoundFolders.Clear();
+
+            if (string.IsNullOrWhiteSpace(mask))
+                mask = "*";
+
+            foreach (string folder in Directory.EnumerateDirectories(folderPath, mask, SearchOption.TopDirectoryOnly))
+            {
+                _mfoundFolders.Add(folder);
+            }
+
+            return _mfoundFolders.Count;
+        }
+
+        /// <summary>Call this method AFTER calling OpenFilesDlg, to retrieve one of the filenames the user selected.</summary>
+        /// <param name="file">File number asking for, 1 is the first file in the list</param>
+        /// <returns>string, the file that was asked for -- might be ""</returns>
+        public static string GetFindFoldersFolderName(int folder)
+        {
+            if (_mfoundFolders == null || _mfoundFolders.Count == 0)
+            {
+                return "";
+            }
+            if (_mfoundFolders.Count < (folder - 1))
+            {
+                //asking for a file that not was selected
+                return "";
+            }
+
+            return _mfoundFolders[(folder - 1)];
+        }
+
+        //<summary>
+        /// Call this method AFTER calling FindFilesInFolder,
+        /// to retrieve ALL of the filenames the user selected.
+        /// </summary>
+        /// <param name="files">Array to copy all the file names to</param>
+        /// <returns>int, the length of the array</returns>
+        public static int GetFindFoldersFolderNames(string[] folders)
+        {
+            if (_mfoundFolders == null || _mfoundFolders.Count == 0)
+            {
+                return 0;
+            }
+
+            int count = 0;
+            foreach (string folder in _mfoundFolders)
+            {
+                folders[count] = folder;
+                count++;
+            }
+            return folders.Length;
         }
 
         //<summary>

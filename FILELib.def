@@ -92,6 +92,21 @@ Declare Method FILEGetFindFilesFileNames
 	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetFindFilesFileNames"
 	(	  arrFileNames() As String		'Array to hold all the filenames selected
 	) As Integer
+
+Declare Method FILEFindFoldersInFolder	'**Searches thru this specific folder only, no subfolders
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "FindFoldersInFolder"
+	(	  ByVal sPath As String		'Path to search
+		, ByVal sMask As String		'Mask to use, eg. "*.*", "*.tab" etc
+	) As Integer
+Declare Method FILEGetFindFoldersFolderName
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "GetFindFoldersFolderName"
+	(	  ByVal nFolderItem As Integer		'File number to get the name full path of
+	) As String						'Returns full path for the file number, 1 is the first file in the list
+Declare Method FILEGetFindFoldersFolderNames
+	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "FILEGetFindFoldersFolderNames"
+	(	  arrFolderNames() As String		'Array to hold all the filenames selected
+	) As Integer
+
 Declare Method FILEWriteAllTextToFile
 	Class "FILELib.Files"  Lib "FILELib.dll"	Alias "WriteAllTextToFile"
 	( ByVal sFile As String

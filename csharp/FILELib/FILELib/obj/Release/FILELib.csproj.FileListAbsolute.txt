@@ -2,4 +2,4 @@ D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\FILELib\FILELib\bin\Rel
 D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\FILELib\FILELib\bin\Release\FILELib.pdb
 D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\FILELib\FILELib\obj\Release\FILELib.dll
 D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\FILELib\FILELib\obj\Release\FILELib.pdb
-D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\FILELib\FILELib\obj\Release\FILELib.csprojResolveAssemblyReference.cache
+D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary\csharp\FILELib\FILELib\obj\Release\FILELib.csproj.CoreCompileInputs.cache
