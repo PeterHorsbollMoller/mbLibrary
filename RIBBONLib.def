@@ -382,6 +382,7 @@
 '							- RBNInsertTab(...) As Integer
 '							- RBNInsertTabAfter(...) As Integer
 '							- RBNInsertTabBefore(...) As Integer
+'	10-05-2019 11:12:54		- Made RBNInitiate public so that it can be called explicitely from tools that need the .NET objects but aren't adding controls to the ribbon
 '*****************************************************************************************************************************
 
 
@@ -467,6 +468,9 @@ Define		CONTROL_TYPE_RLIB_CNTXT_MNU	200
 Define		CONTROL_TYPE_STATUSBAR		300
 
 Declare Method ObjectToString Class "System.Object" Lib "mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" alias ToString (ByVal objectInstace As This) As String
+
+'**Used to initialise the arrays and .NET objects
+Declare Sub RBNInitiate
 
 '**For testing and for getting the names of the controls and elements
 Declare Sub RBNLoop

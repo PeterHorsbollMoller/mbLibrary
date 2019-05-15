@@ -36,7 +36,6 @@ Include "WinAPI 1522.def"
 			, ByVal fcnid As Integer
 			)
 
-Declare Sub RBNInitiate
 'Declare Sub RBInitialControlArrays
 Declare Function RBNGetImageStringFromControlName(ByVal sControlName As String) As String
 Declare Function RBNGetCommandIDFromControlName(ByVal sControlName As String) As String
@@ -9517,6 +9516,7 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
+
 
 
 
