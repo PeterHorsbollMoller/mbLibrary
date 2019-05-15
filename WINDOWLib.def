@@ -4,7 +4,23 @@
 '	18-03-2013 10:59:48	- Added
 '						- WINExists(...) As Logical
 '						- WINGetIDFromTitle(...) As Integer
+'	09-05-2019 11:00:27	- Added functions to embed a window in a MapBasic dialog
+'						- WINCreateForDocumentControl(...) As Integer
+'						- WINCreateUnattached(...) As This
+'						- WINGetIContractHandle( ...) As IntPtr
+'					- The module now also include RIBBONLib.def, WINAPI 1522.def and IMapInfoPro.def
 '********************************************************************************************************
 
 Declare Function WINExists(ByVal nWID As Integer) As Logical
 Declare Function WINGetIDFromTitle(ByVal sTitle As String) As Integer
+
+Declare Function WINCreateForDocumentControl( ByVal nCtrlID As Integer				'*ID of the control to embed the window into
+								, ByVal sCreateWindowStatement As String	'*MapBasic statement that will create the window
+								) As Integer							'*Returns the WindowID of the embedded window
+Declare Function WINCreateUnattached(	  ByVal sCreateWindowStatement As String
+									) As This
+
+' Delare .NET sytsem methods
+Declare Method WINGetIContractHandle Class "System.AddIn.Contract.INativeHandleContract" Lib " System.AddIn.Contract.dll" Alias GetHandle
+	( ByVal p1 as This
+	) as IntPtr

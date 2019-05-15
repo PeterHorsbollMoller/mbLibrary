@@ -6,6 +6,7 @@
 '*******************************************************************************
 
 '-------------------------------------
+Include "IMapInfoPro.def"
 Include "MapBasic.def"
 Include "Icons.def"
 Include "Menu.def"
@@ -15,7 +16,9 @@ Include "Defaults.def"
 '-------------------------------------
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
+Include "RIBBONLib.def"
 Include "TABLELib.def"
+Include "WINAPI 1522.def"
 Include "WINDOWLib.def"
 
 '**********************************************************************************************''
@@ -83,5 +86,87 @@ WINGetIDFromTitle = 0
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "WINGetIDFromTitle")
 	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function WINCreateForDocumentControl(	  ByVal nCtrlID As Integer				'*ID of the control to embed the window into
+							, ByVal sCreateWindowStatement As String	'*MapBasic statement that will create the window
+							) As Integer							'*Returns the WindowID of the embedded window
+
+Dim	nRectClient, iHwnd As Integer,
+	windowHandle As This,
+	winRect As RECTANGLEAPI,
+	hwndWin, hwndOldParent As IntPtr,
+	b As Logical
+
+OnError GoTo ErrorOccured
+
+WINCreateForDocumentControl = 0
+
+	iHwnd	= ReadControlValue(nCtrlID)
+
+'	Print Time(24) & ": Embed Window Ribbon Ux"
+	nRectClient = WAPIGetClientRect(iHwnd, winRect)
+	windowHandle = WINCreateUnattached(sCreateWindowStatement)
+
+'	Print Time(24) & ": Then get the hwnd for it"
+	hwndWin = WINGetIContractHandle(windowHandle)
+
+'	Print Time(24) & ": Reparent window"
+	hwndOldParent = WAPISetParent(hwndWin, iHwnd)
+'	Print Time(24) & ": Show window"
+	b = WAPIShowWindow(hwndWin, 5)
+'	Print Time(24) & ": Set window size"
+	b = WAPIMoveWindow(hwndWin, 0, 0, winRect.right, winRect.bottom, 1)
+
+'	Print Time(24) & ": Return WindowID of the embedded window"
+	WINCreateForDocumentControl = WindowID(FrontWindow())
+'	Print Time(24) & ": WINCreateForDocumentControl Exists"
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "WINCreateForDocumentControl: " & sCreateWindowStatement)
+	Call ERRShow()
+
+End Function
+
+'*******************************************************************************
+'
+' Function CreateWindowUnattached()
+'
+'*******************************************************************************
+Function WINCreateUnattached(ByVal sCreateWindowStatement As String) As This
+
+Dim	winHandle As This,
+	nWinID As Integer
+
+OnError GoTo ErrorOccured
+
+	'**Initiating RIBBONLib as we are using theMapInfoApplication object from this module
+	Call RBNInitiate
+
+'	Print Time(24) & ": WINCreateUnattached: " & sCreateWindowStatement
+	winHandle = CreateUnattachedWindow(theMapInfoApplication, sCreateWindowStatement, nWinID)
+	WINCreateUnattached = winHandle
+'	Print Time(24) & ": WINCreateUnattached Exits"
+
+'-------------------------
+Map_Win:
+    WINCreateUnattached = winHandle
+    Exit Function
+
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "WINCreateUnattached")
+	Call ERRPrint()
+	Resume Map_Win
 
 End Function
