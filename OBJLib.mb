@@ -685,7 +685,8 @@ Function OBJDirection(	ByVal oInput As Object			'The object to calculate the dir
 					) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
 
 Dim	fStartX, fStartY, fEndX, fEndY As Float,
-	fDirection As Float,
+	fDirection, fCurDirection, fCurLength, fLength As Float,
+	nSegm, nNode As Integer,
 	symInput As Symbol
 
 OnError GoTo ErrorOccured
@@ -725,7 +726,41 @@ OBJDirection = -1
 			fDirection = -1
 
 		Case OBJ_TYPE_REGION
-			fDirection = -1
+			For nSegm = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+				fStartX = ObjectNodeX(oInput, nSegm, 1)
+				fStartY = ObjectNodeY(oInput, nSegm, 1)
+				For nNode = 2 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegm)
+					fEndX 		= ObjectNodeX(oInput, nSegm, nNode)
+					fEndY 		= ObjectNodeY(oInput, nSegm, nNode)
+					fCurLength	= Distance(fStartX, fStartY, fEndX, fEndY, "m")
+
+					If fCurLength > 0 Then
+						If fStartX > fEndX Then
+							If fStartY > fEndY Then
+								fCurDirection 	= MATHGetDirection(fEndX, fEndY, fStartX, fStartY)
+							Else
+								fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+							End If
+						ElseIf fStartY > fEndY Then
+							If fStartX < fEndX Then
+								fCurDirection 	= MATHGetDirection(fEndX, fEndY, fStartX, fStartY)
+							Else
+								fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+							End If
+						Else
+							fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+						End If
+
+						Print nSegm & " " & nNode & ", Direction: " & FormatNumber$(Round(fCurDirection, 0.01)) & ", Length: " & FormatNumber$(Round(fCurLength, 0.01)) & " Weight: " & FormatNumber$(Round(fCurLength / (fLength + fCurLength), 0.01))
+						Print "   Total " & ", Direction: " & FormatNumber$(Round(fDirection, 0.01)) & ", Length: " & FormatNumber$(Round(fLength, 0.01)) & " Weight: " & FormatNumber$(Round(fLength / (fLength + fCurLength), 0.01))
+						fDirection	= (fCurDirection * (fCurLength / (fLength + fCurLength))) + (fDirection * (fLength / (fLength + fCurLength)))
+					End If
+
+					fLength = fLength + fCurLength
+					fStartX = fEndX
+					fStartY = fEndY
+				Next	'nNode
+			Next	'nSegm
 
 		Case Else
 			fDirection = -1
@@ -737,6 +772,182 @@ OBJDirection = -1
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "OBJDirection")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJDirectionWtAvg(	  ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
+						) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+
+Dim	fStartX, fStartY, fEndX, fEndY As Float,
+	fDirection, fCurDirection, fCurLength, fLength As Float,
+	nSegm, nNode As Integer,
+	symInput As Symbol
+
+OnError GoTo ErrorOccured
+
+OBJDirectionWtAvg = -1
+
+	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+
+		Case OBJ_TYPE_TEXT
+			fDirection = -1
+
+		Case OBJ_TYPE_LINE, OBJ_TYPE_ARC
+			fDirection = OBJDirectionWtAvg(ConvertToPline(oInput))
+
+		Case OBJ_TYPE_COLLECTION, OBJ_TYPE_MPOINT
+			fDirection = -1
+
+		Case OBJ_TYPE_ELLIPSE, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT
+			fDirection = OBJDirectionWtAvg(ConvertToRegion(oInput))
+
+		Case OBJ_TYPE_PLINE, OBJ_TYPE_REGION
+
+			For nSegm = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+				fStartX = ObjectNodeX(oInput, nSegm, 1)
+				fStartY = ObjectNodeY(oInput, nSegm, 1)
+				For nNode = 2 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegm)
+					fEndX 		= ObjectNodeX(oInput, nSegm, nNode)
+					fEndY 		= ObjectNodeY(oInput, nSegm, nNode)
+					fCurLength	= Distance(fStartX, fStartY, fEndX, fEndY, "m")
+
+					If fCurLength > 0 Then
+						If fStartX > fEndX Then
+							If fStartY > fEndY Then
+								fCurDirection 	= MATHGetDirection(fEndX, fEndY, fStartX, fStartY)
+							Else
+								fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+							End If
+						ElseIf fStartY > fEndY Then
+							If fStartX < fEndX Then
+								fCurDirection 	= MATHGetDirection(fEndX, fEndY, fStartX, fStartY)
+							Else
+								fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+							End If
+						Else
+							fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+						End If
+
+						Print nSegm & " " & nNode & ", Direction: " & FormatNumber$(Round(fCurDirection, 0.01)) & ", Length: " & FormatNumber$(Round(fCurLength, 0.01)) & " Weight: " & FormatNumber$(Round(fCurLength / (fLength + fCurLength), 0.01))
+						Print "   Total " & ", Direction: " & FormatNumber$(Round(fDirection, 0.01)) & ", Length: " & FormatNumber$(Round(fLength, 0.01)) & " Weight: " & FormatNumber$(Round(fLength / (fLength + fCurLength), 0.01))
+						fDirection	= (fCurDirection * (fCurLength / (fLength + fCurLength))) + (fDirection * (fLength / (fLength + fCurLength)))
+					End If
+
+					fLength = fLength + fCurLength
+					fStartX = fEndX
+					fStartY = fEndY
+				Next	'nNode
+			Next	'nSegm
+
+		Case Else
+			fDirection = -1
+	End Case
+
+	OBJDirectionWtAvg = fDirection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJDirectionWtAvg")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJDirectionMedian(	  ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
+						) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+
+Dim	fStartX, fStartY, fEndX, fEndY As Float,
+	fDirection, fCurDirection, fCurLength, fLength, arrDirectionLengths(181) As Float,
+	nSegm, nNode, nItem As Integer
+
+OnError GoTo ErrorOccured
+
+OBJDirectionMedian = -1
+
+	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+
+		Case OBJ_TYPE_TEXT
+			fDirection = -1
+
+		Case OBJ_TYPE_LINE, OBJ_TYPE_ARC
+			fDirection = OBJDirectionMedian(ConvertToPline(oInput))
+
+		Case OBJ_TYPE_COLLECTION, OBJ_TYPE_MPOINT
+			fDirection = -1
+
+		Case OBJ_TYPE_ELLIPSE, OBJ_TYPE_RECT, OBJ_TYPE_ROUNDRECT
+			fDirection = OBJDirectionMedian(ConvertToRegion(oInput))
+
+		Case OBJ_TYPE_PLINE, OBJ_TYPE_REGION
+
+			For nSegm = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+				fStartX = ObjectNodeX(oInput, nSegm, 1)
+				fStartY = ObjectNodeY(oInput, nSegm, 1)
+				For nNode = 2 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegm)
+					fEndX 		= ObjectNodeX(oInput, nSegm, nNode)
+					fEndY 		= ObjectNodeY(oInput, nSegm, nNode)
+					fCurLength	= Distance(fStartX, fStartY, fEndX, fEndY, "m")
+
+					If fCurLength > 0 Then
+						If fStartX > fEndX Then
+							If fStartY > fEndY Then
+								fCurDirection 	= MATHGetDirection(fEndX, fEndY, fStartX, fStartY)
+							Else
+								fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+							End If
+						ElseIf fStartY > fEndY Then
+							If fStartX < fEndX Then
+								fCurDirection 	= MATHGetDirection(fEndX, fEndY, fStartX, fStartY)
+							Else
+								fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+							End If
+						Else
+							fCurDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+						End If
+
+						nItem	= Round(fCurDirection, 1) + 1
+						arrDirectionLengths(nItem) = arrDirectionLengths(nItem) + fCurLength
+					End If
+
+					fLength = fLength + fCurLength
+					fStartX = fEndX
+					fStartY = fEndY
+				Next	'nNode
+			Next	'nSegm
+
+			For nItem = 1 To Ubound(arrDirectionLengths)
+				fCurLength = fCurLength + arrDirectionLengths(nItem)
+				If fCurLength > (fLength / 2) Then
+					fDirection = (nItem - 1)
+					Exit For
+				End If
+			Next
+
+		Case Else
+			fDirection = -1
+	End Case
+
+	OBJDirectionMedian = fDirection
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJDirectionMedian")
 	Call ERRShow()
 
 End Function
@@ -875,7 +1086,7 @@ OnError GoTo ErrorOccured
 		If ColumnInfo(sTab, sCol, COL_INFO_TYPE) = COL_TYPE_CHAR Then
 			sCmd = sCmd & " Where " & sCol & " = " & Chr$(34) & sID & Chr$(34)
 		Else
-			sCmd = sCmd & " Where " & sCol & " = " & Chr$(34) & sID & Chr$(34)
+			sCmd = sCmd & " Where " & sCol & " = " & sID
 		End If
 	End If
 
@@ -909,3 +1120,4 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+

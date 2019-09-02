@@ -83,6 +83,11 @@ Declare Function OBJAddNodeOnPolyline(	  ByVal oPolyline As Object		'The polylin
 															'The node will be added to the first line where the distance from the node to the line is shorter than fTolerance
 Declare Function OBJDirection(	ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
 							) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+Declare Function OBJDirectionWtAvg(  ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
+							) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+Declare Function OBJDirectionMedian(	  ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
+								) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+
 
 Declare Function OBJCartesianCreatePointAlong(	  ByVal oPolyline As Object	'The polyline to create the point along
 										, ByVal fDistance As Float	'Distance along polyline, can also be negative
@@ -92,3 +97,5 @@ Declare Function OBJCombineFromTable(	  ByVal sTab As String
 								, ByVal sCol As String
 								, ByVal sID As String
 								) As Object
+
+
