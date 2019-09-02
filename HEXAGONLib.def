@@ -1,0 +1,219 @@
+﻿'** Get some details on Hexogons from this web site: https://www.redblobgames.com/grids/hexagons/
+
+
+Define 	HEX_CALC_TYPE_CARTESIAN		1
+Define 	HEX_CALC_TYPE_SPHERICAL		2
+
+Define 	HEX_TYPE_POINTY			1
+Define 	HEX_TYPE_FLAT				2
+
+Declare Sub HEXSetUseBaseForHexagon(ByVal bValue As Logical)
+Declare Function HEXUseBaseForHexagon() As Logical
+
+Declare Function HEXTimeSpent() As Integer	'in seconds
+Declare Function HEXNumCreated() As Integer
+Declare Function HEXNumHexagonColumns() As Integer
+Declare Function HEXNumHexagonRows() As Integer
+Declare Function HEXNumHexagonsEstimated() As Integer
+Declare Function HEXNumHexagonColumnsEstimated() As Integer
+Declare Function HEXNumHexagonRowsEstimated() As Integer
+
+
+Declare Function HEXGetCorner(  ByVal oCenter As Object
+						, ByVal fSize As Float
+						, ByVal sUnit As String
+						, ByVal nCorner As Integer
+						, ByVal nCalculationType As Integer
+						, ByVal nHexagonType As Integer
+						) As Object
+Declare Function HEXGetCornerPointy( ByVal oCenter As Object
+							, ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal nCorner As Integer
+							, ByVal nCalculationType As Integer
+							) As Object
+Declare Function HEXGetCornerFlat(	  ByVal oCenter As Object
+							, ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal nCorner As Integer
+							, ByVal nCalculationType As Integer
+							) As Object
+
+Declare Function HEXCreate(	  ByVal oCenter As Object
+						, ByVal fSize As Float
+						, ByVal sUnit As String
+						, ByVal nCalculationType As Integer
+						, ByVal nHexagonType As Integer
+						) As Object
+Declare Function HEXCreatePointy(	  ByVal oCenter As Object
+							, ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal nCalculationType As Integer
+							) As Object
+Declare Function HEXCreateFlat(	  ByVal oCenter As Object
+							, ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal nCalculationType As Integer
+							) As Object
+
+Declare Function HEXOffSet(	  ByVal oInput As Object
+						, ByVal fAngle As Float
+						, ByVal fDistance As Float
+						, ByVal sUnit As String
+						, ByVal nCalculationType As Integer
+						) As Object
+
+Declare Function HEXGetWidth(	  ByVal fSize As Float
+						, ByVal nHexagonType As Integer
+						) As Float
+Declare Function HEXGetHeight(  ByVal fSize As Float
+						, ByVal nHexagonType As Integer
+						) As Float
+Declare Function HEXGetOffsetX( ByVal fSize As Float
+						, ByVal nHexagonType As Integer
+						) As Float
+Declare Function HEXGetOffsetXMultiplier( ByVal nHexagonType As Integer
+								) As Float
+Declare Function HEXGetOffsetY( ByVal fSize As Float
+						, ByVal nHexagonType As Integer
+						) As Float
+Declare Function HEXGetOffsetYMultiplier( ByVal nHexagonType As Integer
+								) As Float
+Declare Function HEXGetStartX(  ByVal fX As Float
+						, ByVal fWidth As Float
+						, ByVal fOffSetXMultiplier As Float
+						) As Float
+Declare Function HEXGetStartY(  ByVal fY As Float
+						, ByVal fHeight As Float
+						, ByVal fOffSetYMultiplier As Float
+						) As Float
+
+Declare Function HEXCreateForExtent(		  ByVal sTab As String
+									, ByVal sCol As String
+									, ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal fMinX As Float
+									, ByVal fMinY As Float
+									, ByVal fMaxX As Float
+									, ByVal fMaxY As Float
+									, ByVal nCalculationType As Integer
+									, ByVal nHexagonType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXCreatePointyForExtent(	  ByVal sTab As String
+									, ByVal sCol As String
+									, ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal fMinX As Float
+									, ByVal fMinY As Float
+									, ByVal fMaxX As Float
+									, ByVal fMaxY As Float
+									, ByVal nCalculationType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXCreateFlatForExtent(	  ByVal sTab As String
+									, ByVal sCol As String
+									, ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal fMinX As Float
+									, ByVal fMinY As Float
+									, ByVal fMaxX As Float
+									, ByVal fMaxY As Float
+									, ByVal nCalculationType As Integer
+									) As Integer				'Returns the number of hexagons created
+
+Declare Function HEXCreatePointyForObject(	  ByVal sTab As String
+									, ByVal sCol As String
+									, ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal oInput As Object
+									, ByVal nCalculationType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXCreateFlatForObject(	  ByVal sTab As String
+									, ByVal sCol As String
+									, ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal oInput As Object
+									, ByVal nCalculationType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXCreateForObject(		  ByVal sTab As String
+									, ByVal sCol As String
+									, ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal oInput As Object
+									, ByVal nCalculationType As Integer
+									, ByVal nHexagonType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXEstimateForMap(		  ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal nMID As Integer
+									, ByVal nCalculationType As Integer
+									, ByVal nHexagonType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXEstimateForObject(		  ByVal fSize As Float
+									, ByVal sUnit As String
+									, ByVal oInput As Object
+									, ByVal nCalculationType As Integer
+									, ByVal nHexagonType As Integer
+									) As Integer				'Returns the number of hexagons created
+Declare Function HEXEstimateColumns( ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal fMinX As Float
+							, ByVal fMinY As Float
+							, ByVal fMaxX As Float
+							, ByVal fMaxY As Float
+							, ByVal nCalculationType As Integer
+							, ByVal nHexagonType As Integer
+							) As Integer				'Returns the number of columns estiamted
+Declare Function HEXEstimateRows(	  ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal fMinX As Float
+							, ByVal fMinY As Float
+							, ByVal fMaxX As Float
+							, ByVal fMaxY As Float
+							, ByVal nCalculationType As Integer
+							, ByVal nHexagonType As Integer
+							) As Integer				'Returns the number of rows estiamted
+
+
+Declare Function HEXCreateForMap(		  ByVal sTab As String
+								, ByVal sCol As String
+								, ByVal fSize As Float
+								, ByVal sUnit As String
+								, ByVal nMID As Integer
+								, ByVal nCalculationType As Integer
+								, ByVal nHexagonType As Integer
+								) As Integer				'Returns the number of hexagons created
+Declare Function HEXCreatePointyForMap(	  ByVal sTab As String
+								, ByVal sCol As String
+								, ByVal fSize As Float
+								, ByVal sUnit As String
+								, ByVal nMID As Integer
+								, ByVal nCalculationType As Integer
+								) As Integer				'Returns the number of hexagons created
+Declare Function HEXCreateFlatForMap(	  ByVal sTab As String
+								, ByVal sCol As String
+								, ByVal fSize As Float
+								, ByVal sUnit As String
+								, ByVal nMID As Integer
+								, ByVal nCalculationType As Integer
+								) As Integer				'Returns the number of hexagons created
+
+Declare Function HEXPCreateForExtent(	  ByVal sTab As String
+								, ByVal sCol As String
+								, ByVal fSize As Float
+								, ByVal sUnit As String
+								, ByVal fMinX As Float
+								, ByVal fMinY As Float
+								, ByVal fMaxX As Float
+								, ByVal fMaxY As Float
+								, ByVal nCalculationType As Integer
+								, ByVal nHexagonType As Integer
+								) As Integer				'Returns the number of hexagon Points created
+
+Declare Function HEXPCreateForMap(	  ByVal sTab As String
+							, ByVal sCol As String
+							, ByVal fSize As Float
+							, ByVal sUnit As String
+							, ByVal nMID As Integer
+							, ByVal nCalculationType As Integer
+							, ByVal nHexagonType As Integer
+							) As Integer				'Returns the number of hexagons Points created
