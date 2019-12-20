@@ -5,10 +5,28 @@
 '	30-04-2015 11:02:26		Added:
 '						- RESSTRNGSetStringFilesFolder(...)
 '						- RESSTRNGGetStringFilesFolder() As String
+'	20-12-2019 08:54:56		Added
+'						- RESSTRNGSetCharSet(...)
+'						- RESSTRNGGetLanguage() As String
+'						- RESSTRNGGetLanguageCode() As String
+'						- RESSTRNGSetLanguageItem(...)
+'						- RESSTRNGGetLanguageItem() As Integer
+'						- RESSTRNGLoadStringsByCode(...) As Logical
+'						- RESSTRNGGetStringFileCode(...) As String
+'						- RESSTRNGGetStringFileItemByCode(...) As Integer
+'						- RESSTRNGGetLanguageByItem(...) As String
+'						- RESSTRNGGetLanguageCodeByItem(...) As String
+'						- RESSTRNGGetLanguageCodes(...) As Integer
+'						Changed
+'						- RESSTRNGLoadStrings to use the CharSet specified or System CharSet if non has been specified
+'						- RESSTRNGLoadStringsINI now calls RESSTRNGLoadStrings
+'						- String files should now also hold a two-letter language code if you want to use this, That's best practise for using UTF-8 encoded string files
+'						- If no language has been specified, it will use SystemInfo(SYS_INFO_CULTURE) to detect the language of MapInfo Pro
 '********************************************************
-'**The string ini file has this structure in the string file:
+'**The string file has this structure:
 '[ADMIN]
 'LANGUAGE=English
+'LANGUAGE_CODE=en
 
 '[STRINGS]
 '1=The first text
@@ -16,23 +34,37 @@
 '********************************************************
 
 ' Public functions
+Declare Sub RESSTRNGSetCharSet(ByVal sCharSet As String)
+
+Declare Function RESSTRNGGetLanguage() As String										'Return the current language in use
+Declare Function RESSTRNGGetLanguageCode() As String									'Return the current language code in use
+Declare Sub RESSTRNGSetLanguageItem(ByVal nItem As Integer)								'Sets the current language item to be used
+Declare Function RESSTRNGGetLanguageItem() As Integer									'Return the current language item in use
+
 Declare Function RESSTRNGGetString(ByVal iResId As Integer) As String
 
 Declare Function RESSTRNGLoadStrings(ByVal FileName As String) As Logical
 
 ' Languages in a INI file type
 Declare Function RESSTRNGLoadStringsByLanguage(ByVal sLanguage As String) As Logical			'Loads strings into memory
+Declare Function RESSTRNGLoadStringsByCode(ByVal sLanguageCode As String) As Logical			'Loads strings into memory
 Declare Function RESSTRNGLoadStringsINI(ByVal sFile As String) As Logical					'Loads strings into memory
 Declare Function RESSTRNGFindStringFiles(ByVal sPath As String) As Integer					'Finds possible string files (*.str) in a specific folder
 
 Declare Function RESSTRNGGetStringFileName(ByVal nFile As Integer) As String				'Returns the full path to one of the files found
 Declare Function RESSTRNGGetStringFileLanguageItem(ByVal nFile As Integer) As String			'Returns the language of one of the files found
 Declare Function RESSTRNGGetStringFileLanguage(ByVal sFile As String) As String				'Returns the language of one of the files found
+Declare Function RESSTRNGGetStringFileCode(ByVal sFile As String) As String				'Returns the 2-letter language code of one of the files found
+
 Declare Function RESSTRNGGetStringFileItemByLanguage(ByVal sLanguage As string) As Integer	'Returns the language of one of the files found
+Declare Function RESSTRNGGetStringFileItemByCode(ByVal sLanguageCode As string) As Integer	'Returns the language of one of the files found
+Declare Function RESSTRNGGetLanguageByItem(ByVal nItem As Integer) As String				'Returns the language item of one of the files found
+Declare Function RESSTRNGGetLanguageCodeByItem(ByVal nItem As Integer) As String			'Returns the language item of one of the files found
 
 Declare Function RESSTRNGGetStringFiles(  arrFiles() As String
-								, arrlanguages() As String) As Integer		'Returns lists of language files and their languages
-Declare Function RESSTRNGGetLanguages(  arrlanguages() As String) As Integer		'Returns lists of languages
+								, arrlanguages() As String) As Integer			'Returns lists of language files and their languages
+Declare Function RESSTRNGGetLanguages(  arrlanguages() As String) As Integer			'Returns lists of languages
+Declare Function RESSTRNGGetLanguageCodes(  arrlanguageCodes() As String) As Integer		'Returns lists of two-letter language Codes
 
 Declare Sub RESSTRNGSetStringFilesFolder(ByVal sPath As String)
 Declare Function RESSTRNGGetStringFilesFolder() As String
