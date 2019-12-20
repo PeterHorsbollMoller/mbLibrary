@@ -2,6 +2,7 @@
 '	21-03-2016 15:39:21	Added a function and a procedure by Uffe Kousgaard
 '						- Function CONFIGReadKeyBool(...) As Logical
 '						- Sub CONFIGWriteKeyBool(...)
+'	20-12-2019 09:23:54	Changed the function to use the WAPI defines
 '************************************************************************************
 
 '[sectionname]
@@ -16,7 +17,7 @@ Declare Function CONFIGReadKeyInt
 	(	  ByVal sFile As String		'File to read configuration from
 		, ByVal sSection As String	'Section (without []) to read configuration from
 		, ByVal sKey As String		'Key to read value from
-		) As Integer			'Returns the value read from the key specified, or 0 if key wasn't found
+		) As Integer				'Returns the value read from the key specified, or 0 if key wasn't found
 Declare Function CONFIGReadKeyBool
 	(	  ByVal sFile As String		'File to read configuration from
 		, ByVal sSection As String	'Section (without []) to read configuration from
@@ -27,7 +28,7 @@ Declare Sub CONFIGWriteKey
 	(	  ByVal sFile As String		'File to write configuration to
 		, ByVal sSection As String	'Section (without []) to write the value to
 		, ByVal sKey As String		'Key to write the value to
-		, ByVal sValue As String	'value to write to the key above
+		, ByVal sValue As String		'value to write to the key above
 		)
 Declare Sub CONFIGWriteKeyBool
 	(	  ByVal sFile As String		'File to write configuration to
