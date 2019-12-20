@@ -19,6 +19,13 @@
 '						- Function AddIn_Version() As String
 '						- Function AddIn_ImageUri() As String
 '13-09-2014 13:24:51	Fixed an error in PRGIAbout_OnLoad so that languages now are shown in the About dialog
+'20-12-2019 09:18:31	Added:
+'					- Function PRGIGetApplicationLanguageCode() As String
+'					- Sub PRGISetApplicationUseLanguageCode(...)
+'					Changed
+'					- Support for language via code or name
+'					- Default URL to point to MapInfo Marketplace
+'					- Default Company to "Pitney Bowes Software & Data"
 '********************************************************
 
 'When using this module, make sure to set these values in your main module
@@ -31,6 +38,9 @@
 '	Call PRGISetApplicationVersion(xVersion)
 '	Call PRGISetApplicationCopyrightYear(xYear)
 '	Call PRGISetApplicationDevelopedBy("Peter Horsbøll Møller")
+'	If Application supports multiple string/language files
+'	Call PRGISetApplicationUseLanguageCode(TRUE)
+'	Call PRGILoadLanguageStrings(msLanguage)
 '********************************************************
 'Set and get the Name of the Application, deafult is "unknown" or name of MBX if running on MI Pro 10.0 or newer
 Declare Sub PRGISetApplicationName(	ByVal sName As String)
@@ -76,6 +86,9 @@ Declare Sub PRGISetApplicationLanguages(sLanguages() As String)	'Don't use any m
 Declare Sub PRGISetApplicationLanguage(iLanguage As Integer)	'Don't use any more - call PRGILoadLanguageStrings
 Declare Function PRGIGetApplicationLanguage() As Integer
 Declare Function PRGIGetApplicationLanguageName() As String
+Declare Function PRGIGetApplicationLanguageCode() As String
+
+Declare Sub PRGISetApplicationUseLanguageCode(ByVal bValue As Logical)
 
 Declare Sub PRGILoadLanguageStrings(ByVal sLanguage As String)
 

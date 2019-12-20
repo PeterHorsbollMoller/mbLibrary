@@ -20,7 +20,7 @@ Include "FILELib.def"
 Include "ProgramInfo.def"
 Include "RESSTRNGLib.def"
 
-Define	URL_DEFAULT_WEBSITE			"http://communitydownloads.pbinsight.com/"
+Define	URL_DEFAULT_WEBSITE			"http://mapinfomarketplace.pitneybowes.com/"
 Define	CTRL_BTN_OPEN_HELP_FILE		100
 Define	CTRL_TXT_LANGUAGES			200
 Define	CTRL_LST_LANGUAGES			210
@@ -31,8 +31,7 @@ Declare Sub PRGIGoToPBBIWebpage
 
 Dim	msName, msVersion, msCopyrightYear, msCopyrightCompany, msHelpFile, msDevelopedBy, msDevelopedFor, msWebPageName, msWebPageURL As String,
 	msDescription, msApplicationImageUri As String,
-	marrLanguages(), msLanguage As String,
-	mnLanguage, mnNewLanguage As Integer
+	marrLanguages(), mbUseLanguageCode As String
 '**********************************************************************************************''
 ' Property	Application Name
 '**********************************************************************************************''
@@ -167,7 +166,7 @@ Function PRGIGetCopyrightCompany() As String
 OnError GoTo ErrorOccured
 
 	If msCopyrightCompany = "" Then
-		msCopyrightCompany = "Pitney Bowes Software"
+		msCopyrightCompany = "Pitney Bowes Software & Data"
 	End If
 	PRGIGetCopyrightCompany = msCopyrightCompany
 	Exit Function
@@ -240,7 +239,7 @@ Function PRGIGetApplicationDevelopedBy() As String
 OnError GoTo ErrorOccured
 
 	If msDevelopedBy = "" Then
-		msDevelopedBy = "Pitney Bowes Software"
+		msDevelopedBy = "Pitney Bowes Software & Data"
 	End If
 	PRGIGetApplicationDevelopedBy = msDevelopedBy
 	Exit Function
@@ -309,7 +308,7 @@ Function PRGIGetWebPageName() As String
 OnError GoTo ErrorOccured
 
 	If msWebPageName = "" Then
-		msWebPageName = "Community Download"
+		msWebPageName = "MapInfo Marketplace"
 	End If
 	PRGIGetWebPageName = msWebPageName
 	Exit Function
@@ -455,11 +454,9 @@ End Sub
 '**********************************************************************************************''
 Sub PRGISetApplicationLanguage(iLanguage As Integer)
 
-Dim i As Integer
-
 OnError GoTo ErrorOccured
 
-	mnLanguage = iLanguage
+	Call RESSTRNGSetLanguageItem(iLanguage)
 
 	Exit Sub
 '-------------------------
@@ -475,8 +472,7 @@ Function PRGIGetApplicationLanguage() As Integer
 
 OnError GoTo ErrorOccured
 
-	PRGIGetApplicationLanguage = RESSTRNGGetStringFileItemByLanguage(msLanguage)
-
+	PRGIGetApplicationLanguage = RESSTRNGGetLanguageItem()
 	Exit Function
 '-------------------------
 ErrorOccured:
@@ -497,7 +493,7 @@ OnError GoTo ErrorOccured
 
 PRGIGetApplicationLanguageName = ""
 
-	PRGIGetApplicationLanguageName	= msLanguage
+	PRGIGetApplicationLanguageName	= RESSTRNGGetLanguage()
 	Exit Function
 '-------------------------
 ErrorOccured:
@@ -509,15 +505,64 @@ End Function
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes Software
 'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function PRGIGetApplicationLanguageCode() As String
+
+OnError GoTo ErrorOccured
+
+PRGIGetApplicationLanguageCode = ""
+
+	PRGIGetApplicationLanguageCode	= RESSTRNGGetLanguageCode()
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationLanguageCode")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub PRGISetApplicationUseLanguageCode(ByVal bValue As Logical)
+
+OnError GoTo ErrorOccured
+
+	mbUseLanguageCode = bValue
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetApplicationLanguageCode")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
 '
 '**********************************************************************************************''
 Sub PRGILoadLanguageStrings(ByVal sLanguage As String)
 
 OnError GoTo ErrorOccured
 
-	msLanguage	= sLanguage
-	If NOT RESSTRNGLoadStringsByLanguage(sLanguage) Then
-		Note "PRGILoadLanguageStrings: No String Files returned"
+	If mbUseLanguageCode Then
+		'Call DEBUGPrint("RESSTRNGLoadStringsByCode: " & sLanguage)
+		If NOT RESSTRNGLoadStringsByCode(sLanguage) Then
+			Note "PRGILoadLanguageStrings: No String Files returned"
+			Exit Sub
+		End If
+	Else
+		'Call DEBUGPrint("RESSTRNGLoadStringsByLanguage: " & sLanguage)
+		If NOT RESSTRNGLoadStringsByLanguage(sLanguage) Then
+			Note "PRGILoadLanguageStrings: No String Files returned"
+			Exit Sub
+		End If
 	End If
 
 	Exit Sub
@@ -528,13 +573,14 @@ ErrorOccured:
 
 End Sub
 
+
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
 '**********************************************************************************************''
 Sub PRGIAboutbox
 
 Dim	sTitle As String,
-	nNumSpace, nBtnWidth As Integer,
+	nLanguage, nNumSpace, nBtnWidth As Integer,
 	bDebugMode As Logical
 
 OnError GoTo ErrorOccured
@@ -573,7 +619,7 @@ OnError GoTo ErrorOccured
 		Control GroupBox	Position 10,105	Width 185	Height 30			ID CTRL_TXT_LANGUAGES
 			Title "Application language:"
 		Control PopUpMenu Position 20,117 		Width 160					ID CTRL_LST_LANGUAGES
-			Into mnLanguage
+			Into nLanguage
 
 		Control Button		Position 10,150	Width 100
 			Title PRGIGetWebPageName()	'"pbinsight.com"
@@ -596,7 +642,7 @@ OnError GoTo ErrorOccured
 	End If
 
 	If Ubound(marrLanguages) > 0 Then
-		msLanguage = marrLanguages(mnLanguage)
+		Call RESSTRNGSetLanguageItem(nLanguage)
 	End If
 
 	Call DEBUGEnable(bDebugMode)
