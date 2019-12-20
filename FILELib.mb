@@ -30,27 +30,42 @@ Declare Function FILEAttributeIsReadOnly(ByVal nFileAttributes As Integer) As Lo
 Sub FILELaunch(ByVal sFile As String)
 
 Dim     nResult, nHwnd As Integer,
-        sOp, sDir As String,
+        sOp, sDir, sError As String,
         nShowCmd, nNull As Integer
 
 OnError Goto ErrorOccured
 
-        nHwnd	= WindowInfo(WIN_MAPINFO, WIN_INFO_WND)
-        sOp		= "open"
-        sDir	= ApplicationDirectory$()
-        nShowCmd	= 1
-        nNull	= 0
+	nHwnd	= WindowInfo(WIN_MAPINFO, WIN_INFO_WND)
+	sOp		= "open"
+	sDir	= ApplicationDirectory$()
+	nShowCmd	= 1
+	nNull	= 0
 
-        nResult = WAPIShellExecute(nHwnd, sOp, sFile, nNull, sDir, nShowCmd)
-        If nResult <= 32 Then
-                Note "Unable to launch" + nResult
-        End If
+	nResult = WAPIShellExecute(nHwnd, sOp, sFile, nNull, sDir, nShowCmd)
+	If nResult <= 32 Then
+		Do Case nResult
+			Case ERROR_OUT_OF_MEMORY
+				sError = "Out of memory"
+			Case ERROR_NO_ASSOCIATION
+				sError = "No association for *." & Right$(sDocument, 3) & " files."
+			Case ERROR_FILE_NOT_FOUND
+				sError = sDocument & ": file not found"
+			Case ERROR_PATH_NOT_FOUND
+				sError = sDocument & ": path not found"
+			Case ERROR_BAD_FORMAT
+				sError = "bad format"
+			Case Else
+				sError = "Unknown error " & Str$(nResult)
+		End Case
 
-        Exit Sub
+		Call ERRCreate(nResult, sError, "FILELaunch: " & sFile)
+		Call ERRShow()
+	End If
 
+	Exit Sub
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "DEBUGEnableByFile: " & sFile)
+	Call ERRCreate(Err(), Error$(), "FILELaunch: " & sFile)
 	Call ERRShow()
 
 End Sub
@@ -96,7 +111,7 @@ FILEFindExecutable = ""
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "DEBUGEnableByFile: " & sFile)
+	Call ERRCreate(Err(), Error$(), "FILEFindExecutable: " & sFile)
 	Call ERRShow()
 
 End Function
