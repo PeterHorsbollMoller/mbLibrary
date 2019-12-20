@@ -228,6 +228,10 @@ RESSTRNGLoadStringsByLanguage = FALSE
 
 	mnCurrentLanguageItem	= RESSTRNGGetStringFileItemByLanguage(sLanguage)
 	If mnCurrentLanguageItem = 0 Then
+		sLanguage				= "English"
+		mnCurrentLanguageItem	= RESSTRNGGetStringFileItemByLanguage(sLanguage)
+	End If
+	If mnCurrentLanguageItem = 0 Then
 		mnCurrentLanguageItem = 1
 	End If
 
@@ -274,12 +278,16 @@ RESSTRNGLoadStringsByCode = FALSE
 
 	mnCurrentLanguageItem	= RESSTRNGGetStringFileItemByCode(sLanguageCode)
 	If mnCurrentLanguageItem = 0 Then
+		sLanguageCode			= "en"
+		mnCurrentLanguageItem	= RESSTRNGGetStringFileItemByCode(sLanguageCode)
+	End If
+	If mnCurrentLanguageItem = 0 Then
 		mnCurrentLanguageItem = 1
 	End If
 
 	RESSTRNGLoadStringsByCode = RESSTRNGLoadStrings(RESSTRNGGetStringFileName(mnCurrentLanguageItem))
 
-	Call DEBUGPrint("Language: '" & RESSTRNGGetLanguage() & "'")
+'	Call DEBUGPrint("Language Picked: '" & RESSTRNGGetLanguage() & "'")
 '	Call DEBUGPrint("Language Code: '" & RESSTRNGGetLanguageCode() & "'")
 '	Call DEBUGPrint("Language Item: " & RESSTRNGGetLanguageItem())
 
