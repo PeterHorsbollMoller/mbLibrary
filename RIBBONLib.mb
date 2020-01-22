@@ -966,7 +966,7 @@ RBNGetTabIndex = RBN_ELEMENT_NOT_FOUND
 
 		sName	= GetRbnTabName(rbnTabItem)
 '		sCaption	= GetRbnTabCaption(rbnTabItem)
-		Call DEBUGPrint("Tab " & i & " is named " & sName & " but shown as " & sCaption)
+'		Call DEBUGPrint("Tab " & i & " is named " & sName & " but shown as " & sCaption)
 
 		If sName = sTabName Then
 			RBNGetTabIndex	= i
@@ -1179,7 +1179,7 @@ RBNTabAddGroup = 0
 
 	nPrevIdx	= RBNGetPrevTabElementIdx(sTabName)
 	If nPrevIdx > 0 and mnNumElements > 0 Then
-		Call DEBUGPrint("RBNTabAddGroup Calling RBNTabAddGroupIdx, nRevIdx=" & nPrevIdx)
+'		Call DEBUGPrint("RBNTabAddGroup Calling RBNTabAddGroupIdx, nRevIdx=" & nPrevIdx)
 		RBNTabAddGroup	= RBNTabAddGroupIdx(sGroupName, sCaption, nPrevIdx)
 		Exit Function
 	End If
@@ -1239,7 +1239,7 @@ RBNTabAddGroupThs = 0
 
 	Call RBNInitiate
 
-	Call DEBUGPrint("RBNTabAddGroupThs, Value of rbnTab: " & rbnTab)
+'	Call DEBUGPrint("RBNTabAddGroupThs, Value of rbnTab: " & rbnTab)
 	nCtrl = RBNAddElement(GetRbnTabName(rbnTab), sGroupName, "", "", "", CONTROL_TYPE_RLIB_GROUP, 0)
 
 	'Get the ribbon group collection.
@@ -1276,7 +1276,7 @@ Function RBNTabAddGroupIdx(	  ByVal sGroupName As String
 
 OnError GoTo ErrorOccured
 
-	Call DEBUGPrint("RBNTabAddGroupThs, Value of nTabIdx: " & nTabIdx & " Num Controls: " & Ubound(marrControls))
+'	Call DEBUGPrint("RBNTabAddGroupThs, Value of nTabIdx: " & nTabIdx & " Num Controls: " & Ubound(marrControls))
 	RBNTabAddGroupIdx = RBNTabAddGroupThs(sGroupName, sCaption, marrControls(nTabIdx))
 
 	Exit Function
@@ -2083,7 +2083,7 @@ RBNGroupAddControlThs = 0
 
 	Call RBNInitiate
 
-	Call DEBUGPrint("RBNGroupAddControlThs, Value of rbnGroup: " & rbnGroup)
+'	Call DEBUGPrint("RBNGroupAddControlThs, Value of rbnGroup: " & rbnGroup)
 	sGroupName				= GetRbnCtrlGrpName(rbnGroup)
 	nCtrl 					= RBNAddElement(sTabName, sGroupName, "", "", sControlName, nControlType, 0)
 
@@ -2726,7 +2726,7 @@ OnError GoTo ErrorOccured
 
 	nElementIdx	= RBNGetElementIndex(sTabName, sGroupName, "", "", sControlName)
 	If nElementIdx > 0 Then
-		Call DEBUGPrint("Run Menu Command ID " & RBNControlGetControlIDThs(marrControls(nElementIdx)))
+'		Call DEBUGPrint("Run Menu Command ID " & RBNControlGetControlIDThs(marrControls(nElementIdx)))
 		Run Menu Command ID  RBNControlGetControlIDThs(marrControls(nElementIdx))
 	End If
 
@@ -2753,7 +2753,7 @@ OnError GoTo ErrorOccured
 
 	nElementIdx	= RBNGetElementIndex(sTabName, sGroupName, "", "", sControlName)
 	If nElementIdx > 0 Then
-		Call DEBUGPrint("Run Menu Command ID " & RBNControlGetControlIDThs(marrControls(nElementIdx)))
+'		Call DEBUGPrint("Run Menu Command ID " & RBNControlGetControlIDThs(marrControls(nElementIdx)))
 		Run Menu Command ID  RBNControlGetControlIDThs(marrControls(nElementIdx))
 	End If
 
@@ -4772,7 +4772,7 @@ RBNDropDButtonGroupAddControl = 0
 
 	nPrevIdx = RBNGetPrevDropDButtonGroupElementIdx(sTabName, sGroupName, sDropDButtonName, sDropDButtonGroupName)
 	If nPrevIdx > 0 and mnNumElements > 0 Then
-		Call DEBUGPrint("Found DropDButtonGroup as #" & nPrevIdx)
+'		Call DEBUGPrint("Found DropDButtonGroup as #" & nPrevIdx)
 		RBNDropDButtonGroupAddControl	= RBNDropDButtonGroupAddControlIdx(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, nPrevIdx)
 		Exit Function
 	End If
@@ -4897,8 +4897,8 @@ Function RBNDropDButtonGroupAddControlIdx(	  ByVal sControlName As String
 
 OnError GoTo ErrorOccured
 
-	Call DEBUGPrint("nDropDButtonGroupIdx: " & nDropDButtonGroupIdx)
-	Call DEBUGPrint("   Num Controls: " & Ubound(marrControls))
+'	Call DEBUGPrint("nDropDButtonGroupIdx: " & nDropDButtonGroupIdx)
+'	Call DEBUGPrint("   Num Controls: " & Ubound(marrControls))
 	RBNDropDButtonGroupAddControlIdx = RBNDropDButtonGroupAddControlThs(sControlName, sCaption, sKeytip, nControlType, sTabName, sGroupName, sDropDButtonName, marrControls(nDropDButtonGroupIdx))
 	Exit Function
 '-------------------------
@@ -9013,15 +9013,15 @@ OnError GoTo ErrorOccured
 '	Call DEBUGPrint("Removing Controls from the ribbon")
 	For i = mnNumElements To 1 Step -1
 		If marrControlTypes(i) = CONTROL_TYPE_RLIB_TAB Then
-			Call DEBUGPrint(i & " Removing tab " & marrTabNames(i) & " of type " & marrControlTypes(i))
+'			Call DEBUGPrint(i & " Removing tab " & marrTabNames(i) & " of type " & marrControlTypes(i))
 '			Call DEBUGPrint("    from list of " & GetRbnTabCollCount(marrParentControlColls(i)) & " elements")
 			bRemoved = RbnTabCollRemove(theTabsColl, marrControls(i))
 		ElseIf marrControlTypes(i) = CONTROL_TYPE_RLIB_GROUP Then
-			Call DEBUGPrint(i & " Removing group " & marrGroupNames(i) & " of type " & marrControlTypes(i))
+'			Call DEBUGPrint(i & " Removing group " & marrGroupNames(i) & " of type " & marrControlTypes(i))
 '			Call DEBUGPrint("    from list of " & GetRbnCtrlGrpCollCount(marrParentControlColls(i)) & " elements")
 			bRemoved = RbnCtrlGrpCollRemove(marrParentControlColls(i), marrControls(i))
 		Else
-			Call DEBUGPrint(i & " Removing control " & marrControlNames(i) & " of type " & marrControlTypes(i))
+'			Call DEBUGPrint(i & " Removing control " & marrControlNames(i) & " of type " & marrControlTypes(i))
 '			Call DEBUGPrint("    from list of " & GetMICtrlCollCount(marrParentControlColls(i)) & " elements")
 			bRemoved = MICtrlCollRemove(marrParentControlColls(i), marrControls(i))
 		End If
@@ -9113,17 +9113,17 @@ ErrorOccured:
 	If ERRGetLatestErrorNo() In (1660, 1666) Then
 		Do Case marrControlTypes(i)
 			Case CONTROL_TYPE_RLIB_TAB
-				Call DEBUGPrint(i & " Removing tab (Error Handling) " & marrTabNames(i) & " of type " & marrControlTypes(i))
+'				Call DEBUGPrint(i & " Removing tab (Error Handling) " & marrTabNames(i) & " of type " & marrControlTypes(i))
 				bRemoved = (RBNRemoveTab(marrTabNames(i)) > 0)
 			Case CONTROL_TYPE_RLIB_GROUP
-				Call DEBUGPrint(i & " Removing group (Error Handling) " & marrGroupNames(i) & " of type " & marrControlTypes(i))
+'				Call DEBUGPrint(i & " Removing group (Error Handling) " & marrGroupNames(i) & " of type " & marrControlTypes(i))
 				bRemoved = (RBNTabGroupRemove(marrGroupNames(i), marrTabNames(i)) > 0)
 			Case Else
 				If marrTabNames(i) = "MapMiniToolbar" Then
-					Call DEBUGPrint(i & " Removing MTB control (Error Handling) " & marrControlNames(i) & " of type " & marrControlTypes(i))
+'					Call DEBUGPrint(i & " Removing MTB control (Error Handling) " & marrControlNames(i) & " of type " & marrControlTypes(i))
 					bRemoved = MICtrlCollRemove(theMapMTBControlsColl, marrControls(i))
 				Else
-					Call DEBUGPrint(i & " Removing control (Error Handling) " & marrControlNames(i) & " of type " & marrControlTypes(i))
+'					Call DEBUGPrint(i & " Removing control (Error Handling) " & marrControlNames(i) & " of type " & marrControlTypes(i))
 					bRemoved = (RBNGroupRemoveControl(marrControlNames(i), marrTabNames(i), marrGroupNames(i)) > 0)
 				End If
 		End Case
@@ -9321,7 +9321,7 @@ RBNRegisterFunctionAsPublic = FALSE
 
 	Call RBNInitiate
 
-	Call DEBUGPrint("_RegisterPublicMBXFunction(" & sFunctionName & ", " & sPublicName & ", " & sDescription & ")")
+'	Call DEBUGPrint("_RegisterPublicMBXFunction(" & sFunctionName & ", " & sPublicName & ", " & sDescription & ")")
 	nFuncID = _RegisterPublicMBXFunction(theMapBasicApplication, sFunctionName, sPublicName, sDescription)
 
 	If nFuncID Then
