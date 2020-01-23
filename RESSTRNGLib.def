@@ -18,7 +18,7 @@
 '						- RESSTRNGGetLanguageCodeByItem(...) As String
 '						- RESSTRNGGetLanguageCodes(...) As Integer
 '						Changed
-'						- RESSTRNGLoadStrings to use the CharSet specified or System CharSet if non has been specified
+'						- RESSTRNGLoadStrings to use the CharSet, eg. "UTF-8" specified or System CharSet if non has been specified
 '						- RESSTRNGLoadStringsINI now calls RESSTRNGLoadStrings
 '						- String files should now also hold a two-letter language code if you want to use this, That's best practise for using UTF-8 encoded string files
 '						- If no language has been specified, it will use SystemInfo(SYS_INFO_CULTURE) to detect the language of MapInfo Pro
@@ -26,7 +26,7 @@
 '**The string file has this structure:
 '[ADMIN]
 'LANGUAGE=English
-'LANGUAGE_CODE=en
+'LANGUAGE_CODE=en	'see list of language code at the end of the file
 
 '[STRINGS]
 '1=The first text
@@ -68,3 +68,21 @@ Declare Function RESSTRNGGetLanguageCodes(  arrlanguageCodes() As String) As Int
 
 Declare Sub RESSTRNGSetStringFilesFolder(ByVal sPath As String)
 Declare Function RESSTRNGGetStringFilesFolder() As String
+
+'zh-CN 	Chinese (Simplified)
+'cs		Czech - Czech Republic
+'da		Danish - Denmark
+'nl		Dutch - The Netherlands
+'en		English - United States
+'fi		Finnish - Finland
+'fr		French - France
+'de		German - Germany
+'he		Hebrew - Israel
+'it		Italian - Italy
+'ja		Japanese - Japan
+'pl		Polish - Poland
+'pt		Portuguese - Brazil
+'ru		Russian - Russia
+'es		Spanish - Spain
+'sv		Swedish - Sweden
+'tr		Turkish - Turkey
