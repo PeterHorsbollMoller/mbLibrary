@@ -59,13 +59,39 @@ OnError GoTo ErrorOccured
 	nSize	= 1024
 	sValue	= String$(nSize, Chr$(32))
 
-	nResult			= GetComputerName(sValue, nSize)
+	nResult			= WAPIGetComputerName(sValue, nSize)
 	SYSGetComputerName	= RTrim$(sValue)
 
 	Exit Function
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "SYSGetComputerName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	sType: One of the COMPUTER_ defines from WINAPI*.def, NetBIOS, Domain etc
+'**********************************************************************************************''
+Function SYSGetComputerNameEx(ByVal nType As Integer) As String
+
+Dim	nSize, nResult As Integer,
+	sValue As String
+
+OnError GoTo ErrorOccured
+
+	nSize	= 1024
+	sValue	= String$(nSize, Chr$(32))
+
+	nResult				= WAPIGetComputerNameEx(nType, sValue, nSize)
+	SYSGetComputerNameEx	= RTrim$(sValue)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "SYSGetComputerNameEx")
 	Call ERRShow()
 
 End Function

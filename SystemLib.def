@@ -10,10 +10,13 @@
 '					- SYSFindExecutable(...) As String
 '06-08-2015 14:45:00	Peter Møller added this function
 '					- SYSExecuteAndWait(...) As Integer
+'06-03-2020 08:59:38	Peter Møller added this function
+'					- SYSGetComputerNameEx(...) As String
 '*******************************************************************************
 
 Declare Function SYSGetUserName() As String
 Declare Function SYSGetComputerName() As String
+Declare Function SYSGetComputerNameEx(ByVal nType As Integer) As String
 
 Declare Method SYSGetProductInfo Class "SystemLib.MIVersionDetect" Lib "SystemLib.dll"
 	Alias "GetProductInfo" (ByVal strKey as String, ByVal intVersion as Integer) As String
