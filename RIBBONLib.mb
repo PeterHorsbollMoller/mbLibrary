@@ -7638,6 +7638,88 @@ End Sub
 'Parameters:
 '
 '**********************************************************************************************''
+Sub RBNControlSetCmdThs(	  ByVal rbnControl As This
+					, ByVal sCmd As String
+					)
+
+OnError GoTo ErrorOccured
+
+	Do Case GetMICtrlCtrlType(rbnControl)
+		Case ControlType_Button
+			Call SetRbnBtnCtrlCmd(rbnControl, sCmd)
+
+		Case ControlType_ToolButton
+			Call SetRbnToolBtnCtrlCmd(rbnControl, sCmd)
+
+		Case ControlType_RibbonMenuItem
+			Call SetRbnMenuItemCtrlCmd(rbnControl, sCmd)
+
+'		Case ControlType_RibbonButtonPanel
+		'Case ControlType_RibbonSeparator
+
+		Case ControlType_ContextMenuItem
+			Call SetICntxtMnuMenuItemCmd(rbnControl, sCmd)
+
+		'Case ControlType_ContextMenuSeparator
+		'Case ControlType_MenuItemSeparator
+'		Case ControlType_DropDownButton
+
+		Case ControlType_SplitButton
+			Call SetRbnSplitCtrlCmd(rbnControl, sCmd)
+
+'		Case ControlType_DropDownMenuGroup
+'		Case ControlType_GalleryControl
+
+		Case ControlType_GalleryItem
+			Call SetRbnGalleryItemCmd(rbnControl, sCmd)
+
+'		Case ControlType_GalleryGroup
+'		Case ControlType_CustomControl
+'		Case ControlType_TextBlock
+'		Case ControlType_Image
+'		Case ControlType_BackStageTabItem
+
+		Case ControlType_BackStageButton
+			Call SetIBackStageBtnCmd(rbnControl, sCmd)
+
+'		Case ControlType_BackStageTabSection
+'		Case ControlType_BackStageSeparator
+'		Case ControlType_StackPanel, ControlType_WrapPanel
+	End Case
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetCmdThs")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNControlSetCmdIdx(	  ByVal nElementIdx As Integer
+					, ByVal sCmd As String
+					)
+
+OnError GoTo ErrorOccured
+
+	Call RBNControlSetCmdThs(marrControls(nElementIdx), sCmd)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetCmdIdx")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
 Sub RBNControlSetDrawModeThs(	  ByVal rbnControl As This
 						, ByVal nDrawMode As Integer
 						)

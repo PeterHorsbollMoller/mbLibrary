@@ -383,6 +383,9 @@
 '							- RBNInsertTabAfter(...) As Integer
 '							- RBNInsertTabBefore(...) As Integer
 '	10-05-2019 11:12:54		- Made RBNInitiate public so that it can be called explicitely from tools that need the .NET objects but aren't adding controls to the ribbon
+'	19-02-2020 14:27:46		- Added new functions for using Cmd and not just CmdID and MBXHandler
+'							- RBNControlSetCmdIdx
+'							- RBNControlSetCmdThs
 '*****************************************************************************************************************************
 
 
@@ -1293,6 +1296,13 @@ Declare Sub RBNControlSetCmdIDThs(	  ByVal rbnControl As This
 Declare Sub RBNControlSetCmdIDIdx(	  ByVal nElementIdx As Integer
 							, ByVal nCmdID As Integer
 							)
+Declare Sub RBNControlSetCmdThs(	  ByVal rbnControl As This
+							, ByVal sCmd As String
+							)
+Declare Sub RBNControlSetCmdIdx(	  ByVal nElementIdx As Integer
+							, ByVal sCmd As String
+							)
+
 Declare Sub RBNControlSetDrawModeThs(	  ByVal rbnControl As This
 								, ByVal nDrawMode As Integer
 								)
