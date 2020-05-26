@@ -26,6 +26,17 @@ Define INVALID_HANDLE_VALUE 		-1
 Define NORMAL_PRIORITY_CLASS		&H20
 Define INFINITE				-1
 
+'**Used in GetComputerNameEx
+Define COMPUTER_NETBIOS				0	'"ComputerNameNetBIOS"
+Define COMPUTER_DNS_HOST				1	'"ComputerNameDnsHostname"
+Define COMPUTER_DNS_DOMAIN			2	'"ComputerNameDnsDomain"
+Define COMPUTER_DNS_DOMAIN_FULL		3	'"ComputerNameDnsFullyQualified"
+Define COMPUTER_NETBIOS_PHYS			4	'"ComputerNamePhysicalNetBIOS"
+Define COMPUTER_DNS_HOST_PHYS			5	'"ComputerNamePhysicalDnsHostname"
+Define COMPUTER_DNS_DOMAIN_PHYS		6	'"ComputerNamePhysicalDnsDomain"
+Define COMPUTER_DNS_DOMAIN_FULL_PHYS	7	'"ComputerNamePhysicalDnsFullyQualified"
+Define COMPUTER_NAME_MAX				8	'"ComputerNameMax"
+
 Define DRIVE_UNKNOWN  0
 Define DRIVE_ABSENT  1
 Define DRIVE_REMOVABLE  2
@@ -287,6 +298,14 @@ Declare Function WAPIGetComputerName Lib "kernel32.dll" Alias "GetComputerNameA"
 		, nSize As Integer
 		) 	As Integer
 'http://msdn.microsoft.com/en-us/library/windows/desktop/ms724295(v=VS.85).aspx
+
+Declare Function WAPIGetComputerNameEx Lib "kernel32.dll" Alias "GetComputerNameExA"
+		( ByVal NameType As Integer
+		, lpBuffer As String
+		, nSize As Integer
+		) As Integer
+'https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getcomputernameexa
+
 
 Declare Function WAPIGetDriveType Lib "kernel32.dll" Alias "GetDriveTypeA"
 		( ByVal sDrive As String		'A drive in this form: "A:"
