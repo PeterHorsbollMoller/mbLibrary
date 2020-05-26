@@ -54,5 +54,5 @@ Declare Function STRINGConcatenateWithSeparator(	  ByVal sFirst As String		'Firs
 										) As String
 
 Declare Function STRINGLeftWord(	  ByVal sInput As String		'The string to extract a specific word from
-							, ByVal nWordNo As Integer	'The Word to return from the input string
+							, ByVal nWordNo As Integer	'The Word to return from the input string, if -1 the function returns the last word
 							) As String				'Returns the nWordNo from the sInput
