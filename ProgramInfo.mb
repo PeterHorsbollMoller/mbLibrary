@@ -20,7 +20,10 @@ Include "FILELib.def"
 Include "ProgramInfo.def"
 Include "RESSTRNGLib.def"
 
-Define	URL_DEFAULT_WEBSITE			"http://mapinfomarketplace.pitneybowes.com/"
+Define	DEFAULT_WEBSITE_URL			"http://mapinfomarketplace.pitneybowes.com/"
+Define	DEFAULT_WEBSITE_NAME		"MapInfo Marketplace"
+Define	DEFAULT_COMPANY_NAME		"Precisely | Trust in Data"
+
 Define	CTRL_BTN_OPEN_HELP_FILE		100
 Define	CTRL_TXT_LANGUAGES			200
 Define	CTRL_LST_LANGUAGES			210
@@ -29,7 +32,7 @@ Define	CTRL_LST_LANGUAGES			210
 Declare Sub PRGIAbout_OnLoad
 Declare Sub PRGIGoToPBBIWebpage
 
-Dim	msName, msVersion, msCopyrightYear, msCopyrightCompany, msHelpFile, msDevelopedBy, msDevelopedFor, msWebPageName, msWebPageURL As String,
+Dim	msName, msVersion, msSecondCopyrightText, msCopyrightLicenseType, msCopyrightYear, msCopyrightCompany, msHelpFile, msDevelopedBy, msDevelopedFor, msWebPageName, msWebPageURL As String,
 	msDescription, msApplicationImageUri As String,
 	marrLanguages(), mbUseLanguageCode As String
 '**********************************************************************************************''
@@ -147,6 +150,76 @@ End Function
 'Parameters:
 '	sYear: Copyright year
 '**********************************************************************************************''
+Sub PRGISetSecondCopyrightText(ByVal sValue As String)
+
+OnError GoTo ErrorOccured
+
+	msSecondCopyrightText = sValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetSecondCopyrightText")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetSecondCopyrightText() As String
+
+OnError GoTo ErrorOccured
+
+	PRGIGetSecondCopyrightText = msSecondCopyrightText
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetSecondCopyrightText")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
+Sub PRGISetCopyrightLicenseType(ByVal sValue As String)
+
+OnError GoTo ErrorOccured
+
+	msCopyrightLicenseType = sValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGISetCopyrightLicenseType")
+
+End Sub
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'**********************************************************************************************''
+Function PRGIGetCopyrightLicenseType() As String
+
+OnError GoTo ErrorOccured
+
+	If msCopyrightLicenseType = "" Then
+		PRGIGetCopyrightLicenseType = "All Rights Reserved"
+	Else
+		PRGIGetCopyrightLicenseType = msCopyrightLicenseType
+	End If
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PRGIGetCopyrightLicenseType")
+
+End Function
+
+'**********************************************************************************************''
+' Property
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Parameters:
+'	sYear: Copyright year
+'**********************************************************************************************''
 Sub PRGISetCopyrightCompany(ByVal sName As String)
 
 OnError GoTo ErrorOccured
@@ -166,7 +239,7 @@ Function PRGIGetCopyrightCompany() As String
 OnError GoTo ErrorOccured
 
 	If msCopyrightCompany = "" Then
-		msCopyrightCompany = "Pitney Bowes Software & Data"
+		msCopyrightCompany = DEFAULT_COMPANY_NAME
 	End If
 	PRGIGetCopyrightCompany = msCopyrightCompany
 	Exit Function
@@ -239,7 +312,7 @@ Function PRGIGetApplicationDevelopedBy() As String
 OnError GoTo ErrorOccured
 
 	If msDevelopedBy = "" Then
-		msDevelopedBy = "Pitney Bowes Software & Data"
+		msDevelopedBy = DEFAULT_COMPANY_NAME
 	End If
 	PRGIGetApplicationDevelopedBy = msDevelopedBy
 	Exit Function
@@ -308,7 +381,7 @@ Function PRGIGetWebPageName() As String
 OnError GoTo ErrorOccured
 
 	If msWebPageName = "" Then
-		msWebPageName = "MapInfo Marketplace"
+		msWebPageName = DEFAULT_WEBSITE_NAME
 	End If
 	PRGIGetWebPageName = msWebPageName
 	Exit Function
@@ -344,7 +417,7 @@ Function PRGIGetWebPageURL() As String
 OnError GoTo ErrorOccured
 
 	If msWebPageURL = "" Then
-		msWebPageURL = URL_DEFAULT_WEBSITE
+		msWebPageURL = DEFAULT_WEBSITE_URL
 	End If
 	PRGIGetWebPageURL = msWebPageURL
 	Exit Function
@@ -599,40 +672,42 @@ OnError GoTo ErrorOccured
 		Title "About " & PRGIGetApplicationName()
 		Calling PRGIAbout_OnLoad
 
-		Control GroupBox	Position 10,10	Width 185	Height 30
-		Control StaticText	Position 12,22	Width 165
+		Control GroupBox	Position 10,10		Width 185	Height 30
+		Control StaticText	Position 12,22		Width 185
 			Title sTitle
 
-		Control StaticText	Position 20,45	Width 165
+		Control StaticText	Position 10,45		Width 185
 			Title "Copyright" & " " & Chr$(169) & " " & PRGIGetApplicationCopyrightYear()
+		Control StaticText	Position 10,55		Width 185
+			Title PRGIGetCopyrightCompany()
+		Control StaticText	Position 10,65		Width 185
+			Title PRGIGetCopyrightLicenseType()
 
-		Control StaticText	Position 20,60	Width 165
-			Title PRGIGetCopyrightCompany()	'"Pitney Bowes Software"
-		Control StaticText	Position 20,70	Width 165
-			Title "All rights reserved"
+		Control StaticText	Position 10,80		Width 185
+			Title PRGIGetSecondCopyrightText()
 
-		Control StaticText	Position 20,85	Width 165
+		Control StaticText	Position 10,95		Width 185
 			Title "Made by " & PRGIGetApplicationDevelopedBy()
-		Control StaticText	Position 30,95	Width 165
+		Control StaticText	Position 20,105	Width 165
 			Title PRGIGetApplicationDevelopedFor()
 
-		Control GroupBox	Position 10,105	Width 185	Height 30			ID CTRL_TXT_LANGUAGES
+		Control GroupBox	Position 10,115	Width 185	Height 30			ID CTRL_TXT_LANGUAGES
 			Title "Application language:"
-		Control PopUpMenu Position 20,117 		Width 160					ID CTRL_LST_LANGUAGES
+		Control PopUpMenu Position 20,127 		Width 160					ID CTRL_LST_LANGUAGES
 			Into nLanguage
 
-		Control Button		Position 10,150	Width 100
-			Title PRGIGetWebPageName()	'"pbinsight.com"
+		Control Button		Position 10,160	Width 100
+			Title PRGIGetWebPageName()
 			Calling PRGIGoToPBBIWebpage
 
-		Control OKButton		Position 120,150				Width nBtnWidth
-		Control CancelButton	Position (120 + nBtnWidth),150	Width nBtnWidth
+		Control OKButton		Position 120,160				Width nBtnWidth
+		Control CancelButton	Position (120 + nBtnWidth),160	Width nBtnWidth
 
-		Control Button		Position 180,150					Width 15		ID CTRL_BTN_OPEN_HELP_FILE
+		Control Button		Position 180,160					Width 15		ID CTRL_BTN_OPEN_HELP_FILE
 			Title "?"
 			Calling PRGILaunchHelpFile
 
-		Control Checkbox		Position 20,170
+		Control Checkbox		Position 20,180
 			Title "Debug mode"
 			Value DEBUGIsEnabled()
 			Into bDebugMode

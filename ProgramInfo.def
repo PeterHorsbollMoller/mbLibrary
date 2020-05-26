@@ -51,13 +51,19 @@ Declare Function PRGIGetApplicationVersion() As String
 'Set and get the Copyright Year of the Application, default is Year(CurDate())
 Declare Sub PRGISetApplicationCopyrightYear(ByVal sYear As String)
 Declare Function PRGIGetApplicationCopyrightYear() As String
-'Set and get the Copyright Company of the Application, default is "Pitney Bowes Software"
+'Set and get a second Copyright Text of the Application
+Declare Sub PRGISetSecondCopyrightText(ByVal sValue As String)
+Declare Function PRGIGetSecondCopyrightText() As String
+'Set and get the Copyright Company of the Application, default is "Precisely"
+Declare Sub PRGISetCopyrightLicenseType(ByVal sValue As String)
+Declare Function PRGIGetCopyrightLicenseType() As String
+'Set and get the Copyright Licnse Type of the Application, default is ""
 Declare Sub PRGISetCopyrightCompany(ByVal sName As String)
 Declare Function PRGIGetCopyrightCompany() As String
+
 'Set and get the Description of the Application, default is [NAME] + " " [VERSION] + " Developed by " + [DEVELOPEDBY]
 Declare Sub PRGISetDescription(ByVal sDescription As String)
 Declare Function PRGIGetDescription() As String
-
 
 'Set and get the Name of the developer of the Application, default is "Pitney Bowes Software"
 Declare Sub PRGISetApplicationDevelopedBy(ByVal sName As String)
