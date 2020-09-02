@@ -19,7 +19,7 @@ Include "Types\T_ERROR.def"
 Dim	mnNumErrors As Integer,
 	marrErrors() As T_ERROR
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -51,7 +51,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -69,7 +69,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -102,7 +102,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -135,7 +135,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -153,7 +153,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -171,7 +171,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -190,7 +190,7 @@ End Function
 
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -210,7 +210,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -230,7 +230,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -255,7 +255,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''

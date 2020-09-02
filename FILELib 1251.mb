@@ -23,7 +23,7 @@ Declare Function FILEAttributeIsReadOnly(ByVal nFileAttributes As Integer) As Lo
 
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '*****************************************************************
@@ -56,7 +56,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '*****************************************************************
@@ -102,7 +102,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -137,9 +137,9 @@ End Function
 '
 '**********************************************************************************************''
 Function FILERemoveBackSlash(ByVal sPath As String) As String
- 
+
 OnError GoTo ErrorOccured
- 
+
 		Do While Asc(Right$(sPath, 1)) = Asc("\")
 			sPath = Left$(sPath, (Len(sPath)-1))
 		Loop
@@ -149,11 +149,11 @@ OnError GoTo ErrorOccured
 ErrorOccured:
      Call ERRCreate(Err(), Error$(), "FILERemoveBackSlash")
      Call ERRShow()
- 
+
 End Function
- 
+
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -182,7 +182,7 @@ ErrorOccured:
 
 End Function
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -202,7 +202,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -231,7 +231,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -257,7 +257,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -282,7 +282,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -307,7 +307,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -371,7 +371,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -403,7 +403,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -429,7 +429,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -446,7 +446,7 @@ Function FILEFindFilesRecursive(	  ByVal sPath As String			'The initial path
 Dim	nResult As IntPtr,
 	nStatus As Integer,
 	fData As WIN32_FIND_DATA,
-	nFiles As Integer 
+	nFiles As Integer
 
 OnError GoTo ErrorOccured
 
@@ -507,7 +507,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -533,7 +533,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:

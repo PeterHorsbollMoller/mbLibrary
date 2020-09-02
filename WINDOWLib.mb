@@ -1,5 +1,5 @@
 '*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Pitney Bowes Software
+'** 	Created By Peter Horsbøll Møller, Precisely
 '** 	Program:
 '** 	Modul:	WINDOWLib.mb
 '**
@@ -22,7 +22,7 @@ Include "WINAPI 1522.def"
 Include "WINDOWLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -56,7 +56,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -90,7 +90,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:

@@ -19,7 +19,7 @@ Include "TABLELib.def"
 Include "STRINGLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -58,13 +58,13 @@ End Function
 
 
 '**********************************************************************************************''
-'Created by Frank Salet, Pitney Bowes MapInfo
+'Created by Frank Salet, Precisely
 'Parameters:
 '	:
 'Return value:
 '
 '**********************************************************************************************''
-Function COLPosition( ByVal sTab As String, ByVal sColName As String	) As Integer	
+Function COLPosition( ByVal sTab As String, ByVal sColName As String	) As Integer
 
 Dim	i, nCol As Integer, sColNames() As String
 
@@ -75,7 +75,7 @@ COLPosition = 0
 	If not TABIsOpen(sTab) Then
 		Exit Function
 	End If
-	
+
 	nCol = COLGetListOfNames(sTab, CRITERIA_USE_ALL, sColNames())
 
 	For i = 1 To nCol
@@ -94,10 +94,10 @@ ErrorOccured:
 
 '-------------------------
 
-End Function					
-					
+End Function
+
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -189,7 +189,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	nBit 		: The bit to check for
 '	nBitSum	: The sum of bits to see if nBit is On
@@ -237,7 +237,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Egge-Jan Pollé, Pitney Bowes Business Insight - 7 December 2011
+'Created by Egge-Jan Pollé, Precisely - 7 December 2011
 'Parameters:
 '	sTab	: Name of the table
 '	sCol	: Name of the column
@@ -253,7 +253,7 @@ Dim iCOL_INFO_TYPE, iCOL_INFO_WIDTH, iCOL_INFO_DECPLACES As Integer
 OnError GoTo ErrorOccured
 
 	iCOL_INFO_TYPE = ColumnInfo(sTab, sCol, COL_INFO_TYPE)
-	
+
 	Do Case iCOL_INFO_TYPE
 		Case 1 'Character
 			iCOL_INFO_WIDTH = ColumnInfo(sTab, sCol, COL_INFO_WIDTH)
@@ -290,7 +290,7 @@ End Function
 '*********************************************************************************************
 
 '**********************************************************************************************''
-'Created by Frank Salet, Pitney Bowes MapInfo
+'Created by Frank Salet, Precisely
 'Parameters:
 '
 

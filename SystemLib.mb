@@ -1,5 +1,5 @@
 '*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Created By Peter Horsbøll Møller, Precisely
 '** 	Program:
 '** 	Modul:
 '**
@@ -19,7 +19,7 @@ Include "SYSTEMLib.def"
 Include "WINAPI.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -45,7 +45,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -71,7 +71,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	sType: One of the COMPUTER_ defines from WINAPI*.def, NetBIOS, Domain etc
 '**********************************************************************************************''
@@ -97,7 +97,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -154,7 +154,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -201,7 +201,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:

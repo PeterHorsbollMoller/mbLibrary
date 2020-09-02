@@ -26,7 +26,7 @@ Include "TABLELib.def"
 Include "GroupLayerLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -60,7 +60,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -104,7 +104,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -153,7 +153,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 'Return value:
@@ -182,7 +182,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 'Return value:
@@ -242,7 +242,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -297,7 +297,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -346,7 +346,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:

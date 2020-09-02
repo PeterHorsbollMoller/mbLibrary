@@ -26,6 +26,7 @@
 '					- Support for language via code or name
 '					- Default URL to point to MapInfo Marketplace
 '					- Default Company to "Pitney Bowes Software & Data"
+'xx-xx-2020				- Default Company to "Precisely | Trust in Data"
 '********************************************************
 
 'When using this module, make sure to set these values in your main module

@@ -20,7 +20,7 @@ Include "Types\T_MI_POINT.def"
 Include "Types\T_TOOLBAR.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -52,7 +52,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -77,7 +77,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:

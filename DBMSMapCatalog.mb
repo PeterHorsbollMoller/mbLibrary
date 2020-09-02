@@ -1,5 +1,5 @@
 '*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Created By Peter Horsbøll Møller, Precisely
 '** 	Program:
 '** 	Modul:
 '**
@@ -22,7 +22,7 @@ Include "FILELib.def"
 
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	sDBFile:	MS Access database file that should have a MapCatalog table added
 '**********************************************************************************************''
@@ -48,7 +48,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	nConnection:	Connection to a MS Access database that should have a MapCatalog table added
 '**********************************************************************************************''
@@ -130,7 +130,7 @@ ErrorOccuredWhileAddingColumns:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	sDBFile:	MS Access database file that should have a MapCatalog table added
 '**********************************************************************************************''
@@ -162,7 +162,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	nConnection:	Connection to a MS Access database that should have a MapCatalog table added
 '**********************************************************************************************''
@@ -207,7 +207,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -254,7 +254,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:

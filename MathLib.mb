@@ -19,7 +19,7 @@ Include "ERRORLib.def"
 Include "MATHLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value: Float
@@ -82,7 +82,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	fDirection : a direction in 360 degrees
 'Return value:
@@ -114,7 +114,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	fX : X-coordinate to offset
 '	fDistance: Distance to move fX, same unit as fX
@@ -136,7 +136,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	fY : Y-coordinate to offset
 '	fDistance: Distance to move fY, same unit as fX
@@ -158,7 +158,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes MapInfo
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	nBit 		: The bit to check for
 '	nBitSum	: The sum of bits to see if nBit is On

@@ -1,5 +1,5 @@
 '*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Pitney Bowes Business Insight
+'** 	Created By Peter Horsbøll Møller, Precisely
 '** 	Program:
 '** 	Modul:
 '**
@@ -18,7 +18,7 @@ Include "ERRORLib.def"
 Include "LAYERLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -47,7 +47,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -77,7 +77,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
