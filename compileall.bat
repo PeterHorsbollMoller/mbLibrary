@@ -1,4 +1,7 @@
 @Echo Off
+"C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
+	"RIBBONLib.mb"
+
 "C:\MapInfo\MapBasic\15.0\Mapbasic.Exe" -NOSPLASH -D  ^
 	"ARRAYLib.mb" ^
 	"COLUMNLib.mb" ^
@@ -36,7 +39,6 @@
 "C:\MapInfo\MapBasic\15.2\Mapbasic.Exe" -NOSPLASH -D  ^
 	"ConfigFileLib.mb" ^
 	"FILELib 1522.mb" ^
-	"RIBBONLib.mb" ^
 	"WINDOWLib.mb"
 
 dir /s "*.err"
