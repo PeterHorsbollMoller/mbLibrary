@@ -8730,7 +8730,7 @@ RBNRemoveElement = nElementIdx
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "RBNRemoveElement")
+	Call ERRCreate(Err(), Error$(), "RBNRemoveElement: '" & sControlName & "' From group '" & sGroupName & "' on tab '" & sTabName & "'")
 	Call ERRShow()
 
 End Function
