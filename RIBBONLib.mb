@@ -224,13 +224,13 @@ OnError GoTo ErrorOccured
 	End If
 
 	mfDefaultLeftMarginInControls	= 4.0
-	mnTooltipPlacement				= Place_RelativePoint
+	mnTooltipPlacement			= Place_RelativePoint
 
 	'--------------------------------
 	'Get MIPro interface
 	theMapInfoApplication	= SystemInfo(SYS_INFO_IMAPINFOAPPLICATION)
 	'Get Ribbon
-	theRibbon 				= GetRibbon(theMapInfoApplication)
+	theRibbon 			= GetRibbon(theMapInfoApplication)
 	'Get the Statusbar
 	theStatusbar			= GetStatusBar(theMapInfoApplication)
 	theStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
@@ -9228,6 +9228,10 @@ Dim	i As Integer
 
 OnError GoTo ErrorOccured
 
+	If Not mbHasBeenInitiated Then
+		Exit Sub
+	End If
+
 	Call RBNClearCustomRibbonElements
 	If NOT RBNEventUnsubscribeAll() Then
 		'**Whoops, not all events were unsubscribed from
@@ -9598,8 +9602,6 @@ ErrorOccured:
 	Call ERRShow()
 
 End Sub
-
-
 
 
 '**********************************************************************************************''
