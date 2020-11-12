@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo version 12.5 - System defines
+' MapInfo Pro 2019 - System defines
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.  There are three versions of this file:
@@ -17,13 +17,14 @@
 '     DateWindow() defines
 '     FileAttr() and file access mode defines
 '     GetFolderPath$() defines
+'     GetPreference() defines
 '     GetPreferencePath$() defines
 '     IntersectNodes() parameters
 '     LabelInfo() defines
 '     GroupLayerInfo() defines
 '     LayerListInfo() defines
 '     LayerInfo(), display mode, label property, layer type, hotlink defines
-'     LayoutInfo() and LayoutItemInfo() defines
+'     LayoutInfo(), LayoutItemInfo() and LayoutPageItemInfo() defines
 '     LegendInfo() and legend orientation defines
 '     LegendFrameInfo() and frame type defines
 '     LegendTextFrameInfo() defines
@@ -45,6 +46,19 @@
 '     StyleAttr() defines
 '     SystemInfo(), platform, and version defines
 '     TableInfo() and table type defines
+'     ThemeInfo() defines
+'     ThemeItemInfo() defines
+'     ThemeExpressionInfo() defines
+'     RangeThemeInfo() defines
+'     RangeThemeItemInfo() defines
+'     IndividualThemeInfo() defines
+'     IndividualThemeItemInfo() defines
+'     DotDensityThemeInfo() defines
+'     GraduatedThemeInfo() defines
+'     BartChartThemeInfo() defines
+'     BarChartThemeItemInfo() defines
+'     PieChartThemeInfo() defines
+'     PieChartThemeItemInfo() defines
 '     WindowInfo(), window type and state, and print orientation defines
 '     Abbreviated list of error codes
 '     Backward Compatibility defines
@@ -171,6 +185,7 @@ Define COL_TYPE_GRAPHIC                         7
 Define COL_TYPE_FLOAT                           8
 Define COL_TYPE_TIME                            37
 Define COL_TYPE_DATETIME                        38
+Define COL_TYPE_LARGEINT                        39
 
 '============================================================================
 ' CommandInfo() defines
@@ -267,6 +282,7 @@ Define PREFERENCE_PATH_REMOTETABLE    10
 Define PREFERENCE_PATH_SHAPEFILE      11
 Define PREFERENCE_PATH_WFSTABLE       12
 Define PREFERENCE_PATH_WMSTABLE       13
+Define PREFERENCE_PATH_LAYOUTIMAGES   14
 
 '============================================================================
 ' IntersectNodes() defines
@@ -404,6 +420,29 @@ Define LAYER_INFO_LBL_USE_ABBREVIATION          60
 Define LAYER_INFO_ABBREVIATION_EXPR             61
 Define LAYER_INFO_LBL_AUTO_CALLOUT              62
 Define LAYER_INFO_LBL_ORDER                     63
+Define LAYER_INFO_FRIENDLYNAME                  64
+Define LAYER_INFO_GRIDLINE_COORDSYS             65
+Define LAYER_INFO_GRIDLINE_SPACE_HORIZONTAL     66
+Define LAYER_INFO_GRIDLINE_SPACE_VERTICAL       67
+Define LAYER_INFO_GRIDLINE_AUTO                 68
+Define LAYER_INFO_GRIDLINE_MIN_HORIZONTAL       69
+Define LAYER_INFO_GRIDLINE_MIN_VERTICAL         70
+Define LAYER_INFO_GRIDLINE_PAPER_HORIZONTAL     71
+Define LAYER_INFO_GRIDLINE_PAPER_VERTICAL       72
+Define LAYER_INFO_GRIDLINE_OFFSET	            73
+Define LAYER_INFO_LABEL_POS_RETRY               74
+Define LAYER_INFO_GRIDLINE_HORIZONTAL_LABEL_POS 75
+Define LAYER_INFO_GRIDLINE_VERTICAL_LABEL_POS   76
+Define LAYER_INFO_GRIDLINE_LABEL_DIRECTION      77
+Define LAYER_INFO_ALIAS                         78
+Define LAYER_INFO_LBL_LINE_PEN                  79
+Define LAYER_INFO_RASTER_CONTRAST               80
+Define LAYER_INFO_RASTER_BRIGHTNESS             81
+Define LAYER_INFO_RASTER_ALPHA                  82
+Define LAYER_INFO_RASTER_GREYSCALE              83
+Define LAYER_INFO_LABEL_EXPR_TABLE              84
+Define LAYER_INFO_LBL_CURVED_PERCENT_OVER       85
+Define LAYER_INFO_LEGEND                        86
 
 '----------------------------------------------------------------------------
 ' Values returned by LayerInfo() for LAYER_INFO_LABEL_ORIENTATION and
@@ -453,6 +492,7 @@ Define LAYER_INFO_TYPE_THEMATIC                 3
 Define LAYER_INFO_TYPE_GRID                     4
 Define LAYER_INFO_TYPE_WMS                      5
 Define LAYER_INFO_TYPE_TILESERVER               6
+Define LAYER_INFO_TYPE_GRIDLINE                 7
 
 '----------------------------------------------------------------------------
 ' Label visibility modes, from LayerInfo() for LAYER_INFO_LBL_VISIBILITY
@@ -460,6 +500,26 @@ Define LAYER_INFO_TYPE_TILESERVER               6
 Define LAYER_INFO_LBL_VIS_OFF                   1
 Define LAYER_INFO_LBL_VIS_ZOOM                  2
 Define LAYER_INFO_LBL_VIS_ON                    3
+
+'----------------------------------------------------------------------------
+' Values Returned by LayerInfo() for LAYER_INFO_GRIDLINE_HORIZONTAL_LABEL_POS
+' and LAYER_INFO_GRIDLINE_VERTICAL_LABEL_POS.
+'----------------------------------------------------------------------------
+Define GRIDLINE_HORIZONTAL_LABEL_NONE  0
+Define GRIDLINE_HORIZONTAL_LABEL_LEFT  1
+Define GRIDLINE_HORIZONTAL_LABEL_RIGHT 2
+Define GRIDLINE_HORIZONTAL_LABEL_BOTH  3
+
+Define GRIDLINE_VERTICAL_LABEL_NONE    0
+Define GRIDLINE_VERTICAL_LABEL_TOP     1
+Define GRIDLINE_VERTICAL_LABEL_BOTTOM  2
+Define GRIDLINE_VERTICAL_LABEL_BOTH    3
+
+'----------------------------------------------------------------------------
+' Values Returned by LayerInfo() for LAYER_INFO_GRIDLINE_LABEL_DIRECTION. 
+'----------------------------------------------------------------------------
+Define GRIDLINE_LABEL_DIRECTION_PLUSMINUS 0
+Define GRIDLINE_LABEL_DIRECTION_COMPASS   1
 
 '----------------------------------------------------------------------------
 ' Code passed to StyleOverrideInfo function to get override style information
@@ -494,35 +554,60 @@ Define STYLE_OVR_INFO_VIS_OFF_ZOOM              2
 '----------------------------------------------------------------------------
 ' Code passed to LabelOverrideInfo function to get override label information
 '----------------------------------------------------------------------------
-Define LBL_OVR_INFO_NAME               1
-Define LBL_OVR_INFO_VISIBILITY         2
-Define LBL_OVR_INFO_ZOOM_MIN           3
-Define LBL_OVR_INFO_ZOOM_MAX           4
-Define LBL_OVR_INFO_EXPR               5
-Define LBL_OVR_INFO_LT                 6
-Define LBL_OVR_INFO_FONT               7
-Define LBL_OVR_INFO_PARALLEL           8
-Define LBL_OVR_INFO_POS                9
-Define LBL_OVR_INFO_OVERLAP            10
-Define LBL_OVR_INFO_DUPLICATES         11
-Define LBL_OVR_INFO_OFFSET             12
-Define LBL_OVR_INFO_MAX                13
-Define LBL_OVR_INFO_PARTIALSEGS        14
-Define LBL_OVR_INFO_ORIENTATION        15
-Define LBL_OVR_INFO_ALPHA              16
-Define LBL_OVR_INFO_AUTODISPLAY        17
-Define LBL_OVR_INFO_POS_RETRY          18
-Define LBL_OVR_INFO_LINE_PEN           19
-Define LBL_OVR_INFO_PERCENT_OVER       20
-Define LBL_OVR_INFO_AUTO_POSITION      21
-Define LBL_OVR_INFO_AUTO_SIZES         22
-Define LBL_OVR_INFO_SUPPRESS_IF_NO_FIT 23
-Define LBL_OVR_INFO_AUTO_SIZE_STEP     24
+Define LBL_OVR_INFO_NAME                 1
+Define LBL_OVR_INFO_VISIBILITY           2
+Define LBL_OVR_INFO_ZOOM_MIN             3
+Define LBL_OVR_INFO_ZOOM_MAX             4
+Define LBL_OVR_INFO_EXPR                 5
+Define LBL_OVR_INFO_LT                   6
+Define LBL_OVR_INFO_FONT                 7
+Define LBL_OVR_INFO_PARALLEL             8
+Define LBL_OVR_INFO_POS                  9
+Define LBL_OVR_INFO_OVERLAP              10
+Define LBL_OVR_INFO_DUPLICATES           11
+Define LBL_OVR_INFO_OFFSET               12
+Define LBL_OVR_INFO_MAX                  13
+Define LBL_OVR_INFO_PARTIALSEGS          14
+Define LBL_OVR_INFO_ORIENTATION          15
+Define LBL_OVR_INFO_ALPHA                16
+Define LBL_OVR_INFO_AUTODISPLAY          17
+Define LBL_OVR_INFO_POS_RETRY            18
+Define LBL_OVR_INFO_LINE_PEN             19
+Define LBL_OVR_INFO_PERCENT_OVER         20
+Define LBL_OVR_INFO_AUTO_POSITION        21
+Define LBL_OVR_INFO_AUTO_SIZES           22
+Define LBL_OVR_INFO_SUPPRESS_IF_NO_FIT   23
+Define LBL_OVR_INFO_AUTO_SIZE_STEP       24
 Define LBL_OVR_INFO_CURVED_BEST_POSITION 25
-Define LBL_OVR_INFO_CURVED_FALLBACK    26
-Define LBL_OVR_INFO_USE_ABBREVIATION   27
-Define LBL_OVR_INFO_ABBREVIATION_EXPR  28
-Define LBL_OVR_INFO_AUTO_CALLOUT       29
+Define LBL_OVR_INFO_CURVED_FALLBACK      26
+Define LBL_OVR_INFO_USE_ABBREVIATION     27
+Define LBL_OVR_INFO_ABBREVIATION_EXPR    28
+Define LBL_OVR_INFO_AUTO_CALLOUT         29
+Define LBL_OVR_INFO_EXPR_EDITED          30
+Define LBL_OVR_INFO_LT_EDITED            31
+Define LBL_OVR_INFO_FONT_EDITED          32
+Define LBL_OVR_INFO_PARALLEL_EDITED      33
+Define LBL_OVR_INFO_POS_EDITED           34
+Define LBL_OVR_INFO_OVERLAP_EDITED       35
+Define LBL_OVR_INFO_DUPLICATES_EDITED    36
+Define LBL_OVR_INFO_OFFSET_EDITED        37
+Define LBL_OVR_INFO_MAX_EDITED           38
+Define LBL_OVR_INFO_PARTIALSEGS_EDITED   39
+Define LBL_OVR_INFO_ORIENTATION_EDITED   40
+Define LBL_OVR_INFO_ALPHA_EDITED         41
+Define LBL_OVR_INFO_AUTODISPLAY_EDITED   42
+Define LBL_OVR_INFO_POS_RETRY_EDITED     43
+Define LBL_OVR_INFO_LINE_PEN_EDITED      44
+Define LBL_OVR_INFO_PERCENT_OVER_EDITED  45
+Define LBL_OVR_INFO_AUTO_POSITION_EDITED 46
+Define LBL_OVR_INFO_AUTO_SIZES_EDITED    47
+Define LBL_OVR_INFO_SUPPR_IFNOFIT_EDITED 48
+Define LBL_OVR_INFO_AUTO_SIZESTEP_EDITED 49
+Define LBL_OVR_INFO_CURV_BEST_POS_EDITED 50
+Define LBL_OVR_INFO_CURV_FALLBACK_EDITED 51
+Define LBL_OVR_INFO_USE_ABBREV_EDITED    52
+Define LBL_OVR_INFO_ABBREV_EXPR_EDITED   53
+Define LBL_OVR_INFO_AUTO_CALLOUT_EDITED  54
 
 '----------------------------------------------------------------------------
 ' Possible return value of LabelOverrideInfo for code LBL_OVR_INFO_VISIBILITY
@@ -544,6 +629,7 @@ Define LC_SEL_INFO_TYPE                         2
 Define LC_SEL_INFO_MAPWIN_ID                    3
 Define LC_SEL_INFO_LAYER_ID                     4
 Define LC_SEL_INFO_OVR_ID                       5
+Define LC_SEL_INFO_HAS_COLOR_SAMPLE             6
 
 '----------------------------------------------------------------------------
 ' Values returned by LayerControlSelectionInfo() for LC_SEL_INFO_TYPE.
@@ -553,6 +639,7 @@ Define LC_SEL_INFO_TYPE_LAYER                   1
 Define LC_SEL_INFO_TYPE_GROUPLAYER              2
 Define LC_SEL_INFO_TYPE_STYLE_OVR               3
 Define LC_SEL_INFO_TYPE_LABEL_OVR               4
+Define LC_SEL_INFO_TYPE_THEME_ITEM              5
 
 '----------------------------------------------------------------------------
 ' HotlinkInfo() defines'----------------------------------------------------------------------------
@@ -580,6 +667,14 @@ Define LEGEND_INFO_LINE_SAMPLE_WIDTH            5
 Define LEGEND_INFO_REGION_SAMPLE_WIDTH          6
 Define LEGEND_INFO_REGION_SAMPLE_HEIGHT         7
 Define LEGEND_INFO_NUM_TEXTFRAMES               8
+Define LEGEND_INFO_DEFAULT_TITLE                9
+Define LEGEND_INFO_DEFAULT_TITLE_FONT           10
+Define LEGEND_INFO_DEFAULT_SUBTITLE             11
+Define LEGEND_INFO_DEFAULT_SUBTITLE_FONT        12
+Define LEGEND_INFO_DEFAULT_STYLE                13
+Define LEGEND_INFO_DEFAULT_STYLE_FONT           14
+Define LEGEND_INFO_DEFAULT_AUTO_FNT_SZ          15
+
 
 '============================================================================
 ' Orientation codes, returned by LegendInfo() for LEGEND_INFO_ORIENTATION
@@ -619,6 +714,11 @@ Define FRAME_INFO_LINE_SAMPLE_WIDTH             19
 Define FRAME_INFO_REGION_SAMPLE_WIDTH           20
 Define FRAME_INFO_REGION_SAMPLE_HEIGHT          21
 Define FRAME_INFO_AUTO_FONT_SIZE                22
+Define FRAME_INFO_SHOW_COUNTS                   23
+Define FRAME_INFO_DISPLAY_TYPE                  24
+Define FRAME_INFO_BAR_THICKNESS                 25
+Define FRAME_INFO_BAR_LENGTH                    26
+Define FRAME_INFO_BAR_IS_HORIZONTAL             27
 
 '============================================================================
 ' LegendTextFrameInfo() defines
@@ -633,8 +733,18 @@ Define TEXTFRAME_INFO_TEXT_FONT                 6
 '============================================================================
 ' Frame Types, returned by LegendFrameInfo() for FRAME_INFO_TYPE
 '============================================================================
+Define FRAME_TYPE_NONE                          0
 Define FRAME_TYPE_STYLE                         1
 Define FRAME_TYPE_THEME                         2
+Define FRAME_TYPE_RASTER                        3
+
+'----------------------------------------------------------------------------
+' Frame display type codes, from LegendFrameInfo() for FRAME_INFO_DISPLAY_TYPE
+'----------------------------------------------------------------------------
+Define FRAME_DISPLAY_TYPE_NOT_SPECIFIED         0
+Define FRAME_DISPLAY_TYPE_GAP                   1
+Define FRAME_DISPLAY_TYPE_PALETTE               2
+Define FRAME_DISPLAY_TYPE_BAR                   3
 
 '============================================================================
 ' Geocode Attributes, returned by GeocodeInfo()
@@ -701,6 +811,7 @@ Define LEGEND_STYLE_INFO_TEXT                   1
 Define LEGEND_STYLE_INFO_FONT                   2
 Define LEGEND_STYLE_INFO_OBJ                    3
 Define LEGEND_STYLE_INFO_ROW_VISIBLE            4
+Define LEGEND_STYLE_INFO_COUNT                  5
 
 '============================================================================
 ' LayoutInfo() defines
@@ -715,9 +826,15 @@ Define LAYOUT_INFO_BOTTOM_MARGIN                7
 Define LAYOUT_INFO_ZOOM                         8
 Define LAYOUT_INFO_CENTER_X                     9
 Define LAYOUT_INFO_CENTER_Y                     10
+Define LAYOUT_INFO_NUM_PAGES                    11
+Define LAYOUT_INFO_CUR_PAGE                     12
+Define LAYOUT_INFO_GRID_VISIBILITY              13
+Define LAYOUT_INFO_GRID_SNAP                    14
+Define LAYOUT_INFO_GRID_SIZE                    15
+Define LAYOUT_INFO_SMART_GUIDES                 16
 
 '============================================================================
-' LayoutItemInfo() defines
+' LayoutItemInfo() and LayoutPageItemInfo() defines
 '============================================================================
 Define LAYOUT_ITEM_INFO_POS_X                    1
 Define LAYOUT_ITEM_INFO_POS_Y                    2
@@ -728,14 +845,28 @@ Define LAYOUT_ITEM_INFO_SELECTED                 6
 Define LAYOUT_ITEM_INFO_ACTIVATED                7
 Define LAYOUT_ITEM_INFO_EMPTY                    8
 Define LAYOUT_ITEM_INFO_LEGEND_FRAME_ID          9
-Define LAYOUT_ITEM_INFO_LEGEND_DESIGNER_WINDOW  10
-Define LAYOUT_ITEM_INFO_TYPE                    11
-Define LAYOUT_ITEM_INFO_IMAGE_FILE              12
-Define LAYOUT_ITEM_INFO_OBJ                     13
+Define LAYOUT_ITEM_INFO_LEGEND_DESIGNER_WINDOW   10
+Define LAYOUT_ITEM_INFO_TYPE                     11
+Define LAYOUT_ITEM_INFO_IMAGE_FILE               12
+Define LAYOUT_ITEM_INFO_OBJ                      13
+Define LAYOUT_ITEM_INFO_NAME                     14
+Define LAYOUT_ITEM_INFO_PEN                      15
+Define LAYOUT_ITEM_INFO_FILL_BRUSH               16
+Define LAYOUT_ITEM_INFO_Z_ORDER                  17
+Define LAYOUT_ITEM_INFO_ANGLE                    18
+Define LAYOUT_ITEM_INFO_ADDIN_FILE_NAME          19
+Define LAYOUT_ITEM_INFO_SERIALIZED_NAME          20
+Define LAYOUT_ITEM_INFO_XPS_VIEW_NAME            21
+Define LAYOUT_ITEM_INFO_NUM_ITEMS_ON_PAGE        22
+Define LAYOUT_ITEM_INFO_FRAME_UNIQUE_ID          23
+Define LAYOUT_ITEM_INFO_TEXTSTRING               24
+Define LAYOUT_ITEM_INFO_SMART_TEXTSTRING         25
 
 '============================================================================
-' Item types, returned by LayoutItemInfo() for LAYOUT_ITEM_INFO_TYPE
+' Item types, returned by LayoutItemInfo() and LayoutPageItemInfo() for
+' LAYOUT_ITEM_INFO_TYPE
 '============================================================================
+Define LAYOUT_ITEM_TYPE_ANY                      -1
 Define LAYOUT_ITEM_TYPE_EMPTY                    0
 Define LAYOUT_ITEM_TYPE_MAPPER                   1
 Define LAYOUT_ITEM_TYPE_BROWSER                  2
@@ -743,6 +874,14 @@ Define LAYOUT_ITEM_TYPE_LEGEND                   3
 Define LAYOUT_ITEM_TYPE_TEXT                     4
 Define LAYOUT_ITEM_TYPE_SHAPE                    5
 Define LAYOUT_ITEM_TYPE_IMAGE                    6
+Define LAYOUT_ITEM_TYPE_CUSTOM                   7
+
+'============================================================================
+' CurContext() defines
+'============================================================================
+Define CONTEXT_WINDOWID                          1
+Define CONTEXT_PAGENUMBER                        2
+Define CONTEXT_FRAMENUMBER                       3
 
 '============================================================================
 ' LocateFile$() defines
@@ -764,6 +903,23 @@ Define LOCATE_WFS_SERVERLIST                    12
 Define LOCATE_GEOCODE_SERVERLIST                13
 Define LOCATE_ROUTING_SERVERLIST                14
 Define LOCATE_LAYOUT_TEMPLATE_DIR               15
+
+'============================================================================
+' GetLicenseKind() defines
+'============================================================================
+Define LICENSE_KIND_NOLICENSE                    0
+Define LICENSE_KIND_REGULAR                      1
+Define LICENSE_KIND_ADVANCE                      2
+
+'============================================================================
+' TableConnectionInfo() defines
+'============================================================================
+Define TABLE_CONNECTION_INFO_NUMBER              1
+
+'============================================================================
+' TableSchemaInfo() defines
+'============================================================================
+Define TABLE_SCHEMA_INFO_NAME                    1
 
 '============================================================================
 ' Map3DInfo() defines
@@ -827,6 +983,9 @@ Define MAPPER_INFO_GROUPLAYERS                  29
 Define MAPPER_INFO_NUM_ADORNMENTS               200
 Define MAPPER_INFO_ADORNMENT                    200
 Define MAPPER_INFO_LABELS_SELECTABLE            30
+Define MAPPER_INFO_HAS_CUSTOM_LABELS            31
+Define MAPPER_INFO_CARTO_SCALE                  32
+Define MAPPER_INFO_CARTO_SCALE_EXPR             33
 
 '----------------------------------------------------------------------------
 ' Display Modes, returned by MapperInfo() for MAPPER_INFO_DISPLAY_DMS
@@ -979,6 +1138,7 @@ Define SEARCH_INFO_ROW                          2
 Define SEL_INFO_TABLENAME                       1
 Define SEL_INFO_SELNAME                         2
 Define SEL_INFO_NROWS                           3
+Define  SEL_INFO_ISNEW                          4
 
 '============================================================================
 ' Server statement and function defines
@@ -1040,6 +1200,8 @@ Define SRV_CONNECT_INFO_DB_NAME                 2
 Define SRV_CONNECT_INFO_SQL_USER_ID             3
 Define SRV_CONNECT_INFO_DS_NAME                 4
 Define SRV_CONNECT_INFO_QUOTE_CHAR              5
+Define SRV_CONNECT_INFO_DATABASE_NAME           6
+Define SRV_CONNECT_INFO_SERVER_NAME             7
 
 '----------------------------------------------------------------------------
 ' Fetch Directions (used by ServerFetch function in some code libraries)
@@ -1059,11 +1221,13 @@ Define SRV_WM_HIST_NO_OVERWRITE                  2
 '============================================================================
 ' SessionInfo() defines
 '============================================================================
-
 Define SESSION_INFO_COORDSYS_CLAUSE             1
 Define SESSION_INFO_DISTANCE_UNITS              2
 Define SESSION_INFO_AREA_UNITS                  3
 Define SESSION_INFO_PAPER_UNITS                 4
+Define SESSION_INFO_DEF_NATIVE_BLKSZ            5
+Define SESSION_INFO_DEF_NATIVEX_BLKSZ           6
+Define SESSION_INFO_TEMP_PATH                   7
 
 '============================================================================
 ' Set Next Document Style defines
@@ -1137,6 +1301,12 @@ Define SYS_INFO_MIBUILD_NUMBER                  18
 Define SYS_INFO_MIFULLVERSION                   19
 Define SYS_INFO_IMAPINFOAPPLICATION             20
 Define SYS_INFO_MAPINFO_INTERFACE               21
+Define SYS_INFO_UNICODE                         22
+Define SYS_INFO_CULTURE                         23
+Define SYS_INFO_LOCALE                          24
+Define SYS_INFO_MIRIBBONSTATE_VERSION           25
+Define SYS_INFO_LICENSE_MODE                    26
+Define SYS_INFO_SUBSCRIPTION_PLAN               27
 
 '----------------------------------------------------------------------------
 ' Platform, returned by SystemInfo() for SYS_INFO_PLATFORM
@@ -1214,6 +1384,21 @@ Define TAB_INFO_ADSK_TEXTOBJECT                 42
 Define TAB_INFO_OVERRIDE_COORDINATE_ORDER       43
 Define TAB_INFO_PERSIST                         44
 Define TAB_INFO_PREFER_HTML_FOR_INFO_TOOL       45
+Define TAB_INFO_INUSE                           46
+Define TAB_INFO_DATA_FORMAT                     47
+Define TAB_INFO_CHARSET                         48
+Define TAB_INFO_MAP_BLOCKSIZE                   49
+Define TAB_INFO_READVERSION                     50
+Define TAB_INFO_EDITVERSION                     51
+Define TAB_INFO_READALLVERSION                  52
+Define TAB_INFO_LOCALE                          53
+Define TAB_INFO_CONNECTIONS_COUNT               54
+Define TAB_INFO_SCHEMAS_COUNT                   55
+Define TAB_INFO_QUERY_STRING                    56
+Define TAB_INFO_ISHIDDEN                        57
+Define TAB_INFO_NUM_BASETABLES                  58
+Define TAB_INFO_BASETABLE_ALIASES               59
+Define TAB_INFO_DOMINANT_OBJECT_TYPE            60
 
 '----------------------------------------------------------------------------
 ' Table type defines, returned by TableInfo() for TAB_INFO_TYPE
@@ -1227,6 +1412,31 @@ Define TAB_TYPE_WMS                             6
 Define TAB_TYPE_WFS                             7
 Define TAB_TYPE_FME                             8
 Define TAB_TYPE_TILESERVER                      9
+
+
+' Codes returned by TableInfo(<table-ref>, TAB_INFO_DOMINANT_OBJECT_TYPE).
+Define TAB_UNKNOWN_OBJECTS                      0
+Define TAB_POINT_OBJECTS                        2
+Define TAB_LINE_OBJECTS                         3
+Define TAB_AREA_OBJECTS                         4
+Define TAB_MISC_OBJECTS                         5
+Define TAB_RASTER_OBJECTS                       7
+
+'----------------------------------------------------------------------------
+' Table format defines, returned by TableInfo() for TAB_INFO_DATA_FORMAT
+'----------------------------------------------------------------------------
+Define TAB_DATA_FORMAT_NONE                     0
+Define TAB_DATA_FORMAT_DBASE                    1
+Define TAB_DATA_FORMAT_LOTUS                    2
+Define TAB_DATA_FORMAT_ASCII                    3
+Define TAB_DATA_FORMAT_EXCEL                    4
+Define TAB_DATA_FORMAT_NATIVE                   5
+Define TAB_DATA_FORMAT_RASTER                   6
+Define TAB_DATA_FORMAT_DAO                      8
+Define TAB_DATA_FORMAT_ODBC                     10
+Define TAB_DATA_FORMAT_NATIVEX                  14
+Define TAB_DATA_FORMAT_GPKG                     15
+Define TAB_DATA_FORMAT_SHAPE                    16
 
 '----------------------------------------------------------------------------
 ' Defines used in LibraryServiceInfo function for what information to return.
@@ -1248,6 +1458,234 @@ Define TL_SEL_INFO_NAME                         1
 Define TL_SEL_INFO_ID                           2
 
 '----------------------------------------------------------------------------
+' ThemeInfo() defines
+'----------------------------------------------------------------------------
+Define THEME_INFO_TYPE                          1
+Define THEME_INFO_ITEM_COUNT                    2
+Define THEME_INFO_TABLE_ALIAS                   3
+Define THEME_INFO_EXPRESSIONS_COUNT             4
+
+'----------------------------------------------------------------------------
+' Theme type defines returned by ThemeInfo() for THEME_INFO_TYPE
+'----------------------------------------------------------------------------
+Define THEME_TYPE_RANGES                        0
+Define THEME_TYPE_BARS                          1
+Define THEME_TYPE_PIES                          2
+Define THEME_TYPE_GRADUATED                     3
+Define THEME_TYPE_DOTDENSITY                    4
+Define THEME_TYPE_UNIQUE                        5
+Define THEME_TYPE_GRID                          6
+
+'----------------------------------------------------------------------------
+' ThemeItemInfo() defines
+'----------------------------------------------------------------------------
+Define THEME_ITEM_INFO_VISIBLE                  1
+Define THEME_ITEM_INFO_LABEL                    2
+
+'----------------------------------------------------------------------------
+' ThemeExpressionInfo() defines
+'----------------------------------------------------------------------------
+Define THEME_EXPRESSION_INFO_STRING             1
+Define THEME_EXPRESSION_INFO_TYPE               2
+
+'----------------------------------------------------------------------------
+' Column type defines, returned by ThemeExpressionInfo() for 
+' THEME_EXPRESSION_INFO_TYPE
+'----------------------------------------------------------------------------
+Define EXPRESSION_TYPE_CHAR                     1
+Define EXPRESSION_TYPE_DECIMAL                  2
+Define EXPRESSION_TYPE_INTEGER                  3
+Define EXPRESSION_TYPE_SMALLINT                 4
+Define EXPRESSION_TYPE_DATE                     5
+Define EXPRESSION_TYPE_LOGICAL                  6
+Define EXPRESSION_TYPE_GRAPHIC                  7
+Define EXPRESSION_TYPE_FLOAT                    8
+Define EXPRESSION_TYPE_TIME                     37
+Define EXPRESSION_TYPE_DATETIME                 38
+
+'----------------------------------------------------------------------------
+' RangeThemeInfo() defines
+'----------------------------------------------------------------------------
+Define RANGETHEME_INFO_ITEMS_COUNT              1
+Define RANGETHEME_INFO_VARY_STYLE               2
+Define RANGETHEME_INFO_REPLACE_STYLE            3
+Define RANGETHEME_INFO_OTHERS_LINE              4
+Define RANGETHEME_INFO_OTHERS_PEN               5
+Define RANGETHEME_INFO_OTHERS_BRUSH             6
+Define RANGETHEME_INFO_OTHERS_SYMBOL            7
+Define RANGETHEME_INFO_BASE_LINE                8
+Define RANGETHEME_INFO_BASE_BRUSH               9
+Define RANGETHEME_INFO_BASE_SYMBOL              10
+Define RANGETHEME_INFO_METHOD                   11
+Define RANGETHEME_INFO_ROUNDBY                  12
+
+'----------------------------------------------------------------------------
+' Range theme vary style by defines returned by RangeThemeInfo() for 
+' RANGETHEME_INFO_VARY_STYLE                                              
+'----------------------------------------------------------------------------
+Define RANGETHEME_INFO_VARY_BY_ALL              0
+Define RANGETHEME_INFO_VARY_BY_COLOR            1
+Define RANGETHEME_INFO_VARY_BY_SIZE             2
+
+'----------------------------------------------------------------------------
+' RangeThemeItemInfo() defines
+'----------------------------------------------------------------------------
+Define RANGETHEME_ITEM_INFO_LINE                1
+Define RANGETHEME_ITEM_INFO_PEN                 2
+Define RANGETHEME_ITEM_INFO_BRUSH               3
+Define RANGETHEME_ITEM_INFO_SYMBOL              4
+Define RANGETHEME_ITEM_INFO_FROM                5
+Define RANGETHEME_ITEM_INFO_TO                  6
+
+'----------------------------------------------------------------------------
+' IndividualThemeInfo() defines
+'----------------------------------------------------------------------------
+Define INDIVTHEME_INFO_ITEMS_COUNT              1
+Define INDIVTHEME_INFO_VARY_STYLE               2
+Define INDIVTHEME_INFO_REPLACE_STYLE            3
+Define INDIVTHEME_INFO_OTHERS_LINE              4
+Define INDIVTHEME_INFO_OTHERS_PEN               5
+Define INDIVTHEME_INFO_OTHERS_BRUSH             6
+Define INDIVTHEME_INFO_OTHERS_SYMBOL            7
+
+'----------------------------------------------------------------------------
+' Individual theme vary style by defines returned by IndividualThemeInfo()
+' for INDIVTHEME_INFO_VARY_STYLE
+'----------------------------------------------------------------------------
+Define INDIVTHEME_INFO_VARY_BY_ALL              0
+Define INDIVTHEME_INFO_VARY_BY_COLOR            1
+Define INDIVTHEME_INFO_VARY_BY_SIZE             2
+
+'----------------------------------------------------------------------------
+' IndividualThemeItemInfo() defines
+'----------------------------------------------------------------------------
+Define INDIVTHEME_ITEM_INFO_LINE                1
+Define INDIVTHEME_ITEM_INFO_PEN                 2
+Define INDIVTHEME_ITEM_INFO_BRUSH               3
+Define INDIVTHEME_ITEM_INFO_SYMBOL              4
+Define INDIVTHEME_ITEM_INFO_VALUE               5
+
+'----------------------------------------------------------------------------
+' DotDensityThemeInfo() defines
+'----------------------------------------------------------------------------
+Define DOTDENSITYTHEME_INFO_CONCE               1
+Define DOTDENSITYTHEME_INFO_SQUARE              2
+Define DOTDENSITYTHEME_INFO_SIZE                3
+Define DOTDENSITYTHEME_INFO_COLOR               4
+
+'----------------------------------------------------------------------------
+' GraduatedThemeInfo() defines
+'----------------------------------------------------------------------------
+Define GRADUATEDTHEME_INFO_SYMBOL               1
+Define GRADUATEDTHEME_INFO_VALUE                2
+Define GRADUATEDTHEME_INFO_SHOW_NEG             3
+Define GRADUATEDTHEME_INFO_SHOW_NEG_SY          4
+Define GRADUATEDTHEME_INFO_GRADUATION           5
+
+
+'----------------------------------------------------------------------------
+' Graduated theme graduation defines returned by GraduatedThemeInfo() for
+' GRADUATEDTHEME_INFO_GRADUATION
+'----------------------------------------------------------------------------
+Define GRADUATEDTHEME_INFO_GRAD_ROOT            0
+Define GRADUATEDTHEME_INFO_GRAD_CONST           1
+Define GRADUATEDTHEME_INFO_GRAD_LOG             2
+
+
+'----------------------------------------------------------------------------
+' BarChartThemeInfo() defines
+'----------------------------------------------------------------------------
+Define BARCHARTTHEME_INFO_GRADUATION            1
+Define BARCHARTTHEME_INFO_ORIENTATION           2
+Define BARCHARTTHEME_INFO_PEN                   3
+Define BARCHARTTHEME_INFO_CHART_TYPE            4
+Define BARCHARTTHEME_INFO_GRAD_STACKS           5
+Define BARCHARTTHEME_INFO_INDEP_SCALES          6
+Define BARCHARTTHEME_INFO_HEIGHT                7
+Define BARCHARTTHEME_INFO_HEIGHT_UNIT           8
+Define BARCHARTTHEME_INFO_HEIGHT_VALUE          9
+Define BARCHARTTHEME_INFO_WIDTH                 10
+Define BARCHARTTHEME_INFO_WIDTH_UNIT            11
+Define BARCHARTTHEME_INFO_BRUSH                 12
+
+'----------------------------------------------------------------------------
+' Bar chart theme graduation defines returned by BarChartThemeInfo() for
+' BARCHARTTHEME_INFO_GRADUATION
+'----------------------------------------------------------------------------
+Define BARCHARTTHEME_INFO_GRAD_ROOT             0
+Define BARCHARTTHEME_INFO_GRAD_CONST            1
+Define BARCHARTTHEME_INFO_GRAD_LOG              2
+
+'----------------------------------------------------------------------------
+' Bar chart theme orientation defines returned by BarChartThemeInfo() for
+' BARCHARTTHEME_INFO_ORIENTATION
+'----------------------------------------------------------------------------
+Define BARCHARTTHEME_INFO_ORI_CC                0
+Define BARCHARTTHEME_INFO_ORI_TL                1
+Define BARCHARTTHEME_INFO_ORI_TC                2
+Define BARCHARTTHEME_INFO_ORI_TR                3
+Define BARCHARTTHEME_INFO_ORI_CL                4
+Define BARCHARTTHEME_INFO_ORI_CR                5
+Define BARCHARTTHEME_INFO_ORI_BL                6
+Define BARCHARTTHEME_INFO_ORI_BC                7
+Define BARCHARTTHEME_INFO_ORI_BR                8
+
+'----------------------------------------------------------------------------
+' Bar chart theme chart type  defines returned by BarChartThemeInfo() for
+' BARCHARTTHEME_INFO_CHART_TYPE
+'----------------------------------------------------------------------------
+Define BARCHARTTHEME_INFO_CHART_STA             0
+Define BARCHARTTHEME_INFO_CHART_MUL             1
+
+'----------------------------------------------------------------------------
+' BarChartThemeItemInfo() defines
+'----------------------------------------------------------------------------
+Define BARCHARTTHEME_ITEM_INFO_BRUSH            1
+
+'----------------------------------------------------------------------------
+' PieChartThemeInfo() defines
+'----------------------------------------------------------------------------
+Define PIECHARTTHEME_INFO_GRADUATION            1
+Define PIECHARTTHEME_INFO_ORIENTATION           2
+Define PIECHARTTHEME_INFO_PEN                   3
+Define PIECHARTTHEME_GRADUATED                  4
+Define PIECHARTTHEME_HALF_PIE                   5
+Define PIECHARTTHEME_DIAMETER                   6
+Define PIECHARTTHEME_DIAMETER_UNIT              7
+Define PIECHARTTHEME_DIAMETER_VALUE             8
+Define PIECHARTTHEME_START_ANGLE                9
+Define PIECHARTTHEME_CLOCKWISE                  10
+
+
+'----------------------------------------------------------------------------
+' Bar chart theme graduation defines returned by PieChartThemeInfo() for
+' PIECHARTTHEME_INFO_GRADUATION
+'----------------------------------------------------------------------------
+Define PIECHARTTHEME_INFO_GRAD_ROOT             0
+Define PIECHARTTHEME_INFO_GRAD_CONST            1
+Define PIECHARTTHEME_INFO_GRAD_LOG              2
+
+
+'----------------------------------------------------------------------------
+' Bar chart theme orientation defines returned by PieChartThemeInfo() for
+' PIECHARTTHEME_INFO_ORIENTATION
+'----------------------------------------------------------------------------
+Define PIECHARTTHEME_INFO_ORI_CC                0
+Define PIECHARTTHEME_INFO_ORI_TL                1
+Define PIECHARTTHEME_INFO_ORI_TC                2
+Define PIECHARTTHEME_INFO_ORI_TR                3
+Define PIECHARTTHEME_INFO_ORI_CL                4
+Define PIECHARTTHEME_INFO_ORI_CR                5
+Define PIECHARTTHEME_INFO_ORI_BL                6
+Define PIECHARTTHEME_INFO_ORI_BC                7
+Define PIECHARTTHEME_INFO_ORI_BR                8
+
+'----------------------------------------------------------------------------
+' PieChartThemeItemInfo() defines
+'----------------------------------------------------------------------------
+Define PIECHARTTHEME_ITEM_INFO_BRUSH            1
+
+'----------------------------------------------------------------------------
 ' RasterTableInfo() defines
 '----------------------------------------------------------------------------
 Define RASTER_TAB_INFO_IMAGE_NAME               1
@@ -1263,6 +1701,11 @@ Define RASTER_TAB_INFO_GREYSCALE                10
 Define RASTER_TAB_INFO_DISPLAY_TRANSPARENT      11
 Define RASTER_TAB_INFO_TRANSPARENT_COLOR        12
 Define RASTER_TAB_INFO_ALPHA                    13
+Define RASTER_TAB_INFO_HANDLERNAME              14
+Define RASTER_TAB_INFO_LEGEND                   15
+Define RASTER_TAB_INFO_LEGEND_XML               16
+Define RASTER_TAB_INFO_HANDLERFULLPATH          17
+Define RASTER_TAB_INFO_INFLECTIONS              18
 
 '----------------------------------------------------------------------------
 ' Image type defines returned by RasterTableInfo() for RASTER_TAB_INFO_IMAGE_TYPE
@@ -1294,6 +1737,17 @@ Define GEO_CONTROL_POINT_X                      3
 Define GEO_CONTROL_POINT_Y                      4
 Define TAB_GEO_CONTROL_POINT_X                  5
 Define TAB_GEO_CONTROL_POINT_Y                  6
+
+'----------------------------------------------------------------------------
+'  UndoInfo() defines
+'----------------------------------------------------------------------------
+Define UNDO_INFO_COUNT                          1
+Define UNDO_INFO_UNDO_ACTION_NAME               2
+Define UNDO_INFO_REDO_ACTION_NAME               3
+Define UNDO_INFO_CAN_UNDO                       4
+Define UNDO_INFO_CAN_REDO                       5
+Define UNDO_INFO_ENABLED                        6
+Define UNDO_INFO_CURRENT_POS                    7
 
 '============================================================================
 ' WindowInfo() defines
@@ -1351,6 +1805,8 @@ Define WIN_INFO_SMOOTH_VECTOR                   48
 Define WIN_INFO_PARENT_LAYOUT                   49
 Define WIN_INFO_CLIENTWIDTH                     50
 Define WIN_INFO_CLIENTHEIGHT                    51
+Define WIN_INFO_PRINTER_RESOLUTION              52
+Define WIN_INFO_TOPMOSTWHENFLOATING             53
 
 '----------------------------------------------------------------------------
 ' Window types, returned by WindowInfo() for WIN_INFO_TYPE
@@ -1366,6 +1822,7 @@ Define WIN_3DMAP                                28
 Define WIN_ADORNMENT                            32
 Define WIN_LEGEND_DESIGNER                      35
 Define WIN_LAYOUT_DESIGNER                      36
+Define WIN_CUSTOM                               37
 Define WIN_HELP                                 1001
 Define WIN_MAPBASIC                             1002
 Define WIN_MESSAGE                              1003
@@ -1393,6 +1850,8 @@ Define WIN_WINDOW_LIST                          2005
 Define WIN_TOOL_MANAGER                         2006
 Define WIN_TASK_MANAGER                         2007
 Define WIN_CONNECTION_LIST                      2008
+Define WIN_NOTIFICATIONS                        2009
+Define WIN_SQL                                  2010
 
 '----------------------------------------------------------------------------
 ' Window states, returned by WindowInfo() for WIN_INFO_STATE
@@ -1420,6 +1879,301 @@ Define FILTER_ALL_DIRECTIONS_2                  2
 Define FILTER_DIAGONALLY                        3
 Define FILTER_HORIZONTALLY                      4
 Define FILTER_VERTICALLY                        5
+
+'----------------------------------------------------------------------------
+' GetPreference() defines
+'----------------------------------------------------------------------------
+
+'----------------------------------------------------------------------------
+' Preference segment defines
+'----------------------------------------------------------------------------
+Define   PREFERENCE_SYSTEM                          0
+Define   PREFERENCE_TABLES                          1
+Define   PREFERENCE_BROWSER                         3
+Define   PREFERENCE_MAPPER                          4
+Define   PREFERENCE_INTERNATIONAL                   6
+Define   PREFERENCE_PATHS                           11
+Define   PREFERENCE_LEGEND                          12
+Define   PREFERENCE_OUTPUT                          13
+Define   PREFERENCE_PRINTER                         14
+Define   PREFERENCE_WEBSERVICES                     15
+Define   PREFERENCE_IMAGE_PROCESSING                16
+Define   PREFERENCE_LAYOUT                          17
+Define   PREFERENCE_PDF                             18
+Define   PREFERENCE_PERFORMANCE                     19
+Define   PREFERENCE_MANAGED_WORKSPACE               50
+
+'----------------------------------------------------------------------------
+' System Preference defines
+' Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_SYSTEM_COLORDEFAULT                     0 ' 0 = Monitor, 1= Black&White, 2 = Color
+Define PREF_SYSTEM_AUTOSAVEWORKSPACE                3 ' 0=OFF, 1=ON 
+Define PREF_SYSTEM_COPYTEXTCLIPBOARD                7 ' 0=OFF, 1=ON 
+Define PREF_SYSTEM_COPYGRAPHICSCLIPBOARD            8 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_PAPERUNITS                       9 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_UNDO_COUNT                       10 ' number of Undo objects
+Define PREF_SYSTEM_SUBSTITUTETTFONT                 12 ' Display Pre-version 4 symbols
+Define PREF_SYSTEM_COPY_EMF_CLIPBOARD               13 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_COPY_OLEOBJECT                   14 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_SAVEQUERYWORKSPACE               18 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_DATEWINDOW                       19 ' -1 = Use Current Century, else Year value
+Define PREF_SYSTEM_UNDO_SIZE                        20 ' Integer, Memory size in bytes for Undo
+Define PREF_SYSTEM_RESOLUTION                       21 ' Export resolution in dpi
+Define PREF_SYSTEM_VMOPTION                         22 ' 0 = GRID, 1= Raster, 2 = Default
+Define PREF_SYSTEM_DISTANCEUNITS                    23 ' Returns Distance Unit define
+Define PREF_SYSTEM_AREAUNITS                        24 ' Returns Area Units define
+Define PREF_SYSTEM_COPY_OLEOBJECT_NEW               25 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_COPY_ENHANCED_EMF_TYPE           26 ' 0 = EMF, 1= EMF+, 2 = EMF+Dual
+Define PREF_SYSTEM_CROSSHAIRCURSOR                  28 ' 138 = Medium crosshair, 164 = Large, 165 = Default
+Define PREF_SYSTEM_COPY_WMF_CLIPBOARD               29 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_TRUECOLORCURSORS                 30 ' 0=OFF, 1=ON
+Define PREF_SYSTEM_WRITETOOLWINDOWSTOWORKSPACE      31  ' 0=OFF, 1=ON
+Define PREF_SYSTEM_MULTIPLETOUCH                    32 ' support touchscreen
+Define PREF_SYSTEM_DEFAULTFILEFORMAT                33 ' 5 = MapInfo Native, 14 = MapInfo Extended
+Define PREF_SYSTEM_DEFAULTCHARSETFORNATIVEX         34 ' String - Default charset used for new tables
+Define PREF_SYSTEM_WRITEUNICODEDATA                 35 ' Encode workspaces and Tab files
+
+'----------------------------------------------------------------------------
+' Workspace Preference defines
+'----------------------------------------------------------------------------
+Define PREF_WKS_PROMPTTOSAVE                        1 ' 0=OFF, 1=ON
+Define PREF_WKS_PROMPTTOSAVEOPTION                  2 ' 0 = Automatic, 1 = Only when WOR is open
+
+'----------------------------------------------------------------------------
+' Table Preference defines
+'----------------------------------------------------------------------------
+Define PREF_TABLES_FILEOPENWHAT                     0 ' Last Preferred view
+Define PREF_TABLES_OPENCHOICESCREEN                 1 ' QuickStart
+Define PREF_TABLES_CONNNAME                         2 ' String: Default DBMS Connection
+Define PREF_TABLES_CONNDRIVER                       3 ' String: DBMS Driver
+Define PREF_TABLES_CONNSTRING                       4 ' String: Connection string
+
+'----------------------------------------------------------------------------
+' Browser Preference defines
+'Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_BROWSER_RDTSORTORDER                    0 ' Redistrict Sort Order: 0=MRU, 1=Alpha,2=Not Ordered
+Define PREF_BROWSER_ALTROWCOLORRED                  1 ' RGB color Red 1-255
+Define PREF_BROWSER_ALTROWCOLORGREEN                2 ' RGB color Green 1-255
+Define PREF_BROWSER_ALTROWCOLORBLUE                 3 ' RGB color Blue 1-255
+
+'----------------------------------------------------------------------------
+' Mapper Preference defines
+'Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_MAPPER_PRESERVESCALEONRESIZE            0 ' 0=Fit to Map, 1=Preserve Scale
+Define PREF_MAPPER_HIGHLIGHT_BRUSH                  2 ' Selection Brush clause
+Define PREF_MAPPER_SNAPTONODES                      3 ' 0=OFF, 1=ON
+Define PREF_MAPPER_MOVEDUPLICATENODES               4 ' 0 = None, 1= Same Layer
+Define PREF_MAPPER_PIXELTOLERANCE                   5 ' SmallInt Pixel tolerance value
+Define PREF_MAPPER_TARGET_PEN                       7 ' Target Pen clause
+Define PREF_MAPPER_TARGET_BRUSH                     8 ' Target Brush clause
+Define PREF_MAPPER_HIGHLIGHT_PEN                    9 ' Selection Pen Clause
+Define PREF_MAPPER_SCROLLBARS                       10 ' 0=OFF, 1=ON
+Define PREF_MAPPER_SAVECOSMETIC                     11 ' 0=OFF, 1=ON
+Define PREF_MAPPER_SAVELABELS                       12 ' 0=OFF, 1=ON
+Define PREF_MAPPER_SAVETHEMATIC                     13 ' 0=OFF, 1=ON
+Define PREF_MAPPER_SHOWINFOTIPS                     14 ' 0=OFF, 1=ON
+Define PREF_MAPPER_DISTANCETYPE                     15 ' 0=Spherical, 1=Cartesian
+Define PREF_MAPPER_SHOWDEGREESMINUTESSECONDS        16 ' See MAPPER_INFO_DISPLAY_DMS return values
+Define PREF_MAPPER_LASTTHEMETYPE                    17 ' String: Last Default theme type used
+Define PREF_MAPPER_GRIDOUTPUTFORMATHANDLER          18 ' String: Handler for New Grids.
+Define PREF_MAPPER_CLIPREGIONTYPE                   19 ' SmallInt: returns MAPPER_INFO_CLIP_TYPE 
+Define PREF_MAPPER_3DHARDWARE                       20 ' 0=OFF, 1=ON
+Define PREF_MAPPER_AUTORASTERZOOMLAYER              21 ' 0=OFF, 1=ON
+Define PREF_MAPPER_AUTOGRIDZOOMLAYER                22 ' 0=OFF, 1=ON
+Define PREF_MAPPER_POINT_HIGHLIGHT_BRUSH            23 ' Target Pen Clause for MPoints
+Define PREF_MAPPER_POINT_TARGET_BRUSH               24 ' Target Brush Clause for MPoints
+Define PREF_MAPPER_AUTOSCROLL                       25 ' 0=OFF, 1=ON
+Define PREF_MAPPER_DEFAULTPROJECTION                26 ' String: Table Projection Preference
+Define PREF_MAPPER_DEFAULTMBPROJECTION              27 ' String: Session Projection Preference
+Define PREF_MAPPER_DISPLAYSNAPRADIUS                28 ' 0=OFF, 1=ON
+Define PREF_MAPPER_CARTOGRAPHICSCALE                29 ' 0=OFF, 1=ON
+Define PREF_MAPPER_DISPLAYLAYERCONTROLTOOLTIPS      30 ' 0=OFF, 1=ON
+Define PREF_MAPPER_AUTONODETOLERANCE                31 ' SmallInt - auto node tolerance value
+Define PREF_MAPPER_DRAWLAYERSUNDERTHEMES            32 ' 0=OFF, 1=ON
+Define PREF_MAPPER_READDEFAULTTHEMEMETADATA         33 ' 0=OFF, 1=ON
+Define PREF_MAPPER_FINDSELECTIONAFTERPASTE          34 ' 0=OFF, 1=ON
+Define PREF_MAPPER_ZOOMONFINDSELECTION              35 ' 0=OFF, 1=ON
+Define PREF_MAPPER_ALPHAHIGHLIGHT                   36 ' SmallInt: 255 =100% opaque, 0= transparent
+Define PREF_MAPPER_ZOOMMOUSEWHEELONCURSOR           37 ' 0=OFF, 1=ON
+Define PREF_MAPPER_ADORNAUTOMATICSCALING            38 ' 0=OFF, 1=ON
+Define PREF_MAPPER_ADORN_BACKGROUND_BRUSH           39 ' Brush clause for Adornment backgrounds
+Define PREF_MAPPER_ADORN_BACKGROUND_PEN             40 ' Pen clause for Adornment backgrounds
+
+'----------------------------------------------------------------------------
+' International Preference defines
+'Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_INTERNATIONAL_ADDRMATCH                 0 ' 0=House number BEFORE Street, 1=House number AFTER street
+Define PREF_INTERNATIONAL_INSET                     1 ' Inset value in Distance Units
+Define PREF_INTERNATIONAL_OFFSET                    2 ' Offset value in Distance Units
+Define PREF_INTERNATIONAL_DISTUNIT                  3 ' Returns define for Distance units
+Define PREF_INTERNATIONAL_ENABLEDISTANCESPECIFIED   4 ' Inset address percentage value
+Define PREF_INTERNATIONAL_INSET_DIST                5 ' Inset Distance value
+Define PREF_INTERNATIONAL_INSET_DIST_DISTUNIT       6 ' Returns define for Distance units
+Define PREF_INTERNATIONAL_USER_CLEAN                7 ' Substitutions from MAPINFOW.ABB file
+Define PREF_INTERNATIONAL_CLOSE_ADDR                8 ' Use Closest Address
+Define PREF_INTERNATIONAL_ALT_BDY                   9 ' Match in alternate boundary
+
+'----------------------------------------------------------------------------
+' Path Preference defines
+'Most return a string for directory paths unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_PATH_MITABLEPATH                        0 ' New Tables Path
+Define PREF_PATH_MIWORKSPACEPATH                    1 ' New Workpsace path
+Define PREF_PATH_MIPROGRAMPATH                      2 ' MapBasic Programs path
+Define PREF_PATH_MIDATAPATHS                        3 ' Alternate Search path if PREF_PATH_USETRAVERSAL = 1
+Define PREF_PATH_USETRAVERSAL                       4 ' SmallInt: 0=No alternate search path, 1=Use alternate search path
+Define PREF_PATH_CUSTOMSYMBOLPATH                   5 ' Path to custom symbols folder
+Define PREF_PATH_IMPORTPATH                         6 ' Import files path
+Define PREF_PATH_SQLQUERYPATH                       7 ' SQL Query path
+Define PREF_PATH_THEMETEMPLATEPATH                  8 ' Theme templates path
+Define PREF_PATH_MIQUERYPATH                        9 ' Saved Queries path
+Define PREF_PATH_NEWGRIDPATH                        10 ' New Grid Files
+Define PREF_PATH_REMOTETABLEPATH                    13 ' DBMS tables path
+Define PREF_PATH_TABLESFROMSHAPEFILES               14 ' SHP table path
+Define PREF_PATH_TABLESFROMWFS                      15 ' WFS table path
+Define PREF_PATH_TABLESFROMWMS                      16 ' WMS table path
+Define PREF_PATH_LAYOUTIMAGES                       17 ' Layout Image files path
+
+'----------------------------------------------------------------------------
+' Legend Preference defines
+'Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_LEGEND_FNTTITLE                         0 ' Font Clause for Legend title
+Define PREF_LEGEND_FNTSUBTITLE                      1 ' Font Clause for Legend Subtitle
+Define PREF_LEGEND_FNTSTYLE                         2 ' Font Clause for Legend categories
+Define PREF_LEGEND_PENBORDER                        3 ' Pen clause for legend frames
+Define PREF_LEGEND_TITLEPATTERN                     4 ' Background brush clause
+Define PREF_LEGEND_SUBTITLEPATTERN                  5 ' Background brush clause
+Define PREF_LEGEND_STYLEPATTERN                     6 ' Background brush clause
+Define PREF_LEGEND_STYLESIZE                        7 ' 0=Small, 1=Large swatches 
+Define PREF_LEGEND_PROMPTSAVEWORKSPACE              8 ' 0=OFF, 1=ON
+Define PREF_LEGEND_CREATEPRE1150LEGENDS             9 ' 0=OFF, 1=ON
+Define PREF_LEGEND_PAPERUNITS                       10 ' Returns PREF_SYSTEM_PAPERUNITS
+Define PREF_LEGEND_SYNCDISPLAY                      11 ' 0=OFF, 1=ON
+Define PREF_LEGEND_LINEWIDTH                        12 ' Sample Line width
+Define PREF_LEGEND_REGIONWIDTH                      13 ' Sample region width
+Define PREF_LEGEND_REGIONHEIGHT                     14 ' Sample region height
+Define PREF_LEGEND_DISPLAYGRID                      15 ' 0=OFF, 1=ON
+Define PREF_LEGEND_SNAPGRID                         16 ' 0=OFF, 1=ON
+Define PREF_LEGEND_AUTOUPDATE                       17 ' 0=OFF, 1=ON
+Define PREF_LEGEND_GRIDCOLORALPHA                   18 ' Where 255 =100% opaque, 0= transparent
+Define PREF_LEGEND_GRIDCOLORRED                     19 ' Red Color component of RGB value
+Define PREF_LEGEND_GRIDCOLORGREEN                   20 ' Green
+Define PREF_LEGEND_GRIDCOLORBLUE                    21 ' Blue
+Define PREF_LEGEND_GUIDECOLORALPHA                  22 ' SmallInt: 255 =100% opaque, 0= transparent
+Define PREF_LEGEND_GUIDECOLORRED                    23 ' Red Color component of RGB value
+Define PREF_LEGEND_GUIDECOLORGREEN                  24 ' Green
+Define PREF_LEGEND_GUIDECOLORBLUE                   25 ' Blue
+Define PREF_LEGEND_AUTOFONTSIZESETTING              26 ' Increase sample size with font
+
+'----------------------------------------------------------------------------
+' Output Preference defines
+' Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_OUTPUT_USETRUECOLORDISPLAY              0 ' Raster True Color
+Define PREF_OUTPUT_DITHERMETHODDISPLAY              1 ' SmallInt: 1=Halftone, 2 = Error Diffusion
+Define PREF_OUTPUT_PRINTMETHOD                      2 ' 0=Direct to Device, 1=EMF method, 2=OSBM
+Define PREF_OUTPUT_PRINTBORDER                      3 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_TRANSPWHENPRINTVECTOR            5 ' Internal print handling for transparent vector
+Define PREF_OUTPUT_USETRUECOLORPRINT                6 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_DITHERMETHODPRINT                7 ' SmallInt: 1=Halftone, 2 = Error Diffusion
+Define PREF_OUTPUT_EXPORTBORDER                     8 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_TRANSPWHENEXPORTRASTER           9 ' Internal export handling for transparent raster
+Define PREF_OUTPUT_TRANSPWHENEXPORTVECTOR           10 ' Internal export handling for transparent vector
+Define PREF_OUTPUT_USETRUECOLOREXPORT               11 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_DITHERMETHODEXPORT               12 ' SmallInt: 1=Halftone, 2 = Error Diffusion
+Define PREF_OUTPUT_ROPTRANSPWHENPRINTINGRASTER      13 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_ROPTRANSPWHENEXPORTINGRASTER     14 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_SCALEPATTERNSPRINT               15 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_USEANTIALIASING                  16 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_ANTIALIASINGTHRESHOLD            17 ' SmallInt value for antialias Threshold
+Define PREF_OUTPUT_ANTIALIASINGMASKSIZE             18 ' SmallInt value for antialias Mask Size
+Define PREF_OUTPUT_ANTIALIASINGFILTER               19 ' SmallInt: returns value from WIN_INFO_EXPORT_FILTER
+Define PREF_OUTPUT_DISPLAYPOLYGONMODE               20 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_PRINTINGPOLYGONMODE              21 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_EXPORTINGPOLYGONMODE             22 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_SUBDIVIDEPRINTING                23 ' 0=OFF, 1=ON
+Define PREF_OUTPUT_CLARIFYTEXTOVERWYSIWYG           24 ' Export clarify text
+Define PREF_OUTPUT_DISPLAYPOINTSFAST                25 ' Fast Symbol rendering
+
+'----------------------------------------------------------------------------
+' Printer Preference defines
+'Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_PRINTER_USESPECIFICPRINTER              0 ' 0=Windows default printer, 1 = MapInfo printer
+Define PREF_PRINTER_PAPERSIZE                       1 ' Returns papersize define, e.g.: 1=Letter, 2=Legal
+Define PREF_PRINTER_ORIENTATION                     2 ' See WIN_INFO_PRINTER_ORIENT
+Define PREF_PRINTER_PRINTERNAME                     3 ' String: Printer name
+Define PREF_PRINTER_SAVEPRINTERINTOWORKSPACE        4 ' Save printer info in WOR
+Define PREF_PRINTER_RESTOREPRINTERFROMWORKSPACE     5 ' Restore printer info from WOR
+
+'----------------------------------------------------------------------------
+' WebServices Preference defines
+'Most return a SmallInt where 0 = Unchecked/Off and 1 = Checked/On, unless otherwise indicated
+'----------------------------------------------------------------------------
+Define PREF_WEBSERVICES_WFSCONNECTTIMEOUT           0 ' SmallInt: Connect timeout in seconds
+Define PREF_WEBSERVICES_WFSSENDTIMEOUT              1 ' SmallInt: Send timeout in seconds
+Define PREF_WEBSERVICES_WFSRECEIVETIMEOUT           2 ' SmallInt: Receive timeout in seconds
+Define PREF_WEBSERVICES_WMSCONNECTTIMEOUT           3 ' SmallInt: Connect timeout in seconds
+Define PREF_WEBSERVICES_WMSSENDTIMEOUT              4 ' SmallInt: Send timeout in seconds
+Define PREF_WEBSERVICES_WMSRECEIVETIMEOUT           5 ' SmallInt: Receive timeout in seconds
+Define PREF_WEBSERVICES_WMSMAXWIDTH                 6 ' SmallInt: WMS Max Width in pixels
+Define PREF_WEBSERVICES_WMSMAXHEIGHT                7 ' SmallInt: WMS Max Height in pixels
+Define PREF_WEBSERVICES_ACCESSTYPE                  8 ' Proxy Access type: 0=System, 1=Use Direct, 2=Use Proxy
+Define PREF_WEBSERVICES_PROXYSERVER                 9 ' Proxy Server IP
+Define PREF_WEBSERVICES_PORT                        10 ' Proxy Server Port
+Define PREF_WEBSERVICES_BYPASSLOCAL                 11 ' Use bypass
+Define PREF_WEBSERVICES_BYPASSLIST                  12 ' String: bypass list
+Define PREF_WEBSERVICES_WFSREFRESHUSINGMAP          13 ' Update mapper filters with current mapper
+Define PREF_WEBSERVICES_WEBGEOCODECONNECTTIMEOUT    14 ' SmallInt: Connect timeout in seconds
+Define PREF_WEBSERVICES_WEBGEOCODESENDTIMEOUT       15 ' SmallInt: Send timeout in seconds
+Define PREF_WEBSERVICES_WEBGEOCODERECEIVETIMEOUT    16 ' SmallInt: Receive timeout in seconds
+Define PREF_WEBSERVICES_STREETOFFSET                17 ' Offset value from road
+Define PREF_WEBSERVICES_CORNEROFFSET                18 ' Offset value from corner
+Define PREF_WEBSERVICES_UNITOFFSET                  19 ' Returns PREF_SYSTEM_DISTANCEUNITS
+Define PREF_WEBSERVICES_GEOCODEDICTIONARY           20 ' SmallInt: See return values for GeocodeInfo()
+Define PREF_WEBSERVICES_GEOCODEBATCHSIZE            21 ' SmallInt: Points to batch geocode
+Define PREF_WEBSERVICES_WEBROUTINGCONNECTTIMEOUT    22 ' SmallInt: Connect timeout in seconds
+Define PREF_WEBSERVICES_WEBROUTINGSENDTIMEOUT       23 ' SmallInt: Send timeout in seconds
+Define PREF_WEBSERVICES_WEBROUTINGRECEIVETIMEOUT    24 ' SmallInt: Receive timeout in seconds
+Define PREF_WEBSERVICES_DRIVEREGIONBATCHSIZE        25 ' SmallInt: Points to batch driving regions
+Define PREF_WEBSERVICES_APPLYMULTIRESULTCODE        26 ' Mark Multiple matches when automatic mode
+Define PREF_WEBSERVICES_READTIMEOUTWEBTILESERVER    27 ' Read timeout in seconds for tile servers
+Define PREF_WEBSERVICES_REQUESTTIMEOUTWEBTILESERVER 28 ' Request timeout in seconds for tile servers
+Define PREF_WEBSERVICES_LIBRARYSERVICEACCESSMODE    29 ' 0=disabled, 1=catalog access, 2=catalog and library access
+Define PREF_WEBSERVICES_OPENMANAGEDTABLESEDITOR     30 ' open record viewer/editor after saving managed tables
+Define PREF_WEBSERVICES_BINGKEYFROMUSER             31 ' String: returns custom Bing access key if used.
+
+'----------------------------------------------------------------------------
+' Image Processing Preference defines
+'----------------------------------------------------------------------------
+Define PREF_IMAGEPROCESSING_REPROJECTIONUSEINDEX    0 ' 0=Never, 1=Always, 2=optimized
+Define PREF_IMAGEPROCESSING_RESAMPLEMETHODINDEX     1 ' 0=Cubic Convolution, 1=Nearest Neighbor
+
+'----------------------------------------------------------------------------
+' Layout Preference defines
+'----------------------------------------------------------------------------
+Define PREF_LAYOUT_PROMPTSAVEWORKSPACE              3 ' 0=OFF, 1=ON
+
+'----------------------------------------------------------------------------
+' Pdf Preference defines
+'----------------------------------------------------------------------------
+Define PREF_PDF_LAYEREDPDF                          0 ' 0=OFF, 1=ON
+Define PREF_PDF_SAVEGEOINFO                         1 ' 0=OFF, 1=ON
+Define PREF_PDF_SAVEATTRIBUTEDATA                   2 ' 0=OFF, 1=ON
+Define PREF_PDF_AUTOOPENPDF                         3 ' 0=OFF, 1=ON
+Define PREF_PDF_POSTSCRIPTSIM                       4 ' Use PDF Advanced option: Enable Postscript Simulation
+Define PREF_PDF_SAVEGEOINFOINNATIVEUNITS            5 ' Georegistration Coordinate Units: 0=Map Units, 1=Degrees
+
+'----------------------------------------------------------------------------
+' Performance Preference defines
+'----------------------------------------------------------------------------
+Define PREF_PERFORMANCE_CONCURRENCYSETTING          0 ' 0=None,1=Moderate,2=Intermediate,3=Aggressive,4=Full
+Define PREF_PERFORMANCE_DROPINDEXSETTING            1 ' SmartIndexing: 0=Auto,1=On,2=Off
 
 '============================================================================
 ' Abbreviated list of error codes

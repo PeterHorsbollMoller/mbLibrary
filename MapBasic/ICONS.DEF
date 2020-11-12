@@ -1,6 +1,6 @@
 
 '============================================================================
-' MapInfo version 12.0 - Icons, DrawModes, and Cursors
+' MapInfo Pro 2019 Icons, DrawModes, and Cursors
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.
@@ -96,6 +96,19 @@ define MI_CURSOR_LRG_CROSSHAIR_1BPP   224
 define MI_CURSOR_TINY_CROSSHAIR_1BPP  225
 define MI_CURSOR_ADORNMENT_1BPP       226
 define MI_CURSOR_ADORNMENT_MOVE_1BPP  227
+
+'MapCAD cursors added by AGIS GmbH
+define MAPCAD_CROSSHAIR_SMALL_BOLD    300 
+define MAPCAD_CROSSHAIR_LARGE         301 
+define MAPCAD_CIRCLE_SMALL            302 
+define MAPCAD_CIRCLE_LARGE            303 
+define MAPCAD_ARROW_LARGE             304
+define MAPCAD_CROSSHAIR_SMALL         306 
+define MAPCAD_CIRCLE_SMALL_POINT      308 
+define MAPCAD_CIRCLE_SMALL_CROSS      309 
+define MAPCAD_CROSSHAIR_MED_EXT       310 
+define MAPCAD_MAGNIFY                 311 
+define MAPCAD_PINPOINT                313
 
 '----------------------------------------------------------------------------
 ' Defines for different DrawModes for the custom tool.

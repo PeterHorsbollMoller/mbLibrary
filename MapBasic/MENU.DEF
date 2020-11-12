@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo version 12.5 - Menu Item Definitions
+' MapInfo Pro 2019 - Menu Item Definitions
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.  The definitions in this file describe the standard MapInfo
@@ -25,6 +25,9 @@ Define M_FILE_OPEN_BING_ROADS                  130
 'NOTE: M_FILE_OPEN_OSM_ROADS  was deprecated in 12.0
 'Define M_FILE_OPEN_OSM_ROADS                  131
 Define M_FILE_OPEN_LASTDLG                     132
+Define M_FILE_OPEN_GEOMAP_BRONZE               133
+Define M_FILE_OPEN_GEOMAP_STEEL                134
+Define M_FILE_OPEN_GEOMAP_IRON                 135
 Define M_FILE_CLOSE                            103
 Define M_FILE_CLOSE_ALL                        104
 Define M_FILE_CLOSE_ODBC                       124
@@ -32,13 +35,14 @@ Define M_FILE_SAVE                             105
 Define M_FILE_SAVE_COPY_AS                     106
 Define M_FILE_SAVE_QUERY                       117
 Define M_FILE_SAVE_WORKSPACE                   109
+Define M_FILE_SAVE_CURRENT_WORKSPACE           136
 Define M_FILE_SAVE_WINDOW_AS                   609
 Define M_FILE_REVERT                           107
 Define M_FILE_PAGE_SETUP                       111
 Define M_FILE_PRINT                            112
 Define M_FILE_PRINT_TO_PDF                     127
 Define M_FILE_EXIT                             113
-
+Define M_SERVER_LIST                           236
 '----------------------------------------------------------------------------
 ' Edit menu
 '----------------------------------------------------------------------------
@@ -102,6 +106,9 @@ Define M_QUERY_FIND_SELECTION_CURRENT_MAP      312
 Define M_QUERY_FIND_SELECTION                  306
 Define M_QUERY_FIND_ADDRESS                    313
 Define M_QUERY_CALC_STATISTICS                 309
+Define M_SQL_WINDOW                           1401
+Define M_QUERY_SELECT_BY_LOCATION             1402
+Define M_QUERY_CLOSE_ALL                      1403
 
 '----------------------------------------------------------------------------
 ' Table, Maintenance, and Raster menus
@@ -311,6 +318,10 @@ Define M_MAP_VIEW_ENTIRE_SELECTION             819
 Define M_MAP_SELECT_ALL_FROM_SELECTION         820
 Define M_MAP_MAKE_SELECTION_EDITABLE           821
 
+'Gridline Commands
+Define M_VIEW_GRIDLINE_CREATE            845
+Define M_VIEW_GRIDLINE_PROPERTIES        846
+
 '----------------------------------------------------------------------------
 ' Layout menu
 '----------------------------------------------------------------------------
@@ -334,6 +345,66 @@ Define M_LAYOUT_ALIGN_BOTTOM                   914
 '----------------------------------------------------------------------------
 Define M_LAYOUT_NEW_MAP                       2901
 Define M_LAYOUT_NEW_BROWSER                   2902
+Define M_LAYOUT_PAGE_SETUP                    2903
+Define M_LAYOUT_FIT_IN_WINDOW                 2904
+Define M_LAYOUT_ITEM_ACTIVATE                 2905
+Define M_LAYOUT_BRING_TO_FRONT                2906
+Define M_LAYOUT_SEND_TO_BACK                  2907
+Define M_LAYOUT_FRAME_PROP                    2908
+Define M_LAYOUT_TEXT_STYLE                    2909
+Define M_LAYOUT_ADD_LEGENDS                   2910
+Define M_LAYOUT_REFRESH_LEGENDS               2911
+Define M_LAYOUT_MODIFY_THEMATIC               2912
+Define M_LAYOUT_REMOVE_FRAME_CONTENT          2913
+Define M_LAYOUT_NEW_EMPTY_FRAME               2914
+Define M_LAYOUT_REMOVE_SELECTED_ITEMS         2915
+Define M_UNDO                                 2916
+Define M_REDO                                 2917
+Define M_LAYOUT_ADD_HORIZ_GUIDE               2919
+Define M_LAYOUT_ADD_SYMBOL                    2921
+Define M_LAYOUT_ADD_LINE                      2922
+Define M_LAYOUT_ADD_ELLIPSE                   2923
+Define M_LAYOUT_ADD_RECT                      2924
+Define M_LAYOUT_ADD_ROUNDRECT                 2925
+Define M_LAYOUT_ADD_VERT_GUIDE                2926
+Define M_LAYOUT_CHANGE_FRAME_STYLE            2927
+Define M_LAYOUT_TOGGLE_GUIDES                 2928
+Define M_LAYOUT_ZOOM_TO_HUNDRED_PERCENT       2929
+Define M_LAYOUT_TOGGLE_SMART_GUIDES           2930
+Define M_LAYOUT_INSERT_IMAGE                  2931
+Define M_LAYOUT_INSERT_TEXT                   2932
+Define M_LAYOUT_LINESPACING_DOUBLE            2933
+Define M_LAYOUT_LINESPACING_ONEDOTFIVE        2934
+Define M_LAYOUT_LINESPACING_SINGLE            2935
+Define M_LAYOUT_LINE_STYLE                    2936
+Define M_LAYOUT_SYMBOL_STYLE                  2937
+Define M_LAYOUT_PAN                           2938
+Define M_LAYOUT_REGION_STYLE                  2939
+Define M_LAYOUT_REMOVE_GUIDELINES             2940
+Define M_LAYOUT_SELECT                        2941
+Define M_LAYOUT_SNAP_TO_BOTTOM                2942
+Define M_LAYOUT_SNAP_TO_GRID                  2943
+Define M_LAYOUT_SNAP_TO_LEFT                  2944
+Define M_LAYOUT_SNAP_TO_RIGHT                 2945
+Define M_LAYOUT_SNAP_TO_TOP                   2946
+Define M_LAYOUT_TEXT_JUSTIFY_CENTER           2947
+Define M_LAYOUT_TEXT_JUSTIFY_LEFT             2948
+Define M_LAYOUT_TEXT_JUSTIFY_RIGHT            2949
+Define M_LAYOUT_TOGGLE_GRIDLINES              2950
+Define M_LAYOUT_ZOOM_IN                       2951
+Define M_LAYOUT_ZOOM_OUT                      2952
+Define M_LAYOUT_ALIGN_HORIZ_CENTER            2953
+Define M_LAYOUT_ALIGN_VERT_CENTER             2954
+Define M_LAYOUT_ROTATE_FRAME_0                2955
+Define M_LAYOUT_ROTATE_FRAME_90               2956
+Define M_LAYOUT_ROTATE_FRAME_270              2957
+Define M_LAYOUT_ADD_POLYGON                   2958
+Define M_LAYOUT_ADD_POLYLINE                  2959
+Define M_LAYOUT_DIST_HORIZ_PAGE               2960
+Define M_LAYOUT_DIST_VERT_PAGE                2961
+Define M_LAYOUT_DIST_HORIZ                    2962
+Define M_LAYOUT_DIST_VERT                     2963
+Define M_LAYOUT_OPTIONS                       2966
 
 '----------------------------------------------------------------------------
 ' Graph menu
@@ -457,6 +528,8 @@ Define M_LC_ZOOM_TO_TILESERVER                 2520
 Define M_LC_CLEAR_CUSTOM_LABELS                2521
 Define M_LC_LABEL_PRIORITIES                   2522
 Define M_LC_SELECT_ALL_FROM_LAYER              2523
+Define M_LC_OPTIONS                            2524
+Define M_LC_LAYER_FRIENDLYNAME                 2542
 
 '----------------------------------------------------------------------------
 ' Table List Window context menu items
@@ -473,6 +546,7 @@ Define M_TLV_CLOSE_TABLE                       2609
 Define M_TLV_VIEW_META_DATA                    2610
 Define M_TLV_ADD_TO_LIBRARY                    2611
 Define M_TLV_COMPARE_STRUCTURE                 2612
+Define M_TLV_RENAME_TABLE                      2613
 
 '----------------------------------------------------------------------------
 ' Legend Designer menu items
@@ -607,6 +681,12 @@ Define TB_TOOLS                                  3
 Define TB_STANDARD                               4
 Define TB_ODBC                                   5
 Define TB_WEB_SVCS                               6
+
+' Run menu Command to un-suspend all addin events in a session.
+Define M_CLEAR_ALL_SUSPENDED_EVENTS           3207
+
+' Run menu Command to copy diagnostic info to clipboard.
+Define M_ABOUT_COPY                            3208
 
 '============================================================================
 ' end of MENU.DEF

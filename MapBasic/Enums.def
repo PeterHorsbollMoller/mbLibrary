@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfoPro version 12.5 - New UX Extensibility Enumerations
+' MapInfo Pro 2019 - New UX Extensibility Enumerations
 '----------------------------------------------------------------------------
 '----------------------------------------------------------------------------
 ' The Enumeration defines in this file are organized into the following sections from MapInfo.Types Namespace
@@ -16,6 +16,19 @@
 '     Vertical Alignment Enumeration
 '     Horizontal Alignment Enumeration
 '     Orientation Enumeration
+'     Text Wrap Enumeration
+'     Stretch Enumeration
+'     Placement Mode Enumeration
+'     MapDraw Event Type Enumeration
+'     FrameType Enumeration
+'     WindowProps Enumeration
+'     BackStageTabs Enumeration
+'     PaperUnits Enumeration
+'     TaskStatus Enumeration
+'     MessageSeverity Enumeration
+'     AddInEvents Enumeration
+'     MouseButton Enumeration
+'     ScriptType Enumeration
 
 '----------------------------------------------------------------------------
 ' ContextMenuId Enumeration
@@ -44,6 +57,7 @@ Define MenuId_LayoutCanvasShortcut 52
 Define MenuId_LayoutFrameShortcut 53
 Define MenuId_WindowListShortcut 54
 Define MenuId_ConnectionListShortcut 55
+Define MenuId_LayoutThumbnailShortcut 56
 
 '----------------------------------------------------------------------------
 ' ControlType Enumeration
@@ -70,14 +84,19 @@ Define ControlType_BackStageButton 19
 Define ControlType_BackStageTabSection 20
 Define ControlType_BackStageSeparator 21
 Define ControlType_StackPanel 22
-Define ControlType_Unknown 23
+Define ControlType_CheckBox 23
+Define ControlType_RadioButton 24
+Define ControlType_WrapPanel 25
+Define ControlType_RibbonMenuGroup 26
+Define ControlType_Unknown 27
 
 '----------------------------------------------------------------------------
 ' FileType Enumeration
 '----------------------------------------------------------------------------
 Define FileType_Tab 1  
 Define FileType_Wor 3  
-Define FileType_Mbx 16 
+Define FileType_Mbx 16
+Define FileType_Db  17 
 
 '----------------------------------------------------------------------------
 ' LayerEventTypes Enumeration
@@ -96,6 +115,9 @@ Define LayoutFrameEventType_FrameAdded 1
 Define LayoutFrameEventType_FrameRemoved 2
 Define LayoutFrameEventType_FrameActivated 3
 Define LayoutFrameEventType_FrameDeactivated 4
+Define LayoutFrameEventType_TextFrameFontChanged 5
+Define LayoutFrameEventType_FrameContentRemoved 13
+Define LayoutFrameEventType_RemovingFrameContent 15
 
 '----------------------------------------------------------------------------
 ' NotificationType Enumeration
@@ -129,6 +151,17 @@ Define BackStageTabs_About 0
 Define BackStageTabs_Help 1
 Define BackStageTabs_Products 2
 Define BackStageTabs_Options 3
+Define BackStageTabs_AddIns 4
+Define BackStageTabs_CommCloudAcctTab 5
+
+'----------------------------------------------------------------------------
+' ScriptType Enumeration
+'----------------------------------------------------------------------------
+Define ScriptType_Select 0
+Define ScriptType_Insert 1
+Define ScriptType_Update 2
+Define ScriptType_Delete 3
+Define ScriptType_Script 4
 
 '----------------------------------------------------------------------------
 ' TaskStatus Enumeration
@@ -164,6 +197,7 @@ Define StatusFields_SbiOther 11
 Define StatusFields_SbiViewDisplayPopup 12
 Define StatusFields_SbiEditLayerPopup 13
 Define StatusFields_SbiStatusBar 14
+Define StatusFields_SbiMiniToolbarName 15
 
 '----------------------------------------------------------------------------
 ' WindowDockState Enumeration
@@ -217,6 +251,8 @@ Define WinType_WindowList 39
 Define WinType_ToolManager 40
 Define WinType_TaskManager 41
 Define WinType_ConnectionList 42
+Define WinType_Notifications 43
+Define WinType_SqlWindow 44
 
 '----------------------------------------------------------------------------
 ' Vertical Alignment Enumeration
@@ -259,17 +295,60 @@ Define Stretch_UniformToFill  3
 ' Placement Mode Enumeration
 '----------------------------------------------------------------------------
 Define Place_Absolute 0
-Define Place_AbsolutePoint 1
+Define Place_Relative  1
 Define Place_Bottom  2
 Define Place_Center  3
-Define Place_Custom  4
-Define Place_Left  5
-Define Place_Mouse  6
-Define Place_MousePoint  7
-Define Place_Relative  8
-Define Place_RelativePoint  9
-Define Place_Right  10
-Define Place_Top  11
+Define Place_Right  4
+Define Place_AbsolutePoint 5
+Define Place_RelativePoint  6
+Define Place_Mouse  7
+Define Place_MousePoint  8
+Define Place_Left  9
+Define Place_Top  10
+Define Place_Custom  11
+
+'----------------------------------------------------------------------------
+' MapDraw Event Type Enumeration
+'----------------------------------------------------------------------------
+Define Map_DrawStarted 0
+Define Map_DrawEnded 1
+Define Map_DrawCancelled  2
+
+'----------------------------------------------------------------------------
+' FrameType Enumeration
+'----------------------------------------------------------------------------
+Define FrameType_MapFrame 1
+Define FrameType_BrowserFrame 2
+Define FrameType_ShapeFrame 3
+Define FrameType_TextFrame 4
+Define FrameType_ImageFrame 5
+Define FrameType_EmptyFrame 6
+Define FrameType_CustomFrame 7
+
+'----------------------------------------------------------------------------
+' WindowProps Enumeration
+'----------------------------------------------------------------------------
+Define WindowProps_Width 4
+Define WindowProps_Height 5
+Define WindowProps_PositionX 6
+Define WindowProps_PositionY 7
+Define WindowProps_TopMost 8
+Define WindowProps_WindowState 9
+Define WindowProps_SysMenuClose 16
+Define WindowProps_Position 500
+Define WindowProps_WindowDockState 501
+Define WindowProps_ContentWidth 50
+Define WindowProps_ContentHeight 51
+
+'----------------------------------------------------------------------------
+' PaperUnits Enumeration
+'----------------------------------------------------------------------------
+Define PaperUnits_Pixels 0
+Define PaperUnits_Inches 1
+Define PaperUnits_Centimeters 2
+Define PaperUnits_Millimeters 3
+Define PaperUnits_Picas 4
+Define PaperUnits_Points 5
 
 '----------------------------------------------------------------------------
 'AddInEvents Enumeration
@@ -300,4 +379,31 @@ Define AddInEvents_WorkspacesOpened 20
 Define AddInEvents_LayoutFrameChanged 21
 Define AddInEvents_LayoutSelectionChanged 22
 Define AddInEvents_PreviewWindowClosing 23
+Define AddInEvents_LayoutTextFrameFontChanged 24
+Define AddInEvents_MapWindowMouseUp 25
+Define AddInEvents_MapWindowMouseDown 26
+Define AddInEvents_MapDraw 27
+Define AddInEvents_LayoutFrameResized 28
+Define AddInEvents_LayoutFrameMoved 29
+Define AddInEvents_LayoutFrameKeyDown 30
+Define AddInEvents_LayoutFrameKeyUp 31
+Define AddInEvents_LayoutFrameMouseDown 32
+Define AddInEvents_LayoutFrameMouseUp 33
+Define AddInEvents_LayoutFrameMouseDoubleClick 34
+Define AddInEvents_LayoutZoomChanged 35
+Define AddInEvents_TableRenamed 36
+Define AddInEvents_MapWindowMouseDoubleClick 37
+Define AddInEvents_CurrentToolChanged 38
+Define AddInEvents_MapInfoProExiting 39
+Define AddInEvents_ProgramsChanged 40
+Define AddInEvents_LiApiCredentialsChanged 41
+Define AddInEvents_TableMappableChanged 42
+Define AddInEvents_KeyPressed 43
+Define AddInEvents_LayoutFrameActivated 44
 
+'----------------------------------------------------------------------------
+'MouseButton Enumeration
+'----------------------------------------------------------------------------
+Define MouseButton_Left 0
+Define MouseButton_Middle 1
+Define MouseButton_Right 2
