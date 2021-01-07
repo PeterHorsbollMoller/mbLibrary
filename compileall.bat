@@ -1,46 +1,48 @@
 @Echo Off
 REM Recompiling all modules with MapBasic 17.0
-"C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
-	"RIBBONLib.mb"
+SET MY_PATH=D:\Dropbox (Horsboll-Moller)\3. MB_Kode\mbLibrary
 
 "C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
-	"ARRAYLib.mb" ^
-	"COLUMNLib.mb" ^
-	"DATETIMELib.mb" ^
-	"DBMSInfoLib.MB" ^
-	"DBMSMapCatalog.mb" ^
-	"DBMSUtilityLib.mb" ^
-	"DEBUGLib.mb" ^
-	"ERRORLib.mb" ^
-	"EXCELLib.mb"
+	"%MY_PATH%\RIBBONLib.mb"
 
 "C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
-	"FILELib.mb" ^
-	"FMEQuickTranslatorLib.MB" ^
-	"GroupLayerLib.mb" ^
-	"LAYERLib.mb" ^
-	"MAPPERLib.mb" ^
-	"MathLib.mb" ^
-	"OBJLib.mb" ^
-	"ProgramInfo.mb"
+	"%MY_PATH%\ARRAYLib.mb" ^
+	"%MY_PATH%\COLUMNLib.mb" ^
+	"%MY_PATH%\DATETIMELib.mb" ^
+	"%MY_PATH%\DBMSInfoLib.MB" ^
+	"%MY_PATH%\DBMSMapCatalog.mb" ^
+	"%MY_PATH%\DBMSUtilityLib.mb" ^
+	"%MY_PATH%\DEBUGLib.mb" ^
+	"%MY_PATH%\ERRORLib.mb" ^
+	"%MY_PATH%\EXCELLib.mb"
 
 "C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
-	"ReadRecordsLib.mb" ^
-	"RESSTRNGLib.mb" ^
-	"STRINGLib.mb" ^
-	"STYLELib.mb" ^
-	"SystemLib.mb" ^
-	"TABLELib.mb" ^
-	"TOOLBARLib.mb"
+	"%MY_PATH%\FILELib.mb" ^
+	"%MY_PATH%\FMEQuickTranslatorLib.MB" ^
+	"%MY_PATH%\GroupLayerLib.mb" ^
+	"%MY_PATH%\LAYERLib.mb" ^
+	"%MY_PATH%\MAPPERLib.mb" ^
+	"%MY_PATH%\MathLib.mb" ^
+	"%MY_PATH%\OBJLib.mb" ^
+	"%MY_PATH%\ProgramInfo.mb"
 
 "C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
-	"ConfigFileLib.mb" ^
-	"FILELib 1522.mb" ^
-	"WINDOWLib.mb"
+	"%MY_PATH%\ReadRecordsLib.mb" ^
+	"%MY_PATH%\RESSTRNGLib.mb" ^
+	"%MY_PATH%\STRINGLib.mb" ^
+	"%MY_PATH%\STYLELib.mb" ^
+	"%MY_PATH%\SystemLib.mb" ^
+	"%MY_PATH%\TABLELib.mb" ^
+	"%MY_PATH%\TOOLBARLib.mb"
+
+"C:\MapInfo\MapBasic\17.0\Mapbasic.Exe" -NOSPLASH -D  ^
+	"%MY_PATH%\ConfigFileLib.mb" ^
+	"%MY_PATH%\FILELib 1522.mb" ^
+	"%MY_PATH%\WINDOWLib.mb"
 
 "C:\MapInfo\MapBasic\12.5.1\Mapbasic.Exe" -NOSPLASH -D  ^
-	"SystemLib 1251.mb" ^
-	"FILELib 1251.mb"
+	"%MY_PATH%\SystemLib 1251.mb" ^
+	"%MY_PATH%\FILELib 1251.mb"
 
-dir /s "*.err"
+dir "%MY_PATH%\*.err" /s
 Pause
