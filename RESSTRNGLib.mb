@@ -211,7 +211,12 @@ RESSTRNGLoadStringsByLanguage = FALSE
 
 	mnCurrentLanguageItem	= 0
 	If sLanguage = "" Then
-		sLanguageCode = SystemInfo(SYS_INFO_CULTURE)
+		If SystemInfo(SYS_INFO_MIFULLVERSION) >= 1600 Then
+			sLanguageCode = SystemInfo(SYS_INFO_CULTURE)
+			Call DEBUGPrint("From SystemInfo: " & sLanguageCode)
+		Else
+			sLanguageCode = "en"
+		End If
 		RESSTRNGLoadStringsByLanguage = RESSTRNGLoadStringsByCode(sLanguageCode)
 		Exit Function
 	End If
@@ -262,8 +267,12 @@ RESSTRNGLoadStringsByCode = FALSE
 	mnCurrentLanguageItem	= 0
 	Call DEBUGPrint("Looking for language Code: '" & sLanguageCode & "'")
 	If sLanguageCode = "" Then
-		sLanguageCode = SystemInfo(SYS_INFO_CULTURE)
-		Call DEBUGPrint("From SystemInfo: " & sLanguageCode)
+		If SystemInfo(SYS_INFO_MIFULLVERSION) >= 1600 Then
+			sLanguageCode = SystemInfo(SYS_INFO_CULTURE)
+			Call DEBUGPrint("From SystemInfo: " & sLanguageCode)
+		Else
+			sLanguageCode = "en"
+		End If
 	End If
 
 	Call DEBUGPrint("1. Number of language files found: " & Ubound(marrStringFiles()))
