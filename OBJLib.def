@@ -32,6 +32,9 @@
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
+Define	CALC_METHOD_CARTESIAN		1
+Define	CALC_METHOD_SPERICAL		2
+
 Declare Function OBJIsInitialized(ByVal oObj As Object) As Logical
 
 Declare Function OBJFindNode(	  ByVal oObj As Object		'The object (polyline or polygon) to search in, only the first segment of the object will be searched
@@ -98,4 +101,19 @@ Declare Function OBJCombineFromTable(	  ByVal sTab As String
 								, ByVal sID As String
 								) As Object
 
+'In MapInfo 360 degrees. 0 towards east and counter clockwise
+Declare Function OBJCreateTrapez(	  ByVal oStartPoint As Object			'Start point using current session coordinate system
+							, ByVal fDirection As Float			'Direction from the start point
+							, ByVal fLength As Float				'Width at starting point, if zero geometry will be a triangle
+							, ByVal fWidthAtStart As Float		'Width at start point, if zero geometry will be a triangle
+							, ByVal fWidthAtEnd As Float			'Width at end point, if zero geometry will be a triangle
+							, ByVal bCreateMidpoint As Logical		'Determines if the trapez should have a node at the mid point on the two parallel sides
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL: Use Offset or CartesianOffset
+							) As Object
+Declare Function OBJCartesianCreateArrowHead(  ByVal oPline As Object
+									, ByVal nArrowType As Integer		'1: Pointy, 2: Flat, 3: Rounded
+									, ByVal fWidth As Float			'in meters
+									, ByVal fLength As Float			'in meters
+									, ByVal nResolution As Integer	'Only used for rounded arrow heads
+									) As Object
 

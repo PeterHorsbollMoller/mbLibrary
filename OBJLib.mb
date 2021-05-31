@@ -979,6 +979,7 @@ OnError GoTo ErrorOccured
 	If ObjectInfo(oPolyline, OBJ_INFO_TYPE) = OBJ_TYPE_LINE Then
 		oPolyline = ConvertToPline(oPolyline)
  	End If
+
 	If ObjectInfo(oPolyline, OBJ_INFO_TYPE) = OBJ_TYPE_PLINE Then
 		If ObjectInfo(oPolyline, OBJ_INFO_NPOLYGONS) > 1 Then
 			'**Only works for single segment polylines
@@ -1002,6 +1003,8 @@ OnError GoTo ErrorOccured
 			fOffset		= -1 * fOffset		'**Mirroring the offset as we mirror the line too
 
 '			Print "Option 1: Distance: " & FormatNumber$(fDistance) & " m., Offset: " & FormatNumber$(fOffset) & " m."
+			fXMid	= fX + (fDistance - fLengthSofar) * (fXNext-fX) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
+			fYMid	= fY + (fDistance - fLengthSofar) * (fYNext-fY) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
 
 		ElseIf fDistance > fLengthTotal Then
 			fLengthSofar	= fLengthTotal
@@ -1015,6 +1018,13 @@ OnError GoTo ErrorOccured
 			fDistance		= fDistance + fLength	'**Adding the length of the last segment
 
 '			Print "Option 1: Distance: " & FormatNumber$(fDistance) & " m., Offset: " & FormatNumber$(fOffset) & " m."
+			fXMid	= fX + (fDistance - fLengthSofar) * (fXNext-fX) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
+			fYMid	= fY + (fDistance - fLengthSofar) * (fYNext-fY) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
+
+		ElseIf fDistance = 0 Then
+			fLengthSofar	= 0
+			fXMid 		= ObjectNodeX(oPolyline, 1, 1)
+			fYMid		= ObjectNodeY(oPolyline, 1, 1)
 
 		Else
 			fX 			= ObjectNodeX(oPolyline, 1, 1)
@@ -1033,11 +1043,10 @@ OnError GoTo ErrorOccured
 			Next	'nNode
 
 '			Print "Option 3: Distance: " & FormatNumber$(fDistance) & " m., Offset: " & FormatNumber$(fOffset) & " m."
+			fXMid	= fX + (fDistance - fLengthSofar) * (fXNext-fX) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
+			fYMid	= fY + (fDistance - fLengthSofar) * (fYNext-fY) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
 
 		End If
-
-		fXMid	= fX + (fDistance - fLengthSofar) * (fXNext-fX) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
-		fYMid	= fY + (fDistance - fLengthSofar) * (fYNext-fY) / Sqr((fX-fXNext)^2 + (fY-fYNext) ^ 2)
 
 		If fOffset = 0 Then
 			oPoint = CreatePoint(fXMid,fYMid)
@@ -1121,3 +1130,192 @@ ErrorOccured:
 
 End Function
 
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateTrapez(	  ByVal oStartPoint As Object
+						, ByVal fDirection As Float
+						, ByVal fLength As Float
+						, ByVal fWidthAtStart As Float
+						, ByVal fWidthAtEnd As Float
+						, ByVal bCreateMidpoint As Logical
+						, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+						) As Object
+
+Dim	oPoint, oGeometry As Object,
+	fWidth, fDirection1, fDirection2 As Float
+
+OnError GoTo ErrorOccured
+
+OBJCreateTrapez = oStartPoint
+
+	fDirection1	= fDirection - 90
+	If fDirection1 < 0 Then
+		fDirection1 = fDirection1 + 360
+	End If
+	fDirection2	= fDirection + 90
+	If fDirection2 > 360 Then
+		fDirection2 = fDirection1 - 360
+	End If
+
+	Create Pline
+		Into Variable oGeometry
+		0
+
+	If fWidthAtStart = 0 Then
+		Alter Object oGeometry
+			Node Add (CentroidX(oStartPoint), CentroidY(oStartPoint))
+	Else
+		fWidth	= fWidthAtStart / 2
+
+		If nCalculationMethod = CALC_METHOD_CARTESIAN Then
+			oPoint	= CartesianOffset(oStartPoint, fDirection1, fWidth, "m")
+		Else
+			oPoint	= Offset(oStartPoint, fDirection1, fWidth, "m")
+		End If
+		Alter Object oGeometry
+			Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+		If bCreateMidpoint Then
+			Alter Object oGeometry
+				Node Add (CentroidX(oStartPoint), CentroidY(oStartPoint))
+		End If
+
+		If nCalculationMethod = CALC_METHOD_CARTESIAN Then
+			oPoint	= CartesianOffset(oStartPoint, fDirection2, fWidth, "m")
+		Else
+			oPoint	= Offset(oStartPoint, fDirection2, fWidth, "m")
+		End If
+		Alter Object oGeometry
+			Node Add (CentroidX(oPoint), CentroidY(oPoint))
+	End If
+
+	If nCalculationMethod = CALC_METHOD_CARTESIAN Then
+		oStartPoint	= CartesianOffset(oStartPoint, fDirection2, fLength, "m")
+	Else
+		oStartPoint	= Offset(oStartPoint, fDirection, fLength, "m")
+	End If
+
+	If fWidthAtEnd = 0 Then
+		Alter Object oGeometry
+			Node Add (CentroidX(oStartPoint), CentroidY(oStartPoint))
+	Else
+		fWidth	= fWidthAtEnd / 2
+
+		If nCalculationMethod = CALC_METHOD_CARTESIAN Then
+			oPoint	= CartesianOffset(oStartPoint, fDirection2, fWidth, "m")
+		Else
+			oPoint	= Offset(oStartPoint, fDirection2, fWidth, "m")
+		End If
+		Alter Object oGeometry
+			Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+		If bCreateMidpoint Then
+			Alter Object oGeometry
+				Node Add (CentroidX(oStartPoint), CentroidY(oStartPoint))
+		End If
+
+		If nCalculationMethod = CALC_METHOD_CARTESIAN Then
+			oPoint	= CartesianOffset(oStartPoint, fDirection1, fWidth, "m")
+		Else
+			oPoint	= Offset(oStartPoint, fDirection1, fWidth, "m")
+		End If
+		Alter Object oGeometry
+			Node Add (CentroidX(oPoint), CentroidY(oPoint))
+	End If
+
+	OBJCreateTrapez = ConvertToRegion(oGeometry)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateTrapez")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'	Creates an Arraw Head pointing from the start of the line towards the end of the line
+'	The Point of the Arrow Head is at the end of the line
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCartesianCreateArrowHead(	  ByVal oPline As Object
+								, ByVal nArrowType As Integer		'1: Pointy, 2: Flat, 3: Rounded
+								, ByVal fWidth As Float			'in meters
+								, ByVal fLength As Float			'in meters
+								, ByVal nResolution As Integer	'Only used for rounded arrow heads
+								) As Object
+
+Dim	oArrowHead, oPoint As Object
+
+OnError GoTo ErrorOccured
+
+OBJCartesianCreateArrowHead = oPline
+
+	oPline	= ConvertToPline(oPline)
+	Create Pline
+		Into Variable oArrowHead
+		0
+
+	Do Case nArrowType
+		Case 1	'Pointy
+			'Print "OBJCartesianCreateArrowHead: Pointy"
+			Alter Object oArrowHead
+				Node Add (ObjectNodeX(oPline, 1, 2), ObjectNodeY(oPline, 1, 2))
+
+			fLength	= CartesianObjectLen(oPline, "m") - fLength
+			oPoint	= OBJCartesianCreatePointAlong(oPline, fLength, fWidth)
+			Alter Object oArrowHead
+				Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+			oPoint	= OBJCartesianCreatePointAlong(oPline, fLength, -1 * fWidth)
+			Alter Object oArrowHead
+				Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+			oArrowHead	= ConvertToRegion(oArrowHead)
+
+		Case 2	'Flat
+			'Print "OBJCartesianCreateArrowHead: Flat"
+			oPoint	= OBJCartesianCreatePointAlong(oPline, CartesianObjectLen(oPline, "m"), fWidth)
+			Alter Object oArrowHead
+				Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+			oPoint	= OBJCartesianCreatePointAlong(oPline, CartesianObjectLen(oPline, "m"), -1 * fWidth)
+			Alter Object oArrowHead
+				Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+			fLength	= CartesianObjectLen(oPline, "m") - fLength
+			oPoint	= OBJCartesianCreatePointAlong(oPline, fLength, -1 * fWidth)
+			Alter Object oArrowHead
+				Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+			oPoint	= OBJCartesianCreatePointAlong(oPline, fLength, fWidth)
+			Alter Object oArrowHead
+				Node Add (CentroidX(oPoint), CentroidY(oPoint))
+
+			oArrowHead	= ConvertToRegion(oArrowHead)
+
+		Case 3	'Rounded
+			'Print "OBJCartesianCreateArrowHead: Rounded"
+			oPoint		= CreatePoint(ObjectNodeX(oPline, 1, 1), ObjectNodeY(oPline, 1, 1))
+			oArrowHead	= CartesianBuffer(oPoint, nResolution, fWidth, "m")
+
+	End Case
+
+	OBJCartesianCreateArrowHead = oArrowHead
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCartesianCreateArrowHead")
+	Call ERRShow()
+
+End Function
