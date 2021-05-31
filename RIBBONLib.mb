@@ -22,7 +22,7 @@ Include "ERRORLib.def"
 Include "RIBBONLib.def"
 Include "WinAPI 1522.def"
 
-	'**Temporary function for registering public custom MapBasic functions in MapInfo Pro
+	'**Temporary function for registering public custom MapBasic functions in MapInfo Pro.
 	Declare Method _RegisterPublicMBXFunction Class "MapInfo.Types.IMapBasicApplication" Lib "MapInfo.Types, Version=12.5.0.0, Culture=neutral, PublicKeyToken=1c8d81d2ee78b75d"
 		Alias RegisterPublicFunction
 			( ByVal IMBXInstance As This

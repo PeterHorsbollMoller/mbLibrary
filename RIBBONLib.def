@@ -396,7 +396,7 @@
 '							- RBNControlSetCallingHandlerThs() - RBNControlSetCustomMBXHandlerThs now calls this
 '							- RBNControlSetCallingHandlerIdx() - RBNControlSetCustomMBXHandlerIdx now calls this
 '	22-04-2021 13:19:43		- Added:
-'							- RBNControlGetCaptionIdx(...) As String
+'							- RBNControlGetCaptionIdx(...) As String.
 '*****************************************************************************************************************************
 
 
