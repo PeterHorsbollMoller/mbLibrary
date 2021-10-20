@@ -29,6 +29,9 @@
 '	06-11-2018 16:58:41	- Added:
 '						- OBJDirection(...) As Float
 '						- OBJCartesianCreatePointAlong(...) As Object
+'	03-09-2021 08:16:17	- Added
+'						- OBJCreateTrapez(...) As Object
+'						- OBJCartesianCreateArrowHead(...) As Object
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
