@@ -20,7 +20,7 @@ Include "FILELib.def"
 Include "ProgramInfo.def"
 Include "RESSTRNGLib.def"
 
-Define	DEFAULT_WEBSITE_URL			"http://mapinfomarketplace.pitneybowes.com/"
+Define	DEFAULT_WEBSITE_URL			"http://mapinfomarketplace.precisely.com/"
 Define	DEFAULT_WEBSITE_NAME		"MapInfo Marketplace"
 Define	DEFAULT_COMPANY_NAME		"Precisely | Trust in Data"
 
