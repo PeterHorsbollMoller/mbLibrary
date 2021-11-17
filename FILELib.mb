@@ -37,7 +37,7 @@ OnError Goto ErrorOccured
 
 	nHwnd	= WindowInfo(WIN_MAPINFO, WIN_INFO_WND)
 	sOp		= "open"
-	sDir	= ApplicationDirectory$()
+	sDir		= ApplicationDirectory$()
 	nShowCmd	= 1
 	nNull	= 0
 
@@ -47,11 +47,11 @@ OnError Goto ErrorOccured
 			Case ERROR_OUT_OF_MEMORY
 				sError = "Out of memory"
 			Case ERROR_NO_ASSOCIATION
-				sError = "No association for *." & Right$(sDocument, 3) & " files."
+				sError = "No association for *." & Right$(sFile, 3) & " files."
 			Case ERROR_FILE_NOT_FOUND
-				sError = sDocument & ": file not found"
+				sError = sFile & ": file not found"
 			Case ERROR_PATH_NOT_FOUND
-				sError = sDocument & ": path not found"
+				sError = sFile & ": path not found"
 			Case ERROR_BAD_FORMAT
 				sError = "bad format"
 			Case Else
