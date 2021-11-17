@@ -1159,7 +1159,7 @@ OBJCreateTrapez = oStartPoint
 	End If
 	fDirection2	= fDirection + 90
 	If fDirection2 > 360 Then
-		fDirection2 = fDirection1 - 360
+		fDirection2 = fDirection2 - 360
 	End If
 
 	Create Pline
@@ -1195,7 +1195,7 @@ OBJCreateTrapez = oStartPoint
 	End If
 
 	If nCalculationMethod = CALC_METHOD_CARTESIAN Then
-		oStartPoint	= CartesianOffset(oStartPoint, fDirection2, fLength, "m")
+		oStartPoint	= CartesianOffset(oStartPoint, fDirection, fLength, "m")
 	Else
 		oStartPoint	= Offset(oStartPoint, fDirection, fLength, "m")
 	End If
