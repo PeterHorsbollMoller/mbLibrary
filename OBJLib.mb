@@ -723,7 +723,20 @@ OBJDirection = -1
 			fDirection = -1
 
 		Case OBJ_TYPE_PLINE
-			fDirection = -1
+			If ObjectInfo(oInput, OBJ_INFO_NPOLYGONS) = 1 Then
+				fStartX = ObjectNodeX(oInput, 1, 1)
+				fStartY = ObjectNodeY(oInput, 1, 1)
+				nNode = ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + 1)
+				If nNode > 1 Then
+					fEndX 		= ObjectNodeX(oInput, 1, nNode)
+					fEndY 		= ObjectNodeY(oInput, 1, nNode)
+					fDirection 	= MATHGetDirection(fStartX, fStartY, fEndX, fEndY)
+				Else
+					fDirection = -1
+				End If
+			Else
+				fDirection = -1
+			End If
 
 		Case OBJ_TYPE_REGION
 			For nSegm = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
@@ -1234,6 +1247,33 @@ OBJCreateTrapez = oStartPoint
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "OBJCreateTrapez")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateTriangle(	  ByVal oStartPoint As Object			'Start point using current session coordinate system
+						, ByVal fDirection As Float			'Direction from the start point
+						, ByVal fLength As Float				'Width at starting point, if zero geometry will be a triangle
+						, ByVal fWidthAtEnd As Float			'Width at end point
+						, ByVal bCreateMidpoint As Logical		'Determines if the triangle should have a node at the mid point on the end side
+						, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL: Use Offset or CartesianOffset
+						) As Object
+
+OnError GoTo ErrorOccured
+
+OBJCreateTriangle = OBJCreateTrapez(oStartPoint, fDirection, fLength, 0, fWidthAtEnd, bCreateMidpoint, nCalculationMethod)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateTriangle")
 	Call ERRShow()
 
 End Function

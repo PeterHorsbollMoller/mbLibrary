@@ -113,6 +113,15 @@ Declare Function OBJCreateTrapez(	  ByVal oStartPoint As Object			'Start point u
 							, ByVal bCreateMidpoint As Logical		'Determines if the trapez should have a node at the mid point on the two parallel sides
 							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL: Use Offset or CartesianOffset
 							) As Object
+'In MapInfo 360 degrees. 0 towards east and counter clockwise
+Declare Function OBJCreateTriangle(  ByVal oStartPoint As Object			'Start point using current session coordinate system
+							, ByVal fDirection As Float			'Direction from the start point
+							, ByVal fLength As Float				'Width at starting point, if zero geometry will be a triangle
+							, ByVal fWidthAtEnd As Float			'Width at end point
+							, ByVal bCreateMidpoint As Logical		'Determines if the triangle should have a node at the mid point on the end side
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL: Use Offset or CartesianOffset
+							) As Object
+
 Declare Function OBJCartesianCreateArrowHead(  ByVal oPline As Object
 									, ByVal nArrowType As Integer		'1: Pointy, 2: Flat, 3: Rounded
 									, ByVal fWidth As Float			'in meters
