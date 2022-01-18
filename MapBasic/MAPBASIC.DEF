@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo Pro 2019 - System defines
+' MapInfo Pro 2100 - System defines
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.  There are three versions of this file:
@@ -46,6 +46,7 @@
 '     StyleAttr() defines
 '     SystemInfo(), platform, and version defines
 '     TableInfo() and table type defines
+'     TaskInfo() and task type defines - see RibbonControls.def
 '     ThemeInfo() defines
 '     ThemeItemInfo() defines
 '     ThemeExpressionInfo() defines
@@ -198,6 +199,8 @@ Define CMD_INFO_X2                              5
 Define CMD_INFO_Y2                              6
 Define CMD_INFO_TOOLBTN                         7
 Define CMD_INFO_MENUITEM                        8
+Define CMD_INFO_NAME                            9
+Define CMD_INFO_FULLNAME                        10
 Define CMD_INFO_WIN                             1
 Define CMD_INFO_SELTYPE                         1
 Define CMD_INFO_ROWID                           2
@@ -282,7 +285,8 @@ Define PREFERENCE_PATH_REMOTETABLE    10
 Define PREFERENCE_PATH_SHAPEFILE      11
 Define PREFERENCE_PATH_WFSTABLE       12
 Define PREFERENCE_PATH_WMSTABLE       13
-Define PREFERENCE_PATH_LAYOUTIMAGES   14
+Define PREFERENCE_PATH_WMTSTABLE      14
+Define PREFERENCE_PATH_LAYOUTIMAGES   15
 
 '============================================================================
 ' IntersectNodes() defines
@@ -443,6 +447,22 @@ Define LAYER_INFO_RASTER_GREYSCALE              83
 Define LAYER_INFO_LABEL_EXPR_TABLE              84
 Define LAYER_INFO_LBL_CURVED_PERCENT_OVER       85
 Define LAYER_INFO_LEGEND                        86
+Define LAYER_INFO_FILTER_ENABLED                87
+Define LAYER_INFO_FILTER_EXPR                   88
+Define LAYER_INFO_FILTER_TABLE_ALIAS            89
+Define LAYER_INFO_TIME_BEGIN_TYPE               90
+Define LAYER_INFO_TIME_BEGIN_EXPR               91
+Define LAYER_INFO_TIME_BEGIN_EXPR2              92
+Define LAYER_INFO_TIME_END_TYPE                 93
+Define LAYER_INFO_TIME_END_EXPR                 94
+Define LAYER_INFO_TIME_END_EXPR2                95
+Define LAYER_INFO_TIME_END_DURATION             96
+Define LAYER_INFO_TIME_DURATION_UNIT            97
+Define LAYER_INFO_TIME_EXTENT_BEGIN             98
+Define LAYER_INFO_TIME_EXTENT_END               99
+Define LAYER_INFO_TIME_INTERVAL                 100
+Define LAYER_INFO_TIME_INTERVAL_UNIT            101
+Define LAYER_INFO_TIME_IGNORE_NULLS             102
 
 '----------------------------------------------------------------------------
 ' Values returned by LayerInfo() for LAYER_INFO_LABEL_ORIENTATION and
@@ -451,6 +471,17 @@ Define LAYER_INFO_LEGEND                        86
 Define LAYER_INFO_LABEL_ORIENT_HORIZONTAL       0
 Define LAYER_INFO_LABEL_ORIENT_PARALLEL         1
 Define LAYER_INFO_LABEL_ORIENT_CURVED           2
+
+'----------------------------------------------------------------------------
+' Values returned by LayerInfo() for LAYER_INFO_TIME_BEGIN_TYPE and
+' LAYER_INFO_TIME_END_TYPE.
+'----------------------------------------------------------------------------
+Define LAYER_INFO_TIME_TYPE_NONE                0
+Define LAYER_INFO_TIME_TYPE_DATE                1
+Define LAYER_INFO_TIME_TYPE_DATETIME            2
+Define LAYER_INFO_TIME_TYPE_TIME                3
+Define LAYER_INFO_TIME_TYPE_DATEPLUSTIME        4
+Define LAYER_INFO_TIME_TYPE_DURATION            5     'for LAYER_INFO_TIME_END_TYPE only
 
 '----------------------------------------------------------------------------
 ' Display Modes, returned by LayerInfo() for LAYER_INFO_DISPLAY
@@ -903,6 +934,8 @@ Define LOCATE_WFS_SERVERLIST                    12
 Define LOCATE_GEOCODE_SERVERLIST                13
 Define LOCATE_ROUTING_SERVERLIST                14
 Define LOCATE_LAYOUT_TEMPLATE_DIR               15
+Define LOCATE_WMTS_SERVERLIST                   16
+Define LOCATE_SMARTTEXT_ALIASFILE               17
 
 '============================================================================
 ' GetLicenseKind() defines
@@ -986,6 +1019,45 @@ Define MAPPER_INFO_LABELS_SELECTABLE            30
 Define MAPPER_INFO_HAS_CUSTOM_LABELS            31
 Define MAPPER_INFO_CARTO_SCALE                  32
 Define MAPPER_INFO_CARTO_SCALE_EXPR             33
+Define MAPPER_INFO_PRESERVE                     34
+Define MAPPER_INFO_TIME_ENABLED                 35
+Define MAPPER_INFO_TIME_START                   36
+Define MAPPER_INFO_TIME_END                     37
+Define MAPPER_INFO_TIME_INTERVAL                38
+Define MAPPER_INFO_TIME_INTERVAL_UNIT           39
+Define MAPPER_INFO_TIME_STEP                    40
+Define MAPPER_INFO_TIME_STEP_UNIT               41
+Define MAPPER_INFO_TIME_SNAP                    42
+Define MAPPER_INFO_TIME_SNAP_UNIT               43
+Define MAPPER_INFO_TIME_START_INCLUDE           44
+Define MAPPER_INFO_TIME_START_INCLUSIVE         45
+Define MAPPER_INFO_TIME_END_INCLUDE             46
+Define MAPPER_INFO_TIME_END_INCLUSIVE           47
+Define MAPPER_INFO_TIME_PLAYBACK_SPEED          48
+Define MAPPER_INFO_TIME_PLAYBACK_DIRECTION      49
+Define MAPPER_INFO_TIME_PLAYBACK_REVERSE        50
+Define MAPPER_INFO_TIME_PLAYBACK_REPEAT         51
+Define MAPPER_INFO_TIME_PERIOD_COUNT            52
+Define MAPPER_INFO_TIME_CURRENT_PERIOD          53
+Define MAPPER_INFO_TIME_PERIOD_START            54
+Define MAPPER_INFO_TIME_PERIOD_END              55
+Define MAPPER_INFO_TIME_FORMAT                  56
+Define MAPPER_INFO_TIME_FORMAT_TYPE             57
+Define MAPPER_INFO_TIME_EXTENT_HAS_DATE         58
+Define MAPPER_INFO_TIME_EXTENT_HAS_TIME         59
+Define MAPPER_INFO_TIME_EXTENT_FROM             60
+Define MAPPER_INFO_TIME_CURRENT_START_EXTENT    61
+Define MAPPER_INFO_TIME_CURRENT_END_EXTENT      62
+Define MAPPER_INFO_TIME_CUSTOM_TIMEPERIOD       63
+Define MAPPER_INFO_TIME_LAYER_N                 64
+Define MAPPER_INFO_TIME_SERIES_PLAYING          65
+
+'-----------------------------------------------------------------------------
+' Time format types, retuned by MapperInfo() for MAPPER_INFO_TIME_FORMAT_TYPE
+'----------------------------------------------------------------------------
+Define TIME_FORMAT_TYPE_START                  1
+Define TIME_FORMAT_TYPE_END                    2
+Define TIME_FORMAT_TYPE_STARTEND               3
 
 '----------------------------------------------------------------------------
 ' Display Modes, returned by MapperInfo() for MAPPER_INFO_DISPLAY_DMS
@@ -1127,6 +1199,14 @@ Define PRISMMAP_INFO_CAMERA_CLIP_FAR            23
 Define PRISMMAP_INFO_INFOTIP_EXPR               24
 
 '============================================================================
+' ScriptContext() defines
+'============================================================================
+Define SCRIPT_CONTEXT_WINDOWID                  1
+Define SCRIPT_CONTEXT_TABLEALIAS                2
+Define SCRIPT_CONTEXT_COLUMNALIAS               3
+Define SCRIPT_CONTEXT_LAYERNUM                  4
+
+'============================================================================
 ' SearchInfo() defines
 '============================================================================
 Define SEARCH_INFO_TABLE                        1
@@ -1138,7 +1218,7 @@ Define SEARCH_INFO_ROW                          2
 Define SEL_INFO_TABLENAME                       1
 Define SEL_INFO_SELNAME                         2
 Define SEL_INFO_NROWS                           3
-Define  SEL_INFO_ISNEW                          4
+Define SEL_INFO_ISNEW                           4
 
 '============================================================================
 ' Server statement and function defines
@@ -1228,6 +1308,8 @@ Define SESSION_INFO_PAPER_UNITS                 4
 Define SESSION_INFO_DEF_NATIVE_BLKSZ            5
 Define SESSION_INFO_DEF_NATIVEX_BLKSZ           6
 Define SESSION_INFO_TEMP_PATH                   7
+Define SESSION_INFO_TOKENS_ALL                  8
+Define SESSION_INFO_TOKENS_RESERVED             9
 
 '============================================================================
 ' Set Next Document Style defines
@@ -1307,6 +1389,7 @@ Define SYS_INFO_LOCALE                          24
 Define SYS_INFO_MIRIBBONSTATE_VERSION           25
 Define SYS_INFO_LICENSE_MODE                    26
 Define SYS_INFO_SUBSCRIPTION_PLAN               27
+Define SYS_INFO_SQL_VERSION                     28
 
 '----------------------------------------------------------------------------
 ' Platform, returned by SystemInfo() for SYS_INFO_PLATFORM
@@ -1399,6 +1482,7 @@ Define TAB_INFO_ISHIDDEN                        57
 Define TAB_INFO_NUM_BASETABLES                  58
 Define TAB_INFO_BASETABLE_ALIASES               59
 Define TAB_INFO_DOMINANT_OBJECT_TYPE            60
+Define TAB_INFO_ISFILTER                        61
 
 '----------------------------------------------------------------------------
 ' Table type defines, returned by TableInfo() for TAB_INFO_TYPE
@@ -1416,6 +1500,7 @@ Define TAB_TYPE_TILESERVER                      9
 
 ' Codes returned by TableInfo(<table-ref>, TAB_INFO_DOMINANT_OBJECT_TYPE).
 Define TAB_UNKNOWN_OBJECTS                      0
+Define TAB_GRIDLINE_OBJECTS                     1
 Define TAB_POINT_OBJECTS                        2
 Define TAB_LINE_OBJECTS                         3
 Define TAB_AREA_OBJECTS                         4
@@ -1437,6 +1522,7 @@ Define TAB_DATA_FORMAT_ODBC                     10
 Define TAB_DATA_FORMAT_NATIVEX                  14
 Define TAB_DATA_FORMAT_GPKG                     15
 Define TAB_DATA_FORMAT_SHAPE                    16
+Define TAB_DATA_FORMAT_OGR                      17
 
 '----------------------------------------------------------------------------
 ' Defines used in LibraryServiceInfo function for what information to return.
@@ -1547,6 +1633,7 @@ Define INDIVTHEME_INFO_OTHERS_LINE              4
 Define INDIVTHEME_INFO_OTHERS_PEN               5
 Define INDIVTHEME_INFO_OTHERS_BRUSH             6
 Define INDIVTHEME_INFO_OTHERS_SYMBOL            7
+Define INDIVTHEME_INFO_OTHERS_LGND_ID           8
 
 '----------------------------------------------------------------------------
 ' Individual theme vary style by defines returned by IndividualThemeInfo()
@@ -1762,7 +1849,6 @@ Define WIN_INFO_TOPMOST                         8
 Define WIN_INFO_STATE                           9
 Define WIN_INFO_TABLE                           10
 Define WIN_INFO_LEGENDS_MAP                     10
-Define WIN_INFO_ADORNEMNTS_MAP                  10
 Define WIN_INFO_ADORNMENTS_MAP                  10
 Define WIN_INFO_OPEN                            11
 Define WIN_INFO_WND                             12
@@ -1852,6 +1938,7 @@ Define WIN_TASK_MANAGER                         2007
 Define WIN_CONNECTION_LIST                      2008
 Define WIN_NOTIFICATIONS                        2009
 Define WIN_SQL                                  2010
+Define WIN_PYTHON                               2011
 
 '----------------------------------------------------------------------------
 ' Window states, returned by WindowInfo() for WIN_INFO_STATE
@@ -2001,6 +2088,7 @@ Define PREF_MAPPER_ZOOMMOUSEWHEELONCURSOR           37 ' 0=OFF, 1=ON
 Define PREF_MAPPER_ADORNAUTOMATICSCALING            38 ' 0=OFF, 1=ON
 Define PREF_MAPPER_ADORN_BACKGROUND_BRUSH           39 ' Brush clause for Adornment backgrounds
 Define PREF_MAPPER_ADORN_BACKGROUND_PEN             40 ' Pen clause for Adornment backgrounds
+Define PREF_MAPPER_MAX_TIMEPERIODS                  41 ' Maximum allowed time periods.
 
 '----------------------------------------------------------------------------
 ' International Preference defines
@@ -2036,7 +2124,8 @@ Define PREF_PATH_REMOTETABLEPATH                    13 ' DBMS tables path
 Define PREF_PATH_TABLESFROMSHAPEFILES               14 ' SHP table path
 Define PREF_PATH_TABLESFROMWFS                      15 ' WFS table path
 Define PREF_PATH_TABLESFROMWMS                      16 ' WMS table path
-Define PREF_PATH_LAYOUTIMAGES                       17 ' Layout Image files path
+Define PREF_PATH_TABLESFROMWMTS                     17 ' WMTS table path
+Define PREF_PATH_LAYOUTIMAGES                       18 ' Layout Image files path
 
 '----------------------------------------------------------------------------
 ' Legend Preference defines
@@ -2174,6 +2263,7 @@ Define PREF_PDF_SAVEGEOINFOINNATIVEUNITS            5 ' Georegistration Coordina
 '----------------------------------------------------------------------------
 Define PREF_PERFORMANCE_CONCURRENCYSETTING          0 ' 0=None,1=Moderate,2=Intermediate,3=Aggressive,4=Full
 Define PREF_PERFORMANCE_DROPINDEXSETTING            1 ' SmartIndexing: 0=Auto,1=On,2=Off
+Define PREF_PERFORMANCE_SAVE_BACKGROUND             2 ' 0=OFF, 1=ON
 
 '============================================================================
 ' Abbreviated list of error codes
@@ -2223,7 +2313,7 @@ Define OBJ_TEXT                                 OBJ_TYPE_TEXT
 '----------------------------------------------------------------------------
 ' Codes for AdornmentInfo function to get info about an adornment win
 '----------------------------------------------------------------------------
-Define ADORNMENT_INFO_TYPE                            1
+Define ADORNMENT_INFO_TYPE                            1 ' 0=SCALEBAR, 1=TABLE ADORNMENT, 2=IMAGE, 3=XTEST, 4=SMART TEXT
 Define ADORNMENT_INFO_MAP_WINDOWID                    2
 Define ADORNMENT_INFO_IS_FIXED_POS                    3
 Define ADORNMENT_INFO_FIXED_POS_X                     4
@@ -2252,6 +2342,9 @@ Define ADORNMENT_INFO_SB_AUTOON_SCALE                33
 Define ADORNMENT_INFO_SB_SCALE_STRING                34
 Define ADORNMENT_INFO_SB_CARTO_VALUE                 35
 Define ADORNMENT_INFO_SB_CARTO_STRING                36
+Define ADORNMENT_INFO_ST_TEXT                        37
+Define ADORNMENT_INFO_ST_EVALUATED_TEXT              38
+Define ADORNMENT_INFO_ST_FONT                        39
 
 '============================================================================
 ' Codes used to position Adornments relative to mapper

@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo Pro 2019 - New UX Extensibility Enumerations
+' MapInfo Pro 2100 - New UX Extensibility Enumerations
 '----------------------------------------------------------------------------
 '----------------------------------------------------------------------------
 ' The Enumeration defines in this file are organized into the following sections from MapInfo.Types Namespace
@@ -17,6 +17,7 @@
 '     Horizontal Alignment Enumeration
 '     Orientation Enumeration
 '     Text Wrap Enumeration
+'     Text Trimming Enumeration
 '     Stretch Enumeration
 '     Placement Mode Enumeration
 '     MapDraw Event Type Enumeration
@@ -29,6 +30,8 @@
 '     AddInEvents Enumeration
 '     MouseButton Enumeration
 '     ScriptType Enumeration
+'     ScriptVariableType Enumeration
+'     StyleOverrideMode Enumeration
 
 '----------------------------------------------------------------------------
 ' ContextMenuId Enumeration
@@ -58,6 +61,7 @@ Define MenuId_LayoutFrameShortcut 53
 Define MenuId_WindowListShortcut 54
 Define MenuId_ConnectionListShortcut 55
 Define MenuId_LayoutThumbnailShortcut 56
+Define MenuId_EmbeddedLegendShortcut 57
 
 '----------------------------------------------------------------------------
 ' ControlType Enumeration
@@ -89,6 +93,13 @@ Define ControlType_RadioButton 24
 Define ControlType_WrapPanel 25
 Define ControlType_RibbonMenuGroup 26
 Define ControlType_Unknown 27
+Define ControlType_ContextTabGroup 28
+Define ControlType_Ribbon 29
+Define ControlType_RibbonTab 30
+Define ControlType_RibbonGroup 31
+Define ControlType_RibbonBackStage 32
+Define ControlType_StatusBar 33
+Define ControlType_Grid 34
 
 '----------------------------------------------------------------------------
 ' FileType Enumeration
@@ -96,6 +107,7 @@ Define ControlType_Unknown 27
 Define FileType_Tab 1  
 Define FileType_Wor 3  
 Define FileType_Mbx 16
+Define FileType_Py  101
 Define FileType_Db  17 
 
 '----------------------------------------------------------------------------
@@ -106,6 +118,9 @@ Define LayerEventTypes_LayerAdd 1
 Define LayerEventTypes_LayerRemove 2
 Define LayerEventTypes_LayerChange 3
 Define LayerEventTypes_UnGroupOperation 4
+Define LayerEventTypes_AnimationLyrAdd 5
+Define LayerEventTypes_ThemeBinsChanged 6
+Define LayerEventTypes_FilterChanged 7
 
 '----------------------------------------------------------------------------
 ' LayoutFrameEventType Enumeration
@@ -118,6 +133,12 @@ Define LayoutFrameEventType_FrameDeactivated 4
 Define LayoutFrameEventType_TextFrameFontChanged 5
 Define LayoutFrameEventType_FrameContentRemoved 13
 Define LayoutFrameEventType_RemovingFrameContent 15
+
+'----------------------------------------------------------------------------
+' LiApiEventType Enumeration
+'----------------------------------------------------------------------------
+Define LiApiEventType_Login 0
+Define LiApiEventType_Logout 1
 
 '----------------------------------------------------------------------------
 ' NotificationType Enumeration
@@ -161,8 +182,43 @@ Define ScriptType_Select 0
 Define ScriptType_Insert 1
 Define ScriptType_Update 2
 Define ScriptType_Delete 3
-Define ScriptType_Script 4
+Define ScriptType_MapBasic 4
+Define ScriptType_Python 5
 
+'----------------------------------------------------------------------------
+' ScriptVariableType Enumeration
+'----------------------------------------------------------------------------
+Define ScriptVariableType_String 0
+Define ScriptVariableType_List 1
+Define ScriptVariableType_Integer 2
+Define ScriptVariableType_SmallInt 3
+Define ScriptVariableType_LargeInt 4
+Define ScriptVariableType_Float 5
+Define ScriptVariableType_Logical 6
+Define ScriptVariableType_Date 7
+Define ScriptVariableType_Table 8
+Define ScriptVariableType_Column 9
+Define ScriptVariableType_Window 10
+Define ScriptVariableType_Layer 11
+Define ScriptVariableType_Values 12
+Define ScriptVariableType_File 13
+Define ScriptVariableType_CoordSys 14
+Define ScriptVariableType_ReadOnly 15
+Define ScriptVariableType_Color 16
+Define ScriptVariableType_Brush 17
+Define ScriptVariableType_Pen 18
+Define ScriptVariableType_Symbol 19
+Define ScriptVariableType_Font 20
+Define ScriptVariableType_Group 21
+Define ScriptVariableType_Expander 22
+Define ScriptVariableType_Grid 23
+
+'----------------------------------------------------------------------------
+' StyleOverrideMode Enumeration
+'----------------------------------------------------------------------------
+Define StyleOverrideMode_None 0  
+Define StyleOverrideMode_AutoColor 1
+Define StyleOverrideMode_ManualColor 2  
 '----------------------------------------------------------------------------
 ' TaskStatus Enumeration
 '----------------------------------------------------------------------------
@@ -253,6 +309,7 @@ Define WinType_TaskManager 41
 Define WinType_ConnectionList 42
 Define WinType_Notifications 43
 Define WinType_SqlWindow 44
+Define WinType_PythonWindow 45
 
 '----------------------------------------------------------------------------
 ' Vertical Alignment Enumeration
@@ -282,6 +339,13 @@ Define Orient_Vertical 1
 Define WrapWithOverFlow 0
 Define NoWrap 1
 Define Wrap 2
+
+'----------------------------------------------------------------------------
+' Text Trimming Enumeration
+'----------------------------------------------------------------------------
+Define CharacterEllipsis 0
+Define NoTrimming 1 
+Define WordEllipsis 2
 
 '----------------------------------------------------------------------------
 ' Stretch Enumeration
@@ -400,6 +464,8 @@ Define AddInEvents_LiApiCredentialsChanged 41
 Define AddInEvents_TableMappableChanged 42
 Define AddInEvents_KeyPressed 43
 Define AddInEvents_LayoutFrameActivated 44
+Define AddInEvents_MapOpened 45
+Define AddInEvents_MapTimeSettingsChanged 46
 
 '----------------------------------------------------------------------------
 'MouseButton Enumeration
@@ -407,3 +473,9 @@ Define AddInEvents_LayoutFrameActivated 44
 Define MouseButton_Left 0
 Define MouseButton_Middle 1
 Define MouseButton_Right 2
+
+'----------------------------------------------------------------------------
+'MapTimeSettingsChangeType Enumeration
+'----------------------------------------------------------------------------
+Define MapTimeSettingsChangeType_AllChange -1
+Define MapTimeSettingsChangeType_TimePeriodChange 1

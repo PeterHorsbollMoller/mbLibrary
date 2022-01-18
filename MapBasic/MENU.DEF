@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo Pro 2019 - Menu Item Definitions
+' MapInfo Pro 2100 - Menu Item Definitions
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.  The definitions in this file describe the standard MapInfo
@@ -109,6 +109,8 @@ Define M_QUERY_CALC_STATISTICS                 309
 Define M_SQL_WINDOW                           1401
 Define M_QUERY_SELECT_BY_LOCATION             1402
 Define M_QUERY_CLOSE_ALL                      1403
+Define M_QUERY_CLOSE_UNNAMED                  1404
+Define M_QUERY_SELECT_BY_ATTRIBUTE            1405
 
 '----------------------------------------------------------------------------
 ' Table, Maintenance, and Raster menus
@@ -162,6 +164,7 @@ Define M_WINDOW_LEGEND                         606
 Define M_WINDOW_STATISTICS                     607
 Define M_WINDOW_MAPBASIC                       608
 Define M_WINDOW_STATUSBAR                      616
+Define M_WINDOW_PYTHON                         624
 Define M_FORMAT_CUSTOM_COLORS                  617
 Define M_EDIT_PREFERENCES                      208
 
@@ -311,6 +314,10 @@ Define M_VIEW_ZOOM_TO_SELECTED_OBJECTS         841
 Define M_VIEW_SNAP_TO_NODE                     842
 Define M_VIEW_SUSPEND_REDRAW                   843
 Define M_VIEW_LEGEND_WINDOW                    844
+Define M_VIEW_CREATE_TIME_SERIES               860
+Define M_VIEW_EMBED_THEME_LEGEND               861
+Define M_VIEW_EXPORT_TIME_SERIES               863
+Define M_VIEW_SMART_TEXT_ADORNMENT             864
 
 ' Map window context menu
 Define M_MAP_AUTOSCROLL_ONOFF                  815
@@ -530,6 +537,8 @@ Define M_LC_LABEL_PRIORITIES                   2522
 Define M_LC_SELECT_ALL_FROM_LAYER              2523
 Define M_LC_OPTIONS                            2524
 Define M_LC_LAYER_FRIENDLYNAME                 2542
+Define M_LC_SET_MAP_PROJECTION_FROM_LAYER      2583
+Define M_LC_LAYER_TIME_PROPERTIES              2584
 
 '----------------------------------------------------------------------------
 ' Table List Window context menu items
