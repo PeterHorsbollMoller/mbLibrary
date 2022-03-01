@@ -751,6 +751,9 @@ OnError GoTo ErrorOccured
 			Alter Control CTRL_LST_LANGUAGES Title From Variable marrLanguages
 			Alter Control CTRL_LST_LANGUAGES Value Maximum(1, PRGIGetApplicationLanguage())
 		End If
+	Else
+		Alter Control CTRL_LST_LANGUAGES Title From Variable marrLanguages
+		Alter Control CTRL_LST_LANGUAGES Value Maximum(1, PRGIGetApplicationLanguage())
 	End If
 
 	Exit Sub
