@@ -1359,3 +1359,185 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreatePlineFromPoints(   ByVal oPoint1 As Object
+							, ByVal oPoint2 As Object
+							) As Object
+
+Dim	oPline As Object
+
+OnError GoTo ErrorOccured
+
+OBJCreatePlineFromPoints = oPoint1
+
+	Create Pline
+		Into Variable oPline
+		2
+		( CentroidX(oPoint1), CentroidY(oPoint1) )
+		( CentroidX(oPoint2), CentroidY(oPoint2) )
+
+	OBJCreatePlineFromPoints = oPline
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreatePlineFromPoints")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJPlineAddNode(  ByVal oPline As Object
+					, ByVal oPoint As Object
+					) As Object
+
+OnError GoTo ErrorOccured
+
+OBJPlineAddNode = oPline
+
+	Alter Object oPline
+		Node
+		Add ( CentroidX(oPoint), CentroidY(oPoint) )
+
+	OBJPlineAddNode = oPline
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJPlineAddNode")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateAnnulus( ByVal oCenter As Object
+					, ByVal fDirection As Float
+					, ByVal fRadiusInner As Float	'meters
+					, ByVal fRadiusOuter As Float	'meters
+					, ByVal fAngleWidth As Float
+					, ByVal nResolution As Integer
+					, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+					) As Object
+
+Dim	oPoint, oCutter, oAnnulus, oCircleInner As Object,
+	fCutterDistance, fAngleHalf, fAngleQuarter As Float
+
+OnError GoTo ErrorOccured
+
+OBJCreateAnnulus = oCenter
+
+	fCutterDistance	= fRadiusOuter * 3
+	fAngleHalf		= fAngleWidth / 2
+	fAngleQuarter		= fAngleWidth / 4
+
+	Create Pline
+		Into Variable oCutter
+		1
+		( CentroidX(oCenter), CentroidY(oCenter) )
+
+	If nCalculationMethod = CALC_METHOD_SPERICAL Then
+		oPoint	= SphericalOffSet(oCenter, (fDirection - fAngleHalf), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= SphericalOffSet(oCenter, (fDirection - fAngleQuarter), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= SphericalOffSet(oCenter, fDirection, fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= SphericalOffSet(oCenter, (fDirection + fAngleQuarter), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= SphericalOffSet(oCenter, (fDirection + fAngleHalf), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+	Else
+		oPoint	= CartesianOffSet(oCenter, (fDirection - fAngleHalf), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= CartesianOffSet(oCenter, (fDirection - fAngleQuarter), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= CartesianOffSet(oCenter, fDirection, fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= CartesianOffSet(oCenter, (fDirection + fAngleQuarter), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+
+		oPoint	= CartesianOffSet(oCenter, (fDirection + fAngleHalf), fCutterDistance, "m")
+		oCutter	= OBJPlineAddNode(oCutter, oPoint)
+	End If
+
+	oCutter	= ConvertToRegion(oCutter)
+
+	If nCalculationMethod = CALC_METHOD_SPERICAL Then
+		oAnnulus	= Buffer(oCenter, nResolution, fRadiusOuter, "m")
+	Else
+		oAnnulus	= CartesianBuffer(oCenter, nResolution, fRadiusOuter, "m")
+	End If
+
+	If fRadiusInner > 0 Then
+		If nCalculationMethod = CALC_METHOD_SPERICAL Then
+			oCircleInner	= Buffer(oCenter, nResolution, fRadiusInner, "m")
+		Else
+			oCircleInner	= CartesianBuffer(oCenter, nResolution, fRadiusInner, "m")
+		End If
+		oAnnulus = Erase(oAnnulus, oCircleInner)
+	End If
+
+	oAnnulus = Overlap(oAnnulus, oCutter)
+
+	OBJCreateAnnulus = oAnnulus
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateAnnulus")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateCircularSector(	  ByVal oCenter As Object
+							, ByVal fDirection As Float
+							, ByVal fRadius As Float				'meters
+							, ByVal fAngleWidth As Float
+							, ByVal nResolution As Integer
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJCreateCircularSector = OBJCreateAnnulus(oCenter, fDirection, 0, fRadius, fAngleWidth, nResolution, nCalculationMethod)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateCircularSector")
+	Call ERRShow()
+
+End Function

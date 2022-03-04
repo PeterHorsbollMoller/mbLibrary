@@ -29,9 +29,14 @@
 '	06-11-2018 16:58:41	- Added:
 '						- OBJDirection(...) As Float
 '						- OBJCartesianCreatePointAlong(...) As Object
-'	03-09-2021 08:16:17	- Added
+'	03-09-2021 08:16:17	- Added:
 '						- OBJCreateTrapez(...) As Object
 '						- OBJCartesianCreateArrowHead(...) As Object
+'	04-03-2022 15:49:52	- Added:
+'						- OBJCreatePlineFromPoints(...) As Object
+'						- OBJPlineAddNode(...) As Object
+'						- OBJCreateAnnulus(...) As Object
+'						- OBJCreateCircularSector(...) As Object
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -129,3 +134,26 @@ Declare Function OBJCartesianCreateArrowHead(  ByVal oPline As Object
 									, ByVal nResolution As Integer	'Only used for rounded arrow heads
 									) As Object
 
+Declare Function OBJCreatePlineFromPoints(	  ByVal oPoint1 As Object
+									, ByVal oPoint2 As Object
+									) As Object
+Declare Function OBJPlineAddNode(	  ByVal oPline As Object
+							, ByVal oPoint As Object
+							) As Object
+
+'In MapInfo 360 degrees. 0 towards east and counter clockwise
+Declare Function OBJCreateAnnulus(	  ByVal oCenter As Object
+							, ByVal fDirection As Float			'360 degrees
+							, ByVal fRadiusInner As Float			'meters
+							, ByVal fRadiusOuter As Float			'meters
+							, ByVal fAngleWidth As Float			' > 0 AND < 360
+							, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							) As Object
+Declare Function OBJCreateCircularSector( ByVal oCenter As Object
+								, ByVal fDirection As Float			'360 degrees
+								, ByVal fRadius As Float				'meters
+								, ByVal fAngleWidth As Float			' > 0 AND < 360
+								, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
+								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+								) As Object
