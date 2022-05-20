@@ -248,7 +248,11 @@ End Function
 'Return value:
 '
 '**********************************************************************************************''
-Function GLYRGetGroupLayerID(ByVal nMID As Integer, ByVal nGroupLayerID As Integer, ByVal sGroupLayer As String, ByVal bTopLevelOnly As Logical) As Integer
+Function GLYRGetGroupLayerID(	  ByVal nMID As Integer
+						, ByVal nGroupLayerID As Integer
+						, ByVal sGroupLayer As String
+						, ByVal bTopLevelOnly As Logical
+						) As Integer
 
 Dim 	i, llOffset, ll, nNumLayers, nSubGroupLayer, nFoundGroupLayerID As Integer
 
