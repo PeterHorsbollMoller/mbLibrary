@@ -1,7 +1,8 @@
 '#########################################################################
 'DEFINES for New UX Default controls in the Ribbon Interface.
 'Defines include control names taken from Dump Object Model feature in ProSampleAddin provided with MapBasic
-'MapInfo Pro 2100 - Ribbon Control Definitions
+
+'MapInfo Pro 2101 - Ribbon Control Definitions
 'Ribbon Tabs, Tab Groups, Contextual tabs
 'Names prefaced with TAB_ are Tab names, that have corresponding group name control defines
 'Names prefaced with CTAB are contextual Tabs
@@ -95,11 +96,17 @@ Define PROPERTY_ISTRACKED                   "IsTracked" 'logical
 
 'IRibbonToolTip
 Define PROPERTY_SHOWHELPTEXT                "ShowHelpText" 'logical
+Define PROPERTY_GET_SHOWHELPTEXT            "ToolTip.ShowHelpText" 'logical
 Define PROPERTY_SHOWSIMPLETOOLTIP           "ShowSimpleToolTip" 'logical
+Define PROPERTY_GET_SHOWSIMPLETOOLTIP       "ToolTip.ShowSimpleToolTip" 'logical
 Define PROPERTY_SHOWONDISABLED              "ShowOnDisabled" 'logical
+Define PROPERTY_GET_SHOWONDISABLED          "ToolTip.ShowOnDisabled" 'logical
 Define PROPERTY_TOOLTIPDESCRIPTION          "ToolTipDescription" 'string
+Define PROPERTY_GET_TOOLTIPDESCRIPTION      "ToolTip.ToolTipDescription" 'string
 Define PROPERTY_TOOLTIPDISABLEDTEXT         "ToolTipDisabledText" 'string
+Define PROPERTY_GET_TOOLTIPDISABLEDTEXT     "ToolTip.ToolTipDisabledText" 'string
 Define PROPERTY_TOOLTIPTEXT                 "ToolTipText" 'string
+Define PROPERTY_GET_TOOLTIPTEXT             "ToolTip.ToolTipText" 'string
 
 'IRibbonControlGroup
 Define PROPERTY_COLLAPSEDIMAGE              "CollapsedImage" 'string

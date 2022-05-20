@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo Pro 2100 - Menu Item Definitions
+' MapInfo Pro 2101 - Menu Item Definitions
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.  The definitions in this file describe the standard MapInfo
@@ -318,6 +318,7 @@ Define M_VIEW_CREATE_TIME_SERIES               860
 Define M_VIEW_EMBED_THEME_LEGEND               861
 Define M_VIEW_EXPORT_TIME_SERIES               863
 Define M_VIEW_SMART_TEXT_ADORNMENT             864
+Define M_VIEW_CHANGE_PROJECTION                865
 
 ' Map window context menu
 Define M_MAP_AUTOSCROLL_ONOFF                  815
