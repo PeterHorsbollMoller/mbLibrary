@@ -31,6 +31,38 @@ Dim	i As Integer
 
 OnError GoTo ErrorOccured
 
+'Define LAYER_INFO_LBL_EXPR                      15	sExpression		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_LT                        16	nLineType			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_FONT                      18	fntLabel			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_POS                       20	nPosition			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_VISIBILITY                25	nVisibility		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ZOOM_MIN                  26	fMinZoom			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ZOOM_MAX                  27	fMaxZoom			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTODISPLAY               28	bAutoDisplay		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_OVERLAP                   29	bAllowOverlap		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_DUPLICATES                30	bAllowDuplicates	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_OFFSET                    31	nOffset			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_MAX                       32	nMaxNumber		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_PARTIALSEGS               33	bPartialSegments	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ORIENTATION               38	nOrientation		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LABEL_ALPHA                   41	nAlpha			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_POSITION             54	bAutoPosition		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_SIZES                55	bAutoSizes		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_SUPPRESS_IF_NO_FIT        56	bSuppressIfNotFit	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_SIZE_STEP            57	nAutoSizeStes		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_CURVED_BEST_POSITION      58	bCurvedBestPostion	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_CURVED_FALLBACK           59	bCurvedFallback	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_USE_ABBREVIATION          60	bUseAbbreviation	'T_LABEL_SETTINGS
+'Define LAYER_INFO_ABBREVIATION_EXPR             61	sAbbreviationExpr	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_CALLOUT              62	bAutoCallOut		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ORDER                     63	nLabelOrder		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_PARALLEL                  19	'Don't read/write, controlled by nOrientation
+'Define LAYER_INFO_LBL_CURFONT			    17	'Don't read/write, MapBasic 3.0 only
+'Define LAYER_INFO_LABEL_POS_RETRY			    74 	bPositionRetry		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_LINE_PEN			    79	penLine			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LABEL_EXPR_TABLE		    84	'Don't read/write, Seamless layers
+'Define LAYER_INFO_LBL_CURVED_PERCENT_OVER	    85	nCurvedPercentOver	'T_LABEL_SETTINGS
+
 	tlbsTo.bAutoDisplay			= tlbsFrom.bAutoDisplay
 	tlbsTo.nVisibility			= tlbsFrom.nVisibility
 	tlbsTo.fMinZoom			= tlbsFrom.fMinZoom
@@ -57,6 +89,10 @@ OnError GoTo ErrorOccured
 	tlbsTo.sAbbreviationExpr		= tlbsFrom.sAbbreviationExpr
 	tlbsTo.bAutoCallOut			= tlbsFrom.bAutoCallOut
 	tlbsTo.nLabelOrder			= tlbsFrom.nLabelOrder
+
+	tlbsTo.bPositionRetry		= tlbsFrom.bPositionRetry
+	tlbsTo.penLine				= tlbsFrom.penLine
+	tlbsTo.nCurvedPercentOver	= tlbsFrom.nCurvedPercentOver
 
 	Exit Sub
 '-------------------------
@@ -102,6 +138,9 @@ OnError GoTo ErrorOccured
 	tlbs.sAbbreviationExpr	= ""
 	tlbs.bAutoCallOut		= FALSE
 	tlbs.nLabelOrder		= 0
+	tlbs.bPositionRetry		= FALSE
+	tlbs.penLine			= MakePen(1,2,BLACK)
+	tlbs.nCurvedPercentOver	= 50	'Percent
 
 	Exit Sub
 '-------------------------
@@ -150,6 +189,9 @@ OnError GoTo ErrorOccured
 				& ";" & tlbs.sAbbreviationExpr
 				& ";" & tlbs.bAutoCallOut
 				& ";" & tlbs.nLabelOrder
+				& ";" & tlbs.bPositionRetry
+				& ";" & STLPen2Text(tlbs.penLine)
+				& ";" & tlbs.nCurvedPercentOver
 
 	tlbsToString = sText
 
@@ -199,7 +241,7 @@ tlbsFromString	= FALSE
 		tlbs.nOrientation		= Val(arrItems(15))
 		tlbs.nAlpha			= Val(arrItems(16))
 
-		If nItems = 26 Then
+		If nItems >= 26 Then
 			tlbs.bAutoPosition		= (arrItems(17) = "T")
 			tlbs.bAutoSizes		= (arrItems(18) = "T")
 			tlbs.bSuppressIfNotFit	= (arrItems(19) = "T")
@@ -210,6 +252,12 @@ tlbsFromString	= FALSE
 			tlbs.sAbbreviationExpr	= arrItems(24)
 			tlbs.bAutoCallOut		= (arrItems(25) = "T")
 			tlbs.nLabelOrder		= Val(arrItems(26))
+		End If
+
+		If nItems >= 29 Then
+			tlbs.bPositionRetry		= (arrItems(27) = "T")
+			tlbs.penLine			= STLText2Pen(arrItems(28))
+			tlbs.nCurvedPercentOver	= Val(arrItems(29))
 		End If
 
 		tlbsFromString	= TRUE
@@ -286,6 +334,12 @@ OnError GoTo ErrorOccured
 		tlbs.nLabelOrder		= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_ORDER)
 	End If
 
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1700 Then
+		tlbs.bPositionRetry		= LayerInfo(nMID, nLyrID, LAYER_INFO_LABEL_POS_RETRY)
+		tlbs.penLine			= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_LINE_PEN)
+		tlbs.nCurvedPercentOver	= LayerInfo(nMID, nLyrID, LAYER_INFO_LBL_CURVED_PERCENT_OVER)
+	End If
+
 	Exit Sub
 '-------------------------
 ErrorOccured:
@@ -338,8 +392,35 @@ tlbsGetSetMapStatement = ""
 		Exit Function
 	End If
 
+'	Set Map
+'		Window window_id Layer layer_id
+'		Label
+'			[ Line { Simple | Arrow | None } ]
+'			[ Position [ Center ] [ { Above | Below } ] [ {Left | Right } ] ]
+'			[ Auto Retry { On | Off } ]
+'			[ Font... ] [ Pen... ]
+'			[ With label_expr ]
+'			[ Parallel { On | Off } ]
+'			[ Follow Path [ BestPosition { On | Off } ] [ Percent Over percent ] [ Fallback { On | Off } ] ]
+'			[ Visibility { On | Off | Zoom ( min_vis, max_vis ) [ Units dist_unit ] } ]
+'			[ Auto  { On | Off }  ]
+'			[ Overlap  { On | Off }  ]
+'			[ PartialSegments { On | Off } ]
+'			[ Duplicates  { On | Off }  ]
+'			[ Max [ number_of_labels ] ]
+'			[ Offset offset_amount ]
+'			[ Default ]
+'			[ LabelAlpha alpha_value ]
+'			[ AutoPosition { On | Off } ]
+'			[ AutoSizes { number_font_sizes | Default } ]
+'			[ AutoSizeStep percentage_value ]
+'			[ SuppressIfNoFit { On | Off } ]
+'			[ AutoCallout { On | Off } ]
+'			[ Abbreviation { On | Off } Abbreviate with { field_expression } ]
+
 	sCmd = " Label"
 			& " Auto " & STRINGLogicalToText(tlbs.bAutoDisplay, "On", "Off")
+			& " Auto Retry " & STRINGLogicalToText(tlbs.bPositionRetry, "On", "Off")
 
 	Do Case tlbs.nLineType
 		Case LAYER_INFO_LBL_LT_ARROW
@@ -348,7 +429,8 @@ tlbsGetSetMapStatement = ""
 			sCmd = sCmd & " Line Simple"
 		Case LAYER_INFO_LBL_LT_NONE
 	End Case
-	' [ Pen... ] ??
+
+	sCmd = sCmd & " " & tlbs.penLine
 
 	Do Case tlbs.nPosition
 		Case LAYER_INFO_LBL_POS_TL
@@ -372,13 +454,12 @@ tlbsGetSetMapStatement = ""
 	End Case
 
 	sCmd = sCmd & " Offset " & tlbs.nOffset
+	sCmd = sCmd & " " & tlbs.fntLabel
 
 	If tlbs.sExpression = "" Then
-		sCmd = sCmd & lf & " " & tlbs.fntLabel
-				& lf & " With COL1"
+		sCmd = sCmd & " With COL1"
 	Else
-		sCmd = sCmd & lf & " " & tlbs.fntLabel
-				& lf & " With " & tlbs.sExpression
+		sCmd = sCmd & " With " & tlbs.sExpression
 	End If
 
 	Do Case tlbs.nOrientation
@@ -391,24 +472,24 @@ tlbsGetSetMapStatement = ""
 
 			If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
 				sCmd = sCmd & " BestPosition " & STRINGLogicalToText(tlbs.bCurvedBestPostion, "On", "Off")
-					'& " Percent Over " & percent
+					& " Percent Over " & tlbs.nCurvedPercentOver
 					& " Fallback " & STRINGLogicalToText(tlbs.bCurvedFallback, "On", "Off")
 			End If
 	End Case
 
 	Do Case tlbs.nVisibility
 		Case LAYER_INFO_LBL_VIS_ON
-			sCmd = sCmd & lf & " Visibility On"
+			sCmd = sCmd & " Visibility On"
 		Case LAYER_INFO_LBL_VIS_ZOOM
-			sCmd = sCmd & lf & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
+			sCmd = sCmd & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
 		Case LAYER_INFO_LBL_VIS_OFF
-			sCmd = sCmd & lf & " Visibility Off"
+			sCmd = sCmd & " Visibility Off"
 	End Case
 
 	sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlbs.bAllowOverlap, "On", "Off")
 			& " PartialSegments " & STRINGLogicalToText(tlbs.bPartialSegments, "On", "Off")
 			& " Duplicates " & STRINGLogicalToText(tlbs.bAllowDuplicates, "On", "Off")
-			& lf & " Max " & tlbs.nMaxNumber
+			& " Max " & tlbs.nMaxNumber
 			& " LabelAlpha " & tlbs.nAlpha
 
 	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
@@ -435,6 +516,348 @@ tlbsGetSetMapStatement = ""
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "tlbsGetSetMapStatement")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlbsGetSetMapStatementNoExpr(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+								, ByVal nLyrID As Integer		'LayerID to apply the settings to
+								, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
+								) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Dim	sTab, sCmd As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+tlbsGetSetMapStatementNoExpr = ""
+
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			'**Let's continue, label settings should work
+		Case LAYER_INFO_TYPE_COSMETIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_IMAGE
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_THEMATIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_GRID
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case Else
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+	End Case
+
+	sTab = LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	If TableInfo(sTab, TAB_INFO_TYPE) IN (TAB_TYPE_IMAGE, TAB_TYPE_WMS) Then
+		Exit Function
+	End If
+
+'	Set Map
+'		Window window_id Layer layer_id
+'		Label
+'			[ Line { Simple | Arrow | None } ]
+'			[ Position [ Center ] [ { Above | Below } ] [ {Left | Right } ] ]
+'			[ Auto Retry { On | Off } ]
+'			[ Font... ] [ Pen... ]
+'			[ With label_expr ] [ Parallel { On | Off } ]
+'			[ Follow Path [ BestPosition { On | Off } ] [ Percent Over percent ] [ Fallback { On | Off } ] ]
+'			[ Visibility { On | Off | Zoom ( min_vis, max_vis ) [ Units dist_unit ] } ]
+'			[ Auto  { On | Off }  ]
+'			[ Overlap  { On | Off }  ]
+'			[ PartialSegments { On | Off } ]
+'			[ Duplicates  { On | Off }  ]
+'			[ Max [ number_of_labels ] ]
+'			[ Offset offset_amount ]
+'			[ Default ]
+'			[ LabelAlpha alpha_value ]
+'			[ AutoPosition { On | Off } ]
+'			[ AutoSizes { number_font_sizes | Default } ]
+'			[ AutoSizeStep percentage_value ]
+'			[ SuppressIfNoFit { On | Off } ]
+'			[ AutoCallout { On | Off } ]
+'			[ Abbreviation { On | Off } Abbreviate with { field_expression } ]
+
+	sCmd = " Label"
+			& " Auto " & STRINGLogicalToText(tlbs.bAutoDisplay, "On", "Off")
+			& " Auto Retry " & STRINGLogicalToText(tlbs.bPositionRetry, "On", "Off")
+
+	Do Case tlbs.nLineType
+		Case LAYER_INFO_LBL_LT_ARROW
+			sCmd = sCmd & " Line Arrow"
+		Case LAYER_INFO_LBL_LT_SIMPLE
+			sCmd = sCmd & " Line Simple"
+		Case LAYER_INFO_LBL_LT_NONE
+	End Case
+
+	sCmd = sCmd & " " & tlbs.penLine
+
+	Do Case tlbs.nPosition
+		Case LAYER_INFO_LBL_POS_TL
+			sCmd = sCmd & " Position Above Left"
+		Case LAYER_INFO_LBL_POS_TC
+			sCmd = sCmd & " Position Center Above"
+		Case LAYER_INFO_LBL_POS_TR
+			sCmd = sCmd & " Position Above Right"
+		Case LAYER_INFO_LBL_POS_CL
+			sCmd = sCmd & " Position Center Left"
+		Case LAYER_INFO_LBL_POS_CC
+			sCmd = sCmd & " Position Center"
+		Case LAYER_INFO_LBL_POS_CR
+			sCmd = sCmd & " Position Center Right"
+		Case LAYER_INFO_LBL_POS_BL
+			sCmd = sCmd & " Position Below Left"
+		Case LAYER_INFO_LBL_POS_BC
+			sCmd = sCmd & " Position Center Below"
+		Case LAYER_INFO_LBL_POS_BR
+			sCmd = sCmd & " Position Below Right"
+	End Case
+
+	sCmd = sCmd & " Offset " & tlbs.nOffset
+	sCmd = sCmd & " " & tlbs.fntLabel
+
+'	If tlbs.sExpression = "" Then
+'		sCmd = sCmd & " With COL1"
+'	Else
+'		sCmd = sCmd & " With " & tlbs.sExpression
+'	End If
+
+	Do Case tlbs.nOrientation
+		Case LAYER_INFO_LABEL_ORIENT_HORIZONTAL
+			sCmd = sCmd & " Parallel Off"
+		Case	LAYER_INFO_LABEL_ORIENT_PARALLEL
+			sCmd = sCmd & " Parallel On"
+		Case	LAYER_INFO_LABEL_ORIENT_CURVED
+			sCmd = sCmd & " Follow Path"
+
+			If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+				sCmd = sCmd & " BestPosition " & STRINGLogicalToText(tlbs.bCurvedBestPostion, "On", "Off")
+					& " Percent Over " & tlbs.nCurvedPercentOver
+					& " Fallback " & STRINGLogicalToText(tlbs.bCurvedFallback, "On", "Off")
+			End If
+	End Case
+
+	Do Case tlbs.nVisibility
+		Case LAYER_INFO_LBL_VIS_ON
+			sCmd = sCmd & " Visibility On"
+		Case LAYER_INFO_LBL_VIS_ZOOM
+			sCmd = sCmd & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
+		Case LAYER_INFO_LBL_VIS_OFF
+			sCmd = sCmd & " Visibility Off"
+	End Case
+
+	sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlbs.bAllowOverlap, "On", "Off")
+			& " PartialSegments " & STRINGLogicalToText(tlbs.bPartialSegments, "On", "Off")
+			& " Duplicates " & STRINGLogicalToText(tlbs.bAllowDuplicates, "On", "Off")
+			& " Max " & tlbs.nMaxNumber
+			& " LabelAlpha " & tlbs.nAlpha
+
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+		sCmd = sCmd & " AutoPosition " & STRINGLogicalToText(tlbs.bAutoPosition, "On", "Off")
+				& " AutoSizes " & Maximum(tlbs.bAutoSizes, 1)
+				& " AutoSizeStep " & tlbs.nAutoSizeStes
+				& " SuppressIfNoFit " & STRINGLogicalToText(tlbs.bSuppressIfNotFit, "On", "Off")
+				& " AutoCallout " & STRINGLogicalToText(tlbs.bAutoCallOut, "On", "Off")
+
+'		If tlbs.sAbbreviationExpr = "" Then
+'			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+'					& " Abbreviate with COL1"
+'		Else
+'			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+'					& " Abbreviate with " & tlbs.sAbbreviationExpr
+'		End If
+
+		'tlbs.nLabelOrder - no way to set this?
+	End If
+
+	tlbsGetSetMapStatementNoExpr = sCmd
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsGetSetMapStatementNoExpr")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function tlbsGetSetMapStatementOnlyExpr(  ByVal nMID As Integer			'Mapper Window where the layer exists
+								, ByVal nLyrID As Integer		'LayerID to apply the settings to
+								, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
+								) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+
+Dim	sTab, sCmd As String,
+	i As Integer
+
+OnError GoTo ErrorOccured
+
+tlbsGetSetMapStatementOnlyExpr = ""
+
+	Do Case LayerInfo(nMID, nLyrID, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			'**Let's continue, label settings should work
+		Case LAYER_INFO_TYPE_COSMETIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_IMAGE
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_THEMATIC
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case LAYER_INFO_TYPE_GRID
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+		Case Else
+			'**Let's drop it, label settings does not work with this layer type
+			Exit Function
+	End Case
+
+	sTab = LayerInfo(nMID, nLyrID, LAYER_INFO_NAME)
+	If TableInfo(sTab, TAB_INFO_TYPE) IN (TAB_TYPE_IMAGE, TAB_TYPE_WMS) Then
+		Exit Function
+	End If
+
+'	Set Map
+'		Window window_id Layer layer_id
+'		Label
+'			[ Line { Simple | Arrow | None } ]
+'			[ Position [ Center ] [ { Above | Below } ] [ {Left | Right } ] ]
+'			[ Auto Retry { On | Off } ]
+'			[ Font... ] [ Pen... ]
+'			[ With label_expr ] [ Parallel { On | Off } ]
+'			[ Follow Path [ BestPosition { On | Off } ] [ Percent Over percent ] [ Fallback { On | Off } ] ]
+'			[ Visibility { On | Off | Zoom ( min_vis, max_vis ) [ Units dist_unit ] } ]
+'			[ Auto  { On | Off }  ]
+'			[ Overlap  { On | Off }  ]
+'			[ PartialSegments { On | Off } ]
+'			[ Duplicates  { On | Off }  ]
+'			[ Max [ number_of_labels ] ]
+'			[ Offset offset_amount ]
+'			[ Default ]
+'			[ LabelAlpha alpha_value ]
+'			[ AutoPosition { On | Off } ]
+'			[ AutoSizes { number_font_sizes | Default } ]
+'			[ AutoSizeStep percentage_value ]
+'			[ SuppressIfNoFit { On | Off } ]
+'			[ AutoCallout { On | Off } ]
+'			[ Abbreviation { On | Off } Abbreviate with { field_expression } ]
+
+	sCmd = " Label"
+'			& " Auto " & STRINGLogicalToText(tlbs.bAutoDisplay, "On", "Off")
+'			& " Auto Retry " & STRINGLogicalToText(tlbs.bPositionRetry, "On", "Off")
+
+'	Do Case tlbs.nLineType
+'		Case LAYER_INFO_LBL_LT_ARROW
+'			sCmd = sCmd & " Line Arrow"
+'		Case LAYER_INFO_LBL_LT_SIMPLE
+'			sCmd = sCmd & " Line Simple"
+'		Case LAYER_INFO_LBL_LT_NONE
+'	End Case
+
+'	sCmd = sCmd & " " & tlbs.penLine
+
+'	Do Case tlbs.nPosition
+'		Case LAYER_INFO_LBL_POS_TL
+'			sCmd = sCmd & " Position Above Left"
+'		Case LAYER_INFO_LBL_POS_TC
+'			sCmd = sCmd & " Position Center Above"
+'		Case LAYER_INFO_LBL_POS_TR
+'			sCmd = sCmd & " Position Above Right"
+'		Case LAYER_INFO_LBL_POS_CL
+'			sCmd = sCmd & " Position Center Left"
+'		Case LAYER_INFO_LBL_POS_CC
+'			sCmd = sCmd & " Position Center"
+'		Case LAYER_INFO_LBL_POS_CR
+'			sCmd = sCmd & " Position Center Right"
+'		Case LAYER_INFO_LBL_POS_BL
+'			sCmd = sCmd & " Position Below Left"
+'		Case LAYER_INFO_LBL_POS_BC
+'			sCmd = sCmd & " Position Center Below"
+'		Case LAYER_INFO_LBL_POS_BR
+'			sCmd = sCmd & " Position Below Right"
+'	End Case
+
+'	sCmd = sCmd & " Offset " & tlbs.nOffset
+'	sCmd = sCmd & " " & tlbs.fntLabel
+
+	If tlbs.sExpression = "" Then
+		sCmd = sCmd & " With COL1"
+	Else
+		sCmd = sCmd & " With " & tlbs.sExpression
+	End If
+
+'	Do Case tlbs.nOrientation
+'		Case LAYER_INFO_LABEL_ORIENT_HORIZONTAL
+'			sCmd = sCmd & " Parallel Off"
+'		Case	LAYER_INFO_LABEL_ORIENT_PARALLEL
+'			sCmd = sCmd & " Parallel On"
+'		Case	LAYER_INFO_LABEL_ORIENT_CURVED
+'			sCmd = sCmd & " Follow Path"
+
+'			If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+'				sCmd = sCmd & " BestPosition " & STRINGLogicalToText(tlbs.bCurvedBestPostion, "On", "Off")
+'					& " Percent Over " & tlbs.nCurvedPercentOver
+'					& " Fallback " & STRINGLogicalToText(tlbs.bCurvedFallback, "On", "Off")
+'			End If
+'	End Case
+
+'	Do Case tlbs.nVisibility
+'		Case LAYER_INFO_LBL_VIS_ON
+'			sCmd = sCmd & " Visibility On"
+'		Case LAYER_INFO_LBL_VIS_ZOOM
+'			sCmd = sCmd & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
+'		Case LAYER_INFO_LBL_VIS_OFF
+'			sCmd = sCmd & " Visibility Off"
+'	End Case
+'
+'	sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlbs.bAllowOverlap, "On", "Off")
+'			& " PartialSegments " & STRINGLogicalToText(tlbs.bPartialSegments, "On", "Off")
+'			& " Duplicates " & STRINGLogicalToText(tlbs.bAllowDuplicates, "On", "Off")
+'			& " Max " & tlbs.nMaxNumber
+'			& " LabelAlpha " & tlbs.nAlpha
+
+	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+'		sCmd = sCmd & " AutoPosition " & STRINGLogicalToText(tlbs.bAutoPosition, "On", "Off")
+'				& " AutoSizes " & Maximum(tlbs.bAutoSizes, 1)
+'				& " AutoSizeStep " & tlbs.nAutoSizeStes
+'				& " SuppressIfNoFit " & STRINGLogicalToText(tlbs.bSuppressIfNotFit, "On", "Off")
+'				& " AutoCallout " & STRINGLogicalToText(tlbs.bAutoCallOut, "On", "Off")
+
+		If tlbs.sAbbreviationExpr = "" Then
+			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+					& " Abbreviate with COL1"
+		Else
+			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+					& " Abbreviate with " & tlbs.sAbbreviationExpr
+		End If
+
+		'tlbs.nLabelOrder - no way to set this?
+	End If
+
+	tlbsGetSetMapStatementOnlyExpr = sCmd
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "tlbsGetSetMapStatementOnlyExpr")
 	Call ERRShow()
 
 End Function

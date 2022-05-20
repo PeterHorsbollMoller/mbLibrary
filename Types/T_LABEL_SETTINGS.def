@@ -31,6 +31,10 @@ Type T_LABEL_SETTINGS
 	sAbbreviationExpr	As String
 	bAutoCallOut		As Logical
 	nLabelOrder		As SmallInt
+	bParallel			As Logical
+	bPositionRetry		As Logical
+	penLine			As Pen
+	nCurvedPercentOver	As Integer
 End Type
 
 Declare Sub tlbsCopy(  tlbsFrom As T_LABEL_SETTINGS	'Source T_LABEL_SETTINGS
@@ -56,3 +60,11 @@ Declare Function tlbsGetSetMapStatement(  ByVal nMID As Integer			'Mapper Window
 								, ByVal nLyrID As Integer		'LayerID to apply the settings to
 								, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
 								) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+Declare Function tlbsGetSetMapStatementNoExpr( ByVal nMID As Integer			'Mapper Window where the layer exists
+									, ByVal nLyrID As Integer		'LayerID to apply the settings to
+									, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
+									) As String					'Returns a string that can be used in combination with a "Set Map" Statement
+Declare Function tlbsGetSetMapStatementOnlyExpr(	  ByVal nMID As Integer			'Mapper Window where the layer exists
+										, ByVal nLyrID As Integer		'LayerID to apply the settings to
+										, tlbs As T_LABEL_SETTINGS		'The T_LABEL_SETTINGS to store information about the layer
+										) As String					'Returns a string that can be used in combination with a "Set Map" Statement
