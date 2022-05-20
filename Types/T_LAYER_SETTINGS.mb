@@ -45,26 +45,30 @@ OnError GoTo ErrorOccured
 	tlsTo.bTrancparency			= tlsFrom.bTrancparency
 	tlsTo.nTransparencyColour	= tlsFrom.nTransparencyColour
 
+	ReDim tlsTo.penOverrideLine(Ubound(tlsFrom.penOverrideLine))
 	For i = 1 To Ubound(tlsTo.penOverrideLine)
 		tlsTo.penOverrideLine(i)	= tlsFrom.penOverrideLine(i)
 	Next
 
+	ReDim tlsTo.penOverrideBorder(Ubound(tlsFrom.penOverrideBorder))
 	For i = 1 To Ubound(tlsTo.penOverrideBorder)
 		tlsTo.penOverrideBorder(i)	= tlsFrom.penOverrideBorder(i)
 	Next
 
+	ReDim tlsTo.brsOverride(Ubound(tlsFrom.brsOverride))
 	For i = 1 To Ubound(tlsTo.brsOverride)
 		tlsTo.brsOverride(i)		= tlsFrom.brsOverride(i)
 	Next
 
+	ReDim tlsTo.symOverride(Ubound(tlsFrom.symOverride))
 	For i = 1 To Ubound(tlsTo.symOverride)
 		tlsTo.symOverride(i)		= tlsFrom.symOverride(i)
 	Next
 
+	ReDim tlsTo.fntOverride(Ubound(tlsFrom.fntOverride))
 	For i = 1 To Ubound(tlsTo.fntOverride)
 		tlsTo.fntOverride(i)		= tlsFrom.fntOverride(i)
 	Next
-
 
 	Exit Sub
 '-------------------------
@@ -161,6 +165,7 @@ OnError GoTo ErrorOccured
 	Next
 	sText	= sText & ";" & sStyle
 
+'	Note "Brush Overrides: " & Ubound(tls.brsOverride)
 	For i = 1 To Ubound(tls.brsOverride)
 		If i = 1 Then
 			sStyle	= STLBrush2Text(tls.brsOverride(i))
