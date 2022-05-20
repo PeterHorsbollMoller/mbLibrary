@@ -144,7 +144,6 @@ OnError GoTo ErrorOccured
 'Define LAYER_INFO_LBL_EXPR                      15	sExpression		'T_LABEL_SETTINGS
 'Define LAYER_INFO_LBL_LT                        16	nLineType			'T_LABEL_SETTINGS
 'Define LAYER_INFO_LBL_FONT                      18	fntLabel			'T_LABEL_SETTINGS
-'Define LAYER_INFO_LBL_PARALLEL                  19	bParallel			'T_LABEL_SETTINGS
 'Define LAYER_INFO_LBL_POS                       20	nPosition			'T_LABEL_SETTINGS
 'Define LAYER_INFO_LBL_VISIBILITY                25	nVisibility		'T_LABEL_SETTINGS
 'Define LAYER_INFO_LBL_ZOOM_MIN                  26	fMinZoom			'T_LABEL_SETTINGS
@@ -157,15 +156,76 @@ OnError GoTo ErrorOccured
 'Define LAYER_INFO_LBL_PARTIALSEGS               33	bPartialSegments	'T_LABEL_SETTINGS
 'Define LAYER_INFO_LBL_ORIENTATION               38	nOrientation		'T_LABEL_SETTINGS
 'Define LAYER_INFO_LABEL_ALPHA                   41	nAlpha			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_POSITION             54	bAutoPosition		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_SIZES                55	bAutoSizes		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_SUPPRESS_IF_NO_FIT        56	bSuppressIfNotFit	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_SIZE_STEP            57	nAutoSizeStes		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_CURVED_BEST_POSITION      58	bCurvedBestPostion	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_CURVED_FALLBACK           59	bCurvedFallback	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_USE_ABBREVIATION          60	bUseAbbreviation	'T_LABEL_SETTINGS
+'Define LAYER_INFO_ABBREVIATION_EXPR             61	sAbbreviationExpr	'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_AUTO_CALLOUT              62	bAutoCallOut		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_ORDER                     63	nLabelOrder		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_PARALLEL                  19	'Don't read/write, controlled by nOrientation
+'Define LAYER_INFO_LBL_CURFONT			    17	'Don't read/write, MapBasic 3.0 only
+'Define LAYER_INFO_LABEL_POS_RETRY			    74 	bPositionRetry		'T_LABEL_SETTINGS
+'Define LAYER_INFO_LBL_LINE_PEN			    79	penLine			'T_LABEL_SETTINGS
+'Define LAYER_INFO_LABEL_EXPR_TABLE		    84	'Don't read/write, Seamless layers
+'Define LAYER_INFO_LBL_CURVED_PERCENT_OVER	    85	nCurvedPercentOver	'T_LABEL_SETTINGS
 
+'----- H O T L I N K S -------
 'Define LAYER_INFO_HOTLINK_EXPR                  34
 'Define LAYER_INFO_HOTLINK_MODE                  35
 'Define LAYER_INFO_HOTLINK_RELATIVE              36
 'Define LAYER_INFO_HOTLINK_COUNT                 37
 
-
 'Define LAYER_INFO_LAYERLIST_ID                  42
 'Define LAYER_INFO_PARENT_GROUP_ID               43
+
+'----- O V E R R I D E   S T Y L E S -------
+'Define LAYER_INFO_OVR_STYLE_COUNT               44
+'Define LAYER_INFO_OVR_LBL_COUNT                 45
+'Define LAYER_INFO_OVR_STYLE_CURRENT             46
+'Define LAYER_INFO_OVR_LBL_CURRENT               47
+'Define LAYER_INFO_OVR_LINE_COUNT                48
+'Define LAYER_INFO_OVR_PEN_COUNT                 49
+'Define LAYER_INFO_OVR_BRUSH_COUNT               50
+'Define LAYER_INFO_OVR_SYMBOL_COUNT              51
+'Define LAYER_INFO_OVR_FONT_COUNT                52
+
+'Define LAYER_INFO_TILE_SERVER_LEVEL             53	'Don't read/write
+
+'Define LAYER_INFO_FRIENDLYNAME                  64
+'Define LAYER_INFO_ALIAS                         78	'Don't read/write
+
+'----- R A S T E R   S E T T I N G S -------
+'Define LAYER_INFO_RASTER_CONTRAST               80
+'Define LAYER_INFO_RASTER_BRIGHTNESS             81
+'Define LAYER_INFO_RASTER_ALPHA                  82
+'Define LAYER_INFO_RASTER_GREYSCALE              83
+
+'Define LAYER_INFO_LEGEND                        86
+
+'----- F I L T E R   S E T T I N G S -------
+'Define LAYER_INFO_FILTER_ENABLED                87
+'Define LAYER_INFO_FILTER_EXPR                   88
+'Define LAYER_INFO_FILTER_TABLE_ALIAS            89	'Don't read/write
+
+'----- T I M E   S E T T I N G S -------
+'Define LAYER_INFO_TIME_BEGIN_TYPE               90
+'Define LAYER_INFO_TIME_BEGIN_EXPR               91
+'Define LAYER_INFO_TIME_BEGIN_EXPR2              92
+'Define LAYER_INFO_TIME_END_TYPE                 93
+'Define LAYER_INFO_TIME_END_EXPR                 94
+'Define LAYER_INFO_TIME_END_EXPR2                95
+'Define LAYER_INFO_TIME_END_DURATION             96
+'Define LAYER_INFO_TIME_DURATION_UNIT            97
+'Define LAYER_INFO_TIME_EXTENT_BEGIN             98
+'Define LAYER_INFO_TIME_EXTENT_END               99
+'Define LAYER_INFO_TIME_INTERVAL                 100
+'Define LAYER_INFO_TIME_INTERVAL_UNIT            101
+'Define LAYER_INFO_TIME_IGNORE_NULLS             102
+
 
 	tli.nMID			= nMID
 	tli.nID			= nLyrID
