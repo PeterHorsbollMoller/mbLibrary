@@ -37,11 +37,17 @@
 '						- OBJPlineAddNode(...) As Object
 '						- OBJCreateAnnulus(...) As Object
 '						- OBJCreateCircularSector(...) As Object
+'	25-03-2022 07:43:39	- Added:
+'						- OBJCartesianCreateArrow(...) As Object
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
 Define	CALC_METHOD_CARTESIAN		1
 Define	CALC_METHOD_SPERICAL		2
+
+Define	OBJ_ARROW_END_TYPE_ROUNDED	1
+Define	OBJ_ARROW_END_TYPE_FLAT		2
+Define	OBJ_ARROW_END_TYPE_ARROW		3
 
 Declare Function OBJIsInitialized(ByVal oObj As Object) As Logical
 
@@ -156,4 +162,16 @@ Declare Function OBJCreateCircularSector( ByVal oCenter As Object
 								, ByVal fAngleWidth As Float			' > 0 AND < 360
 								, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
 								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+								) As Object
+
+Declare Function OBJCartesianCreateArrow( ByVal oInput As Object				'Input polyline to draw arrow based on
+								, ByVal fNodeDensity As Float			'Density for removing duplicate points on input line, 0 for not removing
+								, ByVal nBufferResolution As Integer	'Buffer resolution for arrow line
+								, ByVal fArrowWidth As Float			'Width of arrow, in meters
+								, ByVal nArrowHeadType As Integer		'Arrow Head Type, 1: OBJ_ARROW_END_TYPE_ROUNDED, 2: OBJ_ARROW_END_TYPE_FLAT, 3: OBJ_ARROW_END_TYPE_ARROW
+								, ByVal fArrowHeadLengthPct As Float	'Length of Arrow Head in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+								, ByVal fArrowHeadWidthPct As Float	'Width of Arrow Head in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+								, ByVal nArrowTailType As Integer		'Arrow Tail Type, 1: OBJ_ARROW_END_TYPE_ROUNDED, 2: OBJ_ARROW_END_TYPE_FLAT, 3: OBJ_ARROW_END_TYPE_ARROW
+								, ByVal fArrowTailLengthPct As Float	'Length of Arrow Tail in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+								, ByVal fArrowTailWidthPct As Float	'Width of Arrow Tail in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
 								) As Object

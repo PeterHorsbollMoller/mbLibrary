@@ -1306,7 +1306,7 @@ OBJCartesianCreateArrowHead = oPline
 		0
 
 	Do Case nArrowType
-		Case 1	'Pointy
+		Case OBJ_ARROW_END_TYPE_ARROW	'Pointy
 			'Print "OBJCartesianCreateArrowHead: Pointy"
 			Alter Object oArrowHead
 				Node Add (ObjectNodeX(oPline, 1, 2), ObjectNodeY(oPline, 1, 2))
@@ -1322,7 +1322,7 @@ OBJCartesianCreateArrowHead = oPline
 
 			oArrowHead	= ConvertToRegion(oArrowHead)
 
-		Case 2	'Flat
+		Case OBJ_ARROW_END_TYPE_FLAT	'Flat
 			'Print "OBJCartesianCreateArrowHead: Flat"
 			oPoint	= OBJCartesianCreatePointAlong(oPline, CartesianObjectLen(oPline, "m"), fWidth)
 			Alter Object oArrowHead
@@ -1343,7 +1343,7 @@ OBJCartesianCreateArrowHead = oPline
 
 			oArrowHead	= ConvertToRegion(oArrowHead)
 
-		Case 3	'Rounded
+		Case OBJ_ARROW_END_TYPE_ROUNDED	'Rounded
 			'Print "OBJCartesianCreateArrowHead: Rounded"
 			oPoint		= CreatePoint(ObjectNodeX(oPline, 1, 1), ObjectNodeY(oPline, 1, 1))
 			oArrowHead	= CartesianBuffer(oPoint, nResolution, fWidth, "m")
@@ -1379,9 +1379,11 @@ OBJCreatePlineFromPoints = oPoint1
 
 	Create Pline
 		Into Variable oPline
-		2
-		( CentroidX(oPoint1), CentroidY(oPoint1) )
-		( CentroidX(oPoint2), CentroidY(oPoint2) )
+		0
+	Alter Object oPline
+		Node Add Position 1, 1 (CentroidX(oPoint1), CentroidY(oPoint1))
+	Alter Object oPline
+		Node Add Position 1, 2 (CentroidX(oPoint2), CentroidY(oPoint2))
 
 	OBJCreatePlineFromPoints = oPline
 
@@ -1539,5 +1541,121 @@ OnError GoTo ErrorOccured
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "OBJCreateCircularSector")
 	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCartesianCreateArrow(	  ByVal oInput As Object				'Input polyline to draw arrow based on
+							, ByVal fNodeDensity As Float			'Density for removing duplicate points on input line, 0 for not removing
+							, ByVal nBufferResolution As Integer	'Buffer resolution for arrow line
+							, ByVal fArrowWidth As Float			'Width of arrow, in meters
+							, ByVal nArrowHeadType As Integer		'Arrow Head Type, 1: OBJ_ARROW_END_TYPE_ROUNDED, 2: OBJ_ARROW_END_TYPE_FLAT, 3: OBJ_ARROW_END_TYPE_ARROW
+							, ByVal fArrowHeadLengthPct As Float	'Length of Arrow Head in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+							, ByVal fArrowHeadWidthPct As Float	'Width of Arrow Head in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+							, ByVal nArrowTailType As Integer		'Arrow Tail Type, 1: OBJ_ARROW_END_TYPE_ROUNDED, 2: OBJ_ARROW_END_TYPE_FLAT, 3: OBJ_ARROW_END_TYPE_ARROW
+							, ByVal fArrowTailLengthPct As Float	'Length of Arrow Tail in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+							, ByVal fArrowTailWidthPct As Float	'Width of Arrow Tail in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
+							) As Object
+
+Dim	oLineStart, oLineEnd, oBuffer, oArrow, oArrowLine, oArrowTail, oArrowHead, oPoint As Object,
+	fStartX, fStartY, fEndX, fEndY As Float,
+	nNumNodes As Integer
+
+OnError GoTo ErrorOccured
+
+OBJCartesianCreateArrow = oInput
+
+'	Print "Arrow Width, m: " & fArrowWidth
+'	Print "Arrow Head Length: " & (fArrowHeadLengthPct * 100) & "% -> " & (fArrowHeadLengthPct * fArrowWidth) & " m"
+'	Print "Arrow Head Width: " & (fArrowHeadWidthPct * 100) & "% -> " & (fArrowHeadWidthPct * fArrowWidth) & " m"
+'	Print "Arrow Tail Length: " & (fArrowTailLengthPct * 100) & "% -> " & (fArrowTailLengthPct * fArrowWidth) & " m"
+'	Print "Arrow Tail Width: " & (fArrowTailWidthPct * 100) & "% -> " & (fArrowTailWidthPct * fArrowWidth) & " m"
+
+	If fNodeDensity = 0 Then
+		oArrowLine	= oInput
+	Else
+		oArrowLine 	= OBJRemoveDuplicateNodes(oInput, fNodeDensity)	'meters
+	End If
+
+	'**Creating Arrow Head at the end of the line
+	nNumNodes		= ObjectInfo(oArrowLine, OBJ_INFO_NPNTS)
+	fEndX		= ObjectNodeX(oArrowLine, 1, nNumNodes)
+	fEndY		= ObjectNodeY(oArrowLine, 1, nNumNodes)
+
+	oBuffer		= CartesianBuffer(CreatePoint(fEndX, fEndY), nBufferResolution, fArrowHeadLengthPct * fArrowWidth, "m")
+	If oArrowLine Entirely Within oBuffer Then
+		'**Do nothing
+	Else
+		oArrowLine	= Erase(oArrowLine, oBuffer)
+	End If
+	nNumNodes		= ObjectInfo(oArrowLine, OBJ_INFO_NPNTS)
+
+	Create Pline
+		Into Variable oLineEnd
+		0
+	Alter Object oLineEnd
+		Node Add Position 1, 1 (ObjectNodeX(oArrowLine, 1, nNumNodes), ObjectNodeY(oArrowLine, 1, nNumNodes))
+	Alter Object oLineEnd
+		Node Add Position 1, 2 (fEndX, fEndY)
+
+'OBJ_ARROW_END_TYPE_ROUNDED		1
+'OBJ_ARROW_END_TYPE_FLAT			2
+'OBJ_ARROW_END_TYPE_ARROW		3
+
+	oArrowHead	= OBJCartesianCreateArrowHead(oLineEnd, nArrowHeadType, fArrowHeadWidthPct * fArrowWidth, fArrowHeadLengthPct * fArrowWidth, nBufferResolution)
+	If nArrowHeadType In (OBJ_ARROW_END_TYPE_ARROW, OBJ_ARROW_END_TYPE_FLAT) Then
+		If oArrowLine Entirely Within oArrowHead Then
+			'**Do nothing
+		Else
+			oArrowLine	= Erase(oArrowLine, oArrowHead)
+		End If
+	End If
+
+	'**Creating Arrow Tail at the start of the line
+	fStartX		= ObjectNodeX(oArrowLine, 1, 1)
+	fStartY		= ObjectNodeY(oArrowLine, 1, 1)
+
+	oBuffer		= CartesianBuffer(CreatePoint(fStartX, fStartY), nBufferResolution, fArrowTailLengthPct * fArrowWidth, "m")
+	If oArrowLine Entirely Within oBuffer Then
+		'**Do nothing
+	Else
+		oArrowLine	= Erase(oArrowLine, oBuffer)
+	End If
+
+	Create Pline
+		Into Variable oLineStart
+		0
+	Alter Object oLineStart
+		Node Add Position 1, 1 (ObjectNodeX(oArrowLine, 1, 1), ObjectNodeY(oArrowLine, 1, 1))
+	Alter Object oLineStart
+		Node Add Position 1, 2 (fStartX, fStartY)
+
+	oArrowTail	= OBJCartesianCreateArrowHead(oLineStart, nArrowTailType, fArrowTailWidthPct * fArrowWidth, fArrowTailLengthPct * fArrowWidth, nBufferResolution)
+	If nArrowTailType in (OBJ_ARROW_END_TYPE_FLAT, OBJ_ARROW_END_TYPE_ARROW) Then
+		If oArrowLine Entirely Within oArrowTail Then
+			'**Do nothing
+		Else
+			oArrowLine	= Erase(oArrowLine, oArrowTail)
+		End If
+	End If
+
+	oArrow		= CartesianBuffer(oArrowLine, nBufferResolution, fArrowWidth, "m")
+
+	oArrow		= Combine(oArrow, oArrowHead)
+	oArrow		= Combine(oArrow, oArrowTail)
+
+OBJCartesianCreateArrow = oArrow
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCartesianCreateArrow")
+	Call ERRPrint()
 
 End Function
