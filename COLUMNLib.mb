@@ -135,6 +135,10 @@ COLGetListOfNames = 0
 				If COLIsBitOn(CRITERIA_USE_SMALLINT, nCriterias) Then
 					bAdd = TRUE
 				End If
+			Case COL_TYPE_LARGEINT
+				If COLIsBitOn(CRITERIA_USE_LARGEINT, nCriterias) Then
+					bAdd = TRUE
+				End If
 			Case COL_TYPE_DATE
 				If COLIsBitOn(CRITERIA_USE_DATE, nCriterias) Then
 					bAdd = TRUE
@@ -248,35 +252,41 @@ End Function
 '**********************************************************************************************''
 Function COLTypeAsString (ByVal sTab As String, ByVal sCol As String) As String
 
-Dim iCOL_INFO_TYPE, iCOL_INFO_WIDTH, iCOL_INFO_DECPLACES As Integer
-
 OnError GoTo ErrorOccured
 
-	iCOL_INFO_TYPE = ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+	Do Case ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+		Case COL_TYPE_CHAR		'1 'Character
+			COLTypeAsString = "Char (" + ColumnInfo(sTab, sCol, COL_INFO_WIDTH) + ")"
 
-	Do Case iCOL_INFO_TYPE
-		Case 1 'Character
-			iCOL_INFO_WIDTH = ColumnInfo(sTab, sCol, COL_INFO_WIDTH)
-			COLTypeAsString = "Char (" + iCOL_INFO_WIDTH + ")"
-		Case 2 'Fixed-point decimal
-			iCOL_INFO_WIDTH = ColumnInfo(sTab, sCol, COL_INFO_WIDTH)
-			iCOL_INFO_DECPLACES = ColumnInfo(sTab, sCol, COL_INFO_DECPLACES)
-			COLTypeAsString = "Decimal (" + iCOL_INFO_WIDTH + ", " + iCOL_INFO_DECPLACES + ")"
-		Case 3 'Integer (4-byte)
+		Case COL_TYPE_DECIMAL	'2 'Fixed-point decimal
+			COLTypeAsString = "Decimal (" + ColumnInfo(sTab, sCol, COL_INFO_WIDTH)
+								+ ", " + ColumnInfo(sTab, sCol, COL_INFO_DECPLACES) + ")"
+
+		Case COL_TYPE_INTEGER	'3 'Integer (4-byte)
 			COLTypeAsString = "Integer"
-		Case 4 'Small integer (2-byte)
+
+		Case COL_TYPE_SMALLINT	'4 'Small integer (2-byte)
 			COLTypeAsString = "Smallint"
-		Case 5 'Date
+
+		Case COL_TYPE_DATE		'5 'Date
 			COLTypeAsString = "Date"
-		Case 6 'Logical (TRUE or FALSE)
+
+		Case COL_TYPE_LOGICAL	'6 'Logical (TRUE or FALSE)
 			COLTypeAsString = "Logical"
-		'Case 7 --> special column type Obj; this represents the graphical objects attached to the table.
-		Case 8 'Floating-point decimal
+
+		'Case COL_TYPE_GRAPHIC	'7 --> special column type Obj; this represents the graphical objects attached to the table.
+
+		Case COL_TYPE_FLOAT		'8 'Floating-point decimal
 			COLTypeAsString = "Float"
-		Case 37 'Time
+
+		Case COL_TYPE_TIME		'37 'Time
 			COLTypeAsString = "Time"
-		Case 38 'DateTime
+
+		Case COL_TYPE_DATETIME	'38 'DateTime
 			COLTypeAsString = "DateTime"
+
+		Case COL_TYPE_LARGEINT	'39 'Large integer (8-byte)
+			COLTypeAsString = "Smallint"
 	End Case
 
 	Exit Function
@@ -293,7 +303,6 @@ End Function
 'Created by Frank Salet, Precisely
 'Parameters:
 '
-
 '**********************************************************************************************''
 Function COLGetValidName(ByVal sText As String) As String
 
