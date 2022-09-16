@@ -33,13 +33,18 @@
 '		- ARRAYSortDescString is now using ARRAYQuickSortDescString
 '	11-01-2013 10:40:59
 '		- Added Sub ARRAYRemoveValuesString(...)
+'	26/08/2022 08.13.29
+'		- Added Sub ARRAYAddValueLogical(...)
+'		- Added Sub ARRAYAddValueAsItemLogical(...)
+'		- Added ARRAYAddArrayLogical(...)
+
 '********************************************************************************************************
 
 '--------------------------------------------------------------------------------------------------------------------------------------------------
 '** S T R I N G     A R R A Y S
 '--------------------------------------------------------------------------------------------------------------------------------------------------
 Declare Sub ARRAYAddValueString(		  arrValues() As String			'Array of values to work on
-								, ByVal sNewValue As String		'New string value to insert at a certain position
+								, ByVal sNewValue As String		'New string value to insert at end of array
 								)							'The existing values will be maintained - the new value will be added at the end
 Declare Sub ARRAYAddValueAsItemString(	  arrValues() As String			'Array of values to work on
 								, ByVal sNewValue As String		'New string value to insert at a certain position
@@ -105,7 +110,7 @@ Declare Sub ARRAYCopyString(				  arrFrom() As String			'Array of values to copy
 '** I N T E G E R     A R R A Y S
 '--------------------------------------------------------------------------------------------------------------------------------------------------
 Declare Sub ARRAYAddValueInteger(		  arrValues() As Integer			'Array of values to work on
-								, ByVal nNewValue As Integer		'New string value to insert at a certain position
+								, ByVal nNewValue As Integer		'New Integer value to insert at end of array
 								)							'The existing values will be maintained - the new value will be added at the end
 Declare Sub ARRAYRemoveValueInteger(	  arrValues() As Integer			'Array of values to work on
 								, ByVal nValue As Integer		'Integer value to remove from the array
@@ -128,3 +133,17 @@ Declare Function ARRAYToSeparatedTextInteger(  arrValues() As Integer			'Array o
 Declare Sub ARRAYCopyInteger(			  arrFrom() As Integer			'Array of values to copy to the other array
 								, arrTo() As Integer			'Array of values to recieve the values from the first array
 								)							'The arrTo will be resized to contain exactly the same number of elements as the arrFrom
+
+
+'--------------------------------------------------------------------------------------------------------------------------------------------------
+'** L O G I C A L     A R R A Y S
+'--------------------------------------------------------------------------------------------------------------------------------------------------
+Declare Sub ARRAYAddValueLogical(	  arrValues() As Logical			'Array of values to work on
+							, ByVal bNewValue As Logical)		'New Logical value to insert at end of array
+Declare Sub ARRAYAddValueAsItemLogical(	  arrValues() As Logical		'Array of values to work on
+								, ByVal bNewValue As Logical	'New Logical value to insert at a certain position
+								, ByVal nItem As Integer		'The position to insert the value at, -1 it will be added at the end
+								)						'The existing values will be maintain but values from nItem and up will be moved by one
+Declare Sub ARRAYAddArrayLogical(	  arrToAdd() As Logical			'Array of values to copy to the other array
+							, arrTo() As Logical			'Array of values to recieve the values from the first array
+							)							'The arrTo will be now hold the original records and the records from the arrToAdd

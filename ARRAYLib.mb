@@ -782,3 +782,93 @@ ErrorOccured:
 
 End Sub
 
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddValueLogical(arrValues() As Logical, ByVal bNewValue As Logical)
+
+Dim nNumItems As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues) + 1
+	Redim arrValues(nNumItems)
+
+	arrValues(nNumItems) = bNewValue
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddValueLogical")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddValueAsItemLogical( arrValues() As Logical			'Array of values to work on
+						, ByVal bNewValue As Logical		'New Logical value to insert at a certain position
+						, ByVal nItem As Integer			'The position to insert the value at, -1 it will be added at the end
+						)							'The existing values will be maintain but values from nItem and up will be moved by one
+
+Dim	nNumItems, i As Integer,
+	bCurrentValue As Logical
+
+OnError GoTo ErrorOccured
+
+	nNumItems = Ubound(arrValues) + 1
+	Redim arrValues(nNumItems)
+
+	If nItem = -1 Then
+		nItem = nNumItems
+	ElseIf nItem > nNumItems Then
+		nItem = nNumItems
+	ElseIf nItem < 1 Then
+		nItem = 1
+	End If
+
+	For i = nItem To Ubound(arrValues)
+		bCurrentValue	= arrValues(i)
+		arrValues(i)	= bNewValue
+		bNewValue		= bCurrentValue
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddValueAsItemLogical")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub ARRAYAddArrayLogical(  arrToAdd() As Logical			'Array of values to copy to the other array
+					, arrTo() As Logical			'Array of values to recieve the values from the first array
+					)							'The arrTo will be now hold the original records and the records from the arrToAdd
+
+Dim	nNumItems, nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	nNumItems	= Ubound(arrTo)
+	Redim arrTo(nNumItems + Ubound(arrToAdd))
+
+	For nItem = 1 To Ubound(arrToAdd)
+		arrTo(nNumItems + nItem)	= arrToAdd(nItem)
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "ARRAYAddArrayLogical")
+	Call ERRShow()
+
+End Sub
