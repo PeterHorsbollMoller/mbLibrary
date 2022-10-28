@@ -128,3 +128,203 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	nMID			: ID of Map Window to get layers from
+'	nTypesToUse	: Bitsum describing what table to use, use LAYER_USE_ constants
+'	arrLayerIDs	: will contain the IDs of the layers that meet the criteria, note that the arrays will not be cleared
+'	arrLayers()	: will contain the tables that meet the criteria, note that the arrays will not be cleared
+'Return value:
+'	Number of tables that met the criteria
+'**********************************************************************************************''
+Function LAYERGetListOfNames(	  ByVal nMID As Integer			'ID of Map Window to get layers from
+						, ByVal nTypesToUse As Integer	'Bitsum describing what layer to use, use LAYER_USE_ constants
+						, arrLayerIDs() As Integer		'contains the IDs of the layers that meet the criteria, note that the arrays will not be cleared
+						, arrLayers() As String			'contains the layers that meet the criteria, note that the arrays will not be cleared
+						) As Integer					'returns the number of layers found
+
+Dim	nLayer, nCount As Integer,
+	sTab As String
+
+OnError GoTo ErrorOccured
+
+LAYERGetListOfNames = 0
+
+	nCount	= Ubound(arrLayers)
+
+	For nLayer = 1 To MapperInfo(nMID, MAPPER_INFO_LAYERS)
+		If LAYERUseLayerNo(nMID, nLayer, nTypesToUse)  Then
+			nCount		= nCount + 1
+			Redim arrLayerIDs(nCount)
+			Redim arrLayers(nCount)
+			arrLayerIDs(nCount)	= nLayer
+			arrLayers(nCount)	= LayerInfo(nMID, nLayer, TAB_INFO_NAME)
+		End If
+	Next
+
+LAYERGetListOfNames = nCount
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "LAYERGetListOfNames")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	nMID			: ID of Map Window to get layers from
+'	nLayer 		: Layer# to check
+'	nTypesToUse 	: Bitsum describing what layer to use, use LAYER_USE_ constants
+'Return value:
+'	Returns true if the table meets all criterias
+'**********************************************************************************************''
+Function LAYERUseLayerNo(  ByVal nMID As Integer			'ID of Map Window to get layers from
+					, ByVal nLayer As Integer		'Layer# to check
+					, ByVal nTypesToUse As Integer	'Bitsum describing what layer to use, use LAYER_USE_ constants
+					) As Logical					'Returns true if the layer meets all criterias
+
+Dim	sTab As String
+
+OnError GoTo ErrorOccured
+
+LAYERUseLayerNo = FALSE
+
+	If LAYERIsBitOn(LAYER_USE_ONLY_VISIBLE, nTypesToUse) Or LAYERIsBitOn(LAYER_USE_ONLY_SELECTABLE, nTypesToUse) Then
+		If LayerInfo(nMID, nLayer, LAYER_INFO_DISPLAY) = LAYER_INFO_DISPLAY_OFF Then
+			Exit Function
+		End If
+
+		If LayerInfo(nMID, nLayer, LAYER_INFO_ZOOM_LAYERED) Then
+			If MapperInfo(nMID, MAPPER_INFO_ZOOM) < LayerInfo(nMID, nLayer, LAYER_INFO_ZOOM_MIN) Then
+				Exit Function
+			ElseIf MapperInfo(nMID, MAPPER_INFO_ZOOM) > LayerInfo(nMID, nLayer, LAYER_INFO_ZOOM_MAX) Then
+				Exit Function
+			End If
+		End If
+	End If
+
+
+	Do Case LayerInfo(nMID, nLayer, LAYER_INFO_TYPE)
+		Case LAYER_INFO_TYPE_NORMAL
+			If Not LAYERIsBitOn(LAYER_USE_NORMAL, nTypesToUse) Then
+				Exit Function
+			End If
+			If LAYERIsBitOn(LAYER_USE_ONLY_SELECTABLE, nTypesToUse) Then
+				If Not LayerInfo(nMID, nLayer, LAYER_INFO_SELECTABLE) Then
+					Exit Function
+				End If
+			End If
+
+			sTab = LayerInfo(nMID, nLayer, LAYER_INFO_NAME)
+			'**Use Read-Only tables...
+			If NOT LAYERIsBitOn(LAYER_USE_READONLY, nTypesToUse) Then
+				If TableInfo(sTab, TAB_INFO_READONLY) Then
+					Exit Function
+				End If
+			End If
+			If NOT LAYERIsBitOn(LAYER_USE_TEMP, nTypesToUse) Then
+				If TableInfo(sTab, TAB_INFO_TEMP) Then
+					Exit Function
+				End If
+			End If
+		Case LAYER_INFO_TYPE_COSMETIC
+			If Not LAYERIsBitOn(LAYER_USE_COSMETIC, nTypesToUse) Then
+				Exit Function
+			End If
+			If LAYERIsBitOn(LAYER_USE_ONLY_SELECTABLE, nTypesToUse) Then
+				If Not LayerInfo(nMID, nLayer, LAYER_INFO_SELECTABLE) Then
+					Exit Function
+				End If
+			End If
+		Case LAYER_INFO_TYPE_IMAGE
+			If Not LAYERIsBitOn(LAYER_USE_IMAGE, nTypesToUse) Then
+				Exit Function
+			End If
+		Case LAYER_INFO_TYPE_THEMATIC
+			If Not LAYERIsBitOn(LAYER_USE_THEMATIC, nTypesToUse) Then
+				Exit Function
+			End If
+		Case LAYER_INFO_TYPE_GRID
+			If Not LAYERIsBitOn(LAYER_USE_GRID, nTypesToUse) Then
+				Exit Function
+			End If
+		Case LAYER_INFO_TYPE_WMS
+			If Not LAYERIsBitOn(LAYER_USE_WMS, nTypesToUse) Then
+				Exit Function
+			End If
+		Case LAYER_INFO_TYPE_TILESERVER
+			If Not LAYERIsBitOn(LAYER_USE_TILESERVER, nTypesToUse) Then
+				Exit Function
+			End If
+		Case LAYER_INFO_TYPE_GRIDLINE
+			If Not LAYERIsBitOn(LAYER_USE_GRIDLINE, nTypesToUse) Then
+				Exit Function
+			End If
+	End Case
+
+LAYERUseLayerNo = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "LAYERUseLayerNo")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	nBit 	: The bit to check for
+'	nBitSum	: The sum of bits to see if nBit is On
+'Return value:
+'	TRUE		: The bit nBit is set
+'	FALSE	: The bit nBit is not set
+'**********************************************************************************************''
+Function LAYERIsBitOn(	  ByVal nBit As Integer		'Bit to check for
+					, ByVal nBitSum As Integer	'Bit sum to check if bit is set
+					) As Logical				'True if the bit is set in the bit sum
+
+Dim	nCurBit As Integer
+
+OnError GoTo ErrorOccured
+
+LAYERIsBitOn = FALSE
+
+	nCurBit	= 64
+	'**Finding the maximum bit that can be set in the nBitSum
+	Do While (nCurBit < nBitSum)
+		nCurBit = nCurBit * 2
+	Loop
+
+'	Print "Searching for " & nbit & " in " & nBitSum
+	Do While (nCurBit >= nBit)
+		If (nBitSum >= nCurBit) Then
+			If nCurBit = nBit Then
+'				Print "   " & nBit & " was found"
+				LAYERIsBitOn = TRUE
+				Exit Function
+			End If
+
+			nBitSum = nBitSum - nCurBit
+		End If
+		'**One has been tested once, so we are done
+		If nCurBit = 1 Then
+			Exit Function
+		End If
+
+		nCurBit = (nCurBit / 2)
+	Loop
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "LAYERIsBitOn")
+	Call ERRShow()
+
+End Function

@@ -7,7 +7,25 @@
 '							- Function LAYERGetLayerNumber(...) As Integer
 '	05-06-2013 12:19:20		Added:
 '							- Function LAYERGetPositionInGroupLayer(...) As Integer
+'	26/10/2022 08.01.53		Added:
+'							- Function LAYERGetListOfNames(...) As Integer
+'							- Function LAYERUseLayerNo(...) As Logical
+'							- Function LAYERIsBitOn(...) As Logical
 '**************************************************************************************************
+
+Define LAYER_USE_ONLY_SELECTABLE	1
+Define LAYER_USE_ONLY_VISIBLE		2
+Define LAYER_USE_COSMETIC		4
+Define LAYER_USE_NORMAL			8
+Define LAYER_USE_IMAGE			16
+Define LAYER_USE_THEMATIC		32
+Define LAYER_USE_GRID			64
+Define LAYER_USE_WMS			128
+Define LAYER_USE_TILESERVER		256
+Define LAYER_USE_GRIDLINE		512
+Define LAYER_USE_READONLY		1024
+Define LAYER_USE_TEMP			2048
+
 
 Declare Function LAYERExists(	  ByVal nMID As Integer
 						, ByVal sLayer As String
@@ -21,3 +39,16 @@ Declare Function LAYERGetPositionInGroupLayer(	  ByVal nMID As Integer			'MapWin
 										) As Integer					'Returns the position within this group layer
 																	'If you want to use to insert a layer,
 																	'use (Position - 1) if you insert into the top level
+
+Declare Function LAYERGetListOfNames(	  ByVal nMID As Integer			'ID of Map Window to get layers from
+								, ByVal nTypesToUse As Integer	'Bitsum describing what layer to use, use LAYER_USE_ constants
+								, arrLayerIDs() As Integer		'contains the IDs of the layers that meet the criteria, note that the arrays will not be cleared
+								, arrLayerss() As String			'contains the layers that meet the criteria, note that the arrays will not be cleared
+								) As Integer					'returns the number of layers found
+Declare Function LAYERUseLayerNo(	  ByVal nMID As Integer			'ID of Map Window to get layers from
+							, ByVal nLayer As Integer		'Layer# to check
+							, ByVal nTypesToUse As Integer	'Bitsum describing what layer to use, use LAYER_USE_ constants
+							) As Logical						'Returns true if the layer meets all criterias
+Declare Function LAYERIsBitOn(  ByVal nBit As Integer		'Bit to check for
+						, ByVal nBitSum As Integer	'Bit sum to check if bit is set
+						) As Logical				'True if the bit is set in the bit sum
