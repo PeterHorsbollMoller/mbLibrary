@@ -1,0 +1,14 @@
+Declare Function DLGSelectLayerAndColumn( ByVal nMID As Integer				'**ID of Map Window to load layers from
+								, ByVal nLayerTypesToUse As Integer	'**Integer value determining what layer types to show in the list
+								, ByVal sTitle As String				'**Dialog Title
+								, ByVal sTitleLayerList As String		'**Title above the List of Layers
+								, ByVal nDefaultLayerID As String		'**Preselected Layer if found in nthe List of Layer IDs
+								, ByVal sDefaultLayerName As String	'**Preselected Layer if found in nthe List of Layers
+								, ByVal nColumnTypesToUse As Integer	'**Integer value determining what Column Types to show in the list
+								, ByVal sTitleColumnList As String		'**Title above the List of Columns
+								, ByVal sDefaultColumnName As String	'**Preselected Column if found in nthe List of Columns
+								) As Logical						'**Returns TRUE if a Table and Column was selected or FALSE if dialog was cancelled
+
+Declare Function DLGSLCGetLayerID() As Integer
+Declare Function DLGSLCGetLayerName() As String
+Declare Function DLGSLCGetColumnName() As String

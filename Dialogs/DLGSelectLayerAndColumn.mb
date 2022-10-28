@@ -1,0 +1,391 @@
+'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Pitney Bowes Software
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "..\Defaults.def"
+
+'-------------------------------------
+Include "..\ARRAYLib.def"
+Include "..\COLUMNLib.def"
+Include "..\DEBUGLib.def"
+Include "..\ERRORLib.def"
+Include "..\LAYERLib.def"
+Include "..\TABLELib.def"
+
+Include "DLGSelectLayerAndColumn.def"
+
+Define	CTRL_LST_LAYERS		100
+Define	CTRL_LST_COLUMNS		200
+Define	CTRL_CMD_OK			1000
+
+Declare Sub DLGSLC_OnLoad
+Declare Sub DLGSLC_OKClicked
+Declare Sub DLGSLC_LayerListClicked
+Declare Sub DLGSLC_ColumnListClicked
+Declare Sub DLGSLC_LoadLayerList
+Declare Sub DLGSLC_LoadColumnList
+
+Dim	msLayerName, msColumnName, msDefaultLayerName, msDefaultColumnName As String,
+	mbUserDoubleClickedOnColumn, mbInitiatingDialog As Logical,
+	marrLayerDescription(), marrLayerNames(), marrColumnNames() As String,
+	mnMID, marrLayerIDs(), mnLayerID, mnDefaultLayerID, mnLayerTypesToUse, mnColumnTypesToUse As Integer
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSelectLayerAndColumn(	  ByVal nMID As Integer				'**ID of Map Window to load layers from
+							, ByVal nLayerTypesToUse As Integer	'**Integer value determining what layer types to show in the list
+							, ByVal sTitle As String				'**Dialog Title
+							, ByVal sTitleLayerList As String		'**Title above the List of Layers
+							, ByVal nDefaultLayerID As String		'**Preselected Layer if found in nthe List of Layer IDs
+							, ByVal sDefaultLayerName As String	'**Preselected Layer if found in nthe List of Layers
+							, ByVal nColumnTypesToUse As Integer	'**Integer value determining what Column Types to show in the list
+							, ByVal sTitleColumnList As String		'**Title above the List of Columns
+							, ByVal sDefaultColumnName As String	'**Preselected Column if found in nthe List of Columns
+							) As Logical
+
+OnError GoTo ErrorOccured
+
+DLGSelectLayerAndColumn = FALSE
+
+	mnMID					= nMID
+	mnLayerTypesToUse			= nLayerTypesToUse
+	mnLayerID					= 0
+	msLayerName				= ""
+	mnDefaultLayerID			= nDefaultLayerID
+	msDefaultLayerName			= sDefaultLayerName
+	mnColumnTypesToUse			= nColumnTypesToUse
+	msColumnName				= ""
+	msDefaultColumnName			= sDefaultColumnName
+	mbUserDoubleClickedOnColumn	= FALSE
+
+	Dialog
+		Title sTitle
+		Calling DLGSLC_OnLoad
+
+		Control StaticText		Position 5,5
+			Title sTitleLayerList
+		Control PopupMenu		Position 5,15		ID CTRL_LST_LAYERS
+			Width 150	'Height 120
+			Calling DLGSLC_LayerListClicked
+
+		Control StaticText		Position 5,35
+			Title sTitleColumnList
+		Control Listbox		Position 5,45		ID CTRL_LST_COLUMNS
+			Width 150	Height 120
+			Calling DLGSLC_ColumnListClicked
+
+		Control OKButton		Position 170,15	ID CTRL_CMD_OK
+			Width 40
+			Calling DLGSLC_OKClicked
+		Control CancelButton	Position 170,30
+			Width 40
+
+	If not CommandInfo(CMD_INFO_DLG_OK) Then
+		If NOT mbUserDoubleClickedOnColumn Then
+			mnLayerID		= 0
+			msLayerName	= ""
+			msColumnName	= ""
+			Exit Function
+		End If
+	End If
+
+'	Print "DLGSelectLayerAndColumn: " & msLayerName & " (" & msColumnName & ")"
+	DLGSelectLayerAndColumn = TRUE
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSelectLayerAndColumn")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSLC_OnLoad
+
+Dim	nLayer As Integer
+
+OnError GoTo ErrorOccured
+
+	mbInitiatingDialog	= TRUE
+
+	Alter Control CTRL_CMD_OK	Disable
+
+	Call DLGSLC_LoadLayerList
+
+	If mnDefaultLayerID > 0 Then
+		nLayer = ARRAYFindValueInteger(marrLayerIDs, mnDefaultLayerID)
+		If nLayer > 0 Then
+			Alter Control CTRL_LST_LAYERS	Value nLayer
+			Call DLGSLC_LayerListClicked
+		End If
+	End If
+	If nLayer = 0 Then
+		If msDefaultLayerName <> "" Then
+			nLayer = ARRAYFindValueString(marrLayerNames, msDefaultLayerName)
+			If nLayer > 0 Then
+				Alter Control CTRL_LST_LAYERS	Value nLayer
+				Call DLGSLC_LayerListClicked
+			End If
+		End If
+	End If
+	If nLayer = 0 Then
+		If Ubound(marrLayerNames) > 0 Then
+			Alter Control CTRL_LST_LAYERS	Value 1
+			Call DLGSLC_LayerListClicked
+		End If
+	End If
+
+	mbInitiatingDialog = FALSE
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLC_OnLoad")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSLC_OKClicked
+
+Dim	nLayer, nCol As Integer
+
+OnError GoTo ErrorOccured
+
+	nLayer	= ReadControlValue(CTRL_LST_LAYERS)
+	If nLayer = 0 Then
+		Dialog Preserve
+		Exit Sub
+	End If
+
+	msLayerName	= marrLayerNames(nLayer)
+	mnLayerID		= marrLayerIDs(nLayer)
+
+	nCol	= ReadControlValue(CTRL_LST_COLUMNS)
+	If nCol = 0 Then
+		Dialog Preserve
+		Exit Sub
+	End If
+
+	msColumnName	= marrColumnNames(nCol)
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLC_OKClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSLC_LoadLayerList
+
+Dim nLayer As Integer
+
+OnError GoTo ErrorOccured
+
+	Redim marrLayerNames(0)
+	Redim marrLayerDescription(0)
+	Redim marrLayerIDs(0)
+	If LAYERGetListOfNames(mnMID, mnLayerTypesToUse, marrLayerIDs(), marrLayerNames()) = 0 Then
+		ReDim marrLayerNames(0)
+	End If
+
+	Redim marrLayerDescription(Ubound(marrLayerNames))
+	For nLayer = 1 To Ubound(marrLayerNames)
+		If LayerInfo(mnMID, marrLayerIDs(nLayer), LAYER_INFO_FRIENDLYNAME) <> "" Then
+			marrLayerDescription(nLayer) = LayerInfo(mnMID, marrLayerIDs(nLayer), LAYER_INFO_FRIENDLYNAME) & " (" & marrLayerNames(nLayer) & ")"
+		Else
+			marrLayerDescription(nLayer) = marrLayerNames(nLayer)
+		End If
+	Next
+
+	Alter Control CTRL_LST_LAYERS	Title From Variable marrLayerDescription
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLC_LoadLayerList")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSLC_LoadColumnList
+
+OnError GoTo ErrorOccured
+
+	Redim marrColumnNames(0)
+	If COLGetListOfNames(msLayerName, mnColumnTypesToUse, marrColumnNames()) Then
+
+	End If
+
+	Alter Control CTRL_LST_COLUMNS Title From Variable marrColumnNames
+'	Call DLGSLC_ColumnListClicked
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLC_LoadColumnList")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSLC_LayerListClicked
+
+Dim	nColumn As Integer
+
+OnError GoTo ErrorOccured
+
+	mbInitiatingDialog = TRUE
+
+	msLayerName	= marrLayerNames(ReadControlValue(CTRL_LST_LAYERS))
+	mnLayerID		= marrLayerIDs(ReadControlValue(CTRL_LST_LAYERS))
+	Call DLGSLC_LoadColumnList
+
+	If msDefaultColumnName > "" Then
+		nColumn = ARRAYFindValueString(marrColumnNames, msDefaultColumnName)
+		If nColumn > 0 Then
+			Alter Control CTRL_LST_COLUMNS	Value nColumn
+			Call DLGSLC_ColumnListClicked
+		End If
+	End If
+
+	mbInitiatingDialog = FALSE
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLC_LayerListClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Software
+'Parameters:
+'
+'**********************************************************************************************''
+Sub DLGSLC_ColumnListClicked
+
+Dim	nCol As Integer
+
+OnError GoTo ErrorOccured
+
+	nCol	= ReadControlValue(CTRL_LST_COLUMNS)
+	If nCol = 0 Then
+		Alter Control CTRL_CMD_OK	Disable
+	Else
+		Alter Control CTRL_CMD_OK	Enable
+	End If
+
+	msColumnName = marrColumnNames(ReadControlValue(CTRL_LST_COLUMNS))
+	If NOT mbInitiatingDialog Then
+		If CommandInfo(CMD_INFO_DLG_DBL) Then
+			mbUserDoubleClickedOnColumn = TRUE
+'			Call DLGSLC_OKClicked
+			Dialog Remove
+		End If
+	End If
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLC_ColumnListClicked")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSLCGetLayerID() As Integer
+
+OnError GoTo ErrorOccured
+
+	DLGSLCGetLayerID = mnLayerID
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLCGetLayerID")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSLCGetLayerName() As String
+
+OnError GoTo ErrorOccured
+
+	DLGSLCGetLayerName = msLayerName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLCGetLayerName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes Business Insight
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function DLGSLCGetColumnName() As String
+
+OnError GoTo ErrorOccured
+
+	DLGSLCGetColumnName = msColumnName
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "DLGSLCGetColumnName")
+	Call ERRShow()
+
+End Function
