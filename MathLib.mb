@@ -50,7 +50,7 @@ MATHGetDirection = 0
 	End If
 
 	'//Checking for horisontal dirction
-	If (fEndY = fStartY) Then
+	If (fEndY - fStartY) = 0 Then
 		If (fEndX < fStartX) Then
 			'//tEnd is west of tStart...
 			MATHGetDirection = 180	'degrees
@@ -201,6 +201,96 @@ MATHIsBitOn = FALSE
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "MATHIsBitOn")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'MapInfo Pro typically works with a mathematical angle
+'East/Right is 0, and the values grow counter clockwise: North is 90, West is 180, and South is 270
+'Parameters:
+'	fNorthAngle: Angle measured with North being 0 and clockwise
+'Return value:
+'	Math angle where East is 0 and counter-clockwise
+'**********************************************************************************************''
+Function MATHNorth2MathAngle(	ByVal fNorthAngle As Float) As Float
+
+Dim	fNewAngle As Float
+
+OnError GoTo ErrorOccured
+
+	If fNorthAngle = 0 Then
+		fNewAngle	= 90
+	ElseIf fNorthAngle = 90 Then
+		fNewAngle	= 0
+	ElseIf fNorthAngle = 180 Then
+		fNewAngle	= 270
+	ElseIf fNorthAngle = 270 Then
+		fNewAngle	= 180
+	ElseIf fNorthAngle = 360 Then
+		fNewAngle	= 90
+	ElseIf fNorthAngle > 0 And fNorthAngle < 90 Then
+		fNewAngle	= 90 - fNorthAngle
+	ElseIf fNorthAngle > 90 And fNorthAngle < 180 Then
+		fNewAngle	= (360 - fNorthAngle) + 90
+	ElseIf fNorthAngle > 180 And fNorthAngle < 270 Then
+		fNewAngle	= (270 - fNorthAngle) + 180
+	ElseIf fNorthAngle > 270 And fNorthAngle < 360 Then
+		fNewAngle	= (360 - fNorthAngle) + 90
+	End If
+
+	MathNorth2MathAngle = fNewAngle
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MathNorth2MathAngle")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'MapInfo Pro typically works with a mathematical angle
+'East/Right is 0, and the values grow counter clockwise: North is 90, West is 180, and South is 270
+'Parameters:
+'	fMathAngle: Angle measured with East being 0 and counter-clockwise
+'Return value:
+'	North angle where North is 0 and clockwise
+'**********************************************************************************************''
+'****************************************
+Function MathMath2NorthAngle(ByVal fMathAngle As Float) As Float
+
+Dim	fNewAngle As Float
+
+OnError GoTo ErrorOccured
+
+	If fMathAngle = 0 Then
+		fNewAngle	= 90
+	ElseIf fMathAngle = 90 Then
+		fNewAngle	= 0
+	ElseIf fMathAngle = 180 Then
+		fNewAngle	= 270
+	ElseIf fMathAngle = 270 Then
+		fNewAngle	= 180
+	ElseIf fMathAngle = 360 Then
+		fNewAngle	= 90
+	ElseIf fMathAngle > 0 And fMathAngle < 90 Then
+		fNewAngle	= 90 - fMathAngle
+	ElseIf fMathAngle > 90 And fMathAngle < 180 Then
+		fNewAngle	= (360 - fMathAngle) + 90
+	ElseIf fMathAngle > 180 And fMathAngle < 270 Then
+		fNewAngle	= (270 - fMathAngle) + 180
+	ElseIf fMathAngle > 270 And fMathAngle < 360 Then
+		fNewAngle	= (360 - fMathAngle) + 90
+	End If
+
+	MathMath2NorthAngle = fNewAngle
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MathMath2NorthAngle")
 	Call ERRShow()
 
 End Function

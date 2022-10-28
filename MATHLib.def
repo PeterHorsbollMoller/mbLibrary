@@ -22,23 +22,28 @@
 
 'Requires MapInfo Pro 4.0
 
-Declare Function MATHGetDirection(	  ByVal fStartX As Float
-							, ByVal fStartY As Float
-							, ByVal fEndX As Float
-							, ByVal fEndY As Float
-							) As Float 		'Return the direction of the line, East = 0, counter clockwise
+Declare Function MATHGetDirection(	  ByVal fStartX As Float	'X value of start point
+							, ByVal fStartY As Float	'Y value of start point
+							, ByVal fEndX As Float	'X value of end point
+							, ByVal fEndY As Float	'Y value of end point
+							) As Float 			'Return the direction of the line, East = 0, counter clockwise
 Declare Function MATHGetValidDirection(	  ByVal fDirection As Float	'The direction to validate
-							) As Float				'Returns a direction between 0 and 360
+								) As Float				'Returns a direction between 0 and 360
 
-Declare Function MATHOffsetX(	  ByVal fX As Float		'X value to offset
-					, ByVal fDistance As Float	'Distance to move the X value
-					, ByVal fDirection As Float	'Direction to move the X value
-					) As Float				'New X value moved using the values above
-Declare Function MATHOffsetY(	  ByVal fY As Float		'Y value to offset
-					, ByVal fDistance As Float	'Distance to move the Y value
-					, ByVal fDirection As Float	'Direction to move the Y value
-					) As Float				'New Y value moved using the values above
+Declare Function MATHOffsetX(	  ByVal fX As Float			'X value to offset
+						, ByVal fDistance As Float	'Distance to move the X value
+						, ByVal fDirection As Float	'Direction to move the X value
+						) As Float				'New X value moved using the values above
+Declare Function MATHOffsetY(	  ByVal fY As Float			'Y value to offset
+						, ByVal fDistance As Float	'Distance to move the Y value
+						, ByVal fDirection As Float	'Direction to move the Y value
+						) As Float				'New Y value moved using the values above
 
 Declare Function MATHIsBitOn(	  ByVal nBit As Integer		'Bit to check for
-					, ByVal nBitSum As Integer	'BitSum to check the existence within
-					) As Logical			'Returns true if the nBit was found set/found in nBitSum
+						, ByVal nBitSum As Integer	'BitSum to check the existence within
+						) As Logical				'Returns true if the nBit was found set/found in nBitSum
+
+Declare Function MATHNorth2MathAngle(	  ByVal fNorthAngle As Float	'Angle where North is 0 and clockwise
+								) As Float				'Return Angle where East is 0 and counter clockwise
+Declare Function MathMath2NorthAngle(	  ByVal fMathAngle As Float	'Angle where East is 0 and counter clockwise
+								) As Float				'Return Angle where North is 0 and clockwise
