@@ -13,6 +13,7 @@ Include "Menu.def"
 Include "..\Defaults.def"
 
 '-------------------------------------
+Include "..\COLUMNLib.def"
 Include "..\DEBUGLib.def"
 Include "..\ERRORLib.def"
 Include "..\STRINGLib.def"
@@ -418,97 +419,103 @@ tlbsGetSetMapStatement = ""
 '			[ AutoCallout { On | Off } ]
 '			[ Abbreviation { On | Off } Abbreviate with { field_expression } ]
 
-	sCmd = " Label"
-			& " Auto " & STRINGLogicalToText(tlbs.bAutoDisplay, "On", "Off")
-			& " Auto Retry " & STRINGLogicalToText(tlbs.bPositionRetry, "On", "Off")
+	sCmd = tlbsGetSetMapStatementOnlyExpr(nMID, nLyrID, tlbs)
+	sCmd = Right$(sCmd, Len(sCmd) - 6)
 
-	Do Case tlbs.nLineType
-		Case LAYER_INFO_LBL_LT_ARROW
-			sCmd = sCmd & " Line Arrow"
-		Case LAYER_INFO_LBL_LT_SIMPLE
-			sCmd = sCmd & " Line Simple"
-		Case LAYER_INFO_LBL_LT_NONE
-	End Case
+	sCmd = tlbsGetSetMapStatementNoExpr(nMID, nLyrID, tlbs)
+			& sCmd
 
-	sCmd = sCmd & " " & tlbs.penLine
-
-	Do Case tlbs.nPosition
-		Case LAYER_INFO_LBL_POS_TL
-			sCmd = sCmd & " Position Above Left"
-		Case LAYER_INFO_LBL_POS_TC
-			sCmd = sCmd & " Position Center Above"
-		Case LAYER_INFO_LBL_POS_TR
-			sCmd = sCmd & " Position Above Right"
-		Case LAYER_INFO_LBL_POS_CL
-			sCmd = sCmd & " Position Center Left"
-		Case LAYER_INFO_LBL_POS_CC
-			sCmd = sCmd & " Position Center"
-		Case LAYER_INFO_LBL_POS_CR
-			sCmd = sCmd & " Position Center Right"
-		Case LAYER_INFO_LBL_POS_BL
-			sCmd = sCmd & " Position Below Left"
-		Case LAYER_INFO_LBL_POS_BC
-			sCmd = sCmd & " Position Center Below"
-		Case LAYER_INFO_LBL_POS_BR
-			sCmd = sCmd & " Position Below Right"
-	End Case
-
-	sCmd = sCmd & " Offset " & tlbs.nOffset
-	sCmd = sCmd & " " & tlbs.fntLabel
-
-	If tlbs.sExpression = "" Then
-		sCmd = sCmd & " With COL1"
-	Else
-		sCmd = sCmd & " With " & tlbs.sExpression
-	End If
-
-	Do Case tlbs.nOrientation
-		Case LAYER_INFO_LABEL_ORIENT_HORIZONTAL
-			sCmd = sCmd & " Parallel Off"
-		Case	LAYER_INFO_LABEL_ORIENT_PARALLEL
-			sCmd = sCmd & " Parallel On"
-		Case	LAYER_INFO_LABEL_ORIENT_CURVED
-			sCmd = sCmd & " Follow Path"
-
-			If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
-				sCmd = sCmd & " BestPosition " & STRINGLogicalToText(tlbs.bCurvedBestPostion, "On", "Off")
-					& " Percent Over " & tlbs.nCurvedPercentOver
-					& " Fallback " & STRINGLogicalToText(tlbs.bCurvedFallback, "On", "Off")
-			End If
-	End Case
-
-	Do Case tlbs.nVisibility
-		Case LAYER_INFO_LBL_VIS_ON
-			sCmd = sCmd & " Visibility On"
-		Case LAYER_INFO_LBL_VIS_ZOOM
-			sCmd = sCmd & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
-		Case LAYER_INFO_LBL_VIS_OFF
-			sCmd = sCmd & " Visibility Off"
-	End Case
-
-	sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlbs.bAllowOverlap, "On", "Off")
-			& " PartialSegments " & STRINGLogicalToText(tlbs.bPartialSegments, "On", "Off")
-			& " Duplicates " & STRINGLogicalToText(tlbs.bAllowDuplicates, "On", "Off")
-			& " Max " & tlbs.nMaxNumber
-			& " LabelAlpha " & tlbs.nAlpha
-
-	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
-		sCmd = sCmd & " AutoPosition " & STRINGLogicalToText(tlbs.bAutoPosition, "On", "Off")
-				& " AutoSizes " & Maximum(tlbs.bAutoSizes, 1)
-				& " AutoSizeStep " & tlbs.nAutoSizeStes
-				& " SuppressIfNoFit " & STRINGLogicalToText(tlbs.bSuppressIfNotFit, "On", "Off")
-				& " AutoCallout " & STRINGLogicalToText(tlbs.bAutoCallOut, "On", "Off")
-
-		If tlbs.sAbbreviationExpr = "" Then
-			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
-					& " Abbreviate with COL1"
-		Else
-			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
-					& " Abbreviate with " & tlbs.sAbbreviationExpr
-		End If
-
-		'tlbs.nLabelOrder - no way to set this?
-	End If
+'	sCmd = " Label"
+'			& " Auto " & STRINGLogicalToText(tlbs.bAutoDisplay, "On", "Off")
+'			& " Auto Retry " & STRINGLogicalToText(tlbs.bPositionRetry, "On", "Off")
+'
+'	Do Case tlbs.nLineType
+'		Case LAYER_INFO_LBL_LT_ARROW
+'			sCmd = sCmd & " Line Arrow"
+'		Case LAYER_INFO_LBL_LT_SIMPLE
+'			sCmd = sCmd & " Line Simple"
+'		Case LAYER_INFO_LBL_LT_NONE
+'	End Case
+'
+'	sCmd = sCmd & " " & tlbs.penLine
+'
+'	Do Case tlbs.nPosition
+'		Case LAYER_INFO_LBL_POS_TL
+'			sCmd = sCmd & " Position Above Left"
+'		Case LAYER_INFO_LBL_POS_TC
+'			sCmd = sCmd & " Position Center Above"
+'		Case LAYER_INFO_LBL_POS_TR
+'			sCmd = sCmd & " Position Above Right"
+'		Case LAYER_INFO_LBL_POS_CL
+'			sCmd = sCmd & " Position Center Left"
+'		Case LAYER_INFO_LBL_POS_CC
+'			sCmd = sCmd & " Position Center"
+'		Case LAYER_INFO_LBL_POS_CR
+'			sCmd = sCmd & " Position Center Right"
+'		Case LAYER_INFO_LBL_POS_BL
+'			sCmd = sCmd & " Position Below Left"
+'		Case LAYER_INFO_LBL_POS_BC
+'			sCmd = sCmd & " Position Center Below"
+'		Case LAYER_INFO_LBL_POS_BR
+'			sCmd = sCmd & " Position Below Right"
+'	End Case
+'
+'	sCmd = sCmd & " Offset " & tlbs.nOffset
+'	sCmd = sCmd & " " & tlbs.fntLabel
+'
+'	If tlbs.sExpression = "" Then
+'		sCmd = sCmd & " With COL1"
+'	Else
+'		sCmd = sCmd & " With " & tlbs.sExpression
+'	End If
+'
+'	Do Case tlbs.nOrientation
+'		Case LAYER_INFO_LABEL_ORIENT_HORIZONTAL
+'			sCmd = sCmd & " Parallel Off"
+'		Case	LAYER_INFO_LABEL_ORIENT_PARALLEL
+'			sCmd = sCmd & " Parallel On"
+'		Case	LAYER_INFO_LABEL_ORIENT_CURVED
+'			sCmd = sCmd & " Follow Path"
+'
+'			If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+'				sCmd = sCmd & " BestPosition " & STRINGLogicalToText(tlbs.bCurvedBestPostion, "On", "Off")
+'					& " Percent Over " & tlbs.nCurvedPercentOver
+'					& " Fallback " & STRINGLogicalToText(tlbs.bCurvedFallback, "On", "Off")
+'			End If
+'	End Case
+'
+'	Do Case tlbs.nVisibility
+'		Case LAYER_INFO_LBL_VIS_ON
+'			sCmd = sCmd & " Visibility On"
+'		Case LAYER_INFO_LBL_VIS_ZOOM
+'			sCmd = sCmd & " Visibility Zoom (" & tlbs.fMinZoom & ", " & tlbs.fMaxZoom & ") Units " & eye & tlbs.sZoomUnits & eye
+'		Case LAYER_INFO_LBL_VIS_OFF
+'			sCmd = sCmd & " Visibility Off"
+'	End Case
+'
+'	sCmd = sCmd & " Overlap " & STRINGLogicalToText(tlbs.bAllowOverlap, "On", "Off")
+'			& " PartialSegments " & STRINGLogicalToText(tlbs.bPartialSegments, "On", "Off")
+'			& " Duplicates " & STRINGLogicalToText(tlbs.bAllowDuplicates, "On", "Off")
+'			& " Max " & tlbs.nMaxNumber
+'			& " LabelAlpha " & tlbs.nAlpha
+'
+'	If SystemInfo(SYS_INFO_MIVERSION) >= 1200 Then
+'		sCmd = sCmd & " AutoPosition " & STRINGLogicalToText(tlbs.bAutoPosition, "On", "Off")
+'				& " AutoSizes " & Maximum(tlbs.bAutoSizes, 1)
+'				& " AutoSizeStep " & tlbs.nAutoSizeStes
+'				& " SuppressIfNoFit " & STRINGLogicalToText(tlbs.bSuppressIfNotFit, "On", "Off")
+'				& " AutoCallout " & STRINGLogicalToText(tlbs.bAutoCallOut, "On", "Off")
+'
+'		If tlbs.sAbbreviationExpr = "" Then
+'			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+'					& " Abbreviate with COL1"
+'		Else
+'			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
+'					& " Abbreviate with " & tlbs.sAbbreviationExpr
+'		End If
+'
+'		'tlbs.nLabelOrder - no way to set this?
+'	End If
 
 	tlbsGetSetMapStatement = sCmd
 
@@ -801,7 +808,29 @@ tlbsGetSetMapStatementOnlyExpr = ""
 	If tlbs.sExpression = "" Then
 		sCmd = sCmd & " With COL1"
 	Else
-		sCmd = sCmd & " With " & tlbs.sExpression
+		If tlbs.sExpression Like "(" Then
+			'**Contains an expression and not just a column name
+			sCmd = sCmd & " With " & tlbs.sExpression
+		ElseIf tlbs.sExpression Like " " Then
+			'**Contains an expression and not just a column name
+			sCmd = sCmd & " With " & tlbs.sExpression
+		ElseIf tlbs.sExpression Like "+" Then
+			'**Contains an expression and not just a column name
+			sCmd = sCmd & " With " & tlbs.sExpression
+		ElseIf tlbs.sExpression Like "&" Then
+			'**Contains an expression and not just a column name
+			sCmd = sCmd & " With " & tlbs.sExpression
+		ElseIf tlbs.sExpression Like Chr$(34) Then
+			'**Contains an expression and not just a column name
+			sCmd = sCmd & " With " & tlbs.sExpression
+		Else
+			'**Probably just a column name
+			If COLExists(LayerInfo(nMID, nLyrID, LAYER_INFO_NAME), tlbs.sExpression) Then
+				sCmd = sCmd & " With " & tlbs.sExpression
+			Else
+				sCmd = sCmd & " With COL1"
+			End If
+		End If
 	End If
 
 '	Do Case tlbs.nOrientation
@@ -841,12 +870,33 @@ tlbsGetSetMapStatementOnlyExpr = ""
 '				& " SuppressIfNoFit " & STRINGLogicalToText(tlbs.bSuppressIfNotFit, "On", "Off")
 '				& " AutoCallout " & STRINGLogicalToText(tlbs.bAutoCallOut, "On", "Off")
 
+		sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
 		If tlbs.sAbbreviationExpr = "" Then
-			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
-					& " Abbreviate with COL1"
+			sCmd = sCmd & " Abbreviate with COL1"
 		Else
-			sCmd = sCmd & " Abbreviation " & STRINGLogicalToText(tlbs.bUseAbbreviation, "On", "Off")
-					& " Abbreviate with " & tlbs.sAbbreviationExpr
+			If tlbs.sAbbreviationExpr Like "(" Then
+				'**Contains an expression and not just a column name
+				sCmd = sCmd & " Abbreviate With " & tlbs.sAbbreviationExpr
+			ElseIf tlbs.sAbbreviationExpr Like " " Then
+				'**Contains an expression and not just a column name
+				sCmd = sCmd & " Abbreviate With " & tlbs.sAbbreviationExpr
+			ElseIf tlbs.sAbbreviationExpr Like "+" Then
+				'**Contains an expression and not just a column name
+				sCmd = sCmd & " Abbreviate With " & tlbs.sAbbreviationExpr
+			ElseIf tlbs.sAbbreviationExpr Like "&" Then
+				'**Contains an expression and not just a column name
+				sCmd = sCmd & " Abbreviate With " & tlbs.sAbbreviationExpr
+			ElseIf tlbs.sAbbreviationExpr Like Chr$(34) Then
+				'**Contains an expression and not just a column name
+				sCmd = sCmd & " Abbreviate With " & tlbs.sAbbreviationExpr
+			Else
+				'**Probably just a column name
+				If COLExists(LayerInfo(nMID, nLyrID, LAYER_INFO_NAME), tlbs.sAbbreviationExpr) Then
+					sCmd = sCmd & " Abbreviate With " & tlbs.sAbbreviationExpr
+				Else
+					sCmd = sCmd & " Abbreviate With COL1"
+				End If
+			End If
 		End If
 
 		'tlbs.nLabelOrder - no way to set this?
