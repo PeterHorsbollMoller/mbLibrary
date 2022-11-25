@@ -195,7 +195,7 @@ OnError GoTo ErrorOccured
 
 'Define LAYER_INFO_TILE_SERVER_LEVEL             53	'Don't read/write
 
-'Define LAYER_INFO_FRIENDLYNAME                  64
+'Define LAYER_INFO_FRIENDLYNAME                  64	'Don't write
 'Define LAYER_INFO_ALIAS                         78	'Don't read/write
 
 '----- R A S T E R   S E T T I N G S -------
@@ -264,27 +264,44 @@ End Sub
 Function tliApplyInfo(	  ByVal nMID As Integer		'The Map Window with the layer
 					, ByVal nLyrID As Integer	'The layer to apply the setting on
 					, tli As T_LAYER_INFO		'The T_LAYER_INFO holding the settings to apply
-					) As Logical				'Returns true if the settings were set on the layer
+					) As Logical				'Returns true if the settings were set on the layer without errors
 
-Dim	sCmd As String
+Dim	sCmd, sError, sFullError As String,
+	nErr As Integer,
+	bErrorOccured As Logical
 
 OnError GoTo ErrorOccured
 
 tliApplyInfo = FALSE
+
+	bErrorOccured = FALSE
 
 	Set Distance Units MapperInfo(nMID, MAPPER_INFO_DISTUNITS)
 	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
 
 	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
 	sCmd		= sCmd & lf & tlsGetSetMapStatement(nMID, nLyrID, tli.tlsLyrSettings)
+	Call DEBUGPrint("---------------------------------------------")
+	Call DEBUGPrint("tliApplyInfo 1: " & sCmd)
+	Run Command sCmd
+
+'	Split into two: Label settings and Label expressing see below
+'	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+'	sCmd		= sCmd & lf & tlbsGetSetMapStatement(nMID, nLyrID, tli.tlbsLblSettings)
 '	Call DEBUGPrint("---------------------------------------------")
-'	Call DEBUGPrint("tliApplyInfo 2: " & sCmd)
+'	Call DEBUGPrint("tliApplyInfo 3: " & sCmd)
+'	Run Command sCmd
+
+	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
+	sCmd		= sCmd & lf & tlbsGetSetMapStatementNoExpr(nMID, nLyrID, tli.tlbsLblSettings)
+	Call DEBUGPrint("---------------------------------------------")
+	Call DEBUGPrint("tliApplyInfo 2: " & sCmd)
 	Run Command sCmd
 
 	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
-	sCmd		= sCmd & lf & tlbsGetSetMapStatement(nMID, nLyrID, tli.tlbsLblSettings)
-'	Call DEBUGPrint("---------------------------------------------")
-'	Call DEBUGPrint("tliApplyInfo 3: " & sCmd)
+	sCmd		= sCmd & lf & tlbsGetSetMapStatementOnlyExpr(nMID, nLyrID, tli.tlbsLblSettings)
+	Call DEBUGPrint("---------------------------------------------")
+	Call DEBUGPrint("tliApplyInfo 3: " & sCmd)
 	Run Command sCmd
 
 '	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
@@ -299,13 +316,27 @@ tliApplyInfo = FALSE
 '	Call DEBUGPrint("tliApplyInfo 5: " & sCmd)
 '	Run Command sCmd
 
-tliApplyInfo = TRUE
+	If bErrorOccured Then
+		Print "Errors occured applying layer properties: " & Chr$(10) & sFullError
+	End If
+
+	tliApplyInfo = bErrorOccured
 
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "tliApplyInfo")
-	Call ERRShow()
+	sError		= Error$()
+	nErr			= Err()
+	sFullError	= sFullError & IIf(ssFullError = "", "", Chr$(10)) & nErr & " " & sError
+
+	Call ERRCreate(nErr, sError, "tliApplyInfo")
+
+	Call DEBUGPrint(nErr & " " & sError)
+	Call DEBUGPrint(sCmd)
+
+	bErrorOccured	= TRUE
+	Resume Next
+'	Call ERRShow()
 
 End Function
 
