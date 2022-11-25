@@ -194,6 +194,8 @@ OnError GoTo ErrorOccured
 
 LAYERUseLayerNo = FALSE
 
+'	Print nLayer & ": " & LayerInfo(nMID, nLayer, LAYER_INFO_NAME)
+
 	If LAYERIsBitOn(LAYER_USE_ONLY_VISIBLE, nTypesToUse) Or LAYERIsBitOn(LAYER_USE_ONLY_SELECTABLE, nTypesToUse) Then
 		If LayerInfo(nMID, nLayer, LAYER_INFO_DISPLAY) = LAYER_INFO_DISPLAY_OFF Then
 			Exit Function
@@ -211,6 +213,7 @@ LAYERUseLayerNo = FALSE
 
 	Do Case LayerInfo(nMID, nLayer, LAYER_INFO_TYPE)
 		Case LAYER_INFO_TYPE_NORMAL
+'			Print "   Layer is normal"
 			If Not LAYERIsBitOn(LAYER_USE_NORMAL, nTypesToUse) Then
 				Exit Function
 			End If
@@ -223,12 +226,16 @@ LAYERUseLayerNo = FALSE
 			sTab = LayerInfo(nMID, nLayer, LAYER_INFO_NAME)
 			'**Use Read-Only tables...
 			If NOT LAYERIsBitOn(LAYER_USE_READONLY, nTypesToUse) Then
+'				Print "   Don't use read-only layers"
 				If TableInfo(sTab, TAB_INFO_READONLY) Then
+'					Print "      Layer is read-only!"
 					Exit Function
 				End If
 			End If
 			If NOT LAYERIsBitOn(LAYER_USE_TEMP, nTypesToUse) Then
+'				Print "   Don't use Temp layers"
 				If TableInfo(sTab, TAB_INFO_TEMP) Then
+'					Print "      Layer is temp!"
 					Exit Function
 				End If
 			End If
