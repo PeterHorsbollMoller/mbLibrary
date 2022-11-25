@@ -362,15 +362,16 @@ OnError GoTo ErrorOccured
 	tls.sZoomUnits			= MapperInfo(nMID, MAPPER_INFO_DISTUNITS)	'SessionInfo(SESSION_INFO_DISTANCE_UNITS)
 
 	tls.nDisplay			= LayerInfo(nMID, nLyrID, LAYER_INFO_DISPLAY)
-	tls.bShowLineDirection	= LayerInfo(nMID, nLyrID, LAYER_INFO_ARROWS)
-	tls.bShowNodes			= LayerInfo(nMID, nLyrID, LAYER_INFO_NODES)
-	tls.bShowCentroids		= LayerInfo(nMID, nLyrID, LAYER_INFO_CENTROIDS)
 	tls.nAlpha			= LayerInfo(nMID, nLyrID, LAYER_INFO_LAYER_ALPHA)
 
 	tls.bTrancparency		= FALSE
 	tls.nTransparencyColour	= BLACK
 
 	If bNormalLayer Then
+		tls.bShowLineDirection	= LayerInfo(nMID, nLyrID, LAYER_INFO_ARROWS)
+		tls.bShowNodes			= LayerInfo(nMID, nLyrID, LAYER_INFO_NODES)
+		tls.bShowCentroids		= LayerInfo(nMID, nLyrID, LAYER_INFO_CENTROIDS)
+
 		nStyles	= LayerInfo(nMID, nLyrID, LAYER_INFO_OVR_LINE_COUNT)
 		Redim tls.penOverrideLine(nStyles)
 		For i = 1 To nStyles
@@ -466,14 +467,16 @@ tlsGetSetMapStatement = ""
 		End If
 
 		sCmd = sCmd & " Selectable " & STRINGLogicalToText(tls.bSelectable, "On", "Off")
-
-		sCmd = sCmd & " Alpha " & tls.nAlpha
 	End If
 
-	sCmd = sCmd & " Zoom (" & tls.fMinZoom & ", " & tls.fMaxZoom & ") Units " & eye & tls.sZoomUnits & eye & " " & STRINGLogicalToText(tls.bZoomLayered, "On", "Off")
-			& " Arrows " & STRINGLogicalToText(tls.bShowLineDirection, "On", "Off")
-			& " Centroids " & STRINGLogicalToText(tls.bShowCentroids, "On", "Off")
-			& " Nodes " & STRINGLogicalToText(tls.bShowNodes, "On", "Off")
+	sCmd = sCmd & " Alpha " & tls.nAlpha
+			& " Zoom (" & tls.fMinZoom & ", " & tls.fMaxZoom & ") Units " & eye & tls.sZoomUnits & eye & " " & STRINGLogicalToText(tls.bZoomLayered, "On", "Off")
+
+	If bNormalLayer Then
+		sCmd = sCmd & " Arrows " & STRINGLogicalToText(tls.bShowLineDirection, "On", "Off")
+				& " Centroids " & STRINGLogicalToText(tls.bShowCentroids, "On", "Off")
+				& " Nodes " & STRINGLogicalToText(tls.bShowNodes, "On", "Off")
+	End If
 
 	Do Case tls.nDisplay
 		Case LAYER_INFO_DISPLAY_OFF
