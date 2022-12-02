@@ -397,6 +397,9 @@
 '							- RBNControlSetCallingHandlerIdx() - RBNControlSetCustomMBXHandlerIdx now calls this
 '	22-04-2021 13:19:43		- Added:
 '							- RBNControlGetCaptionIdx(...) As String.
+'	01/12/2022 16.22.44		- Removed all usage of assigning This variables NULL_PTR.
+'							Seems to have a side effect of controls being removed from memory when the application close
+'							but before the RBNEndHandler runs through the controls and removes them from the user interface
 '*****************************************************************************************************************************
 
 
