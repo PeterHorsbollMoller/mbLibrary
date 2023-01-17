@@ -39,11 +39,12 @@ MATHGetDirection = 0
 	'//Checking for vertical dirction
 	If (fEndX - fStartX) = 0 Then
 		'//not allowed to divide by zero...
+'		Print "Idendical X-values: " & fStartX & " = " & fEndX
 		If fEndY > fStartY Then
-			'//tEnd is north of tStart...
+'			Print "  tEnd is north of tStart..."
 			MATHGetDirection	= 90	'degrees
 		Else
-			'//tEnd is south of tStart...
+'			Print "  tEnd is south of tStart..."
 			MATHGetDirection	= 270	'degrees
 		End If
 		Exit Function
@@ -51,11 +52,12 @@ MATHGetDirection = 0
 
 	'//Checking for horisontal dirction
 	If (fEndY - fStartY) = 0 Then
+'		Print "Idendical Y-values: " & fStartY & " = " & fEndY
 		If (fEndX < fStartX) Then
-			'//tEnd is west of tStart...
+'			Print "  tEnd is west of tStart..."
 			MATHGetDirection = 180	'degrees
-		ElseIf (fEndX > fStartX) And (fEndY = fStartY) Then
-			'//tEnd is east of tStart...
+		ElseIf (fEndX > fStartX) Then
+'			Print "  tEnd is east of tStart..."
 			MATHGetDirection = 0	'degrees
 		End If
 		Exit Function
@@ -63,13 +65,15 @@ MATHGetDirection = 0
 
 	fDirection = Atn((fEndY - fStartY) / (fEndX - fStartX)) * RAD_2_DEG	'//Converting from RAD to Degrees
 
+'	Print "Direction (1): " & fDirection
 	If (fEndX < fStartX) And (fEndY > fStartY) Then
-		'//tEnd is northwest of tStart
+'		Print "tEnd is northwest of tStart"
 		fDirection = fDirection + 180	'degrees
 	ElseIf (fEndX < fStartX) And (fEndY < fStartY) Then
-		'//tEnd is southwest of tStart
+'		Print "tEnd is southwest of tStart"
 		fDirection = fDirection + 180	'degrees
 	End If
+'	Print "Direction (2): " & fDirection
 
 	MATHGetDirection = MATHGetValidDirection(fDirection)
 
