@@ -298,3 +298,73 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MATHGetPaperDistanceUsingScale( ByVal fScale As Float	'scale: 1: fScale
+								, ByVal fMetersOnMap As Float	'distance on map in meters
+								) As Float			'distance on paper in cm
+
+OnError GoTo ErrorOccured
+
+	MATHGetPaperDistanceUsingScale	= (fMetersOnMap / fScale) * 100
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHGetPaperDistanceUsingScale")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MATHGetMapDistanceUsingScale(	  ByVal fScale As Float				'scale: 1: fScale
+								, ByVal fCentimetersOnPaper As Float	'distance on paper in centimeters
+								) As Float						'distance on map in meters
+
+OnError GoTo ErrorOccured
+
+	MATHGetMapDistanceUsingScale	= (fCentimetersOnPaper * fScale) / 100
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHGetMapDistanceUsingScale")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function MATHGetScaleUsingDistances( ByVal fMetersOnMap As Float			'distance on map in meters
+							, ByVal fCentimetersOnPaper As Float	'distance on paper in centimeters
+							) As Float						'scale, as 1: fScale
+
+OnError GoTo ErrorOccured
+
+	MATHGetScaleUsingDistances	= (fMetersOnMap * 100) / fCentimetersOnPaper
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHGetScaleUsingDistances")
+	Call ERRShow()
+
+End Function

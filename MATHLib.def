@@ -47,3 +47,13 @@ Declare Function MATHNorth2MathAngle(	  ByVal fNorthAngle As Float	'Angle where 
 								) As Float				'Return Angle where East is 0 and counter clockwise
 Declare Function MathMath2NorthAngle(	  ByVal fMathAngle As Float	'Angle where East is 0 and counter clockwise
 								) As Float				'Return Angle where North is 0 and clockwise
+
+Declare Function MATHGetPaperDistanceUsingScale(	  ByVal fScale As Float	'scale: 1: fScale
+										, ByVal fMetersOnMap As Float	'distance on map in meters
+										) As Float			'distance on paper in cm
+Declare Function MATHGetMapDistanceUsingScale( ByVal fScale As Float				'scale: 1: fScale
+									, ByVal fCentimetersOnPaper As Float	'distance on paper in centimeters
+									) As Float						'distance on map in meters
+Declare Function MATHGetScaleUsingDistances(   ByVal fMetersOnMap As Float			'distance on map in meters
+									, ByVal fCentimetersOnPaper As Float	'distance on paper in centimeters
+									) As Float						'scale, as 1: fScale
