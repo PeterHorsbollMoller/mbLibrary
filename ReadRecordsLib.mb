@@ -16,6 +16,8 @@ Include "Defaults.def"
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
 Include "ReadRecordsLib.def"
+Include "COLUMNLib.def"
+Include "TABLELib.def"
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Precisely
@@ -59,7 +61,7 @@ RRGetValuesAsString = 0
 		sCmd	= sCmd & " Group By " & sGroupBy
 	End If
 
-	sCmd	= sCmd & " Into __RR__VALUES NoSelect"
+	sCmd	= sCmd & " Into __RR__VALUES NoSelect Hide"
 
 '	Call DEBUGPrint("RRGetValuesAsString: " & sCmd)
 	Run Command sCmd
@@ -145,7 +147,7 @@ RRGetValuesAsInteger = 0
 		sCmd	= sCmd & " Group By " & sGroupBy
 	End If
 
-	sCmd	= sCmd & " Into __RR__VALUES NoSelect"
+	sCmd	= sCmd & " Into __RR__VALUES NoSelect Hide"
 
 '	Call DEBUGPrint("RRGetValuesAsInteger: " & sCmd)
 	Run Command sCmd
@@ -180,5 +182,479 @@ RRGetValuesAsInteger = 0
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "RRGetValuesAsInteger: sCmd: " & sCmd)
 	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetTableColumnValue(	  ByVal sTab As String
+							, ByVal sCol As String
+							, ByVal nRowID As Integer
+							, ByVal bReturnError As Logical
+							) As String
+
+Dim	sValue As String,
+	aCol As Alias,
+	bCloseTable As Logical
+
+OnError GoTo ErrorOccured
+
+RRGetTableColumnValue = ""
+
+	If sTab = "" Then
+		If bReturnError Then
+			RRGetTableColumnValue = "Error: Table Name has not been specified"
+		End If
+		Exit Function
+	End If
+	If NumTables() = 0 Then
+		If bReturnError Then
+			RRGetTableColumnValue = "Error: No tables open"
+		End If
+		Exit Function
+	End If
+
+	If sTab = "Selection" Then
+		If SelectionInfo(SEL_INFO_NROWS) > 0 Then
+			sTab		= SelectionInfo(SEL_INFO_SELNAME)
+			bCloseTable	= TRUE
+		Else
+			If bReturnError Then
+				RRGetTableColumnValue = "Error: Selection holds no records"
+			End If
+			Exit Function
+		End If
+	End If
+
+	If NOT TABIsOpen(sTab) Then
+		If bReturnError Then
+			RRGetTableColumnValue = "Error: Table isn't open '" & sTab & "'"
+		End If
+		Exit Function
+	ElseIf NOT COLExists(sTab, sCol) Then
+		If bReturnError Then
+			RRGetTableColumnValue = "Error: Table '" & sTab & "' hasn't this column '" & sCol & "'"
+		End If
+		Exit Function
+	ElseIf nRowID > TableInfo(sTab, TAB_INFO_NROWS) Then
+		If bReturnError Then
+			RRGetTableColumnValue = "Error: RowID '" & FormatNumber$(nRowID) & "' is higher than number of records '" & FormatNumber$(TableInfo(sTab, TAB_INFO_NROWS)) & "'"
+		End If
+		Exit Function
+	End If
+
+	If nRowID > 0 Then
+		Fetch Rec nRowID From sTab
+	ElseIf EOT(sTab) Then
+		If bReturnError Then
+			RRGetTableColumnValue = "The cursor of the table '" & sTab & "' is at EOT"
+		End If
+		Exit Function
+	End If
+
+	aCol = sTab & "." & sCol
+
+	Do Case ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+		Case COL_TYPE_CHAR
+			sValue = aCol
+		Case COL_TYPE_INTEGER, COL_TYPE_SMALLINT, COL_TYPE_LOGICAL, COL_TYPE_LARGEINT
+			sValue = FormatNumber$(aCol)
+		Case COL_TYPE_FLOAT, COL_TYPE_DECIMAL
+			sValue = FormatNumber$(aCol)
+		Case COL_TYPE_DATE
+			If aCol Then
+				sValue = FormatDate$(aCol)
+			End If
+		Case COL_TYPE_TIME
+			If aCol Then
+				sValue = FormatTime$(acol, "HH:mm:ss")
+			End If
+		Case COL_TYPE_DATETIME
+			If aCol Then
+				sValue = FormatDate$(aCol) & " " & FormatTime$(GetTime(acol), "HH:mm:ss")
+			End If
+	End Case
+
+	If bCloseTable Then
+		Call TABClose(sTab)
+	End If
+	RRGetTableColumnValue = sValue
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetTableColumnValue: Table " & sTab & " Column: " & sCol & " RowID: " & nRowID)
+	Call ERRPrint()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetTableColumnNames(	  ByVal sTab As String
+							, ByVal sSeparator As String		'Defaults to Chr$(10) if ""
+							, ByVal bReturnError As Logical
+							) As String
+
+Dim	sValues, sCol As String,
+	nCol As Integer,
+	bCloseTable As Logical
+
+OnError GoTo ErrorOccured
+
+RRGetTableColumnNames = ""
+
+	If sTab = "" Then
+		If bReturnError Then
+			RRGetTableColumnNames = "Error: Table Name has not been specified"
+		End If
+		Exit Function
+	End If
+	If NumTables() = 0 Then
+		If bReturnError Then
+			RRGetTableColumnNames = "Error: No tables open"
+		End If
+		Exit Function
+	End If
+
+	sSeparator 		= IIf(sSeparator = "", Chr$(10), sSeparator)
+
+	If sTab = "Selection" Then
+		If SelectionInfo(SEL_INFO_NROWS) > 0 Then
+			sTab		= SelectionInfo(SEL_INFO_SELNAME)
+			bCloseTable	= TRUE
+		Else
+			If bReturnError Then
+				RRGetTableColumnNames = "Error: Selection holds no records"
+			End If
+			Exit Function
+		End If
+	End If
+	If NOT TABIsOpen(sTab) Then
+		If bReturnError Then
+			RRGetTableColumnNames = "Error: Table isn't open '" & sTab & "'"
+		End If
+		Exit Function
+	End If
+
+	For nCol = 1 To TableInfo(sTab, TAB_INFO_NCOLS)
+		sCol	= ColumnInfo(sTab, "COL" + nCol, COL_INFO_NAME)
+
+		If sValues = "" Then
+			sValues = sCol & ":"
+		Else
+			sValues = sValues & sSeparator & sCol & ":"
+		End If
+	Next
+
+	If bCloseTable Then
+		'Close Table sTab
+	End If
+	RRGetTableColumnNames = sValues
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetTableColumnNames: Table " & sTab)
+	Call ERRPrint()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetTableColumnValues(	  ByVal sTab As String
+							, ByVal sCol As String
+							, ByVal sSeparator As String		'Defaults to Chr$(10) if ""
+							, ByVal bReturnError As Logical
+							) As String
+
+Dim	sValues, sValue As String,
+	aCol As Alias,
+	bCloseTable As Logical
+
+OnError GoTo ErrorOccured
+
+RRGetTableColumnValues = ""
+
+	If sTab = "" Then
+		If bReturnError Then
+			RRGetTableColumnValues = "Error: Table Name has not been specified"
+		End If
+		Exit Function
+	End If
+	If NumTables() = 0 Then
+		If bReturnError Then
+			RRGetTableColumnValues = "Error: No tables open"
+		End If
+		Exit Function
+	End If
+
+	sSeparator 		= IIf(sSeparator = "", Chr$(10), sSeparator)
+
+	If sTab = "Selection" Then
+		If SelectionInfo(SEL_INFO_NROWS) > 0 Then
+			sTab			= SelectionInfo(SEL_INFO_SELNAME)
+			bCloseTable	= TRUE
+		Else
+			If bReturnError Then
+				RRGetTableColumnValues = "Error: Selection holds no records"
+			End If
+			Exit Function
+		End If
+	End If
+
+	If NOT TABIsOpen(sTab) Then
+		If bReturnError Then
+			RRGetTableColumnValues = "Error: Table isn't open '" & sTab & "'"
+		End If
+		Exit Function
+	ElseIf NOT COLExists(sTab, sCol) Then
+		If bReturnError Then
+			RRGetTableColumnValues = "Error: Table '" & sTab & "' hasn't this column '" & sCol & "'"
+		End If
+		Exit Function
+	End If
+
+	aCol = sTab & "." & sCol
+	Fetch First from sTab
+	Do Until EOT(sTab)
+		Do Case ColumnInfo(sTab, sCol, COL_INFO_TYPE)
+			Case COL_TYPE_CHAR
+				sValue = aCol
+			Case COL_TYPE_INTEGER, COL_TYPE_SMALLINT, COL_TYPE_LOGICAL, COL_TYPE_LARGEINT
+				sValue = FormatNumber$(aCol)
+			Case COL_TYPE_FLOAT, COL_TYPE_DECIMAL
+				sValue = FormatNumber$(aCol)
+			Case COL_TYPE_DATE
+				If aCol Then
+					sValue = FormatDate$(aCol)
+				End If
+			Case COL_TYPE_TIME
+				If aCol Then
+					sValue = FormatTime$(acol, "HH:mm:ss")
+				End If
+			Case COL_TYPE_DATETIME
+				If aCol Then
+					sValue = FormatDate$(aCol) & " " & FormatTime$(GetTime(acol), "HH:mm:ss")
+				End If
+		End Case
+
+		If sValues = "" Then
+			sValues = sValue
+		Else
+			sValues = sValues & sSeparator & sValue
+		End If
+		Fetch Next From sTab
+	Loop
+
+	If bCloseTable Then
+		'Close Table sTab
+	End If
+	RRGetTableColumnValues = sValues
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetTableColumnValues: Table " & sTab & " RowID: " & nRowID)
+	Call ERRPrint()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetTableRowValues(	  ByVal sTab As String
+						, ByVal nRowID As Integer
+						, ByVal sSeparator As String		'Defaults to Chr$(10) if ""
+						, ByVal bReturnError As Logical
+						) As String
+
+Dim	sValues, sCol As String,
+	nCol As Integer,
+	bCloseTable As Logical
+
+OnError GoTo ErrorOccured
+
+RRGetTableRowValues = ""
+
+	If sTab = "" Then
+		If bReturnError Then
+			RRGetTableRowValues = "Error: Table Name has not been specified"
+		End If
+		Exit Function
+	End If
+	If NumTables() = 0 Then
+		If bReturnError Then
+			RRGetTableRowValues = "Error: No tables open"
+		End If
+		Exit Function
+	End If
+
+	sSeparator 		= IIf(sSeparator = "", Chr$(10), sSeparator)
+
+	If sTab = "Selection" Then
+		If SelectionInfo(SEL_INFO_NROWS) > 0 Then
+			sTab		= SelectionInfo(SEL_INFO_SELNAME)
+			bCloseTable	= TRUE
+		Else
+			If bReturnError Then
+				RRGetTableRowValues = "Error: Selection holds no records"
+			End If
+			Exit Function
+		End If
+	End If
+	If NOT TABIsOpen(sTab) Then
+		If bReturnError Then
+			RRGetTableRowValues = "Error: Table isn't open '" & sTab & "'"
+		End If
+		Exit Function
+	ElseIf nRowID > TableInfo(sTab, TAB_INFO_NROWS) Then
+		If bReturnError Then
+			RRGetTableRowValues = "Error: RowID '" & FormatNumber$(nRowID) & "' is higher than number of records '" & FormatNumber$(TableInfo(sTab, TAB_INFO_NROWS)) & "'"
+		End If
+		Exit Function
+	End If
+
+	If nRowID > 0 Then
+		Fetch Rec nRowID From sTab
+	ElseIf EOT(sTab) Then
+		If bReturnError Then
+			RRGetTableRowValues = "The cursor of the table '" & sTab & "' is at EOT"
+		End If
+		Exit Function
+	End If
+
+	For nCol = 1 To TableInfo(sTab, TAB_INFO_NCOLS)
+		sCol	= ColumnInfo(sTab, "COL" + nCol, COL_INFO_NAME)
+
+		If sValues = "" Then
+			sValues = RRGetTableColumnValue(sTab, sCol, nRowID, bReturnError)
+		Else
+			sValues = sValues & sSeparator & RRGetTableColumnValue(sTab, sCol, nRowID, bReturnError)
+		End If
+	Next
+
+	If bCloseTable Then
+		'Close Table sTab
+	End If
+	RRGetTableRowValues = sValues
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetTableRowValues: Table " & sTab & " RowID: " & nRowID)
+	Call ERRPrint()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Pitney Bowes
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RRGetTableColumnNamesAndValues(  ByVal sTab As String
+								, ByVal nRowID As Integer
+								, ByVal sColumnSeparator As String		'Defaults to Chr$(10) if ""
+								, ByVal sRowSeparator As String		'Defaults to Chr$(9) if ""
+								, ByVal bReturnError As Logical
+								) As String
+
+Dim	sValues, sCol As String,
+	nCol As Integer,
+	bCloseTable As Logical
+
+OnError GoTo ErrorOccured
+
+RRGetTableColumnNamesAndValues = ""
+
+	If sTab = "" Then
+		If bReturnError Then
+			RRGetTableColumnNamesAndValues = "Error: Table Name has not been specified"
+		End If
+		Exit Function
+	End If
+	If NumTables() = 0 Then
+		If bReturnError Then
+			RRGetTableColumnNamesAndValues = "Error: No tables open"
+		End If
+		Exit Function
+	End If
+
+	sRowSeparator 		= IIf(sRowSeparator = "", Chr$(9), sRowSeparator)
+	sColumnSeparator	= IIf(sColumnSeparator = "", Chr$(10), sColumnSeparator)
+
+	If sTab = "Selection" Then
+		If SelectionInfo(SEL_INFO_NROWS) > 0 Then
+			sTab		= SelectionInfo(SEL_INFO_SELNAME)
+			bCloseTable	= TRUE
+		Else
+			If bReturnError Then
+				RRGetTableColumnNamesAndValues = "Error: Selection holds no records"
+			End If
+			Exit Function
+		End If
+	End If
+	If NOT TABIsOpen(sTab) Then
+		If bReturnError Then
+			RRGetTableColumnNamesAndValues = "Error: Table isn't open '" & sTab & "'"
+		End If
+		Exit Function
+	ElseIf nRowID > TableInfo(sTab, TAB_INFO_NROWS) Then
+		If bReturnError Then
+			RRGetTableColumnNamesAndValues = "Error: RowID '" & FormatNumber$(nRowID) & "' is higher than number of records '" & FormatNumber$(TableInfo(sTab, TAB_INFO_NROWS)) & "'"
+		End If
+		Exit Function
+	End If
+
+	If nRowID > 0 Then
+		Fetch Rec nRowID From sTab
+	ElseIf EOT(sTab) Then
+		If bReturnError Then
+			RRGetTableColumnNamesAndValues = "The cursor of the table '" & sTab & "' is at EOT"
+		End If
+		Exit Function
+	End If
+
+	For nCol = 1 To TableInfo(sTab, TAB_INFO_NCOLS)
+		sCol	= ColumnInfo(sTab, "COL" + nCol, COL_INFO_NAME)
+
+		If sValues = "" Then
+			sValues = sCol & ":" & sRowSeparator & RRGetTableColumnValue(sTab, sCol, nRowID, bReturnError)
+		Else
+			sValues = sValues & sColumnSeparator & sCol & ":" & sRowSeparator & RRGetTableColumnValue(sTab, sCol, nRowID, bReturnError)
+		End If
+	Next
+
+	If bCloseTable Then
+		'Close Table sTab
+	End If
+	RRGetTableColumnNamesAndValues = sValues
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RRGetTableColumnNamesAndValues: Table " & sTab & " RowID: " & nRowID)
+	Call ERRPrint()
 
 End Function

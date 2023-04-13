@@ -7,6 +7,14 @@
 '		- Fixed a problem when grouping (and sorting) by non character columns
 '	22-11-2012 08:36:30
 '		- Added Function RRGetValuesAsInteger(...) As Integer
+'	24/03/2023 07.55.19
+'		- Added Functions: Can be used as smart text and show values from a table on a layout
+'			- RRGetTableColumnValue(...)
+'			- RRGetTableColumnNames(...)
+'			- RRGetTableColumnValues(...)
+'			- RRGetTableRowValues(...)
+'			- RRGetTableColumnNamesAndValues(...)
+'		- Added the Hide keyword to the Select statements in RRGetValuesAsString(...) and RRGetValuesAsInteger(...)
 '********************************************************************************************************
 
 Declare Function RRGetValuesAsString(	  ByVal sTab As String		'Table to read the reocrds from
@@ -22,3 +30,29 @@ Declare Function RRGetValuesAsInteger(	  ByVal sTab As String		'Table to read th
 								, ByVal sGroupBy As String	'Column to group the values by, if "" the records will not be grouped and can be non unique
 								, arrValues() As Integer		'Array to insert the values into - note the array will not be reset, but values will be added
 								) As Integer				'Will return the number of values that was read
+
+Declare Function RRGetTableColumnValue(	  ByVal sTab As String			'Table to read the value from
+								, ByVal sCol As String			'Column to read the value from
+								, ByVal nRowID As Integer		'Record to read the values from
+								, ByVal bReturnError As Logical	'TRUE: Return error message if error occurs, FALSE: Return "" if error occurs
+								) As String					'Value is returned formatted
+Declare Function RRGetTableColumnNames(	  ByVal sTab As String			'Table to read the column names from
+								, ByVal sSeparator As String		'Defaults to Chr$(10) if ""
+								, ByVal bReturnError As Logical	'TRUE: Return error message if error occurs, FALSE: Return "" if error occurs
+								) As String
+Declare Function RRGetTableColumnValues(  ByVal sTab As String			'Table to read the values from
+								, ByVal sCol As String			'Column to read the values from
+								, ByVal sSeparator As String		'Defaults to Chr$(10) if ""
+								, ByVal bReturnError As Logical	'TRUE: Return error message if error occurs, FALSE: Return "" if error occurs
+								) As String					'Values are returned formatted
+Declare Function RRGetTableRowValues(	  ByVal sTab As String			'Table to read the values from
+								, ByVal nRowID As Integer		'Record to read the values from
+								, ByVal sSeparator As String		'Defaults to Chr$(10) if ""
+								, ByVal bReturnError As Logical	'TRUE: Return error message if error occurs, FALSE: Return "" if error occurs
+								) As String					'Values are returned formatted
+Declare Function RRGetTableColumnNamesAndValues(	  ByVal sTab As String			'Table to read the values from
+										, ByVal nRowID As Integer		'Record to read the values from
+										, ByVal sColumnSeparator As String	'Defaults to Chr$(10) if ""
+										, ByVal sRowSeparator As String	'Defaults to Chr$(9) if ""
+										, ByVal bReturnError As Logical	'TRUE: Return error message if error occurs, FALSE: Return "" if error occurs
+										) As String					'Values are returned formatted
