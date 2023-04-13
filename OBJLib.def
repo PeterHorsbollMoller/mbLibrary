@@ -39,6 +39,8 @@
 '						- OBJCreateCircularSector(...) As Object
 '	25-03-2022 07:43:39	- Added:
 '						- OBJCartesianCreateArrow(...) As Object
+'	12/04/2023 13.09.12	- Added:
+'						- OBJCreateDoughnut(...) As Object
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -175,3 +177,11 @@ Declare Function OBJCartesianCreateArrow( ByVal oInput As Object				'Input polyl
 								, ByVal fArrowTailLengthPct As Float	'Length of Arrow Tail in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
 								, ByVal fArrowTailWidthPct As Float	'Width of Arrow Tail in % of arrow width, given as a decimal value where 1.0 is 100%, typical value is around 2.0, for flat and rounded set it to 1.0
 								) As Object
+
+Declare Function OBJCreateDoughnut(  ByVal oCenter As Object
+							, ByVal nResolution As Integer		'Number of nodes for a full cirkle
+							, ByVal fRadiusInner As Float			'Using the distance unit below
+							, ByVal fRadiusOuter As Float			'Using the distance unit below
+							, ByVal sDistanceUnit As String		'"m", "cm" and more
+							, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							) As Object
