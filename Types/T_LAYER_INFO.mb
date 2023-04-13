@@ -281,8 +281,8 @@ tliApplyInfo = FALSE
 
 	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
 	sCmd		= sCmd & lf & tlsGetSetMapStatement(nMID, nLyrID, tli.tlsLyrSettings)
-	Call DEBUGPrint("---------------------------------------------")
-	Call DEBUGPrint("tliApplyInfo 1: " & sCmd)
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 1: " & sCmd)
 	Run Command sCmd
 
 '	Split into two: Label settings and Label expressing see below
@@ -294,14 +294,14 @@ tliApplyInfo = FALSE
 
 	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
 	sCmd		= sCmd & lf & tlbsGetSetMapStatementNoExpr(nMID, nLyrID, tli.tlbsLblSettings)
-	Call DEBUGPrint("---------------------------------------------")
-	Call DEBUGPrint("tliApplyInfo 2: " & sCmd)
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 2: " & sCmd)
 	Run Command sCmd
 
 	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
 	sCmd		= sCmd & lf & tlbsGetSetMapStatementOnlyExpr(nMID, nLyrID, tli.tlbsLblSettings)
-	Call DEBUGPrint("---------------------------------------------")
-	Call DEBUGPrint("tliApplyInfo 3: " & sCmd)
+'	Call DEBUGPrint("---------------------------------------------")
+'	Call DEBUGPrint("tliApplyInfo 3: " & sCmd)
 	Run Command sCmd
 
 '	sCmd		= "Set Map Window " & nMID & " Layer " & nLyrID
