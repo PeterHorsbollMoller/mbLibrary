@@ -300,7 +300,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -324,7 +324,7 @@ End Function
 
 
 '**********************************************************************************************''
-'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -347,7 +347,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
+'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -365,6 +365,38 @@ OnError GoTo ErrorOccured
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "MATHGetScaleUsingDistances")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Function MATHCalculateValue(	  ByVal fOrigValue As Float
+						, ByVal fNewValue As Float
+						, ByVal nCalculationType As Integer
+						) As Float
+
+
+OnError GoTo ErrorOccured
+
+MATHCalculateValue	= fOrigValue
+
+	Do Case nCalculationType
+		Case CALC_TYPE_SET_TO
+			MATHCalculateValue	=  fNewValue
+		Case CALC_TYPE_ADD_TO
+			MATHCalculateValue	= fOrigValue + fNewValue
+		Case CALC_TYPE_MULTIPLY_BY
+			MATHCalculateValue	= fOrigValue * fNewValue
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHCalculateValue")
 	Call ERRShow()
 
 End Function

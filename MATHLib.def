@@ -22,6 +22,11 @@
 
 'Requires MapInfo Pro 4.0
 
+Define	CALC_TYPE_SET_TO		1
+Define	CALC_TYPE_ADD_TO		2
+Define	CALC_TYPE_MULTIPLY_BY	3
+
+
 Declare Function MATHGetDirection(	  ByVal fStartX As Float	'X value of start point
 							, ByVal fStartY As Float	'Y value of start point
 							, ByVal fEndX As Float	'X value of end point
@@ -57,3 +62,8 @@ Declare Function MATHGetMapDistanceUsingScale( ByVal fScale As Float				'scale: 
 Declare Function MATHGetScaleUsingDistances(   ByVal fMetersOnMap As Float			'distance on map in meters
 									, ByVal fCentimetersOnPaper As Float	'distance on paper in centimeters
 									) As Float						'scale, as 1: fScale
+
+Declare Function MATHCalculateValue( ByVal fOrigValue As Float
+							, ByVal fNewValue As Float
+							, ByVal nCalculationType As Integer
+							) As Float
