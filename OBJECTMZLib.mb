@@ -1,0 +1,675 @@
+﻿'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Precisely
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "MATHLib.def"
+Include "OBJECTMZLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZUpdateMValues(	  ByVal oInput As Object
+						, ByVal fValueM As Float
+						, ByVal nUpdateTypeM As Integer
+						) As Object
+
+Dim	nSegment, nNode As Integer,
+	fX, fY, fM As Float,
+	oOutput As Object
+
+OnError GoTo ErrorOccured
+
+OBJMZUpdateMValues = oInput
+
+'	oOutput	= OBJMZAddMZSupport(oInput, fValueZ, fValueM)
+	oOutput	= oInput
+
+	Do Case ObjectInfo(oOutput, OBJ_INFO_TYPE)
+
+		Case OBJ_TYPE_PLINE
+			For nSegment = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS)
+				For nNode = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS + nSegment)
+					fX	= ObjectNodeX(oOutput, nSegment, nNode)
+					fY	= ObjectNodeY(oOutput, nSegment, nNode)
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_M) Then
+						fM	= ObjectNodeM(oOutput, nSegment, nNode)
+					Else
+						fM	= 0
+					End If
+
+					fM	= MATHCalculateValue(fM, fValueM, nUpdateTypeM)
+
+					Alter Object oOutput
+						Node Set Position nSegment, nNode (fX, fY, , fM)
+				Next
+			Next
+
+		Case OBJ_TYPE_REGION
+			For nSegment = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS)
+				For nNode = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS + nSegment)
+					fX	= ObjectNodeX(oOutput, nSegment, nNode)
+					fY	= ObjectNodeY(oOutput, nSegment, nNode)
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_M) Then
+						fM	= ObjectNodeM(oOutput, nSegment, nNode)
+					Else
+						fM	= 0
+					End If
+
+					fM	= MATHCalculateValue(fM, fValueM, nUpdateTypeM)
+
+					Alter Object oOutput
+						Node Set Position nSegment, nNode (fX, fY, , fM)
+				Next
+			Next
+
+		Case OBJ_TYPE_POINT
+			If ObjectInfo(oOutput, OBJ_INFO_HAS_M) Then
+				fM	= ObjectGeography(oOutput, OBJ_GEO_POINTM)
+			Else
+				fM	= 0
+			End If
+			fM	= MATHCalculateValue(fM, fValueM, nUpdateTypeM)
+			Alter Object oOutput
+				Geography OBJ_GEO_POINTM, fM
+
+	End Case
+
+	OBJMZUpdateMValues = oOutput
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZUpdateMValues")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZUpdateZValues(	  ByVal oInput As Object
+						, ByVal fValueZ As Float
+						, ByVal nUpdateTypeZ As Integer
+						) As Object
+
+Dim	nSegment, nNode As Integer,
+	fX, fY, fZ As Float,
+	oOutput As Object
+
+OnError GoTo ErrorOccured
+
+OBJMZUpdateZValues = oInput
+
+'	oOutput	= OBJMZAddZSupport(oInput, fValueZ)
+	oOutput	= oInput
+	Do Case ObjectInfo(oOutput, OBJ_INFO_TYPE)
+
+		Case OBJ_TYPE_PLINE
+			For nSegment = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS)
+				For nNode = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS + nSegment)
+					fX	= ObjectNodeX(oOutput, nSegment, nNode)
+					fY	= ObjectNodeY(oOutput, nSegment, nNode)
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_Z) Then
+						fZ	= ObjectNodeZ(oOutput, nSegment, nNode)
+					Else
+						fZ	= 0
+					End If
+
+					fZ	= MATHCalculateValue(fZ, fValueZ, nUpdateTypeZ)
+
+					Alter Object oOutput
+'						Node Set Position nSegment, nNode (, , fZ)
+						Node Set Position nSegment, nNode (fX, fY, fZ)
+				Next
+			Next
+
+		Case OBJ_TYPE_REGION
+			For nSegment = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS)
+				For nNode = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS + nSegment)
+					fX	= ObjectNodeX(oOutput, nSegment, nNode)
+					fY	= ObjectNodeY(oOutput, nSegment, nNode)
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_Z) Then
+						fZ	= ObjectNodeZ(oOutput, nSegment, nNode)
+					Else
+						fZ	= 0
+					End If
+
+					fZ	= MATHCalculateValue(fZ, fValueZ, nUpdateTypeZ)
+
+					Alter Object oOutput
+'						Node Set Position nSegment, nNode (, , fZ)
+						Node Set Position nSegment, nNode (fX, fY, fZ)
+				Next
+			Next
+
+		Case OBJ_TYPE_POINT
+			If ObjectInfo(oOutput, OBJ_INFO_HAS_Z) Then
+				fZ	= ObjectGeography(oOutput, OBJ_GEO_POINTZ)
+			Else
+				fZ	= 0
+			End If
+
+			fZ	= MATHCalculateValue(fZ, fValueZ, nUpdateTypeZ)
+			Alter Object oOutput
+				Geography OBJ_GEO_POINTZ, fZ
+
+	End Case
+
+	OBJMZUpdateZValues = oOutput
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZUpdateZValues")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZUpdateMZValues(	  ByVal oInput As Object
+						, ByVal fValueM As Float
+						, ByVal nUpdateTypeM As Integer
+						, ByVal fValueZ As Float
+						, ByVal nUpdateTypeZ As Integer
+						) As Object
+
+Dim	nSegment, nNode As Integer,
+	fX, fY, fZ, fM As Float,
+	oOutput As Object
+
+OnError GoTo ErrorOccured
+
+OBJMZUpdateMZValues = oInput
+
+'	oOutput	= OBJMZAddMZSupport(oInput, fValueZ, fValueM)
+	oOutput	= oInput
+
+	Do Case ObjectInfo(oOutput, OBJ_INFO_TYPE)
+
+		Case OBJ_TYPE_PLINE
+			For nSegment = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS)
+				For nNode = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS + nSegment)
+					fX	= ObjectNodeX(oOutput, nSegment, nNode)
+					fY	= ObjectNodeY(oOutput, nSegment, nNode)
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_Z) Then
+						fZ	= ObjectNodeZ(oOutput, nSegment, nNode)
+					Else
+						fZ	= 0
+					End If
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_M) Then
+						fM	= ObjectNodeM(oOutput, nSegment, nNode)
+					Else
+						fM	= 0
+					End If
+
+					fZ	= MATHCalculateValue(fZ, fValueZ, nUpdateTypeZ)
+					fM	= MATHCalculateValue(fM, fValueM, nUpdateTypeM)
+
+					Alter Object oOutput
+						Node Set Position nSegment, nNode (fX, fY, fZ, fM)
+				Next
+			Next
+
+		Case OBJ_TYPE_REGION
+			For nSegment = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS)
+				For nNode = 1 To ObjectInfo(oOutput, OBJ_INFO_NPOLYGONS + nSegment)
+					fX	= ObjectNodeX(oOutput, nSegment, nNode)
+					fY	= ObjectNodeY(oOutput, nSegment, nNode)
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_Z) Then
+						fZ	= ObjectNodeZ(oOutput, nSegment, nNode)
+					Else
+						fZ	= 0
+					End If
+					If ObjectInfo(oOutput, OBJ_INFO_HAS_M) Then
+						fM	= ObjectNodeM(oOutput, nSegment, nNode)
+					Else
+						fM	= 0
+					End If
+
+					fZ	= MATHCalculateValue(fZ, fValueZ, nUpdateTypeZ)
+					fM	= MATHCalculateValue(fM, fValueM, nUpdateTypeM)
+
+					Alter Object oOutput
+						Node Set Position nSegment, nNode (fX, fY, fZ, fM)
+				Next
+			Next
+
+		Case OBJ_TYPE_POINT
+			If ObjectInfo(oOutput, OBJ_INFO_HAS_Z) Then
+				fZ	= ObjectGeography(oOutput, OBJ_GEO_POINTZ)
+			Else
+				fZ	= 0
+			End If
+			fZ	= MATHCalculateValue(fZ, fValueZ, nUpdateTypeZ)
+			Alter Object oOutput
+				Geography OBJ_GEO_POINTZ, fZ
+
+			If ObjectInfo(oOutput, OBJ_INFO_HAS_M) Then
+				fM	= ObjectGeography(oOutput, OBJ_GEO_POINTM)
+			Else
+				fM	= 0
+			End If
+			fM	= MATHCalculateValue(fM, fValueM, nUpdateTypeM)
+			Alter Object oOutput
+				Geography OBJ_GEO_POINTM, fM
+
+	End Case
+
+	OBJMZUpdateMZValues = oOutput
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZUpdateMZValues")
+	Call ERRShow()
+
+End Function
+
+''**********************************************************************************************''
+''Created by Peter Horsbøll Møller, Precisely
+''Parameters:
+''	:
+''Return value:
+''
+''**********************************************************************************************''
+'Function OBJMZAddMZSupport(	  ByVal oInput As Object
+'						, ByVal fDefaultZ As Float
+'						, ByVal fDefaultM As Float
+'						) As Object
+'
+'OnError GoTo ErrorOccured
+'
+'Dim	nSegment, nNode As Integer,
+'	fX, fY As Float,
+'	oOutput As Object
+'
+'OnError GoTo ErrorOccured
+'
+'OBJMZAddMZSupport = oInput
+'
+'	If ObjectInfo(oInput, OBJ_INFO_HAS_Z) And ObjectInfo(oInput, OBJ_INFO_HAS_M) Then
+'		Exit Function
+'	ElseIf ObjectInfo(oInput, OBJ_INFO_HAS_Z) Then
+'		oOutput			= OBJMZAddMSupport(oInput, fDefaultM)
+'		OBJMZAddMZSupport	= oOutput
+'		Exit Function
+'	ElseIf ObjectInfo(oInput, OBJ_INFO_HAS_M) Then
+'		oOutput			= OBJMZAddZSupport(oInput, fDefaultZ)
+'		OBJMZAddMZSupport	= oOutput
+'		Exit Function
+'	End If
+'
+'	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+'
+'		Case OBJ_TYPE_PLINE, OBJ_TYPE_LINE
+'			If ObjectInfo(oInput, OBJ_INFO_TYPE) = OBJ_TYPE_LINE Then
+'				oInput	= ConvertToPline(oInput)
+'			End If
+'
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Pline SupportMZ
+'							Into Variable oOutput
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY, fDefaultZ, fDefaultM)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_REGION
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Region SupportMZ
+'							Into Variable oOutput
+'							1
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'							Brush ObjectInfo(oInput, OBJ_INFO_BRUSH)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY, fDefaultZ, fDefaultM)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_POINT
+'			fX	= CentroidX(oInput)
+'			fY	= CentroidY(oInput)
+'
+'			Create Point SupportMZ
+'				Into Variable oOutput
+'				(fX, fY)
+'				Symbol ObjectInfo(oInput, OBJ_INFO_SYMBOL)
+'			Alter Object oOutput
+'				Geography OBJ_GEO_POINTZ, fDefaultZ
+'			Alter Object oOutput
+'				Geography OBJ_GEO_POINTM, fDefaultM
+'
+'	End Case
+'
+'OBJMZAddMZSupport = oOutput
+'
+'	Exit Function
+''-------------------------
+'ErrorOccured:
+'	Call ERRCreate(Err(), Error$(), "OBJMZAddMZSupport")
+'	Call ERRShow()
+'
+'End Function
+'
+''**********************************************************************************************''
+''Created by Peter Horsbøll Møller, Precisely
+''Parameters:
+''	:
+''Return value:
+''
+''**********************************************************************************************''
+'Function OBJMZAddZSupport(	  ByVal oInput As Object
+'						, ByVal fDefaultZ As Float
+'						) As Object
+'
+'OnError GoTo ErrorOccured
+'
+'Dim	nSegment, nNode As Integer,
+'	fX, fY As Float,
+'	oOutput As Object
+'
+'OnError GoTo ErrorOccured
+'
+'OBJMZAddZSupport = oInput
+'
+'	If ObjectInfo(oInput, OBJ_INFO_HAS_Z) Then
+'		Exit Function
+'	End If
+'
+'	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+'
+'		Case OBJ_TYPE_PLINE, OBJ_TYPE_LINE
+'			If ObjectInfo(oInput, OBJ_INFO_TYPE) = OBJ_TYPE_LINE Then
+'				oInput	= ConvertToPline(oInput)
+'			End If
+'
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Pline SupportMZ
+'							Into Variable oOutput
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY, fDefaultZ)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_REGION
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Region SupportMZ
+'							Into Variable oOutput
+'							1
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'							Brush ObjectInfo(oInput, OBJ_INFO_BRUSH)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY, fDefaultZ)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_POINT
+'			fX	= CentroidX(oInput)
+'			fY	= CentroidY(oInput)
+'
+'			Create Point SupportMZ
+'				Into Variable oOutput
+'				(fX, fY)
+'				Symbol ObjectInfo(oInput, OBJ_INFO_SYMBOL)
+'
+'			Alter Object oOutput
+'				Geography OBJ_GEO_POINTZ, fDefaultZ
+'
+'	End Case
+'
+'OBJMZAddZSupport = oOutput
+'
+'	Exit Function
+''-------------------------
+'ErrorOccured:
+'	Call ERRCreate(Err(), Error$(), "OBJMZAddZSupport")
+'	Call ERRShow()
+'
+'End Function
+'
+''**********************************************************************************************''
+''Created by Peter Horsbøll Møller, Precisely
+''Parameters:
+''	:
+''Return value:
+''
+''**********************************************************************************************''
+'Function OBJMZAddMSupport(	  ByVal oInput As Object
+'						, ByVal fDefaultM As Float
+'						) As Object
+'
+'OnError GoTo ErrorOccured
+'
+'Dim	nSegment, nNode As Integer,
+'	fX, fY As Float,
+'	oOutput As Object
+'
+'OnError GoTo ErrorOccured
+'
+'OBJMZAddMSupport = oInput
+'
+'	If ObjectInfo(oInput, OBJ_INFO_HAS_M) Then
+'		Exit Function
+'	End If
+'
+'	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+'
+'		Case OBJ_TYPE_PLINE, OBJ_TYPE_LINE
+'			If ObjectInfo(oInput, OBJ_INFO_TYPE) = OBJ_TYPE_LINE Then
+'				oInput	= ConvertToPline(oInput)
+'			End If
+'
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Pline SupportMZ
+'							Into Variable oOutput
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY, , fDefaultM)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_REGION
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Region SupportMZ
+'							Into Variable oOutput
+'							1
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'							Brush ObjectInfo(oInput, OBJ_INFO_BRUSH)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY, , fDefaultM)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_POINT
+'			fX	= CentroidX(oInput)
+'			fY	= CentroidY(oInput)
+'
+'			Create Point SupportMZ
+'				Into Variable oOutput
+'				(fX, fY)
+'				Symbol ObjectInfo(oInput, OBJ_INFO_SYMBOL)
+'			Alter Object oOutput
+'				Geography OBJ_GEO_POINTM, fDefaultM
+'
+'	End Case
+'
+'	OBJMZAddMSupport = oOutput
+'
+'	Exit Function
+''-------------------------
+'ErrorOccured:
+'	Call ERRCreate(Err(), Error$(), "OBJMZAddMSupport")
+'	Call ERRShow()
+'
+'End Function
+'
+''**********************************************************************************************''
+''Created by Peter Horsbøll Møller, Precisely
+''Parameters:
+''	:
+''Return value:
+''
+''**********************************************************************************************''
+'Function OBJMZDropMZSupport(  ByVal oInput As Object
+'						) As Object
+'
+'OnError GoTo ErrorOccured
+'
+'Dim	nSegment, nNode As Integer,
+'	fX, fY As Float,
+'	oOutput As Object
+'
+'OnError GoTo ErrorOccured
+'
+'OBJMZDropMZSupport = oInput
+'
+'	If ObjectInfo(oInput, OBJ_INFO_HAS_Z) Then
+'		'**Continue into the function
+'	ElseIf ObjectInfo(oInput, OBJ_INFO_HAS_M) Then
+'		'**Continue into the function
+'	Else
+'		'**hasn't support for Z or M, let's quit
+'		Exit Function
+'	End If
+'
+'	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+'
+'		Case OBJ_TYPE_PLINE, OBJ_TYPE_LINE
+'			If ObjectInfo(oInput, OBJ_INFO_TYPE) = OBJ_TYPE_LINE Then
+'				oInput	= ConvertToPline(oInput)
+'			End If
+'
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Pline
+'							Into Variable oOutput
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_REGION
+'			For nSegment = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS)
+'				For nNode = 1 To ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment)
+'					fX	= ObjectNodeX(oInput, nSegment, nNode)
+'					fY	= ObjectNodeY(oInput, nSegment, nNode)
+'
+'					If nSegment = 1 And nNode = 1 Then
+'						Create Region
+'							Into Variable oOutput
+'							1
+'							1 (fX, fY)
+'							Pen ObjectInfo(oInput, OBJ_INFO_PEN)
+'							Brush ObjectInfo(oInput, OBJ_INFO_BRUSH)
+'					Else
+'						Alter Object oOutput
+'							Node Add Position nSegment, nNode (fX, fY)
+'					End If
+'				Next
+'			Next
+'
+'		Case OBJ_TYPE_POINT
+'			fX	= CentroidX(oInput)
+'			fY	= CentroidY(oInput)
+'
+'			Create Point
+'				Into Variable oOutput
+'				(fX, fY)
+'				Symbol ObjectInfo(oInput, OBJ_INFO_SYMBOL)
+'
+'	End Case
+'
+'OBJMZDropMZSupport = oOutput
+'
+'	Exit Function
+''-------------------------
+'ErrorOccured:
+'	Call ERRCreate(Err(), Error$(), "OBJMZDropMZSupport")
+'	Call ERRShow()
+'
+'End Function

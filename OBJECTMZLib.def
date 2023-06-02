@@ -1,0 +1,29 @@
+﻿Declare Function OBJMZUpdateMValues(	  ByVal oInput As Object
+								, ByVal fValueM As Float
+								, ByVal nUpdateTypeM As Integer
+								) As Object
+Declare Function OBJMZUpdateZValues(	  ByVal oInput As Object
+								, ByVal fValueZ As Float
+								, ByVal nUpdateTypeZ As Integer
+								) As Object
+Declare Function OBJMZUpdateMZValues(	  ByVal oInput As Object
+								, ByVal fValueM As Float
+								, ByVal nUpdateTypeM As Integer
+								, ByVal fValueZ As Float
+								, ByVal nUpdateTypeZ As Integer
+								) As Object
+
+'Declare Function OBJMZAddMZSupport(  ByVal oInput As Object
+'							, ByVal fDefaultZ As Float
+'							, ByVal fDefaultM As Float
+'							) As Object
+'Declare Function OBJMZAddZSupport(	  ByVal oInput As Object
+'							, ByVal fDefaultZ As Float
+'							) As Object
+'Declare Function OBJMZAddMSupport(	  ByVal oInput As Object
+'							, ByVal fDefaultM As Float
+'							) As Object
+'
+'Declare Function OBJMZDropMZSupport(  ByVal oInput As Object
+'							) As Object
+
