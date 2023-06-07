@@ -16,6 +16,7 @@ Include "Defaults.def"
 Include "DEBUGLib.def"
 Include "ERRORLib.def"
 Include "MATHLib.def"
+Include "OBJLib.def"
 Include "OBJECTMZLib.def"
 
 '**********************************************************************************************''
@@ -288,6 +289,193 @@ OBJMZUpdateMZValues = oInput
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "OBJMZUpdateMZValues")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZCartesianOffsetXYZ(	  ByVal oInput As Object
+							, ByVal fOffsetX As Float
+							, ByVal fOffsetY As Float
+							, ByVal fOffsetZ As Float
+							, ByVal sUnits As String
+							) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJMZCartesianOffsetXYZ = OBJMZOffsetXYZ(oInput, fOffsetX, fOffsetY, fOffsetZ, sUnits, CALC_METHOD_CARTESIAN)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZCartesianOffsetXYZ")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZSphericalOffsetXYZ(	  ByVal oInput As Object
+							, ByVal fOffsetX As Float
+							, ByVal fOffsetY As Float
+							, ByVal fOffsetZ As Float
+							, ByVal sUnits As String
+							) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJMZSphericalOffsetXYZ = OBJMZOffsetXYZ(oInput, fOffsetX, fOffsetY, fOffsetZ, sUnits, CALC_METHOD_SPHERICAL)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZSphericalOffsetXYZ")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZOffsetXYZ(	  ByVal oInput As Object
+					, ByVal fOffsetX As Float
+					, ByVal fOffsetY As Float
+					, ByVal fOffsetZ As Float
+					, ByVal sUnits As String
+					, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL: Use Offset or CartesianOffset
+					) As Object
+
+Dim	oOutput As Object
+
+OnError GoTo ErrorOccured
+
+OBJMZOffsetXYZ = oInput
+
+	If fOffsetX <> 0 or fOffsetY <> 0 Then
+		If nCalculationMethod = CALC_METHOD_CARTESIAN Then
+			oOutput	= CartesianOffsetXY(oInput, fOffsetX, fOffsetY, sUnits)
+		Else
+			oOutput	= SphericalOffsetXY(oInput, fOffsetX, fOffsetY, sUnits)
+		End If
+	Else
+		oOutput	= oInput
+	End If
+
+	oOutput	= OBJMZUpdateZValues(oOutput, fOffsetZ, CALC_TYPE_ADD_TO)
+
+	OBJMZOffsetXYZ = oOutput
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZOffsetXYZ")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZSetM(	  ByVal oInput As Object
+				, ByVal fValueM As Float
+				) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJMZSetM = OBJMZUpdateZValues(oInput, fValueM, CALC_TYPE_SET_TO)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZSetM")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZSetZ(	  ByVal oInput As Object
+				, ByVal fValueZ As Float
+				) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJMZSetZ = OBJMZUpdateZValues(oInput, fValueZ, CALC_TYPE_SET_TO)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZSetZ")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZScaleM( ByVal oInput As Object
+				, ByVal fScaleMBy As Float
+				) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJMZScaleM = OBJMZUpdateMValues(oInput, fScaleMBy, CALC_TYPE_MULTIPLY_BY)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZScaleM")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJMZScaleZ(  ByVal oInput As Object
+				, ByVal fScaleZBy As Float
+				) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJMZScaleZ = OBJMZUpdateZValues(oInput, fScaleZBy, CALC_TYPE_MULTIPLY_BY)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJMZScaleZ")
 	Call ERRShow()
 
 End Function

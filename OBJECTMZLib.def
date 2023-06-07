@@ -13,6 +13,40 @@ Declare Function OBJMZUpdateMZValues(	  ByVal oInput As Object
 								, ByVal nUpdateTypeZ As Integer
 								) As Object
 
+Declare Function OBJMZCartesianOffsetXYZ(	  ByVal oInput As Object
+									, ByVal fOffsetX As Float
+									, ByVal fOffsetY As Float
+									, ByVal fOffsetZ As Float
+									, ByVal sUnits As String
+									) As Object
+Declare Function OBJMZSphericalOffsetXYZ(	  ByVal oInput As Object
+									, ByVal fOffsetX As Float
+									, ByVal fOffsetY As Float
+									, ByVal fOffsetZ As Float
+									, ByVal sUnits As String
+									) As Object
+Declare Function OBJMZOffsetXYZ(	  ByVal oInput As Object
+							, ByVal fOffsetX As Float
+							, ByVal fOffsetY As Float
+							, ByVal fOffsetZ As Float
+							, ByVal sUnits As String
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL: Use Offset or CartesianOffset
+							) As Object
+
+Declare Function OBJMZSetM(	  ByVal oInput As Object
+						, ByVal fValueM As Float
+						) As Object
+Declare Function OBJMZSetZ(	  ByVal oInput As Object
+						, ByVal fValueZ As Float
+						) As Object
+Declare Function OBJMZScaleM(	  ByVal oInput As Object
+						, ByVal fScaleMBy As Float
+						) As Object
+Declare Function OBJMZScaleZ(	  ByVal oInput As Object
+						, ByVal fScaleZBy As Float
+						) As Object
+
+
 'Declare Function OBJMZAddMZSupport(  ByVal oInput As Object
 '							, ByVal fDefaultZ As Float
 '							, ByVal fDefaultM As Float
