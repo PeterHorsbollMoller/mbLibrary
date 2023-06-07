@@ -45,6 +45,7 @@
 'Requires MapInfo Pro 4.0
 
 Define	CALC_METHOD_CARTESIAN		1
+Define	CALC_METHOD_SPHERICAL		2
 Define	CALC_METHOD_SPERICAL		2
 
 Define	OBJ_ARROW_END_TYPE_ROUNDED	1
@@ -124,7 +125,7 @@ Declare Function OBJCreateTrapez(	  ByVal oStartPoint As Object			'Start point u
 							, ByVal fWidthAtStart As Float		'Width at start point, if zero geometry will be a triangle
 							, ByVal fWidthAtEnd As Float			'Width at end point, if zero geometry will be a triangle
 							, ByVal bCreateMidpoint As Logical		'Determines if the trapez should have a node at the mid point on the two parallel sides
-							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL: Use Offset or CartesianOffset
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL: Use Offset or CartesianOffset
 							) As Object
 'In MapInfo 360 degrees. 0 towards east and counter clockwise
 Declare Function OBJCreateTriangle(  ByVal oStartPoint As Object			'Start point using current session coordinate system
@@ -132,7 +133,7 @@ Declare Function OBJCreateTriangle(  ByVal oStartPoint As Object			'Start point 
 							, ByVal fLength As Float				'Width at starting point, if zero geometry will be a triangle
 							, ByVal fWidthAtEnd As Float			'Width at end point
 							, ByVal bCreateMidpoint As Logical		'Determines if the triangle should have a node at the mid point on the end side
-							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL: Use Offset or CartesianOffset
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL: Use Offset or CartesianOffset
 							) As Object
 
 Declare Function OBJCartesianCreateArrowHead(  ByVal oPline As Object
@@ -156,14 +157,14 @@ Declare Function OBJCreateAnnulus(	  ByVal oCenter As Object
 							, ByVal fRadiusOuter As Float			'meters
 							, ByVal fAngleWidth As Float			' > 0 AND < 360
 							, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
-							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
 							) As Object
 Declare Function OBJCreateCircularSector( ByVal oCenter As Object
 								, ByVal fDirection As Float			'360 degrees
 								, ByVal fRadius As Float				'meters
 								, ByVal fAngleWidth As Float			' > 0 AND < 360
 								, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
-								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
 								) As Object
 
 Declare Function OBJCartesianCreateArrow( ByVal oInput As Object				'Input polyline to draw arrow based on
@@ -183,5 +184,5 @@ Declare Function OBJCreateDoughnut(  ByVal oCenter As Object
 							, ByVal fRadiusInner As Float			'Using the distance unit below
 							, ByVal fRadiusOuter As Float			'Using the distance unit below
 							, ByVal sDistanceUnit As String		'"m", "cm" and more
-							, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
 							) As Object
