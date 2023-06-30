@@ -1431,21 +1431,21 @@ End Function
 'Return value:
 '
 '**********************************************************************************************''
-Function OBJCreateAnnulus( ByVal oCenter As Object
-					, ByVal fDirection As Float
-					, ByVal fRadiusInner As Float	'meters
-					, ByVal fRadiusOuter As Float	'meters
-					, ByVal fAngleWidth As Float
-					, ByVal nResolution As Integer
-					, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
-					) As Object
+Function OBJCreateDoughnutSector(	  ByVal oCenter As Object
+							, ByVal fDirection As Float
+							, ByVal fRadiusInner As Float	'meters
+							, ByVal fRadiusOuter As Float	'meters
+							, ByVal fAngleWidth As Float
+							, ByVal nResolution As Integer
+							, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							) As Object
 
 Dim	oPoint, oCutter, oAnnulus, oCircleInner As Object,
 	fCutterDistance, fAngleHalf, fAngleQuarter As Float
 
 OnError GoTo ErrorOccured
 
-OBJCreateAnnulus = oCenter
+OBJCreateDoughnutSector = oCenter
 
 	fCutterDistance	= fRadiusOuter * 3
 	fAngleHalf		= fAngleWidth / 2
@@ -1507,12 +1507,40 @@ OBJCreateAnnulus = oCenter
 
 	oAnnulus = Overlap(oAnnulus, oCutter)
 
-	OBJCreateAnnulus = oAnnulus
+	OBJCreateDoughnutSector = oAnnulus
 
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "OBJCreateAnnulus")
+	Call ERRCreate(Err(), Error$(), "OBJCreateDoughnutSector")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateAnnulusSector(	  ByVal oCenter As Object
+							, ByVal fDirection As Float
+							, ByVal fRadiusInner As Float	'meters
+							, ByVal fRadiusOuter As Float	'meters
+							, ByVal fAngleWidth As Float
+							, ByVal nResolution As Integer
+							, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPERICAL
+							) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJCreateAnnulusSector = OBJCreateDoughnutSector(oCenter, fDirection, fRadiusInner, fRadiusOuter, fAngleWidth, nResolution, nCalculationMethod)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateAnnulusSector")
 	Call ERRShow()
 
 End Function
@@ -1534,7 +1562,7 @@ Function OBJCreateCircularSector(	  ByVal oCenter As Object
 
 OnError GoTo ErrorOccured
 
-	OBJCreateCircularSector = OBJCreateAnnulus(oCenter, fDirection, 0, fRadius, fAngleWidth, nResolution, nCalculationMethod)
+	OBJCreateCircularSector = OBJCreateDoughnutSector(oCenter, fDirection, 0, fRadius, fAngleWidth, nResolution, nCalculationMethod)
 
 	Exit Function
 '-------------------------
@@ -1701,6 +1729,33 @@ OBJCreateDoughnut = oCenter
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "OBJCreateDoughnut")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateAnnulus( ByVal oCenter As Object
+					, ByVal nResolution As Integer		'Number of nodes for a full cirkle
+					, ByVal fRadiusInner As Float			'Using the distance unit below
+					, ByVal fRadiusOuter As Float			'Using the distance unit below
+					, ByVal sDistanceUnit As String		'"m", "cm" and more
+					, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+					) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJCreateAnnulus = OBJCreateDoughnut(oCenter, nResolution, fRadiusInner, fRadiusOuter, sDistanceUnit, nCalculationMethod)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateAnnulus")
 	Call ERRShow()
 
 End Function

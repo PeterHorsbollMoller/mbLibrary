@@ -41,6 +41,10 @@
 '						- OBJCartesianCreateArrow(...) As Object
 '	12/04/2023 13.09.12	- Added:
 '						- OBJCreateDoughnut(...) As Object
+'	27-06-2023 11:12:47	- Renamed OBJCreateAnnulus to OBJCreateDoughnutSector. Annulus is just a circular ring
+'					- Added OBJCreateAnnulus(...) As Object	-> Calling OBJCreateDoughnut in the background
+'						- OBJCreateAnnulusSector(...) As Object -> Calling OBJCreateDoughnutSector in the background
+
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -151,14 +155,22 @@ Declare Function OBJPlineAddNode(	  ByVal oPline As Object
 							) As Object
 
 'In MapInfo 360 degrees. 0 towards east and counter clockwise
-Declare Function OBJCreateAnnulus(	  ByVal oCenter As Object
-							, ByVal fDirection As Float			'360 degrees
-							, ByVal fRadiusInner As Float			'meters
-							, ByVal fRadiusOuter As Float			'meters
-							, ByVal fAngleWidth As Float			' > 0 AND < 360
-							, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
-							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
-							) As Object
+Declare Function OBJCreateDoughnutSector( ByVal oCenter As Object
+								, ByVal fDirection As Float			'360 degrees
+								, ByVal fRadiusInner As Float			'meters
+								, ByVal fRadiusOuter As Float			'meters
+								, ByVal fAngleWidth As Float			' > 0 AND < 360
+								, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
+								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+								) As Object
+Declare Function OBJCreateAnnulusSector(  ByVal oCenter As Object
+								, ByVal fDirection As Float			'360 degrees
+								, ByVal fRadiusInner As Float			'meters
+								, ByVal fRadiusOuter As Float			'meters
+								, ByVal fAngleWidth As Float			' > 0 AND < 360
+								, ByVal nResolution As Integer		'A value between 3 and 500, number of nodes to describe a 360 full circle
+								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+								) As Object
 Declare Function OBJCreateCircularSector( ByVal oCenter As Object
 								, ByVal fDirection As Float			'360 degrees
 								, ByVal fRadius As Float				'meters
@@ -184,5 +196,12 @@ Declare Function OBJCreateDoughnut(  ByVal oCenter As Object
 							, ByVal fRadiusInner As Float			'Using the distance unit below
 							, ByVal fRadiusOuter As Float			'Using the distance unit below
 							, ByVal sDistanceUnit As String		'"m", "cm" and more
-							, ByVal nCalculationMethod As Integer		'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
 							) As Object
+Declare Function OBJCreateAnnulus(	  ByVal oCenter As Object
+							, ByVal nResolution As Integer		'Number of nodes for a full cirkle
+							, ByVal fRadiusInner As Float			'Using the distance unit below
+							, ByVal fRadiusOuter As Float			'Using the distance unit below
+							, ByVal sDistanceUnit As String		'"m", "cm" and more
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+							) As Object	'**Calling OBJCreateDoughnut in the background
