@@ -400,8 +400,10 @@
 '	01/12/2022 16.22.44		- Removed all usage of assigning This variables NULL_PTR.
 '							Seems to have a side effect of controls being removed from memory when the application close
 '							but before the RBNEndHandler runs through the controls and removes them from the user interface
+'	26/04/2023 08.08.47		- Added:
+'							- RBNControlSetSizeThs(...)
+'							- RBNControlSetSizeIdx(...)
 '*****************************************************************************************************************************
-
 
 'Requires MapInfo Pro 12.5 x64
 ' mapInfoApplication has a Ribbon
@@ -1280,6 +1282,13 @@ Declare Function RBNControlGetCaptionThs( rbnControl As This
 									) As String
 Declare Function RBNControlGetCaptionIdx(	  ByVal nElementIdx As Integer
 							) As String
+
+Declare Sub RBNControlSetSizeThs(	  rbnControl As This
+							, ByVal nSize As Integer		'The Size to to be set on the control
+							)
+Declare Sub RBNControlSetSizeIdx(	  ByVal nElementIdx As Integer
+							, ByVal nSize As Integer		'The Size to to be set on the control
+							)
 
 Declare Function RBNControlGetSizeThs(	  rbnControl As This
 								) As Integer

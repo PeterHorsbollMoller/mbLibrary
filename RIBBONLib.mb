@@ -7184,6 +7184,170 @@ ErrorOccured:
 
 End Function
 
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNControlSetSizeThs(  rbnControl As This
+					, ByVal nSize As Integer		'The Size to to be set on the control
+					)
+
+OnError GoTo ErrorOccured
+
+'CONTROL_SIZE_EXTRASMALL	1
+'CONTROL_SIZE_SMALL		2
+'CONTROL_SIZE_LARGE		3
+
+	Do Case GetMICtrlCtrlType(rbnControl)
+		Case ControlType_Button
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnBtnCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnBtnCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnBtnCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnBtnCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+		Case ControlType_ToolButton
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnToolBtnCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnToolBtnCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnToolBtnCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnToolBtnCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+		Case ControlType_RibbonMenuItem
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnMenuItemCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnMenuItemCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnMenuItemCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnMenuItemCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+'		Case ControlType_RibbonButtonPanel
+'		Case ControlType_RibbonSeparator
+'		Case ControlType_ContextMenuItem
+'		Case ControlType_ContextMenuSeparator
+'		Case ControlType_MenuItemSeparator
+
+		Case ControlType_DropDownButton
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnDropDownCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnDropDownCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnDropDownCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnDropDownCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+		Case ControlType_SplitButton
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnSplitCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnSplitCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnSplitCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnSplitCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+'		Case ControlType_DropDownMenuGroup
+
+		Case ControlType_GalleryControl
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnGalleryCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnGalleryCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnGalleryCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnGalleryCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+		Case ControlType_GalleryItem
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetRbnGalleryItemIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetRbnGalleryItemIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetRbnGalleryItemIsExtraSmall(rbnControl, FALSE)
+					Call SetRbnGalleryItemIsLarge(rbnControl, FALSE)
+			End Case
+
+'		Case ControlType_GalleryGroup
+'		Case ControlType_CustomControl
+'		Case ControlType_TextBlock
+
+		Case ControlType_Image
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetIImageCtrlIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetIImageCtrlIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetIImageCtrlIsExtraSmall(rbnControl, FALSE)
+					Call SetIImageCtrlIsLarge(rbnControl, FALSE)
+			End Case
+
+'		Case ControlType_BackStageTabItem
+
+		Case ControlType_BackStageButton
+			Do Case nSize
+				Case CONTROL_SIZE_EXTRASMALL
+					Call SetIBackStageBtnIsExtraSmall(rbnControl, TRUE)
+				Case CONTROL_SIZE_LARGE
+					Call SetIBackStageBtnIsLarge(rbnControl, TRUE)
+				Case Else
+					Call SetIBackStageBtnIsExtraSmall(rbnControl, FALSE)
+					Call SetIBackStageBtnIsLarge(rbnControl, FALSE)
+			End Case
+
+'		Case ControlType_BackStageTabSection
+'		Case ControlType_BackStageSeparator
+'		Case ControlType_StackPanel, ControlType_WrapPanel
+
+	End Case
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetSizeThs: Size: " & nSize)
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNControlSetSizeIdx(	  ByVal nElementIdx As Integer
+						, ByVal nSize As Integer		'The Size to to be set on the control
+						)
+
+OnError GoTo ErrorOccured
+
+	Call RBNControlSetSizeThs(marrControls(nElementIdx), nSize)
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlSetSizeIdx")
+	Call ERRShow()
+
+End Sub
+
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Precisely
 'Parameters:
