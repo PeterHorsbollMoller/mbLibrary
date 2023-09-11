@@ -376,7 +376,9 @@ OBJMZOffsetXYZ = oInput
 		oOutput	= oInput
 	End If
 
-	oOutput	= OBJMZUpdateZValues(oOutput, fOffsetZ, CALC_TYPE_ADD_TO)
+	If fOffsetZ <> 0 Then
+		oOutput	= OBJMZUpdateZValues(oOutput, fOffsetZ, CALC_TYPE_ADD_TO)
+	End If
 
 	OBJMZOffsetXYZ = oOutput
 
