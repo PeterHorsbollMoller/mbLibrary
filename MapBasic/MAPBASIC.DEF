@@ -1,5 +1,5 @@
 '============================================================================
-' MapInfo Pro 2101 - System defines
+' MapInfo Pro 2300 - System defines
 '----------------------------------------------------------------------------
 ' This file contains defines useful when programming in the MapBasic
 ' language.  There are three versions of this file:
@@ -1070,6 +1070,7 @@ Define MAPPER_INFO_TIME_CURRENT_END_EXTENT      62
 Define MAPPER_INFO_TIME_CUSTOM_TIMEPERIOD       63
 Define MAPPER_INFO_TIME_LAYER_N                 64
 Define MAPPER_INFO_TIME_SERIES_PLAYING          65
+Define MAPPER_INFO_TILE_SERVER_ZOOM_LEVEL       66
 
 '-----------------------------------------------------------------------------
 ' Time format types, retuned by MapperInfo() for MAPPER_INFO_TIME_FORMAT_TYPE
@@ -1238,6 +1239,13 @@ Define SEL_INFO_TABLENAME                       1
 Define SEL_INFO_SELNAME                         2
 Define SEL_INFO_NROWS                           3
 Define SEL_INFO_ISNEW                           4
+
+' NodeSelectionInfo() defines
+Define NODE_SEL_INFO_EXISTS      1
+Define NODE_SEL_INFO_CLOSED      2
+Define NODE_SEL_INFO_POLY        3
+Define NODE_SEL_INFO_STARTNODE   4
+Define NODE_SEL_INFO_ENDNODE     5
 
 '============================================================================
 ' Server statement and function defines
