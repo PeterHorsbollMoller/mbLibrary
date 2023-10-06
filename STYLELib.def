@@ -15,6 +15,9 @@
 '					- Function STLChangeSymbolSymbolCode(...) As Symbol
 '	20-10-2014 	Peter Møller added:
 '					- Function STLChangeBrushPattern(...) As Brush
+'	06-10-2023	Peter Møller added:
+'					- Function STLChangeBrushBGColour(...) As Brush
+'					- Function STLChangePenPattern(...) As Pen
 '*******************************************************************************************************************
 
 Declare Function STLAlterClosedObject(	  ByVal oObj As Object	'Closed object whoes style to change
@@ -52,8 +55,14 @@ Declare Function STLChangeSymbolSymbolCode(	  ByVal symNow As Symbol			'Symbol t
 Declare Function STLChangePenColour( ByVal penNow As Pen			'Pen to change the colour of
 							, ByVal nColourNew As Integer		'Colour to set on the Pen
 							) As Pen						'Pen with the new colour
+Declare Function STLChangePenPattern( ByVal penNow As Pen			'Pen to change the colour of
+							, ByVal nPatternNew As Integer	'Pattern to set on the Pen
+							) As Pen						'Pen with the new Pattern
 Declare Function STLChangeBrushFGColour(  ByVal brsNow As Brush		'Brush to change the colour of
 								, ByVal nColourNew As Integer	'Colour to set on the Brush, foreground colour
+								) As Brush				'Brush with the new colour
+Declare Function STLChangeBrushBGColour(  ByVal brsNow As Brush		'Brush to change the colour of
+								, ByVal nColourNew As Integer	'Colour to set on the Brush, background colour
 								) As Brush				'Brush with the new colour
 Declare Function STLChangeBrushPattern(  ByVal brsNow As Brush			'Brush to change the pattern of
 								, ByVal nPatternNew As Integer	'Pattern to set on the Brush

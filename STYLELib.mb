@@ -407,6 +407,30 @@ End Function
 'Return value:
 '
 '**********************************************************************************************''
+Function STLChangePenPattern(   ByVal penNow As Pen			'Pen to change the colour of
+						, ByVal nPatternNew As Integer	'Pattern to set on the Pen
+						) As Pen						'Pen with the new Pattern
+
+OnError GoTo ErrorOccured
+
+	STLChangePenPattern = MakePen(StyleAttr(penNow, PEN_WIDTH), nPatternNew, StyleAttr(penNow, PEN_COLOR))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangePenPattern")
+	Call ERRShow()
+
+End Function
+
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
 Function STLChangeBrushFGColour(	  ByVal brsNow As Brush
 							, ByVal nColourNew As Integer
 							) As Brush
@@ -418,7 +442,30 @@ OnError GoTo ErrorOccured
 	Exit Function
 '-------------------------
 ErrorOccured:
-	Call ERRCreate(Err(), Error$(), "STLChangeBrushColour")
+	Call ERRCreate(Err(), Error$(), "STLChangeBrushFGColour")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STLChangeBrushBGColour(	  ByVal brsNow As Brush		'Brush to change the colour of
+							, ByVal nColourNew As Integer	'Colour to set on the Brush, background colour
+							) As Brush				'Brush with the new colour
+
+OnError GoTo ErrorOccured
+
+	STLChangeBrushBGColour = MakeBrush(StyleAttr(brsNow, BRUSH_PATTERN), StyleAttr(brsNow, BRUSH_FORECOLOR), nColourNew)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STLChangeBrushBGColour")
 	Call ERRShow()
 
 End Function
