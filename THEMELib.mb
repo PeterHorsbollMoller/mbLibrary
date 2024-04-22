@@ -1,0 +1,80 @@
+﻿'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Precisely
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "TABLELib.def"
+Include "THEMELib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function THEMEGetIndividualItems(	  ByVal nMID As Integer
+							, ByVal nThemeLayerID As Integer
+							, arrItems() As T_INDIVIDUAL_ITEMS
+							) As Integer
+
+Dim	nItem, nItems, nExprType As Integer,
+	sExpr As String
+
+OnError GoTo ErrorOccured
+
+THEMEGetIndividualItems = 0
+
+	nItems	= IndividualThemeInfo (nMID, nThemeLayerID, INDIVTHEME_INFO_ITEMS_COUNT)
+	ReDim arrItems(nItems)
+
+	sExpr	= ThemeExpressionInfo (nMID, nThemeLayerID, 1, THEME_EXPRESSION_INFO_STRING)
+	nExprType	= ThemeExpressionInfo (nMID, nThemeLayerID, 1, THEME_EXPRESSION_INFO_TYPE)
+
+	For nItem = 1 To nItems
+		arrItems(nItem).sExpr		= sExpr
+		arrItems(nItem).nExprType	= nExprType
+		Do Case nExprType
+			Case EXPRESSION_TYPE_INTEGER, EXPRESSION_TYPE_SMALLINT	', EXPRESSION_TYPE_LARGEINT
+				arrItems(nItem).nValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+			Case EXPRESSION_TYPE_DECIMAL, EXPRESSION_TYPE_FLOAT
+				arrItems(nItem).fValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+			Case EXPRESSION_TYPE_CHAR
+				arrItems(nItem).sValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+			Case EXPRESSION_TYPE_DATE
+				arrItems(nItem).dValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+			Case EXPRESSION_TYPE_TIME
+				arrItems(nItem).tValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+			Case EXPRESSION_TYPE_DATETIME
+				arrItems(nItem).dtValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+			Case EXPRESSION_TYPE_LOGICAL
+				arrItems(nItem).bValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
+		End Case
+
+		arrItems(nItem).penLine		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_LINE)
+		arrItems(nItem).penBorder	= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_PEN)
+		arrItems(nItem).brsFill		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_BRUSH)
+		arrItems(nItem).symStyle		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_SYMBOL)
+	Next
+
+	THEMEGetIndividualItems = Ubound(arrItems)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "THEMEGetIndividualItems")
+	Call ERRShow()
+
+End Function

@@ -1,0 +1,21 @@
+﻿Type T_INDIVIDUAL_ITEMS
+	sExpr	As String
+	nExprType	As Integer
+	nValue	As LargeInt
+	fValue	As Float
+	sValue	As String
+	dValue	As Date
+	tValue	As Time
+	dtValue	As DateTime
+	bValue	As Logical
+	penLine	As Pen
+	penBorder	As Pen
+	brsFill	As Brush
+	symStyle	As Symbol
+End Type
+
+
+Declare Function THEMEGetIndividualItems( ByVal nMID As Integer
+								, ByVal nThemeLayerID As Integer
+								, arrItems() As T_INDIVIDUAL_ITEMS
+								) As Integer
