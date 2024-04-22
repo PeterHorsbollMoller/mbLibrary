@@ -1759,3 +1759,160 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJGetNode(  ByVal oInput As Object		'Input to query: Line, Pline or Polygon/Region
+				, ByVal nSegment As Integer	'If uses 1
+				, ByVal nNode As Integer		'If negative, calculates from the end
+				) As Object				'Returns the node specified
+
+OnError GoTo ErrorOccured
+
+OBJGetNode = oInput
+
+	Do Case ObjectInfo(oInput, OBJ_INFO_TYPE)
+		Case OBJ_TYPE_LINE
+			OBJGetNode = OBJGetNode(ConvertToPline(oInput), nSegment, nNode)
+		Case OBJ_TYPE_PLINE, OBJ_TYPE_REGION
+			nSegment	= IIf(nSegment = 0, 1, nSegment)
+
+			If nNode < 0 Then
+				OBJGetNode = CreatePoint(
+							ObjectNodeX(oInput, nSegment, ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment) - (nNode + 1))
+							, ObjectNodeY(oInput, nSegment, ObjectInfo(oInput, OBJ_INFO_NPOLYGONS + nSegment) - (nNode + 1))
+							)
+			ElseIf nNode > 0 Then
+				OBJGetNode = CreatePoint(
+							ObjectNodeX(oInput, nSegment, nNode)
+							, ObjectNodeY(oInput, nSegment, nNode)
+							)
+			End If
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJGetNode")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateLineToIntersection(	  ByVal oFromPline As Object			'2-node polyline
+								, ByVal nFromStartOrEnd As Integer		'OBJ_FIRST_SEGMENT (1), OBJ_LAST_SEGMENT (-1)
+								, ByVal oToPline As Object			'multi-point polyline
+								, ByVal fDistanceTolerance As Float	'Search distance
+								, ByVal sDistanceUnits As String		'Distance units
+								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+								) As Object						'Returns a point at (0,0) if no intersection was found
+
+Dim	oNewLine, oIntersection As Object,
+	nPnts, nNumPnts As Integer,
+	fX, fY, fAngle As Float
+
+OnError GoTo ErrorOccured
+
+OBJCreateLineToIntersection = CreatePoint(0,0)
+
+	oNewLine	= OBJCreateLineExtension(oFromPline, nFromStartOrEnd, fDistanceTolerance, sDistanceUnits, nCalculationMethod)
+
+	If Not oNewLine Intersects oToPline Then
+		Call DEBUGPrint("Whoops, extended line doesn't intersect line to extend to")
+		Call ERRCreate(0, "Extended line doesn't intersect line to extend to", "OBJCreateLineToIntersection")
+		Exit Function
+	End If
+
+	oIntersection	= IntersectNodes(oNewLine, oToPline, INCL_CROSSINGS)
+	nNumPnts		= ObjectInfo(oIntersection, OBJ_INFO_NPNTS)
+
+	If nNumPnts = 0 Then
+		Call DEBUGPrint("Whoops, extended line doesn't intersect line to extend to")
+		Call ERRCreate(0, "Extended line doesn't intersect line to extend to", "OBJCreateLineToIntersection")
+		Exit Function
+	End If
+
+	fX	= ObjectNodeX(oNewLine, 1, 1)
+	fY	= ObjectNodeY(oNewLine, 1, 1)
+	Create Pline
+		Into Variable oNewLine
+		1 (fX, fY)
+
+	For nPnts = 1 To nNumPnts
+		Alter Object oNewLine
+			Node Add Position 1, (nPnts + 1) (ObjectNodeX(oIntersection, 1, nPnts), ObjectNodeY(oIntersection, 1, nPnts))
+	Next
+
+	OBJCreateLineToIntersection = oNewLine
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateLineToIntersection")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJCreateLineExtension(	  ByVal oFromPline As Object			'One-segment polyline
+							, ByVal nFromStartOrEnd As Integer		'OBJ_FIRST_SEGMENT (1), OBJ_LAST_SEGMENT (-1)
+							, ByVal fLength As Float				'Length of Line Extension
+							, ByVal sDistanceUnits As String		'Distance units
+							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+							) As Object						'Returns a point at (0,0) if the process fails
+
+Dim	oNewLine, oP2, oP3 As Object,
+	nNumPnts As Integer,
+	fX, fY, fAngle As Float
+
+OnError GoTo ErrorOccured
+
+OBJCreateLineExtension = CreatePoint(0,0)
+
+	If nFromStartOrEnd = OBJ_FIRST_SEGMENT Then	'Start Segment
+		oNewLine	= OBJReverse(ExtractNodes(oFromPline, 1, 1, 2, FALSE))
+	Else	'Assuming OBJ_LAST_SEGMENT
+		nNumPnts	= ObjectInfo(oFromPline, OBJ_INFO_NPOLYGONS + 1)
+		oNewLine	= ExtractNodes(oFromPline, 1, nNumPnts - 1, nNumPnts, FALSE)
+	End If
+
+	fAngle	= OBJDirection(oNewLine)
+
+	fX		= ObjectNodeX(oNewLine, 1, 2)
+	fY		= ObjectNodeY(oNewLine, 1, 2)
+	oP2		= CreatePoint(fX, fY)
+
+	If nCalculationMethod  = CALC_METHOD_CARTESIAN Then
+		oP3		= CartesianOffset(oP2, fAngle, fLength, sDistanceUnits)
+	Else
+		oP3		= SphericalOffset(oP2, fAngle, fLength, sDistanceUnits)
+	End If
+
+	oNewLine	= OBJCreatePlineFromPoints(oP2, oP3)
+
+	OBJCreateLineExtension = oNewLine
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJCreateLineExtension")
+	Call ERRShow()
+
+End Function

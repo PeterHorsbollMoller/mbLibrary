@@ -44,7 +44,10 @@
 '	27-06-2023 11:12:47	- Renamed OBJCreateAnnulus to OBJCreateDoughnutSector. Annulus is just a circular ring
 '					- Added OBJCreateAnnulus(...) As Object	-> Calling OBJCreateDoughnut in the background
 '						- OBJCreateAnnulusSector(...) As Object -> Calling OBJCreateDoughnutSector in the background
-
+'	06-12-2023 11:04:25	- Added OBJGetNode(...): Returns a specific node from a polygon, polyline, line. -1 returns the last node
+'	19-04-2024 07:21:50	- Added:
+'						- OBJCreateLineToIntersection(...) As Object, creates an extended line between two polylines
+'						- OBJCreateLineExtension(...) As Object, creates a line extension for a polyline
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -55,6 +58,10 @@ Define	CALC_METHOD_SPERICAL		2
 Define	OBJ_ARROW_END_TYPE_ROUNDED	1
 Define	OBJ_ARROW_END_TYPE_FLAT		2
 Define	OBJ_ARROW_END_TYPE_ARROW		3
+
+Define	OBJ_FIRST_SEGMENT			1
+Define	OBJ_LAST_SEGMENT			-1
+
 
 Declare Function OBJIsInitialized(ByVal oObj As Object) As Logical
 
@@ -205,3 +212,21 @@ Declare Function OBJCreateAnnulus(	  ByVal oCenter As Object
 							, ByVal sDistanceUnit As String		'"m", "cm" and more
 							, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
 							) As Object	'**Calling OBJCreateDoughnut in the background
+Declare Function OBJGetNode(	  ByVal oInput As Object		'Input to query: Line, Pline or Polygon/Region
+						, ByVal nSegment As Integer	'If uses 1
+						, ByVal nNode As Integer		'If negative, calculates from the end
+						) As Object				'Returns the node specified
+
+Declare Function OBJCreateLineToIntersection(  ByVal oFromPline As Object			'2-node polyline
+									, ByVal nFromStartOrEnd As Integer		'OBJ_FIRST_SEGMENT (1), OBJ_LAST_SEGMENT (-1)
+									, ByVal oToPline As Object			'multi-point polyline
+									, ByVal fDistanceTolerance As Float	'Search distance
+									, ByVal sDistanceUnits As String		'Distance units
+									, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+									) As Object						'Returns a point at (0,0) if no intersection was found
+Declare Function OBJCreateLineExtension(  ByVal oFromPline As Object			'One-segment polyline
+								, ByVal nFromStartOrEnd As Integer		'OBJ_FIRST_SEGMENT (1), OBJ_LAST_SEGMENT (-1)
+								, ByVal fLength As Float				'Length of Line Extension
+								, ByVal sDistanceUnits As String		'Distance units
+								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
+								) As Object						'Returns a point at (0,0) if the process fails
