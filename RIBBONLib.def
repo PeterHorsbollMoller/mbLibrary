@@ -424,7 +424,7 @@
 '		'Create & Set the button tooltip
 '		Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_MAP_TO_XLS), "", "")
 '		'Set the button icon
-'		Call RBNControlSetIconsIdx(nCtrlIdx, TRUE, PATH_IMAGES & "MapWindowExcel_16.bmp", PATH_IMAGES & "MapWindowExcel_24.bmp")
+'		Call RBNControlSetIconsIdx(nCtrlIdx, CONTROL_SIZE_LARGE, PATH_IMAGES & "MapWindowExcel_16.bmp", PATH_IMAGES & "MapWindowExcel_24.bmp")
 '		'Set Custom MapBasic Handle to the button
 '		Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportMapWindowToExcel")
 '	End If
@@ -434,7 +434,7 @@
 '		'Create & Set the button tooltip
 '		Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_BROWSER_TO_XLS), "", "")
 '		'Set the button icon
-'		Call RBNControlSetIconsIdx(nCtrlIdx, FALSE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
+'		Call RBNControlSetIconsIdx(nCtrlIdx, CONTROL_SIZE_LARGE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
 '		'Set Custom MapBasic Handle to the button
 '		Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportBrowserDataToExcel")
 '	End If
@@ -446,7 +446,7 @@
 '				'Create & Set the button tooltip
 '				Call RBNControlSetToolTipIdx(nCtrlIdx, RESSTRNGGetString(STR_MNU_EXPORT_TAB_TO_XLS), "", "")
 '				'Set the button icon
-'				Call RBNControlSetIconsIdx(nCtrlIdx, TRUE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
+'				Call RBNControlSetIconsIdx(nCtrlIdx, CONTROL_SIZE_LARGE, PATH_IMAGES & "BrowserWindowExcel_16.bmp", PATH_IMAGES & "BrowserWindowExcel_24.bmp")
 '				'Set Custom MapBasic Handle to the button
 '				Call RBNControlSetCustomMBXHandlerIdx(nCtrlIdx, "MENUExportTableToExcel")
 '			End If
