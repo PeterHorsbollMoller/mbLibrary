@@ -1,0 +1,5 @@
+﻿Declare Function LAYOUTNumSelectedFrames(	  ByVal nLayoutWID As Integer
+									) As Integer
+Declare Function LAYOUTSelectedFrameID(	  ByVal nLayoutWID As Integer
+								, ByVal nItem As Integer
+								) As Integer
