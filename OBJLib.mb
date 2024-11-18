@@ -1916,3 +1916,65 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJSetCentroidXY( ByVal oPolygon As Object
+					, ByVal fX As Float
+					, ByVal fY As Float
+					) As Object
+
+OnError GoTo ErrorOccured
+
+	OBJSetCentroidXY = OBJSetCentroid(oPolygon, CreatePoint(fX, fY))
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJSetCentroidXY")
+	Call ERRPrint()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function OBJSetCentroid(	  ByVal oPolygon As Object
+					, ByVal oPoint As Object
+					) As Object
+
+OnError GoTo ErrorOccured
+
+OBJSetCentroid = oPolygon
+
+	If Not ObjectInfo(oPolygon, OBJ_INFO_TYPE) = OBJ_TYPE_REGION Then
+		'**Only works for Polygon/Region objects
+		Call ERRCreate(0, "New Input Object not of type Polygon/Region!", "OBJSetCentroid")
+		Call ERRPrint()
+		Exit Function
+	ElseIf Not oPoint Within oPolygon Then
+		Call ERRCreate(0, "New Centroid not within Polygon! X: " & FormatNumber$(Round(CentroidX(oPoint), 0.01)) & " Y: " & FormatNumber$(Round(CentroidY(oPoint), 0.01)), "OBJSetCentroid")
+		Call ERRPrint()
+		Exit Function
+	End If
+
+	Alter Object oPolygon Geography OBJ_GEO_CENTROID, oPoint
+
+	OBJSetCentroid = oPolygon
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "OBJSetCentroid")
+	Call ERRPrint()
+
+End Function

@@ -48,6 +48,9 @@
 '	19-04-2024 07:21:50	- Added:
 '						- OBJCreateLineToIntersection(...) As Object, creates an extended line between two polylines
 '						- OBJCreateLineExtension(...) As Object, creates a line extension for a polyline
+'	18-11-2024 08:19:32	- Added:
+'						-  OBJSetCentroidXY(...) As Object; changes the position of the centroid to the given X and Y coordinate
+'						-  OBJSetCentroid(...) As Object; changes the position of the centroid to the given point object
 '**************************************************************
 'Requires MapInfo Pro 4.0
 
@@ -230,3 +233,10 @@ Declare Function OBJCreateLineExtension(  ByVal oFromPline As Object			'One-segm
 								, ByVal sDistanceUnits As String		'Distance units
 								, ByVal nCalculationMethod As Integer	'CALC_METHOD_CARTESIAN / CALC_METHOD_SPHERICAL
 								) As Object						'Returns a point at (0,0) if the process fails
+Declare Function OBJSetCentroidXY(	  ByVal oPolygon As Object
+							, ByVal fX As Float
+							, ByVal fY As Float
+					 		) As Object
+Declare Function OBJSetCentroid(	  ByVal oPolygon As Object
+							, ByVal oPoint As Object
+							) As Object
