@@ -7184,6 +7184,113 @@ ErrorOccured:
 
 End Function
 
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNControlGetNameThs( rbnControl As This
+						) As String
+
+Dim sName As String
+
+OnError GoTo ErrorOccured
+
+RBNControlGetNameThs = ""
+
+	If rbnControl = 0 Then
+		RBNControlGetNameThs = "Control doesn't exist"
+		Exit Function
+	End If
+
+	Do Case GetMICtrlCtrlType(rbnControl)
+		Case ControlType_Button
+			sName = GetRbnBtnCtrlName(rbnControl)
+
+		Case ControlType_ToolButton
+			sName = GetRbnToolBtnCtrlName(rbnControl)
+
+		Case ControlType_RibbonMenuItem
+			sName = GetRbnMenuItemCtrlName(rbnControl)
+
+'		Case ControlType_RibbonButtonPanel
+'		Case ControlType_RibbonSeparator
+
+		Case ControlType_ContextMenuItem
+			sName = GetICntxtMnuMenuItemName(rbnControl)
+
+'		Case ControlType_ContextMenuSeparator
+'		Case ControlType_MenuItemSeparator
+
+		Case ControlType_DropDownButton
+			sName = GetRbnDropDownCtrlName(rbnControl)
+
+		Case ControlType_SplitButton
+			sName = GetRbnSplitCtrlName(rbnControl)
+
+'		Case ControlType_DropDownMenuGroup
+
+		Case ControlType_GalleryControl
+			sName = GetRbnGalleryCtrlName(rbnControl)
+
+		Case ControlType_GalleryItem
+			sName = GetRbnGalleryItemName(rbnControl)
+
+		Case ControlType_GalleryGroup
+			sName = GetRbnGalleryGrpName(rbnControl)
+
+		Case ControlType_CustomControl
+			sName = GetRbnCustomCtrlName(rbnControl)
+
+		Case ControlType_TextBlock
+			sName = GetITextBlockName(rbnControl)
+
+		Case ControlType_Image
+			sName = GetIImageName(rbnControl)
+
+'		Case ControlType_BackStageTabItem
+
+		Case ControlType_BackStageButton
+			sName = GetIBackStageBtnName(rbnControl)
+
+'		Case ControlType_BackStageTabSection
+'		Case ControlType_BackStageSeparator
+
+		Case ControlType_StackPanel, ControlType_WrapPanel
+			sName = GetIStackPanelName(rbnControl)
+
+	End Case
+
+RBNControlGetNameThs = sName
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlGetNameThs")
+	Call ERRPrint()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Function RBNControlGetNameIdx(	  ByVal nElementIdx As Integer
+							) As String
+
+OnError GoTo ErrorOccured
+
+	RBNControlGetNameIdx = RBNControlGetNameThs(marrControls(nElementIdx))
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNControlGetNameIdx")
+	Call ERRShow()
+
+End Function
 
 '**********************************************************************************************''
 'Created by Peter Horsbøll Møller, Precisely

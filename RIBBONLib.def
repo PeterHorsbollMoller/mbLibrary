@@ -403,6 +403,9 @@
 '	26/04/2023 08.08.47		- Added:
 '							- RBNControlSetSizeThs(...)
 '							- RBNControlSetSizeIdx(...)
+'	25-10-2024 14:20:37		- Added:
+'							- RBNControlGetNameThs(...) As String
+'							- RBNControlGetNameIdx(...) As String
 '*****************************************************************************************************************************
 
 'Requires MapInfo Pro 12.5 x64
@@ -1281,6 +1284,10 @@ Declare Sub RBNControlSetCaptionIdx( ByVal nElementIdx As Integer
 Declare Function RBNControlGetCaptionThs( rbnControl As This
 									) As String
 Declare Function RBNControlGetCaptionIdx(	  ByVal nElementIdx As Integer
+							) As String
+Declare Function RBNControlGetNameThs( rbnControl As This
+									) As String
+Declare Function RBNControlGetNameIdx(	  ByVal nElementIdx As Integer
 							) As String
 
 Declare Sub RBNControlSetSizeThs(	  rbnControl As This
