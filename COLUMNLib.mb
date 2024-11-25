@@ -286,7 +286,7 @@ OnError GoTo ErrorOccured
 			COLTypeAsString = "DateTime"
 
 		Case COL_TYPE_LARGEINT	'39 'Large integer (8-byte)
-			COLTypeAsString = "Smallint"
+			COLTypeAsString = "Largeint"
 	End Case
 
 	Exit Function
