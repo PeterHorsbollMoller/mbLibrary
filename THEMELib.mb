@@ -47,7 +47,7 @@ THEMEGetIndividualItems = 0
 		arrItems(nItem).sExpr		= sExpr
 		arrItems(nItem).nExprType	= nExprType
 		Do Case nExprType
-			Case EXPRESSION_TYPE_INTEGER, EXPRESSION_TYPE_SMALLINT	', EXPRESSION_TYPE_LARGEINT
+			Case EXPRESSION_TYPE_INTEGER, EXPRESSION_TYPE_SMALLINT, 39	', EXPRESSION_TYPE_LARGEINT = 39?
 				arrItems(nItem).nValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
 			Case EXPRESSION_TYPE_DECIMAL, EXPRESSION_TYPE_FLOAT
 				arrItems(nItem).fValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
