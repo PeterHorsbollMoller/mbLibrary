@@ -1,0 +1,8 @@
+﻿'********************************************************************
+'	08-04-2025 10:34:21		Added
+'							- PREFGetDistanceUnits() As String
+'							- PREFGetAreaUnits() As String
+'********************************************************************
+
+Declare Function PREFGetDistanceUnits() As String		'Returns the preferred distance units, defaults to "m"
+Declare Function PREFGetAreaUnits() As String		'Returns the preferred area units, defaults to "sq m"

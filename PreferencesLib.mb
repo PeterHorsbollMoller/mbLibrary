@@ -1,0 +1,124 @@
+﻿'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Precisely
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Icons.def"
+Include "Menu.def"
+'**default constants...
+Include "Defaults.def"
+
+'-------------------------------------
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "PreferencesLib.def"
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function PREFGetDistanceUnits() As String	'Returns the preferred distance units, defaults to "m"
+
+OnError GoTo ErrorOccured
+
+PREFGetDistanceUnits = "m"
+
+	Do Case GetPreference (PREFERENCE_SYSTEM, PREF_SYSTEM_DISTANCEUNITS)
+		Case 0 	'Miles
+			PREFGetDistanceUnits = "mi"
+		Case 1 	'Kilometers
+			PREFGetDistanceUnits = "km"
+		Case 2 	'Inches
+			PREFGetDistanceUnits = "in"
+		Case 3 	'Feet
+			PREFGetDistanceUnits = "ft"
+		Case 4 	'Yards
+			PREFGetDistanceUnits = "yd"
+		Case 5 	'Millimeters
+			PREFGetDistanceUnits = "mm"
+		Case 6 	'Centimeters
+			PREFGetDistanceUnits = "cm"
+		Case 7 	'Meters
+			PREFGetDistanceUnits = "m"
+		Case 8 	'US Survey Feet
+			PREFGetDistanceUnits = "survey ft"
+		Case 9 	'Nautical Miles
+			PREFGetDistanceUnits = "nmi"
+		Case 30 	'Links
+			PREFGetDistanceUnits = "li"
+		Case 31 	'Chains
+			PREFGetDistanceUnits = "ch"
+		Case 32 	'Rods
+			PREFGetDistanceUnits = "rd"
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PREFGetDistanceUnits")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function PREFGetAreaUnits() As String	'Returns the preferred area units, defaults to "sq m"
+
+OnError GoTo ErrorOccured
+
+PREFGetAreaUnits	= "sq m"
+
+	Do Case GetPreference (PREFERENCE_SYSTEM, PREF_SYSTEM_AREAUNITS)
+		Case 14	'Square Miles
+			PREFGetAreaUnits = "sq mi"
+		Case 15	'Square Kilometers
+			PREFGetAreaUnits = "sq km"
+		Case 16	'Square Inches
+			PREFGetAreaUnits = "sq in"
+		Case 17	'Square Feet
+			PREFGetAreaUnits = "sq ft"
+		Case 18	'Square Yards
+			PREFGetAreaUnits = "sq yd"
+		Case 19	'Square Millimeters
+			PREFGetAreaUnits = "sq mm"
+		Case 20	'Square Centimeters
+			PREFGetAreaUnits = "sq cm"
+		Case 21	'Square Meters
+			PREFGetAreaUnits = "sq m"
+		Case 23	'Square Nautical Miles
+			PREFGetAreaUnits = "sq nmi"
+		Case 28	'Acres
+			PREFGetAreaUnits = "acre"
+		Case 29	'Hectares
+			PREFGetAreaUnits = "hectare"
+		Case 33	'Square Links
+			PREFGetAreaUnits = "sq li"
+		Case 34	'Square Chains
+			PREFGetAreaUnits = "sq ch"
+		Case 35	'Square Rods
+			PREFGetAreaUnits = "sq rd"
+		Case 36	'Perches
+			PREFGetAreaUnits = "perch"
+		Case 37	'Roods
+			PREFGetAreaUnits = "rood"
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PREFGetAreaUnits")
+	Call ERRShow()
+
+End Function
