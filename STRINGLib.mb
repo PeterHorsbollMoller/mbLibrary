@@ -398,3 +398,56 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function STRINGShortenNumber(	  ByVal fValue As Float		'Value to show as "1K", "50M", and similar
+						, ByVal fRoundTo As Float	'Controls how to round the shortened number. If > 1, no decimals. Similar to the form used in Round.
+						) As String
+
+OnError GoTo ErrorOccured
+
+STRINGShortenNumber = FormatNumber$(Round(fValue, fRoundTo))
+
+	If fRoundTo >= 1 Then
+  		If (fValue < 1000) Then
+			'// Anything less than one thousand
+  			STRINGShortenNumber = FormatNumber$(Round(fValue, fRoundTo))
+  		ElseIf (fValue < 1000000) Then
+			'// Anything less than a million
+        		STRINGShortenNumber = FormatNumber$(Round(fValue / 1000, fRoundTo)) & "K"
+    		ElseIf (fValue < 1000000000) Then
+			'// Anything less than a billion
+        		STRINGShortenNumber = FormatNumber$(Round(fValue / 1000000, fRoundTo)) & "M"
+		Else
+			'// At least a billion
+        		STRINGShortenNumber = FormatNumber$(Round(fValue / 1000000000, fRoundTo)) & "B"
+		End If
+	Else
+  		If (fValue < 500) Then
+			'// Anything less than half a thousand
+  			STRINGShortenNumber = FormatNumber$(Round(fValue, fRoundTo))
+  		ElseIf (fValue < 500000) Then
+			'// Anything less than half a million
+        		STRINGShortenNumber = FormatNumber$(Round(fValue / 1000, fRoundTo)) & "K"
+    		ElseIf (fValue < 500000000) Then
+			'// Anything less than half a billion
+        		STRINGShortenNumber = FormatNumber$(Round(fValue / 1000000, fRoundTo)) & "M"
+		Else
+			'// At least a billion
+        		STRINGShortenNumber = FormatNumber$(Round(fValue / 1000000000, fRoundTo)) & "B"
+		End If
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "STRINGShortenNumber")
+	Call ERRShow()
+
+End Function

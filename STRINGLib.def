@@ -56,3 +56,7 @@ Declare Function STRINGConcatenateWithSeparator(	  ByVal sFirst As String		'Firs
 Declare Function STRINGLeftWord(	  ByVal sInput As String		'The string to extract a specific word from
 							, ByVal nWordNo As Integer	'The Word to return from the input string, if -1 the function returns the last word
 							) As String				'Returns the nWordNo from the sInput
+
+Declare Function STRINGShortenNumber(	  ByVal fValue As Float		'Value to show as "1K", "50M", and similar
+								, ByVal fRoundTo As Float	'Controls how to round the shortened number. If > 1, no decimals. Similar to the form used in Round.
+								) As String
