@@ -1,4 +1,10 @@
-﻿Declare Method FILEBrowseForFolder
+﻿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    F I L E L I B . D L L
+'**********************************************************************************************************************
+'
+'**********************************************************************************************************************
+Declare Method FILEBrowseForFolder
 	Class "FILELib.Files"  Lib "FILELib.dll" Alias "BrowseForFolder"
 	(	  ByVal sDescription As String	'Text to display in the dialog
 		, ByVal sFolder As String		'Start folder to use in the dialog

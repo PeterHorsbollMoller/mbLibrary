@@ -1,22 +1,23 @@
-'*****************************************************************************************************************
-'History of this module
-'*****************************************************************************************************************
-'21-11-2011 08:59:06	Peter Møller added these functions:
+ï»¿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    F I L E L I B
+'**********************************************************************************************************************
+'21-11-2011 08:59:06	Peter MÃ¸ller added these functions:
 '						- Function FILEGetAbsolutePath(ByVal sAbsolutePath As String, ByVal sRelativePath As String) As String
 '						- Function FILEGetRelativePath(ByVal sAbsolutePath As String, ByVal sPath As String) As String
-'02-12-2011 12:52:02	Peter Møller Added these functions:
+'02-12-2011 12:52:02	Peter MÃ¸ller Added these functions:
 '						- Function FILEIsFolder(...) As Logical
 '						- Function FILEIsReadOnly(...) As Logical
 '						- Function FILEFindFiles(...) As Integer
 '						- Function FILEFindFilesRecursive(...) As Integer
 '						- Function FILEFindFolders(...) As Integer
 '						- Function FILEFindFoldersRecursive(...) As Integer
-'25-04-2012 10:33:17	Peter Møller added:
+'25-04-2012 10:33:17	Peter MÃ¸ller added:
 '						- Function FILEGetExtension(...) As String
 '01-10-2012 11:11:11	Emil Zegers added:
 '						- Method FILEDeleteFolder(...)
 '						- Method FILECopyFile(...)
-'23-12-2015 11:49:53	Peter Møller added:
+'23-12-2015 11:49:53	Peter MÃ¸ller added:
 '						- Function FILEChangeExtension(...) As String
 '*****************************************************************************************************************
 
@@ -242,3 +243,4 @@ Declare Method FILEGetFindFilesFileNames_o
 	Class "FILELib.MIController"  Lib "FILELib.dll"	Alias "GetFindFilesFileNames"
 	(	  arrFileNames() As String		'Array to hold all the filenames selected
 	) As Integer
+
