@@ -1,4 +1,10 @@
-﻿Declare Function OBJMZUpdateMValues(	  ByVal oInput As Object
+﻿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    O B J L I B M Z
+'**********************************************************************************************************************
+'
+'**********************************************************************************************************************
+Declare Function OBJMZUpdateMValues(	  ByVal oInput As Object
 								, ByVal fValueM As Float
 								, ByVal nUpdateTypeM As Integer
 								) As Object
