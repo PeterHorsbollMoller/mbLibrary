@@ -431,18 +431,6 @@ OnError GoTo ErrorOccured
 		nSign = 1
 	End If
 
-	' No suffix for small values
-'	If fValue < 1000 Then
-'		' Show integer if exact; else show with decimals
-'		If fValue = Int(fValue) Then
-'			STRINGNumericShorthand = FormatNumber$(nSign * fValue)
-'			Exit Function
-'		Else
-'			STRINGNumericShorthand = FormatNumber$(Round(nSign * fValue, fRoundTo))
-'			Exit Function
-'		End If
-'	End If
-
 	' Choose scale and suffix (short scale)
 	If fValue >= 1000000000000 Then	'trillions / 1e12
 		fDivisor = 1000000000000
