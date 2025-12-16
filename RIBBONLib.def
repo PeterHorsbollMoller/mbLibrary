@@ -1,5 +1,6 @@
+﻿
 '*****************************************************************************************************************************
-'**	H I S T O R Y
+'**	H I S T O R Y   O F   R I B B O N L I B
 '*****************************************************************************************************************************
 '	04-09-2014 14:02:01:	- Renamed RBNClearCustomButtons to RBNClearCustomRibbonElements
 '						- Fixed these functions to work with controls of type IRibbonButtonControl as well as IRibbonToolButtonControl:
@@ -846,6 +847,35 @@ Declare Function RBNSplitButtonAddGroupIdx(	  ByVal sSplitButtonGroupName As Str
 									, ByVal sCaption As String
 									, ByVal nSplitButtonIdx As Integer
 									) As Integer					'Returns the modular Idx of the group or 0, if it wasn't created
+
+Declare Function RBNSplitBtnGroupInsertControl(	  ByVal sControlName As String
+										, ByVal sCaption As String
+										, ByVal sKeytip As String
+										, ByVal nControlType As Integer
+										, ByVal sTabName As String
+										, ByVal sGroupName As String
+										, ByVal sSplitButtonName As string
+										, ByVal sSplitButtonGroupName As string
+										, ByVal nPosition As Integer
+										) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNSplitBtnGroupInsertControlThs(	  ByVal sControlName As String
+											, ByVal sCaption As String
+											, ByVal sKeytip As String
+											, ByVal nControlType As Integer
+											, ByVal sTabName As String
+											, ByVal sGroupName As String
+											, ByVal sSplitButtonName As string
+											, ByVal sSplitButtonGroupName As string
+											, ByVal rbnSplitButtonGroup As This
+											, ByVal nPosition As Integer
+											) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
+Declare Function RBNSplitBtnGroupInsertControlIdx(	  ByVal sControlName As String
+											, ByVal sCaption As String
+											, ByVal sKeytip As String
+											, ByVal nControlType As Integer
+											, ByVal nSplitButtonGroupIdx As Integer
+											, ByVal nPosition As Integer
+											) As Integer					'Returns the modular Idx of the control or 0, if it wasn't created
 
 Declare Function RBNSplitButtonGroupRemove(	  ByVal sSplitButtonGroupName As String
 									, ByVal sTabName As String
