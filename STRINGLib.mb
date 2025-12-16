@@ -410,101 +410,83 @@ Function STRINGNumericShorthand(	  ByVal fValue As Float		'Value to show as "1K"
 							, ByVal fRoundTo As Float	'Controls how to round the shortened number. If > 1, no decimals. Similar to the form used in Round.
 							) As String
 
+Dim	nSign As Integer,
+	fDivisor, fCompact As Float,
+	sSuffix As String
+
 OnError GoTo ErrorOccured
 
-'STRINGNumericShorthand = FormatNumber$(Round(fValue, fRoundTo))
-'
-'	If fRoundTo >= 1 Then
-'  		If (fValue < 1000) Then
-'			'// Anything less than one thousand
-'  			STRINGNumericShorthand = FormatNumber$(Round(fValue, fRoundTo))
-'  		ElseIf (fValue < 1000000) Then
-'			'// Anything less than a million
-'        		STRINGNumericShorthand = FormatNumber$(Round(fValue / 1000, fRoundTo)) & "K"
-'    		ElseIf (fValue < 1000000000) Then
-'			'// Anything less than a billion
-'        		STRINGNumericShorthand = FormatNumber$(Round(fValue / 1000000, fRoundTo)) & "M"
+' Examples:
+'   STRINGNumericShorthand(1534, 0.1)   -> "1.5K"
+'   STRINGNumericShorthand(1250000, 0.01)-> "1.25M"
+'   STRINGNumericShorthand(-2000000000, 1)-> "-2B"
+'   STRINGNumericShorthand(999, 1)	-> "999"
+'   STRINGNumericShorthand(1000000000000, 1)-> "1T"
+
+	' Sign management
+	If fValue < 0 Then
+		nSign = -1
+		fValue = Abs(fValue)
+	Else
+		nSign = 1
+	End If
+
+	' No suffix for small values
+'	If fValue < 1000 Then
+'		' Show integer if exact; else show with decimals
+'		If fValue = Int(fValue) Then
+'			STRINGNumericShorthand = FormatNumber$(nSign * fValue)
+'			Exit Function
 '		Else
-'			'// At least a billion
-'        		STRINGNumericShorthand = FormatNumber$(Round(fValue / 1000000000, fRoundTo)) & "B"
-'		End If
-'	Else
-'  		If (fValue < 500) Then
-'			'// Anything less than half a thousand
-'  			STRINGNumericShorthand = FormatNumber$(Round(fValue, fRoundTo))
-'  		ElseIf (fValue < 500000) Then
-'			'// Anything less than half a million
-'        		STRINGNumericShorthand = FormatNumber$(Round(fValue / 1000, fRoundTo)) & "K"
-'    		ElseIf (fValue < 500000000) Then
-'			'// Anything less than half a billion
-'        		STRINGNumericShorthand = FormatNumber$(Round(fValue / 1000000, fRoundTo)) & "M"
-'		Else
-'			'// At least a billion
-'        		STRINGNumericShorthand = FormatNumber$(Round(fValue / 1000000000, fRoundTo)) & "B"
+'			STRINGNumericShorthand = FormatNumber$(Round(nSign * fValue, fRoundTo))
+'			Exit Function
 '		End If
 '	End If
 
-' Examples:
-'   STRINGNumericShorthand(1534, 1)   -> "1.5K"
-'   STRINGNumericShorthand(1250000, 2)-> "1.25M"
-'   STRINGNumericShorthand(-2000000000, 0)-> "-2B"
-'   STRINGNumericShorthand(999, 1fValue)    -> "999"
-'   STRINGNumericShorthand(1000000000000, 0)-> "1T"
-    Dim nSign As Integer
-    Dim fDivisor As Float
-    Dim sSuffix As String
-    Dim fCompact As Float
-    Dim s$ As String
+	' Choose scale and suffix (short scale)
+	If fValue >= 1000000000000 Then	'trillions / 1e12
+		fDivisor = 1000000000000
+		sSuffix = "T"
+	ElseIf fValue >= 1000000000 Then	'billions / 1e9
+		fDivisor = 1000000000
+		sSuffix = "B"
+	ElseIf fValue >= 1000000 Then		'millions / 1e6
+		fDivisor = 1000000
+		sSuffix = "M"
+	ElseIf fValue >= 1000 Then		'thousands / 1e3
+		fDivisor = 1000
+		sSuffix = "K"
+	Else
+		fDivisor = 1
+		sSuffix = ""
+	End If
 
-    ' Sign management
-    If fValue < 0 Then
-        nSign = -1
-        fValue = Abs(fValue)
-    Else
-        nSign = 1
-    End If
+	fCompact = fValue / fDivisor
 
-    ' No suffix for small values
-    If fValue < 1000 Then
-        ' Show integer if exact; else show with decimals
-        If fValue = Int(fValue) Then
-            STRINGNumericShorthand = FormatNumber$(nSign * fValue)
-            Exit Function
-        Else
-            STRINGNumericShorthand = FormatNumber$(Round(nSign * s$, fRoundTo))
-            Exit Function
-        End If
-    End If
+	' Optional threshold bump: avoid outputs like 1000K -> show 1M
+	If Round(fCompact, fRoundTo) >= 1000 Then
+		Do Case sSuffix
+			Case ""
+				fCompact = fCompact / 1000
+				sSuffix = "K"
+			Case "K"
+				fCompact = fCompact / 1000
+				sSuffix = "M"
+			Case "M"
+				fCompact = fCompact / 1000
+				sSuffix = "B"
+			Case "B"
+				fCompact = fCompact / 1000
+				sSuffix = "T"
+		End Case
+	End If
 
-    ' Choose scale and suffix (short scale)
-    If fValue >= 1000000000000 Then	'trillions / 1e12
-        fDivisor = 1000000000000
-        sSuffix = "T"
-    ElseIf fValue >= 1000000000 Then	'billions / 1e9
-        fDivisor = 1000000000
-        sSuffix = "B"
-    ElseIf fValue >= 1000000 Then		'millions / 1e6
-        fDivisor = 1000000
-        sSuffix = "M"
-    Else
-        fDivisor = 1000
-        sSuffix = "K"
-    End If
-
-    fCompact = fValue / fDivisor
-
-    ' Optional threshold bump: avoid outputs like 1000K -> show 1M
-    If sSuffix = "K" And fCompact >= 1000 Then
-        fCompact = fCompact / 1000
-        sSuffix = "M"
-    End If
-
-    STRINGNumericShorthand = FormatNumber$(Round((nSign * fCompact), fRoundTo)) + sSuffix
+	STRINGNumericShorthand = FormatNumber$(Round((nSign * fCompact), fRoundTo)) + sSuffix
 
 	Exit Function
 '-------------------------
 ErrorOccured:
 	Call ERRCreate(Err(), Error$(), "STRINGNumericShorthand")
-	Call ERRShow()
+	Call ERRPrint()
 
 End Function
