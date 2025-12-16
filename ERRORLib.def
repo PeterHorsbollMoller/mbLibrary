@@ -1,7 +1,8 @@
+ï»¿
 '*****************************************************************************************************************
 '	H I S T O R Y    O F     E R R O R L I B
 '*****************************************************************************************************************
-'11-01-2012 10:37:14	Peter Møller added:
+'11-01-2012 10:37:14	Peter MÃ¸ller added:
 '						- ERRGetDescription(...) As String
 '						- ERRGetFullDescription(...) As String
 '						- ERRGetLatestDescription(...) As String
@@ -9,7 +10,7 @@
 '						- ERRDump
 '						- ERRDumpToFile
 '					- Now an error also Contains the Date and time of when it occured
-'09-10-2014 12:01:08	Peter Møller Added:
+'09-10-2014 12:01:08	Peter MÃ¸ller Added:
 '						- ERRGetErrorNo(...) As Integer
 '						- ERRGetLatestErrorNo() As Integer
 '*****************************************************************************************************************
