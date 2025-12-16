@@ -1,3 +1,9 @@
+
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    M I _ I C O N S _ X 6 4
+'**********************************************************************************************************************
+'
+'**********************************************************************************************************************
 Define MI_IMG_APP_CLOSEALL_16                         "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/closeAll_16x16.png"
 Define MI_IMG_APP_CLOSEALL_32                         "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/closeAll_32x32.png"
 Define MI_IMG_APP_CLOSEDBMS_16                        "pack://application:,,,/MapInfo.StyleResources;component/Images/Application/closeDbms_16x16.png"
