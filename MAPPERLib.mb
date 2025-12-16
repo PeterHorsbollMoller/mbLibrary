@@ -1,5 +1,5 @@
-'*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Precisely
+ï»¿'*******************************************************************************
+'** 	Created By Peter HorsbÃ¸ll MÃ¸ller, Precisely
 '** 	Program:
 '** 	Modul:	MAPLib.mb
 '**
@@ -18,7 +18,7 @@ Include "ERRORLib.def"
 Include "MAPPERLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	nMID :	ID of the Mapper Window to query
 'Return value:
@@ -53,7 +53,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -81,7 +81,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -109,7 +109,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -137,7 +137,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -172,7 +172,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -207,7 +207,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -244,7 +244,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
