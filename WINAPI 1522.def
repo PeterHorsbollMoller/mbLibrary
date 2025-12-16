@@ -1,3 +1,9 @@
+ï»¿
+'********************************************************************************************************
+'  H I S T R Y    O F    W I N A P I   1 5 2 2
+'********************************************************************************************************
+
+'********************************************************************************************************
 Define SW_HIDE				0
 Define SW_SHOWNORMAL		1
 Define SW_SHOWMINIMIZED		2
@@ -53,7 +59,7 @@ Define FILE_ATTRIBUTE_HIDDEN		&H2		'2	The file is hidden.
 Define FILE_ATTRIBUTE_SYSTEM		&H4		'4	The file is a system file.
 Define FILE_ATTRIBUTE_DIRECTORY	&H10		'16	The file is a directory.
 Define FILE_ATTRIBUTE_ARCHIVE		&H20		'32	The archive bit is set for this file.
-Define FILE_ATTRIBUTE_NORMAL		&H80		'128	The file is normal—no other attributes are set.
+Define FILE_ATTRIBUTE_NORMAL		&H80		'128	The file is normalâ€”no other attributes are set.
 Define FILE_ATTRIBUTE_TEMPORARY	&H100	'256	The file is a temporary file.
 Define FILE_ATTRIBUTE_COMPRESSED	&H800	'2048	The file or directory is compressed.
 Define FILE_ATTRIBUTE_OFFLINE 	&H1000	'4096	The file has been moved to a offline disk/location
@@ -65,7 +71,7 @@ Define FILE_ATTRIBUTE_SYSTEM_BIT		3	'4	The file is a system file.
 Define FILE_ATTRIBUTE_DIRECTORY_BIT	4	'16	The file is a directory.
 Define FILE_ATTRIBUTE_ARCHIVE_BIT		5	'32	The archive bit is set for this file.
 'Define							6	'64
-Define FILE_ATTRIBUTE_NORMAL_BIT		7	'128	The file is normal—no other attributes are set.
+Define FILE_ATTRIBUTE_NORMAL_BIT		7	'128	The file is normalâ€”no other attributes are set.
 Define FILE_ATTRIBUTE_TEMPORARY_BIT	8	'256	The file is a temporary file.
 'Define							9	'512
 'Define							10	'1024
