@@ -1,16 +1,17 @@
+ï»¿
 '*******************************************************************************
-'	HISTORY of this module
+'	H I S T O R Y   O F   S Y S T E M L I B
 '*******************************************************************************
-'21-11-2011 13:14:05	Peter Møller added these functions:
+'21-11-2011 13:14:05	Peter MÃ¸ller added these functions:
 '					- Function SYSGetUserName() As String
 '					- Function SYSGetComputerName() As String
 '06-06-2012 17:13:00	Frank Salet added these method:
 '					- Method SYSGetProductInfo As String
-'03-12-2012 11:49:28	Peter Møller added this function
+'03-12-2012 11:49:28	Peter MÃ¸ller added this function
 '					- SYSFindExecutable(...) As String
-'06-08-2015 14:45:00	Peter Møller added this function
+'06-08-2015 14:45:00	Peter MÃ¸ller added this function
 '					- SYSExecuteAndWait(...) As Integer
-'06-03-2020 08:59:38	Peter Møller added this function
+'06-03-2020 08:59:38	Peter MÃ¸ller added this function
 '					- SYSGetComputerNameEx(...) As String
 '*******************************************************************************
 
