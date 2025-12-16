@@ -1,5 +1,5 @@
-'*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Precisely
+ï»¿'*******************************************************************************
+'** 	Created By Peter HorsbÃ¸ll MÃ¸ller, Precisely
 '** 	Program:
 '** 	Modul:	WINDOWLib.mb
 '**
@@ -22,7 +22,7 @@ Include "WINAPI 1522.def"
 Include "WINDOWLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -56,7 +56,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -90,7 +90,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
