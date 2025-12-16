@@ -1,4 +1,4 @@
-'*******************************************************************************
+ï»¿'*******************************************************************************
 '** 	Program:
 '** 	Modul:
 '**
@@ -19,7 +19,7 @@ Include "ERRORLib.def"
 Include "MATHLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value: Float
@@ -36,15 +36,17 @@ OnError GoTo ErrorOccured
 
 MATHGetDirection = 0
 
+	Call DEBUGPrint(" Check Coordinates: (" & Format$(fStartX, ",#.##") & " | " & Format$(fStartY, ",#.##") & ") -> (" & Format$(fEndX, ",#.##") & " | " & Format$(fEndY, ",#.##") & ")"
+
 	'//Checking for vertical dirction
 	If (fEndX - fStartX) = 0 Then
 		'//not allowed to divide by zero...
-'		Print "Idendical X-values: " & fStartX & " = " & fEndX
+		Call DEBUGPrint("Idendical X-values: " & Format$(fStartX, ",#.##") & " = " & Format$(fEndX, ",#.##"))
 		If fEndY > fStartY Then
-'			Print "  tEnd is north of tStart..."
+			Call DEBUGPrint("  tEnd is north of tStart...")
 			MATHGetDirection	= 90	'degrees
 		Else
-'			Print "  tEnd is south of tStart..."
+			Call DEBUGPrint("  tEnd is south of tStart...")
 			MATHGetDirection	= 270	'degrees
 		End If
 		Exit Function
@@ -52,12 +54,12 @@ MATHGetDirection = 0
 
 	'//Checking for horisontal dirction
 	If (fEndY - fStartY) = 0 Then
-'		Print "Idendical Y-values: " & fStartY & " = " & fEndY
+		Call DEBUGPrint("Idendical Y-values: " & Format$(fStartY, ",#.##") & " = " & Format$(fEndY, ",#.##"))
 		If (fEndX < fStartX) Then
-'			Print "  tEnd is west of tStart..."
+			Call DEBUGPrint("  tEnd is west of tStart...")
 			MATHGetDirection = 180	'degrees
 		ElseIf (fEndX > fStartX) Then
-'			Print "  tEnd is east of tStart..."
+			Call DEBUGPrint("  tEnd is east of tStart...")
 			MATHGetDirection = 0	'degrees
 		End If
 		Exit Function
@@ -86,7 +88,90 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
+'Parameters:
+'	:
+'Return value: Float
+'Calculating the direction from tStart to tEnd
+'	in 360 degrees
+'	with North as the starting angle
+'	and clockwise
+'**********************************************************************************************''
+Function MATHGetBearing(	  ByVal fStartLong As Float
+					, ByVal fStartLat As Float
+					, ByVal fEndLong As Float
+					, ByVal fEndLat As Float
+					) As Float
+
+Dim	fBearing, fLongDiff, fX, fY As Float
+
+OnError GoTo ErrorOccured
+
+MATHGetBearing = 0
+
+	'//Checking for vertical dirction
+	If (fEndLong - fStartLong) = 0 Then
+		'//not allowed to divide by zero...
+'		Print "Idendical Long-values: " & fStartLong & " = " & fEndLong
+		If fEndLat > fStartLat Then
+'			Print "  tEnd is north of tStart..."
+			MATHGetBearing	= 0	'degrees
+		Else
+'			Print "  tEnd is south of tStart..."
+			MATHGetBearing	= 180	'degrees
+		End If
+		Exit Function
+	End If
+
+	'//Checking for horisontal dirction
+	If (fEndLat - fStartLat) = 0 Then
+'		Print "Idendical Lat-values: " & fStartLat & " = " & fEndLat
+		If (fEndLong < fStartLong) Then
+'			Print "  tEnd is west of tStart..."
+			MATHGetBearing = 270	'degrees
+		ElseIf (fEndLong > fStartLong) Then
+'			Print "  tEnd is east of tStart..."
+			MATHGetBearing = 90	'degrees
+		End If
+		Exit Function
+	End If
+
+	'Formula taken from StackExchange:
+	'https://stackoverflow.com/questions/8123049/calculate-bearing-between-two-locations-lat-long
+	'double dLon = (lng2-lng1);
+	'double y = Math.sin(dLon) * Math.cos(lat2);
+	'double x = Math.cos(lat1)*Math.sin(lat2) - Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
+	'double brng = Math.toDegrees((Math.atan2(y, x)));
+	'brng = (360 - ((brng + 360) % 360));
+
+	fLongDiff	= (fEndLong - fStartLong)
+	fY		= Sin(fLongDiff) * Cos(fEndLat)
+	fX		= Cos(fStartLat) * Sin(fEndLat) - Sin(fStartLat) * Cos(fEndLat) * Cos(fLongDiff)
+
+	fBearing	= Atn(fY / fX) * RAD_2_DEG	'57.29577951
+
+'	Print "Direction (1): " & fBearing
+	If (fEndLong < fStartLong) And (fEndLat > fStartLat) Then
+'		Print "tEnd is northwest of tStart"
+		fBearing = fBearing + 180	'degrees
+	ElseIf (fEndLong < fStartLong) And (fEndLat < fStartLat) Then
+'		Print "tEnd is southwest of tStart"
+		fBearing = fBearing + 180	'degrees
+	End If
+'	Print "Direction (2): " & fBearing
+
+	MATHGetBearing = MATHGetValidDirection(fBearing)
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "MATHGetBearing")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	fDirection : a direction in 360 degrees
 'Return value:
@@ -118,7 +203,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	fX : X-coordinate to offset
 '	fDistance: Distance to move fX, same unit as fX
@@ -140,7 +225,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	fY : Y-coordinate to offset
 '	fDistance: Distance to move fY, same unit as fX
@@ -162,7 +247,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	nBit 		: The bit to check for
 '	nBitSum	: The sum of bits to see if nBit is On
@@ -210,7 +295,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'MapInfo Pro typically works with a mathematical angle
 'East/Right is 0, and the values grow counter clockwise: North is 90, West is 180, and South is 270
 'Parameters:
@@ -254,7 +339,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'MapInfo Pro typically works with a mathematical angle
 'East/Right is 0, and the values grow counter clockwise: North is 90, West is 180, and South is 270
 'Parameters:
@@ -300,7 +385,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -324,7 +409,7 @@ End Function
 
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -347,7 +432,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -370,7 +455,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
