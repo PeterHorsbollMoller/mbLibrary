@@ -1,3 +1,9 @@
+﻿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    D E B U G L I B
+'**********************************************************************************************************************
+'
+'**********************************************************************************************************************
 '**Requires MapInfo Pro 4.0
 
 DEFINE DEBUG_ALL	100
@@ -28,7 +34,7 @@ Declare Function DEBUGGetLevelDescription(	ByVal iDebugLevel As Integer	'Map def
 
 Declare Function DEBUGGetLevelValue(	ByVal sDebugLevel As String	'Map string variable to integer value for debug level
 				) As Integer
-				
+
 Declare Sub DEBUGPrint(	  ByVal sMessage As String		'Message to print to the message window - and write to debug file.
 				)
 Declare Sub DEBUGNote(
@@ -41,10 +47,10 @@ Declare Sub DEBUGWriteToFile(
 					)
 
 Declare Sub DEBUGAddDateToDebugLines(
-					ByVal bAddToMessageWindow As Logical, 
-					ByVal bAddToFile As Logical, 
-					ByVal bAddSeparatorToIsoDate As Logical, 
+					ByVal bAddToMessageWindow As Logical,
+					ByVal bAddToFile As Logical,
+					ByVal bAddSeparatorToIsoDate As Logical,
 					ByVal sIsoDateSeparator As String
 					)
-					
+
 Declare Function createDebugDate(ByVal bAddDate As Logical) As String

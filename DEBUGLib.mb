@@ -1,4 +1,4 @@
-'*******************************************************************************
+ï»¿'*******************************************************************************
 '** 	Program:
 '** 	Modul:	DEBUGLib.mb
 '**
@@ -80,7 +80,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	sFile		: Name of file to exists to enable debug state
 '**********************************************************************************************''
@@ -104,7 +104,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	bValue		: Value (true/false) to set the debug state to
 '**********************************************************************************************''
@@ -123,7 +123,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -260,7 +260,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	sMessage	: Message to print to the message window - and write to debug file.
 '			  Note that a time stamp is inserted in front of the message
@@ -282,7 +282,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	sMessage	: Message to write to debug file.
 '			  Note that a time stamp is inserted in front of the message
@@ -318,7 +318,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	sMessage	: Message to show in messagebox - and write to debug file.
 '**********************************************************************************************''
