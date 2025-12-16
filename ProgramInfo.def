@@ -1,5 +1,9 @@
-'Requires MapInfo Pro 10.0
-'********************************************************
+ï»¿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    P R O G R A M I N F O
+'**********************************************************************************************************************
+'
+'**********************************************************************************************************************
 '17-03-2011 10:09:55	Fixed some issues with the same variable used by more properties
 '23-04-2012 10:08:20	Added property set Sub PRGISetApplicationDevelopedFor(...) / PRGIGetApplicationDevelopedFor() As String
 '07-08-2014 13:05:56	Improved the handling of language files by adding:
@@ -28,6 +32,7 @@
 '					- Default Company to "Pitney Bowes Software & Data"
 'xx-xx-2020				- Default Company to "Precisely | Trust in Data"
 '********************************************************
+'Requires MapInfo Pro 10.0
 
 'When using this module, make sure to set these values in your main module
 '
@@ -38,7 +43,7 @@
 '	Call PRGISetApplicationName(xProgram)
 '	Call PRGISetApplicationVersion(xVersion)
 '	Call PRGISetApplicationCopyrightYear(xYear)
-'	Call PRGISetApplicationDevelopedBy("Peter Horsbøll Møller")
+'	Call PRGISetApplicationDevelopedBy("Peter HorsbÃ¸ll MÃ¸ller")
 '	If Application supports multiple string/language files
 '	Call PRGISetApplicationUseLanguageCode(TRUE)
 '	Call PRGILoadLanguageStrings(msLanguage)
