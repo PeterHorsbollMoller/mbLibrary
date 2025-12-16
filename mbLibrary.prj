@@ -1,0 +1,23 @@
+[Project ID]
+	Signature=UE Proj: v.1
+[Project Information]
+	Compilable=1
+	Use Relative Directory=1
+	Relative to Project File=1
+	Include Sub Directories=1
+	Project Tagfile=
+	Project Wordfile=
+	Project TpFile=
+	Filter=
+	Using VCS=0
+	Save Account=0
+	Create Tagfile=0
+	CTags Legacy Support=0
+[uemakeXp]
+	ReleaseMode=0
+[Debug Settings]
+	Program Arguments=
+	Symbol Paths=
+	Working Directory=
+	Selected Debugger=0
+	Source Paths=
