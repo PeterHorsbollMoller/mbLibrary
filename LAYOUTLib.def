@@ -1,4 +1,10 @@
-﻿Declare Function LAYOUTNumSelectedFrames(	  ByVal nLayoutWID As Integer
+﻿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    L A Y O U T L I B
+'**********************************************************************************************************************
+'
+'**********************************************************************************************************************
+Declare Function LAYOUTNumSelectedFrames(	  ByVal nLayoutWID As Integer
 									) As Integer
 Declare Function LAYOUTSelectedFrameID(	  ByVal nLayoutWID As Integer
 								, ByVal nItem As Integer
