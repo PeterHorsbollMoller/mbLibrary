@@ -1,5 +1,5 @@
-'*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Precisely
+ï»¿'*******************************************************************************
+'** 	Created By Peter HorsbÃ¸ll MÃ¸ller, Precisely
 '** 	Program:
 '** 	Modul:
 '**
@@ -26,7 +26,7 @@ Include "FMEQuickTranslatorLib.def"
 Declare Function FMEQTSetFMEQTDirectory() As Logical
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -84,12 +84,12 @@ FMEQTExportToDWG = FALSE
 	'Sets BaseName to InputFileName - can be whatever you want.
 '	sBaseName			= PathToFileName$(sInputFile)
 	'Sets Full Name to BaseName - again, can be whatever you want.
-'	sBaseName			= STRINGReplace(sBaseName, "Æ", "AE")
-'	sBaseName			= STRINGReplace(sBaseName, "Ø", "OE")
-'	sBaseName			= STRINGReplace(sBaseName, "Å", "AA")
-'	sBaseName			= STRINGReplace(sBaseName, "æ", "ae")
-'	sBaseName			= STRINGReplace(sBaseName, "ø", "oe")
-'	sBaseName			= STRINGReplace(sBaseName, "å", "aa")
+'	sBaseName			= STRINGReplace(sBaseName, "Ã†", "AE")
+'	sBaseName			= STRINGReplace(sBaseName, "Ã˜", "OE")
+'	sBaseName			= STRINGReplace(sBaseName, "Ã…", "AA")
+'	sBaseName			= STRINGReplace(sBaseName, "Ã¦", "ae")
+'	sBaseName			= STRINGReplace(sBaseName, "Ã¸", "oe")
+'	sBaseName			= STRINGReplace(sBaseName, "Ã¥", "aa")
 	sFullBaseName		= sBaseName
 
 	'Translation is two stage process:
@@ -213,7 +213,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -247,7 +247,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
