@@ -1,5 +1,5 @@
-'*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Precisely
+ï»¿'*******************************************************************************
+'** 	Created By Peter HorsbÃ¸ll MÃ¸ller, Precisely
 '** 	Program:
 '** 	Modul:
 '**
@@ -19,7 +19,7 @@ Include "ERRORLib.def"
 
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -42,7 +42,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -82,7 +82,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -110,7 +110,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -140,7 +140,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -164,7 +164,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -189,7 +189,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -219,7 +219,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -254,7 +254,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -291,7 +291,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -338,7 +338,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -361,7 +361,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -396,7 +396,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -431,7 +431,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -451,7 +451,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -481,7 +481,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -516,7 +516,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -551,7 +551,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -585,7 +585,7 @@ End Sub
 '********************************************************************************************************************************************************************************************
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -608,7 +608,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -636,7 +636,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -666,7 +666,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -690,7 +690,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -720,7 +720,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -755,7 +755,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -783,7 +783,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -806,7 +806,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -846,7 +846,7 @@ ErrorOccured:
 End Sub
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
