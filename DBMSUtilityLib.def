@@ -1,31 +1,32 @@
+ï»¿
 '********************************************************************************************************
 '  H I S T R Y    O F    D B M S U T I L I T Y L I B
 '*****************************************************************************************************************
 '	01-12-2011 	Created
-'	01-12-2011 	Peter Møller added:
+'	01-12-2011 	Peter MÃ¸ller added:
 '					- Function DBUOpenLinkedTable(...) As Integer
 '					- Function DBUOpenLinkedTableCondition(...) As Integer
 '					- Function DBUGetDatabaseTableName(...) As String
 '					- Function DBUOpenConnectionToMSAccessFile(...) As Integer
-'	12-12-2011 	Peter Møller added:
+'	12-12-2011 	Peter MÃ¸ller added:
 '					- Function DBUOpenLinkedQuery(...) As Integer
-'	20-12-2011 	Peter Møller added:
+'	20-12-2011 	Peter MÃ¸ller added:
 '					- Sub DBUSetMSAccessDriverName()
 '					- Function DBUGetMSAccessDriverName() As String
 '					- Function DBUOpenConnectionToDSN(...) As Integer
 '					- Function DBUOpenConnectionToFileDSN(...) As Integer
-'	12-01-2012	Peter Møller added:
+'	12-01-2012	Peter MÃ¸ller added:
 '					- DBUOpenLiveCacheTable(...) As Integer
-'	06-03-2012	Peter Møller added
+'	06-03-2012	Peter MÃ¸ller added
 '					- DBUOpenConnection(...) As Integer
 '					- DBUOpenLiveTable(...) As Integer
-'	07-03-2012	Peter Møller
+'	07-03-2012	Peter MÃ¸ller
 '					- Minor fix in DBUOpenConnection(), Toolkit was hardcoded to "ODBC"
-'	24-01-2014 	Peter Møller Added:
+'	24-01-2014 	Peter MÃ¸ller Added:
 '					- Function DBUFindOpenConnection(...) As Integer
 '					- Function DBUGetQueryFromTable(...) As String
 '					- Function DBUGetConnectionStringFromTable(...) As String
-'	04-03-2015	Peter Møller added:
+'	04-03-2015	Peter MÃ¸ller added:
 '					- Function DBUGetListOfColumnNames(...) As Integer
 '					- Function DBUGetListOfColumnNamesAndTypes(...) As Integer
 '					- Function DBUGetColumnValuesAsString(...) As Integer
@@ -73,7 +74,7 @@ Declare Function DBUOpenLiveTable(		  ByVal nConnection As Integer	'The connecti
 Declare Function DBUGetDatabaseTableName( ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
 								, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
 								, ByVal sTable As String			'The name of the table in the database
-								) As String					'A string of this type ´schemaname´.´tablename´
+								) As String					'A string of this type Â´schemanameÂ´.Â´tablenameÂ´
 
 Declare Sub DBUSetMSAccessDriverName(	ByVal sDriver As String			'Name of database driver to use when connection to a MS Access DB file
 								)

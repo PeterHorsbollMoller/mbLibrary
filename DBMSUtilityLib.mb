@@ -1,5 +1,5 @@
-'*******************************************************************************
-'** 	Created By Peter Horsbøll Møller, Precisely
+ï»¿'*******************************************************************************
+'** 	Created By Peter HorsbÃ¸ll MÃ¸ller, Precisely
 '** 	Program:
 '** 	Modul:
 '**
@@ -26,7 +26,7 @@ Define	DRIVER_NAME_MSACCESS_DEFAULT	"Microsoft Access Driver (*.mdb, *.accdb)"
 Dim	msMSAccessDriverName As String
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -64,7 +64,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -102,7 +102,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -144,7 +144,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -186,7 +186,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -230,7 +230,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -239,7 +239,7 @@ End Function
 Function DBUGetDatabaseTableName(	  ByVal nConnection As Integer	'The connection number ot use, must be open in MapInfo Pro
 							, ByVal sSchema As String		'The schema in the database that the table is "connected" to, can be ""
 							, ByVal sTable As String			'The name of the table in the database
-							) As String					'A string of this type ´schemaname´.´tablename´
+							) As String					'A string of this type Â´schemanameÂ´.Â´tablenameÂ´
 
 Dim	sQuote As String
 
@@ -261,7 +261,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -296,7 +296,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -418,7 +418,7 @@ ErrorConnection:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '
 '**********************************************************************************************''
@@ -445,7 +445,7 @@ End Function
 
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -484,7 +484,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -523,7 +523,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -564,7 +564,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -607,7 +607,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -623,7 +623,7 @@ OnError GoTo ErrorOccured
 
 DBUGetConnectionStringFromTable = FALSE
 
-	'"\DATALINK\ConnectionString" = "DSN=GIS;Description=GIS for SQL Server workshop;UID=AdminUser;APP=MapInfo Professional®;WSID=WIN02062;DATABASE=GIS;MARS_Connection=yes"
+	'"\DATALINK\ConnectionString" = "DSN=GIS;Description=GIS for SQL Server workshop;UID=AdminUser;APP=MapInfo ProfessionalÂ®;WSID=WIN02062;DATABASE=GIS;MARS_Connection=yes"
 
 	sConnString = GetMetadata$(sTab, "\DATALINK\ConnectionString")
 
@@ -649,7 +649,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -671,7 +671,7 @@ OnError GoTo ErrorOccured
 
 DBUGetListOfColumnNames = 0
 
-	sQuery	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)
+	sQuery	= "Select * From " & DBUGetDatabaseTableName(nConnection, sSchema, sTable)	'try using " where 1 = 2"
 	nStmt	= Server_Execute(nConnection, sQuery)
 
 	nCols	= Server_NumCols(nStmt)
@@ -741,7 +741,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -844,7 +844,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
