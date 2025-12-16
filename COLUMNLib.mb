@@ -1,4 +1,4 @@
-'*******************************************************************************
+ï»¿'*******************************************************************************
 '** 	Program:
 '** 	Modul:	COLUMNLib.mb
 '**
@@ -19,7 +19,7 @@ Include "TABLELib.def"
 Include "STRINGLib.def"
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -97,7 +97,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	:
 'Return value:
@@ -193,7 +193,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Peter Horsbøll Møller, Precisely
+'Created by Peter HorsbÃ¸ll MÃ¸ller, Precisely
 'Parameters:
 '	nBit 		: The bit to check for
 '	nBitSum	: The sum of bits to see if nBit is On
@@ -241,7 +241,7 @@ ErrorOccured:
 End Function
 
 '**********************************************************************************************''
-'Created by Egge-Jan Pollé, Precisely - 7 December 2011
+'Created by Egge-Jan PollÃ©, Precisely - 7 December 2011
 'Parameters:
 '	sTab	: Name of the table
 '	sCol	: Name of the column
