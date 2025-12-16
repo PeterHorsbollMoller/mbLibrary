@@ -1,24 +1,32 @@
+ï»¿
 '*******************************************************************************************************************
-'Requires MapInfo Pro 4.0
+'	H I S T O R Y   O F   S T Y L E L I B
 '*******************************************************************************************************************
-'	H I S T O R Y
-'*******************************************************************************************************************
-'	07-12-2011 	Peter Møller Added:
+'	07-12-2011 	Peter MÃ¸ller Added:
 '					- Function STLBrush2Text(...) As String
 '					- Function STLText2Brush(...) As Brush
 '					- Function STLPen2Text(...) As String
 '					- Function STLText2Pen(...) As Pen
-'	18-01-2012 	Peter Møller added:
+'	18-01-2012 	Peter MÃ¸ller added:
 '					- Function STLFont2Text(...) As String
 '					- Function STLText2Font(...) As Font
-'	23-09-2014	Peter Møller added:
+'	23-09-2014	Peter MÃ¸ller added:
 '					- Function STLChangeSymbolSymbolCode(...) As Symbol
-'	20-10-2014 	Peter Møller added:
+'	20-10-2014 	Peter MÃ¸ller added:
 '					- Function STLChangeBrushPattern(...) As Brush
-'	06-10-2023	Peter Møller added:
+'	06-10-2023	Peter MÃ¸ller added:
 '					- Function STLChangeBrushBGColour(...) As Brush
 '					- Function STLChangePenPattern(...) As Pen
+
 '*******************************************************************************************************************
+'TODO: Add functions to extract the Red, Green, and Blue values from a combined RBG value
+'compr = rgbcode \ 65536
+'print "R = " +str$(compr)
+'compg=(rgbcode â€“ compr * 65536) \ 256
+'print "G = " +str$(compg)
+'print "B = " +str$(rgbcode - compr * 65536 - compg * 256)
+'*******************************************************************************************************************
+'Requires MapInfo Pro 4.0
 
 Declare Function STLAlterClosedObject(	  ByVal oObj As Object	'Closed object whoes style to change
 								, ByVal penNew As Pen	'New Pen style to assign
