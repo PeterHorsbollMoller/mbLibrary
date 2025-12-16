@@ -1,12 +1,13 @@
-'*******************************************************************************
-'	HISTORY of this module
-'*******************************************************************************
-'15-12-2011 12:53:04	Peter Møller added these functions:
+ï»¿
+'**********************************************************************************************************************
+'	H I S T O R Y    O F    D A T E T I M E L I B
+'**********************************************************************************************************************
+'15-12-2011 12:53:04	Peter MÃ¸ller added these functions:
 '					- Function DATEGetDateAsDDMMYYYY() As String
 '					- Function DATEGetDateAsYYYYMMDD() As String
-'11-04-2012 15:08:06	Peter Møller added
+'11-04-2012 15:08:06	Peter MÃ¸ller added
 '					- Function DATEGetAgeInYears(...) As Integer
-'03-06-2013			Peter Møller Added
+'03-06-2013			Peter MÃ¸ller Added
 '					- Function DATEGetTimeAsHHMMSS()  As String
 '*******************************************************************************
 
