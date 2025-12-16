@@ -1,5 +1,6 @@
+﻿
 '**************************************************************
-' H I S T O R Y
+' H I S T O R Y   O F   O B J L I B
 '**************************************************************
 '	13-11-2012 10:05:17	- Added:
 '						- OBJFindNode(...) As Integer
@@ -117,6 +118,9 @@ Declare Function OBJAddNodeOnPolyline(	  ByVal oPolyline As Object		'The polylin
 															'The node will be added to the first line where the distance from the node to the line is shorter than fTolerance
 Declare Function OBJDirection(	ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
 							) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
+Declare Function OBJBearing(	ByVal oInput As Object			'The object to calculate the direction off, only works with lat/long coordinate systems
+						) As Float					'Direction of object, 360 degrees, North = 0, clockwise, unsupported objects return -1
+
 Declare Function OBJDirectionWtAvg(  ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
 							) As Float					'Direction of object, 360 degrees, East = 0, counter-clockwise, unsupported objects return -1
 Declare Function OBJDirectionMedian(	  ByVal oInput As Object			'The object to calculate the direction off, only works with projected coordinate systems
