@@ -25,10 +25,10 @@ Include "THEMELib.def"
 'Return value:
 '
 '**********************************************************************************************''
-Function THEMEGetIndividualItems(	  ByVal nMID As Integer
-							, ByVal nThemeLayerID As Integer
-							, arrItems() As T_INDIVIDUAL_ITEMS
-							) As Integer
+Function THEMEGetIndividualItems( ByVal nMID As Integer
+								, ByVal nThemeLayerID As Integer
+								, arrItems() As T_INDIVIDUAL_ITEMS
+								) As Integer
 
 Dim	nItem, nItems, nExprType As Integer,
 	sExpr As String
@@ -40,7 +40,7 @@ THEMEGetIndividualItems = 0
 	nItems	= IndividualThemeInfo (nMID, nThemeLayerID, INDIVTHEME_INFO_ITEMS_COUNT)
 	ReDim arrItems(nItems)
 
-	sExpr	= ThemeExpressionInfo (nMID, nThemeLayerID, 1, THEME_EXPRESSION_INFO_STRING)
+	sExpr		= ThemeExpressionInfo (nMID, nThemeLayerID, 1, THEME_EXPRESSION_INFO_STRING)
 	nExprType	= ThemeExpressionInfo (nMID, nThemeLayerID, 1, THEME_EXPRESSION_INFO_TYPE)
 
 	For nItem = 1 To nItems
@@ -63,10 +63,13 @@ THEMEGetIndividualItems = 0
 				arrItems(nItem).bValue		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_VALUE)
 		End Case
 
+		arrItems(nItem).bIsVisible	= ThemeItemInfo(nMID, nThemeLayerID, nItem, THEME_ITEM_INFO_VISIBLE)
+		arrItems(nItem).sLabel		= ThemeItemInfo(nMID, nThemeLayerID, nItem, THEME_ITEM_INFO_LABEL)
+
 		arrItems(nItem).penLine		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_LINE)
 		arrItems(nItem).penBorder	= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_PEN)
 		arrItems(nItem).brsFill		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_BRUSH)
-		arrItems(nItem).symStyle		= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_SYMBOL)
+		arrItems(nItem).symStyle	= IndividualThemeItemInfo(nMID, nThemeLayerID, nItem, INDIVTHEME_ITEM_INFO_SYMBOL)
 	Next
 
 	THEMEGetIndividualItems = Ubound(arrItems)
