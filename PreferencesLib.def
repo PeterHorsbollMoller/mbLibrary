@@ -5,7 +5,10 @@
 '	08-04-2025 10:34:21		Added
 '							- PREFGetDistanceUnits() As String
 '							- PREFGetAreaUnits() As String
+'	19-11-2026 12:03:25		Added
+'							- PREFGetPaperUnits() As String
 '********************************************************************
 
 Declare Function PREFGetDistanceUnits() As String		'Returns the preferred distance units, defaults to "m"
 Declare Function PREFGetAreaUnits() As String		'Returns the preferred area units, defaults to "sq m"
+Declare Function PREFGetPaperUnits() As String	'Returns the preferred distance units, defaults to "m"

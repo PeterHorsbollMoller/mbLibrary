@@ -122,3 +122,37 @@ ErrorOccured:
 	Call ERRShow()
 
 End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function PREFGetPaperUnits() As String	'Returns the preferred distance units, defaults to "m"
+
+OnError GoTo ErrorOccured
+
+PREFGetPaperUnits = "m"
+
+	Do Case GetPreference (PREFERENCE_SYSTEM, PREF_SYSTEM_PAPERUNITS)
+		Case 2	'Inches, 1 inch = 2.54 centimeters , 254 millimeters, 6 picas, 72 points
+			PREFGetPaperUnits = "in"
+		Case 5	'Millimeters, 1 millimeter = 0.1 centimeters, 0.03937 inches, 0.23622 picas, 2.83465 points
+			PREFGetPaperUnits = "mm"
+		Case 6	'Centimeters, 1 centimeter = 0.39370 inches, 10 millimeters, 2.36220 picas, 28.34646 points
+			PREFGetPaperUnits = "cm"
+		Case 11	'Points, 1 point = 0.01389 inches, 0.03528 centimeters, 0.35278 millimeters, 0.08333 picas
+			PREFGetPaperUnits = "pt"
+		Case 12	'Picas, 1 pica = 0.16667 inches, 0.42333 centimeters, 4.23333 millimeters, 12 points
+			PREFGetPaperUnits = "pica"
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "PREFGetPaperUnits")
+	Call ERRShow()
+
+End Function
