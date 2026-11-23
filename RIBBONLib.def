@@ -407,11 +407,21 @@
 '	25-10-2024 14:20:37		- Added:
 '							- RBNControlGetNameThs(...) As String
 '							- RBNControlGetNameIdx(...) As String
+'	04-11-2026 08:23:58		- Moved these methods to RIBBONInspect:
+'								- Sub RBNLoop
+'								- Sub RBNLoopCreateRibbonStatements
+'								- Sub RBNLoopContext
+'								- Function RBNGetImageStringFromControlName(...) As String
+'								- Function RBNGetCommandIDFromControlName(...) As String
+'								- Declare Function RBNGetImageStringFromTabAndGroup(...) As String
+'							- Added specific Notification procedures
+'								- RBNNotificationInfoShow(..)
+'								- RBNNotificationErrorShow(..)
 '*****************************************************************************************************************************
 
 'Requires MapInfo Pro 12.5 x64
 ' mapInfoApplication has a Ribbon
-' theRibbon As a collection of Tabs
+' theRibbon has a collection of Tabs
 ' theTabCollection holds a number of Tabs
 ' a Tab has a collection of Groups
 ' a GroupCollection holds a numer of Controls
@@ -494,11 +504,6 @@ Declare Method ObjectToString Class "System.Object" Lib "mscorlib, Version=4.0.0
 
 '**Used to initialise the arrays and .NET objects
 Declare Sub RBNInitiate
-
-'**For testing and for getting the names of the controls and elements
-Declare Sub RBNLoop
-Declare Sub RBNLoopCreateRibbonStatements
-Declare Sub RBNLoopContext
 
 Declare Function RBNControlGetTypeName(ByVal nCtrlType As Integer) As String
 
@@ -1489,6 +1494,12 @@ Declare Sub RBNNotificationShow(	  ByVal sTitle As String
 							, ByVal nNotificationType As Integer	'From Enums.def: Notify_None, Notify_Error, Notify_Warning, Notify_Info, Notify_Custom
 							, ByVal nTimeToShow As Integer		'If <= 0 then defaults to 10000
 							)
+Declare Sub RBNNotificationInfoShow(  ByVal sTitle As String
+									, ByVal sMessage As String
+									)
+Declare Sub RBNNotificationErrorShow( ByVal sTitle As String
+									, ByVal sMessage As String
+									)
 Declare Sub RBNNotificationShowAtCursor(	  ByVal sTitle As String
 									, ByVal sMessage As String
 									, ByVal nNotificationType As Integer	'From Enums.def: Notify_None, Notify_Error, Notify_Warning, Notify_Info, Notify_Custom
