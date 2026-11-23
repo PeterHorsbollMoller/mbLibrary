@@ -1,0 +1,10 @@
+﻿'**For testing and for getting the names of the controls and elements
+Declare Sub RBNLoop
+Declare Sub RBNLoopCreateRibbonStatements
+Declare Sub RBNLoopContext
+
+Declare Function RBNGetImageStringFromControlName(ByVal sControlName As String) As String
+Declare Function RBNGetCommandIDFromControlName(ByVal sControlName As String) As String
+Declare Function RBNGetImageStringFromTabAndGroup(  ByVal sRbnTabName As String
+										, ByVal sRbnGroupName As String
+										) As String

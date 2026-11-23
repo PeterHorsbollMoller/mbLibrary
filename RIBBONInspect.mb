@@ -1,0 +1,961 @@
+﻿'*******************************************************************************
+'** 	Created By Peter Horsbøll Møller, Precisely
+'** 	Program:
+'** 	Modul:
+'**
+'*******************************************************************************
+
+'-------------------------------------
+Include "MapBasic.def"
+Include "Enums.def"
+Include "Icons.def"
+Include "Menu.def"
+Include "IMapInfoPro.def"
+'**default constants...
+Include "Defaults.def"
+Include "RibbonElements.def"
+
+'-------------------------------------
+Include "ARRAYLib.def"
+Include "DEBUGLib.def"
+Include "ERRORLib.def"
+Include "RIBBONLib.def"
+Include "RIBBONInspect.def"
+
+'Declare Sub RBInitialControlArrays
+
+Dim	marrControlName(), marrImageName(), marrCommandID() As String
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNLoop
+
+OnError GoTo ErrorOccured
+
+Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumSplitCtrlCtrls, nNumDropDownMenuCtrls, nNumDropDownCtrlCtrls, nNumStackPanelCtrls As Integer,
+	i, j, k, l, m, nMenu As Integer,
+	arrContextMenuIDs() As Integer,
+	arrContextMenuNames() As String,
+	sName, sCaption As String,
+	nCntrlType As Integer,
+	rbnTabItem As This,
+	rbnGroupsColl As This,
+	rbnGroupItem As This,
+	rbnControlsColl As This,
+	rbnControlItem As This,
+	rbnGalleryGroupsColl As This,
+	rbnGalleryGroupItem As This,
+	rbnGalleryControlsColl As This,
+	rbnGalleryControlItem As This,
+	rbnSplitCtrlControlsColl As This,
+	rbnSplitCtrlControlItem As This,
+	rbnDropDownMenuControlsColl As This,
+	rbnDropDownMenuControlItem As This,
+	rbnDropDownCtrlControlsColl As This,
+	rbnDropDownCtrlControlItem As This,
+	rbnStackPanelControlsColl As This,
+	rbnStackPanelControlItem As This,
+	rbnCntxtMenuItemsColl As This,
+	rbnCntxtMenu As This,
+	rbnStatusbarControlsColl As This,
+	rbnBackStageControlsColl As This,
+	rbnBackstageTabItem As This,
+	rbnBackstageTabItemColl As This
+
+	'--------------------------------
+	Call RBNInitiate
+
+	If FileExists(ApplicationDirectory$() & "Ribbon Elements.txt") Then
+		Kill ApplicationDirectory$() & "Ribbon Elements.txt"
+	End If
+
+	Open File ApplicationDirectory$() & "Ribbon Elements.txt"
+		For Append
+		As #369
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+
+	nNumTabs = GetRbnTabCollCount(theTabsColl)
+'	Call DEBUGPrint("Number of Tabs " & nNumTabs)
+
+	For i = 0 To (nNumTabs - 1)	'**Do note that the collection starts at 0 and not at 1 like normal MapBasic Arrays
+		rbnTabItem = GetRbnTabCollItemInt(theTabsColl, i)
+
+		sName	= GetRbnTabName(rbnTabItem)
+		sCaption	= GetRbnTabCaption(rbnTabItem)
+		Call DEBUGPrint("--------------------------------------------------------------")
+		Print #369, "--------------------------------------------------------------"
+		Call DEBUGPrint("Tab " & i & " is named '" & sName & "' but shown as '" & sCaption & "'")
+		Print #369, "Tab " & i & " is named '" & sName & "' but shown as '" & sCaption & "'"
+
+		rbnGroupsColl = GetRbnTabGrps(rbnTabItem)
+		nNumGroups = GetRbnCtrlGrpCollCount(rbnGroupsColl)
+'		Call DEBUGPrint("   Number of Tab Groups " & nNumGroups)
+
+		For j = 0 To (nNumGroups - 1)
+			rbnGroupItem = GetRbnCtrlGrpCollItemInt(rbnGroupsColl, j)
+
+			sName	= GetRbnCtrlGrpName(rbnGroupItem)
+			sCaption	= GetRbnCtrlGrpCaption(rbnGroupItem)
+'			Call DEBUGPrint("   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'")
+			Print #369, "   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'"
+
+			rbnControlsColl = GetRbnCtrlGrpCtrls(rbnGroupItem)
+			nNumCntrls = GetMICtrlCollCount(rbnControlsColl)
+'			Call DEBUGPrint("      Number of Controls " & nNumCntrls)
+
+			For k = 0 To (nNumCntrls - 1)
+				rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, k)
+
+				nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+				sName		= GetMICtrlName(rbnControlItem)
+				sCaption		= GetMICtrlCaption(rbnControlItem)
+'				Call DEBUGPrint("      Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+				Print #369, "      Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+
+				Do Case nCntrlType
+					Case ControlType_GalleryControl
+						rbnGalleryGroupsColl = GetRbnGalleryCtrlGrps(rbnControlItem)
+						nNumGalleryGroups 	 = GetMIGalleryGrpCollCount(rbnGalleryGroupsColl)
+'						Call DEBUGPrint("      Gallery has " & nNumGalleryGroups & " Groups/controls")
+						Print #369, "      Gallery has " & nNumGalleryGroups & " Groups/controls"
+
+						For l = 0 To (nNumGalleryGroups - 1)
+							rbnGalleryGroupItem		= GetMIGalleryGrpCollItemInt(rbnGalleryGroupsColl, l)
+
+							sName	= GetRbnGalleryGrpName(rbnGalleryGroupItem)
+							sCaption	= GetRbnGalleryGrpCaption(rbnGalleryGroupItem)
+'							Call DEBUGPrint("      Gallery Group " & l & " is named '" & sName & "' but shown as '" & sCaption & "'")
+							Print #369, "      Gallery Group " & l & " is named '" & sName & "' but shown as '" & sCaption & "'"
+
+							rbnGalleryControlsColl	= GetRbnGalleryGrpCtrls(rbnGalleryGroupItem)
+							nNumGalleryCtrls		= GetMICtrlCollCount(rbnGalleryControlsColl)
+
+							For m = 0 To (nNumGalleryCtrls - 1)
+								rbnGalleryControlItem	= GetMICtrlCollItemInt(rbnGalleryControlsColl, m)
+
+								nCntrlType	= GetMICtrlCtrlType(rbnGalleryControlItem)
+								sName		= GetMICtrlName(rbnGalleryControlItem)
+								sCaption		= GetMICtrlCaption(rbnGalleryControlItem)
+'								Call DEBUGPrint("         Gallery Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+								Print #369, "         Gallery Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+							Next
+						Next
+
+						'GetRbnGalleryCtrlMenuItems - not sure how to work with these yet
+
+					Case ControlType_SplitButton
+						rbnSplitCtrlControlsColl	= GetRbnSplitCtrlCtrls(rbnControlItem)
+						nNumSplitCtrlCtrls		= GetMICtrlCollCount(rbnSplitCtrlControlsColl)
+'						Call DEBUGPrint("      SplitButton has " & nNumSplitCtrlCtrls & " Groups/controls")
+						Print #369, "      SplitButton has " & nNumSplitCtrlCtrls & " Groups/controls"
+
+						For l = 0 To (nNumSplitCtrlCtrls - 1)
+							rbnSplitCtrlControlItem	= GetMICtrlCollItemInt(rbnSplitCtrlControlsColl, l)
+
+							nCntrlType	= GetMICtrlCtrlType(rbnSplitCtrlControlItem)
+							sName		= GetMICtrlName(rbnSplitCtrlControlItem)
+							sCaption		= GetMICtrlCaption(rbnSplitCtrlControlItem)
+'							Call DEBUGPrint("         SplitButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+							Print #369, "         SplitButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+
+							If nCntrlType In (ControlType_DropDownMenuGroup, ControlType_StackPanel, ControlType_WrapPanel) Then
+								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnSplitCtrlControlItem)
+								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
+'								Call DEBUGPrint("            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls")
+								Print #369, "            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls"
+
+								For m = 0 To (nNumDropDownMenuCtrls - 1)
+									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
+
+									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
+									sName		= GetMICtrlName(rbnDropDownMenuControlItem)
+									sCaption		= GetMICtrlCaption(rbnDropDownMenuControlItem)
+'									Call DEBUGPrint("            DropDownMenu Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+									Print #369, "            DropDownMenu Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+								Next
+
+							End If
+						Next
+
+					Case ControlType_DropDownButton
+						rbnDropDownCtrlControlsColl	= GetRbnDropDownCtrlCtrls(rbnControlItem)
+						nNumDropDownCtrlCtrls		= GetMICtrlCollCount(rbnDropDownCtrlControlsColl)
+'						Call DEBUGPrint("      DropDownButton has " & nNumDropDownCtrlCtrls & " Groups/controls")
+						Print #369, "      DropDownButton has " & nNumDropDownCtrlCtrls & " Groups/controls"
+
+						For l = 0 To (nNumDropDownCtrlCtrls - 1)
+							rbnDropDownCtrlControlItem	= GetMICtrlCollItemInt(rbnDropDownCtrlControlsColl, l)
+
+							nCntrlType	= GetMICtrlCtrlType(rbnDropDownCtrlControlItem)
+							sName		= GetMICtrlName(rbnDropDownCtrlControlItem)
+							sCaption		= GetMICtrlCaption(rbnDropDownCtrlControlItem)
+'							Call DEBUGPrint("         DropDownButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+							Print #369, "         DropDownButton Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+
+							If nCntrlType In (ControlType_DropDownMenuGroup, ControlType_StackPanel, ControlType_WrapPanel) Then
+								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnDropDownCtrlControlItem)
+								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
+'								Call DEBUGPrint("            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls")
+								Print #369, "            DropDownMenu Control has " & nNumDropDownMenuCtrls & " Controls"
+
+								For m = 0 To (nNumDropDownMenuCtrls - 1)
+									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
+
+									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
+									sName		= GetMICtrlName(rbnDropDownMenuControlItem)
+									sCaption		= GetMICtrlCaption(rbnDropDownMenuControlItem)
+'									Call DEBUGPrint("            DropDown Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+									Print #369, "            DropDown Control " & m & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+								Next
+
+							End If
+						Next
+
+				End Case
+			Next
+		Next
+	Next
+
+	nNumCntrls = GetMICtrlCollCount(theMapMTBControlsColl)
+	Call DEBUGPrint("   Map MiniToolBar: Number of Controls " & nNumCntrls)
+	Print #369, "--------------------------------------------------------------"
+	Print #369, "Map Mini Toolbar"
+	Print #369, "   Map Mini ToolBar: Number of Controls " & nNumCntrls
+	For i = 0 To (nNumCntrls - 1)
+		rbnControlItem	= GetMICtrlCollItemInt(theMapMTBControlsColl, i)
+
+		sName		= GetMICtrlName(rbnControlItem)
+		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+		sCaption		= GetMICtrlCaption(rbnControlItem)
+'		Call DEBUGPrint("      Map Mini ToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+		Print #369, "      Map MiniTool Bar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+
+		If nCntrlType In (ControlType_StackPanel, ControlType_WrapPanel) Then
+			rbnStackPanelControlsColl	= GetIStackPanelCtrls(rbnControlItem)
+			nNumStackPanelCtrls			= GetMICtrlCollCount(rbnStackPanelControlsColl)
+
+			For l = 0 To (nNumStackPanelCtrls - 1)
+				rbnStackPanelControlItem	= GetMICtrlCollItemInt(rbnStackPanelControlsColl, l)
+
+				nCntrlType	= GetMICtrlCtrlType(rbnStackPanelControlItem)
+				sName		= GetMICtrlName(rbnStackPanelControlItem)
+				sCaption		= GetMICtrlCaption(rbnStackPanelControlItem)
+'				Call DEBUGPrint("         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+				Print #369, "         Stack-/WrapPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+			Next
+		End If
+	Next
+
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_MapperShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "MapperShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_BrowserShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "BrowserShortcut")
+'	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LayoutShortcut)
+'	Call ARRAYAddValueString(arrContextMenuNames, "LayoutShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_RedistrictShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "RedistrictShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LcLayersShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "LcLayersShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LcMapsShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "LcMapsShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_LcGroupsShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "LcGroupsShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_TableListTablesShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "TableListTablesShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_DataGridColFilterShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "DataGridColFilterShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_DataGridColFilterSelectShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "DataGridColFilterSelectShortcut")
+	Call ARRAYAddValueInteger(arrContextMenuIDs, MenuId_WindowListShortcut)
+	Call ARRAYAddValueString(arrContextMenuNames, "WindowListShortcut")
+
+	Print #369, "--------------------------------------------------------------"
+	Print #369, "Context Menus"
+	For nMenu = 1 To Ubound(arrContextMenuIDs)
+		Call DEBUGPrint("   " & arrContextMenuNames(nMenu) & " Menu")
+		rbnCntxtMenu 			= ICntxtMnusGetCntxtMnu(theContextMenus, arrContextMenuIDs(nMenu))
+		rbnCntxtMenuItemsColl	= GetICntxtMnuCtrls(rbnCntxtMenu)
+		nNumCntrls 			= GetMICtrlCollCount(rbnCntxtMenuItemsColl)
+		Call DEBUGPrint("      : Number of Controls " & nNumCntrls)
+		Print #369, "   " & arrContextMenuNames(nMenu) & " Menu: Number of Controls " & nNumCntrls
+		For i = 0 To (nNumCntrls - 1)
+			rbnControlItem	= GetMICtrlCollItemInt(rbnCntxtMenuItemsColl, i)
+
+			sName		= GetMICtrlName(rbnControlItem)
+			nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+			sCaption		= GetMICtrlCaption(rbnControlItem)
+	'		Call DEBUGPrint("      Map Context Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+			Print #369, "      " & arrContextMenuNames(nMenu) & " Menu Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+		Next
+	Next
+
+	Print #369, "--------------------------------------------------------------"
+	Print #369, "Backstage"
+	rbnBackStageControlsColl = GetRbnBackStageCtrls(theBackstage)
+	nNumCntrls 			= GetMICtrlCollCount(rbnBackStageControlsColl)
+	Print #369, "   Backstage: Number of Controls " & nNumCntrls
+	For k = 0 To (nNumCntrls - 1)
+		rbnControlItem	= GetMICtrlCollItemInt(rbnBackStageControlsColl, k)
+
+		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+		sName		= GetMICtrlName(rbnControlItem)
+		sCaption		= GetMICtrlCaption(rbnControlItem)
+		Print #369, "   Backstage Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+
+		If nCntrlType = ControlType_BackStageTabItem Then
+			rbnBackstageTabItemColl	= GetCtrlGrpCtrls(rbnControlItem)	'GetIBackStageTabItemCtrls(rbnControlItem)
+			nNumGroups			= GetMICtrlCollCount(rbnBackstageTabItemColl)
+
+			Print #369, "      BackstageTab " & k & " has " & nNumGroups & " Control Elements"
+
+			For j = 0 To (nNumGroups - 1)
+				rbnBackstageTabItem	= GetMICtrlCollItemInt(rbnBackstageTabItemColl, j)
+
+				nCntrlType	= GetMICtrlCtrlType(rbnBackstageTabItem)
+				sName		= GetMICtrlName(rbnBackstageTabItem)
+				sCaption		= GetMICtrlCaption(rbnBackstageTabItem)
+				Print #369, "      Control " & j & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+			Next
+		End If
+	Next
+
+	rbnStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
+	nNumCntrls 			= GetMICtrlCollCount(rbnStatusbarControlsColl)
+'	Call DEBUGPrint("   Statusbar: Number of Controls " & nNumCntrls)
+	Print #369, "--------------------------------------------------------------"
+	Print #369, "Statusbar"
+	Print #369, "   Statusbar: Number of Controls " & nNumCntrls
+	For k = 0 To (nNumCntrls - 1)
+		rbnControlItem	= GetMICtrlCollItemInt(rbnStatusbarControlsColl, k)
+
+		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+		sName		= GetMICtrlName(rbnControlItem)
+		sCaption		= GetMICtrlCaption(rbnControlItem)
+'		Call DEBUGPrint("      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+		Print #369, "   Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+	Next
+
+	Close File #369
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNLoop")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNLoopCreateRibbonStatements
+
+OnError GoTo ErrorOccured
+
+Dim	nNumTabs, nNumGroups, nNumCntrls, nNumGalleryGroups, nNumGalleryCtrls, nNumSplitCtrlCtrls, nNumDropDownMenuCtrls, nNumDropDownCtrlCtrls, nNumStackPanelCtrls As Integer,
+	i, j, k, l, m As Integer,
+	sRbnTabName, sRbnGroupName, sName, sCaption, sKeyTip, sGroupName, sItemName, sImageName, sCmdHandler As String,
+	arrControlNames() As String,
+	nCntrlType, nImageSize, nCmdID As Integer,
+	rbnTabItem As This,
+	rbnGroupsColl As This,
+	rbnGroupItem As This,
+	rbnControlsColl As This,
+	rbnControlItem As This,
+	rbnGalleryGroupsColl As This,
+	rbnGalleryGroupItem As This,
+	rbnGalleryControlsColl As This,
+	rbnGalleryControlItem As This,
+	rbnSplitCtrlControlsColl As This,
+	rbnSplitCtrlControlItem As This,
+	rbnDropDownMenuControlsColl As This,
+	rbnDropDownMenuControlItem As This,
+	rbnDropDownCtrlControlsColl As This,
+	rbnDropDownCtrlControlItem As This,
+	rbnStackPanelControlsColl As This,
+	rbnStackPanelControlItem As This,
+	rbnStatusbarControlsColl As This
+
+	'--------------------------------
+	Call RBNInitiate
+
+'	Call RBInitialControlArrays
+
+	If FileExists(ApplicationDirectory$() & "Ribbon Statements.txt") Then
+		Kill ApplicationDirectory$() & "Ribbon Statements.txt"
+	End If
+
+	Open File ApplicationDirectory$() & "Ribbon Statements.txt"
+		For Append
+		As #369
+		CharSet SystemInfo(SYS_INFO_CHARSET)
+
+	nNumTabs = GetRbnTabCollCount(theTabsColl)
+
+	For i = 0 To (nNumTabs - 1)	'**Do note that the collection starts at 0 and not at 1 like normal MapBasic Arrays
+		rbnTabItem = GetRbnTabCollItemInt(theTabsColl, i)
+
+		sRbnTabName	= GetRbnTabName(rbnTabItem)
+		sCaption		= GetRbnTabCaption(rbnTabItem)
+		sKeyTip		= GetRbnTabKeyTip(rbnTabItem)
+		Print #369, "	'**************************************************************"
+		Print #369, "	Call DEBUGPrint(" & eye & sRbnTabName & eye & ")"
+		Call DEBUGPrint("Tab " & i & " is named '" & sRbnTabName & "' but shown as '" & sCaption & "'")
+		Print #369, "	nCtrlIdx	= RBNAddTab(" & eye & sRbnTabName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye & ")"
+'		Print #369, "	If NOT nCtrlIdx > 0 Then"
+'		Print #369, "		Exit Sub"
+'		Print #369, "	End If	'RBNAddTab"
+'		Print #369, ""
+
+		rbnGroupsColl = GetRbnTabGrps(rbnTabItem)
+		nNumGroups = GetRbnCtrlGrpCollCount(rbnGroupsColl)
+'		Call DEBUGPrint("   Number of Tab Groups " & nNumGroups)
+
+		For j = 0 To (nNumGroups - 1)
+			rbnGroupItem = GetRbnCtrlGrpCollItemInt(rbnGroupsColl, j)
+
+			sRbnGroupName	= GetRbnCtrlGrpName(rbnGroupItem)
+			sCaption		= GetRbnCtrlGrpCaption(rbnGroupItem)
+			Print #369, "	'------------------------------"
+			Print #369, "	Call DEBUGPrint(" & eye & "   " & sRbnGroupName & eye & ")"
+'			Call DEBUGPrint("   Tab Group " & j & " is named '" & sRbnGroupName & "' but shown as '" & sCaption & "'")
+			Print #369, "	nCtrlIdx	= RBNTabAddGroup(" & eye & sRbnGroupName & eye & ", " & eye & sCaption & eye & ", " & eye & sRbnTabName & eye & ")"
+'			Print #369, "	If NOT nCtrlIdx > 0 Then"
+'			Print #369, "		Exit Sub"
+'			Print #369, "	End If	'RBNTabAddGroup"
+			Print #369, ""
+
+			rbnControlsColl = GetRbnCtrlGrpCtrls(rbnGroupItem)
+			nNumCntrls = GetMICtrlCollCount(rbnControlsColl)
+'			Call DEBUGPrint("      Number of Controls " & nNumCntrls)
+
+			For k = 0 To (nNumCntrls - 1)
+				rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, k)
+
+				nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+				sName		= GetMICtrlName(rbnControlItem)
+				sCaption		= RBNControlGetCaptionThs(rbnControlItem)
+				sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+				nImageSize	= RBNControlGetSizeThs(rbnControlItem)
+				sImageName	= RBNGetImageStringFromControlName(sName)
+
+				Do Case nCntrlType
+					Case ControlType_RibbonSeparator
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+						Print #369, ""
+
+					Case ControlType_Button, ControlType_ToolButton
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+						Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'						Print #369, "		'Set the button icon"
+						Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'						Print #369, "		'Set Custom MapBasic Handle to the button"
+
+						nCmdID		= RBNControlGetCmdIDThs(rbnControlItem)
+						sCmdHandler	= RBNControlGetCmdThs(rbnControlItem)
+
+						If nCmdID <> -1 Then
+							Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & nCmdID & ")"
+						ElseIf sCmdHandler <> "" Then
+							Print #369, "	Call RBNControlSetCmdIdx(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+						Else
+							sCmdHandler	= RBNControlGetCallingHandlerThs(rbnControlItem)
+							If sCmdHandler <> "" Then
+								Print #369, "	Call RBNControlSetCallingHandlerIds(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+							End If
+						End If
+						Print #369, ""
+
+						If NOT ARRAYContainsValueString(arrControlNames, sName) AND sItemName Then
+							Call ARRAYAddValueString(arrControlNames, sName)
+						End If
+
+					Case ControlType_GalleryControl
+'						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+'										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+'						Print #369, "		Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+
+						rbnGalleryGroupsColl = GetRbnGalleryCtrlGrps(rbnControlItem)
+						nNumGalleryGroups 	 = GetMIGalleryGrpCollCount(rbnGalleryGroupsColl)
+
+						For l = 0 To (nNumGalleryGroups - 1)
+							rbnGalleryGroupItem		= GetMIGalleryGrpCollItemInt(rbnGalleryGroupsColl, l)
+
+							sGroupName	= GetRbnGalleryGrpName(rbnGalleryGroupItem)
+							sCaption		= RBNControlGetCaptionThs(rbnGalleryGroupItem)
+							'Print #369, "		'Create the Gallery Group"
+							'Print #369, "		'Not yet Supported"
+
+							rbnGalleryControlsColl	= GetRbnGalleryGrpCtrls(rbnGalleryGroupItem)
+							nNumGalleryCtrls		= GetMICtrlCollCount(rbnGalleryControlsColl)
+
+							For m = 0 To (nNumGalleryCtrls - 1)
+								rbnGalleryControlItem	= GetMICtrlCollItemInt(rbnGalleryControlsColl, m)
+
+								nCntrlType	= GetMICtrlCtrlType(rbnGalleryControlItem)
+								sItemName		= GetMICtrlName(rbnGalleryControlItem)
+								sCaption		= RBNControlGetCaptionThs(rbnGalleryControlItem)
+								sKeyTip		= GetMICtrlKeyTip(rbnGalleryControlItem)
+								nImageSize	= RBNControlGetSizeThs(rbnGalleryControlItem)
+								sImageName	= RBNGetImageStringFromControlName(sItemName)
+
+								nCmdID		= RBNControlGetCmdIDThs(rbnControlItem)
+								sCmdHandler	= RBNControlGetCmdThs(rbnControlItem)
+
+								nCntrlType	= ControlType_Button	'Need to change them to a different type as Gallery Items can't be place in a group
+
+'								Print #369, "			'Create the SplitButton Group Controls"
+								Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sItemName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+														& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+'								Print #369, "			If nCtrlIdx > 0 Then"
+'								Print #369, "				'Create & Set the button tooltip"
+								Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'								Print #369, "				'Set the button icon"
+								Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'								Print #369, "				'Set Custom MapBasic Handle to the button"
+								If nCmdID <> -1 Then
+									Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & nCmdID & ")"
+								ElseIf sCmdHandler <> "" Then
+									Print #369, "	Call RBNControlSetCmdIdx(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+								Else
+									sCmdHandler	= RBNControlGetCallingHandlerThs(rbnControlItem)
+									If sCmdHandler <> "" Then
+										Print #369, "	Call RBNControlSetCallingHandlerIds(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+									End If
+								End If
+
+								If NOT ARRAYContainsValueString(arrControlNames, sItemName) AND sItemName Then
+									Call ARRAYAddValueString(arrControlNames, sItemName)
+								End If
+							Next
+						Next
+
+						'GetRbnGalleryCtrlMenuItems - not sure how to work with these yet
+						'Right now we just add the controls from the Gallery to the Ribbon Group directly
+						Print #369, ""
+
+					Case ControlType_SplitButton
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+						Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+
+						rbnSplitCtrlControlsColl	= GetRbnSplitCtrlCtrls(rbnControlItem)
+						nNumSplitCtrlCtrls		= GetMICtrlCollCount(rbnSplitCtrlControlsColl)
+
+						For l = 0 To (nNumSplitCtrlCtrls - 1)
+							rbnSplitCtrlControlItem	= GetMICtrlCollItemInt(rbnSplitCtrlControlsColl, l)
+
+							nCntrlType	= GetMICtrlCtrlType(rbnSplitCtrlControlItem)
+							sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+							sGroupName	= GetMICtrlName(rbnSplitCtrlControlItem)
+							sCaption		= RBNControlGetCaptionThs(rbnSplitCtrlControlItem)
+'							Print #369, "		'Create the SplitButton Group"
+							Print #369, "	nCtrlIdx	= RBNSplitButtonAddGroup(" & eye & sGroupName & eye & ", " & eye & sCaption & eye
+												& ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ", " & eye & sName & eye & ")"
+'							Print #369, "		If nCtrlIdx > 0 Then"
+
+							If nCntrlType In (ControlType_DropDownMenuGroup, ControlType_StackPanel, ControlType_WrapPanel) Then
+								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnSplitCtrlControlItem)
+								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
+
+								For m = 0 To (nNumDropDownMenuCtrls - 1)
+									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
+
+									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
+									sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+									sItemName		= GetMICtrlName(rbnDropDownMenuControlItem)
+									sCaption		= RBNControlGetCaptionThs(rbnDropDownMenuControlItem)
+									nImageSize	= RBNControlGetSizeThs(rbnDropDownMenuControlItem)
+									sImageName	= RBNGetImageStringFromControlName(sItemName)
+
+									nCmdID		= RBNControlGetCmdIDThs(rbnDropDownMenuControlItem)
+									sCmdHandler	= RBNControlGetCmdThs(rbnDropDownMenuControlItem)
+
+
+'									Print #369, "			'Create the SplitButton Group Controls"
+									Print #369, "	nCtrlIdx	= RBNSplitButtonGroupAddControl(" & eye & sItemName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+															& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye
+															& ", " & eye & sName & eye & ", " & eye & sGroupName & eye & ")"
+'									Print #369, "			If nCtrlIdx > 0 Then"
+'									Print #369, "				'Create & Set the button tooltip"
+									Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'									Print #369, "				'Set the button icon"
+									Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'									Print #369, "				'Set Custom MapBasic Handle to the button"
+
+									If nCmdID <> -1 Then
+										Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & nCmdID & ")"
+									ElseIf sCmdHandler <> "" Then
+										Print #369, "	Call RBNControlSetCmdIdx(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+									Else
+										sCmdHandler	= RBNControlGetCallingHandlerThs(rbnDropDownMenuControlItem)
+										If sCmdHandler <> "" Then
+											Print #369, "	Call RBNControlSetCallingHandlerIds(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+										End If
+									End If
+
+'									Print #369, "			End If	'RBNSplitButtonGroupAddControl"
+
+									If NOT ARRAYContainsValueString(arrControlNames, sItemName) AND sItemName Then
+										Call ARRAYAddValueString(arrControlNames, sItemName)
+									End If
+								Next
+
+							End If
+'							Print #369, "		End If	'RBNSplitButtonAddGroup"
+							Print #369, ""
+						Next
+
+					Case ControlType_DropDownButton
+						Print #369, "	nCtrlIdx	= RBNGroupAddControl(" & eye & sName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+										& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ")"
+		'				Print #369, "	If nCtrlIdx > 0 Then"
+		'				Print #369, "		'Create & Set the button tooltip"
+						Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+
+						rbnDropDownCtrlControlsColl	= GetRbnDropDownCtrlCtrls(rbnControlItem)
+						nNumDropDownCtrlCtrls		= GetMICtrlCollCount(rbnDropDownCtrlControlsColl)
+
+						For l = 0 To (nNumDropDownCtrlCtrls - 1)
+							rbnDropDownCtrlControlItem	= GetMICtrlCollItemInt(rbnDropDownCtrlControlsColl, l)
+
+							nCntrlType	= GetMICtrlCtrlType(rbnDropDownCtrlControlItem)
+							sKeyTip		= GetMICtrlKeyTip(rbnControlItem)
+							sGroupName	= GetMICtrlName(rbnDropDownCtrlControlItem)
+							sCaption		= RBNControlGetCaptionThs(rbnDropDownCtrlControlItem)
+							sKeyTip		= GetMICtrlKeyTip(rbnDropDownCtrlControlItem)
+'							Print #369, "		'Create the DropDownButton Group"
+							Print #369, "	nCtrlIdx	= RBNDropDButtonAddGroup(" & eye & sGroupName & eye & ", " & eye & sCaption & eye
+												& ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye & ", " & eye & sName & eye & ")"
+'							Print #369, "		If nCtrlIdx > 0 Then"
+
+							If nCntrlType In (ControlType_DropDownMenuGroup, ControlType_StackPanel, ControlType_WrapPanel) Then
+								rbnDropDownMenuControlsColl	= GetCtrlGrpCtrls(rbnDropDownCtrlControlItem)
+								nNumDropDownMenuCtrls		= GetMICtrlCollCount(rbnDropDownMenuControlsColl)
+
+								For m = 0 To (nNumDropDownMenuCtrls - 1)
+									rbnDropDownMenuControlItem	= GetMICtrlCollItemInt(rbnDropDownMenuControlsColl, m)
+
+									nCntrlType	= GetMICtrlCtrlType(rbnDropDownMenuControlItem)
+									sItemName		= GetMICtrlName(rbnDropDownMenuControlItem)
+									sCaption		= RBNControlGetCaptionThs(rbnDropDownMenuControlItem)
+									sKeyTip		= GetMICtrlKeyTip(rbnDropDownCtrlControlItem)
+									nImageSize	= RBNControlGetSizeThs(rbnDropDownCtrlControlItem)
+									sImageName	= RBNGetImageStringFromControlName(sItemName)
+
+									nCmdID		= RBNControlGetCmdIDThs(rbnDropDownCtrlControlItem)
+									sCmdHandler	= RBNControlGetCmdThs(rbnDropDownCtrlControlItem)
+
+
+'									Print #369, "			'Create the DropDownButton Group Controls"
+									Print #369, "	nCtrlIdx	= RBNDropDButtonGroupAddControl(" & eye & sItemName & eye & ", " & eye & sCaption & eye & ", " & eye & sKeyTip & eye
+															& ", " & nCntrlType & ", " & eye & sRbnTabName & eye & ", " & eye & sRbnGroupName & eye
+															& ", " & eye & sName & eye & ", " & eye & sGroupName & eye & ")"
+'									Print #369, "			If nCtrlIdx > 0 Then"
+'									Print #369, "				'Create & Set the button tooltip"
+									Print #369, "	Call RBNControlSetToolTipIdx(nCtrlIdx, " & eye & sCaption & eye & ", " & eye & "Enabled ToolTip" & eye & ", " & eye & "Disabled ToolTip" & eye & ")"
+'									Print #369, "				'Set the button icon"
+									Print #369, "	Call RBNControlSetIconsIdx(nCtrlIdx, " & nImageSize & ", " & sImageName & "16, " & sImageName & "32)"
+'									Print #369, "				'Set Custom MapBasic Handle to the button"
+
+									If nCmdID <> -1 Then
+										Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & nCmdID & ")"
+									ElseIf sCmdHandler <> "" Then
+										Print #369, "	Call RBNControlSetCmdIdx(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+									Else
+										sCmdHandler	= RBNControlGetCallingHandlerThs(rbnDropDownCtrlControlItem)
+										If sCmdHandler <> "" Then
+											Print #369, "	Call RBNControlSetCallingHandlerIds(nCtrlIdx, " & eye & sCmdHandler & eye & ")"
+										End If
+									End If
+
+									Print #369, "	Call RBNControlSetCmdIDIdx(nCtrlIdx, " & RBNGetCommandIDFromControlName(sItemName) & ")"
+'									Print #369, "			End If	'RBNDropDButtonGroupAddControl"
+
+									If NOT ARRAYContainsValueString(arrControlNames, sItemName) AND sItemName Then
+										Call ARRAYAddValueString(arrControlNames, sItemName)
+									End If
+								Next
+
+							End If
+'							Print #369, "		End If	'RBNDropDButtonAddGroup"
+							Print #369, ""
+						Next
+
+					Case Else
+						Print #369, "   Print " & eye & "ControlType " & nCntrlType & " understøttes ikke: " & sName & " " & sCaption & eye
+				End Case
+
+'				Print #369, "	End If	'RBNGroupAddControl"
+'				Print #369, ""
+			Next
+		Next
+	Next
+
+'	nNumCntrls = GetMICtrlCollCount(theMapMTBControlsColl)
+'	Call DEBUGPrint("   Map MiniToolBar: Number of Controls " & nNumCntrls)
+'	Print #369, "   Map MiniToolBar: Number of Controls " & nNumCntrls
+'	For i = 0 To (nNumCntrls - 1)
+'		rbnControlItem	= GetMICtrlCollItemInt(theMapMTBControlsColl, i)
+'
+'		sName		= GetMICtrlName(rbnControlItem)
+'		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+'		sCaption		= GetMICtrlCaption(rbnControlItem)
+''		Call DEBUGPrint("      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Print #369, "      MiniToolBar Control " & i & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'
+'		If nCntrlType = ControlType_StackPanel Then
+'			rbnStackPanelControlsColl	= GetIStackPanelCtrls(rbnControlItem)
+'			nNumStackPanelCtrls			= GetMICtrlCollCount(rbnStackPanelControlsColl)
+'
+'			For l = 0 To (nNumStackPanelCtrls - 1)
+'				rbnStackPanelControlItem	= GetMICtrlCollItemInt(rbnStackPanelControlsColl, l)
+'
+'				nCntrlType	= GetMICtrlCtrlType(rbnStackPanelControlItem)
+'				sName		= GetMICtrlName(rbnStackPanelControlItem)
+'				sCaption		= GetMICtrlCaption(rbnStackPanelControlItem)
+''				Call DEBUGPrint("         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'				Print #369, "         StackPanel Control " & l & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'			Next
+'		End If
+'
+'	Next
+
+'	rbnStatusbarControlsColl	= GetIStatusBarCtrls(theStatusbar)
+'	nNumCntrls 			= GetMICtrlCollCount(rbnStatusbarControlsColl)
+''	Call DEBUGPrint("   Statusbar: Number of Controls " & nNumCntrls)
+'	Print #369, "   Statusbar: Number of Controls " & nNumCntrls
+'	For k = 0 To (nNumCntrls - 1)
+'		rbnControlItem	= GetMICtrlCollItemInt(rbnStatusbarControlsColl, k)
+'
+'		nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+'		sName		= GetMICtrlName(rbnControlItem)
+'		sCaption		= GetMICtrlCaption(rbnControlItem)
+''		Call DEBUGPrint("      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+'		Print #369, "      Statusbar Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")"
+'	Next
+
+	Print #369, "'-----------------------------------------------'"
+	Print #369, "Dim i As Integer"
+	Print #369, "	Redim marrControlName(" & Ubound(arrControlNames) & ")"
+	Print #369, "	Redim marrImageString(" & Ubound(arrControlNames) & ")"
+	Print #369, "	Redim marrCommandID(" & Ubound(arrControlNames) & ")"
+	For i = 1 To Ubound(arrControlNames)
+		Print #369, "	i = i + 1"
+		Print #369, "	marrControlName(i)	= " & eye & arrControlNames(i) & eye
+		Print #369, "	marrImageName(i)	= " & eye & RBNGetImageStringFromControlName(arrControlNames(i)) & eye
+		Print #369, "	marrCommandID(i)	= " & eye & RBNGetCommandIDFromControlName(arrControlNames(i)) & eye
+	Next
+	Close File #369
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNLoop")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+Sub RBNLoopContext
+
+Dim	nNumTabs, nNumGroups, nNumCntrls, i, j, k As Integer,
+	sName, sCaption As String,
+	nCntrlType As Integer,
+	rbnTabItem As This,
+	rbnTabsColl As This,
+	rbnGroupsColl As This,
+	rbnGroupItem As This,
+	rbnControlsColl As This,
+	rbnControlItem As This
+
+	'--------------------------------
+	Call RBNInitiate
+
+	rbnGroupsColl	= GetCntxtTabGrpsColl(theRibbon)
+	nNumGroups	= GetRbnCntxtTabGrpCollCount(rbnGroupsColl)
+	Call DEBUGPrint("   RBNGetContextGroup: Number of Tab Groups " & nNumGroups)
+	For i = 0 To (nNumGroups - 1)
+		rbnGroupItem = GetRbnCntxtTabGrpCollItemInt(rbnGroupsColl, i)
+
+		sName	= GetRbnCntxtTabGrpName(rbnGroupItem)
+		sCaption	= GetRbnCntxtTabGrpCaption(rbnGroupItem)
+		Call DEBUGPrint("   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'")
+
+		rbnTabsColl = GetRbnCntxtTabGrpTabs(rbnGroupItem)
+'		rbnGroupsColl = GetRbnTabGrps(rbnGroupItem)
+
+		nNumGroups = GetRbnCtrlGrpCollCount(rbnTabsColl)
+'		Call DEBUGPrint("   Number of Tab Groups " & nNumGroups)
+
+		For j = 0 To (nNumGroups - 1)
+			rbnGroupItem = GetRbnCtrlGrpCollItemInt(rbnGroupsColl, j)
+
+			sName	= GetRbnCtrlGrpName(rbnGroupItem)
+			sCaption	= GetRbnCtrlGrpCaption(rbnGroupItem)
+			Call DEBUGPrint("   Tab Group " & j & " is named '" & sName & "' but shown as '" & sCaption & "'")
+
+			rbnControlsColl = GetRbnCtrlGrpCtrls(rbnGroupItem)
+			nNumCntrls = GetMICtrlCollCount(rbnControlsColl)
+'			Call DEBUGPrint("      Number of Controls " & nNumCntrls)
+
+			For k = 0 To (nNumCntrls - 1)
+				rbnControlItem	= GetMICtrlCollItemInt(rbnControlsColl, k)
+
+				nCntrlType	= GetMICtrlCtrlType(rbnControlItem)
+				sName		= GetMICtrlName(rbnControlItem)
+				sCaption		= GetMICtrlCaption(rbnControlItem)
+				Call DEBUGPrint("      Control " & k & " is named '" & sName & "' but shown as '" & sCaption & "' and Control Type is " & nCntrlType & " (" & RBNControlGetTypeName(nCntrlType) & ")")
+			Next
+		Next
+	Next
+
+	Exit Sub
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNLoopContext")
+	Call ERRShow()
+
+End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'
+'**********************************************************************************************''
+'Sub RBInitialControlArrays
+'
+'Dim	i As Integer
+'
+'OnError GoTo ErrorOccured
+'
+'	Redim marrControlName(230)
+'	Redim marrImageName(230)
+'	Redim marrCommandID(230)
+'	i = i + 1
+'	marrControlName(i)	= "FileOpenWorkspaceButton"
+'	marrImageName(i)	= "MI_IMG_APP_OPENWORKSPACE_"
+'	marrCommandID(i)	= "M_FILE_OPEN"
+'	i = i + 1
+'	marrControlName(i)	= "FileAddWorkspaceButton"
+'	marrImageName(i)	= "MI_IMG_APP_INSERTWORKSPACE_"
+'	marrCommandID(i)	= "M_FILE_ADD_WORKSPACE"
+
+'
+'	Exit Sub
+''-------------------------
+'ErrorOccured:
+'	Call ERRCreate(Err(), Error$(), "RBInitialControlArrays")
+'	Call ERRShow()
+'
+'End Sub
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetImageStringFromControlName(ByVal sControlName As String) As String
+
+Dim	nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNGetImageStringFromControlName = "MI_IMG_APP_OPENTABLE_"
+
+	nItem = ARRAYFindValueString(marrControlName, sControlName)
+	If nItem > 0 Then
+		RBNGetImageStringFromControlName = marrImageName(nItem)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetImageStringFromControlName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetCommandIDFromControlName(ByVal sControlName As String) As String
+
+Dim	nItem As Integer
+
+OnError GoTo ErrorOccured
+
+	RBNGetCommandIDFromControlName = M_FILE_OPEN
+
+	nItem = ARRAYFindValueString(marrControlName, sControlName)
+	If nItem > 0 Then
+		RBNGetCommandIDFromControlName = marrCommandID(nItem)
+	End If
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetCommandIDFromControlName")
+	Call ERRShow()
+
+End Function
+
+'**********************************************************************************************''
+'Created by Peter Horsbøll Møller, Precisely
+'Parameters:
+'	:
+'Return value:
+'
+'**********************************************************************************************''
+Function RBNGetImageStringFromTabAndGroup(	  ByVal sRbnTabName As String
+									, ByVal sRbnGroupName As String
+									) As String
+
+OnError GoTo ErrorOccured
+
+RBNGetImageStringFromTabAndGroup = "MI_IMG_APP_CLOSEALL_"
+
+	Do Case sRbnTabName
+		Case TAB_HOME
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_APP_OPENTABLE_"
+		Case TAB_TABLE
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_TAB_NEWTABLE_"
+		Case TAB_MAP
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_MAP_NEWMAPPER_"
+		Case TAB_SPATIAL
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_SPA_BUFFER_"
+		Case TAB_LAYOUT
+			RBNGetImageStringFromTabAndGroup	= "MI_IMG_LAY_FRAME_"
+	End Case
+
+	Exit Function
+'-------------------------
+ErrorOccured:
+	Call ERRCreate(Err(), Error$(), "RBNGetImageStringFromTabAndGroup")
+	Call ERRShow()
+
+End Function
+
